@@ -6,11 +6,11 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\DanhMucDonVi;
+use Database\Seeders\DanhMucToChuc;
 use Database\Seeders\DanhMucQuocGia;
 use Database\Seeders\DanhMucTinhThanh;
-use Database\Seeders\DanhMucNoiCongTac;
+use Database\Seeders\DanhMucPhanLoaiToChuc;
 use Database\Seeders\DanhMucHocHamHocViSeeder;
-use Database\Seeders\DanhMucPhanLoaiNoiCongTac;
 use Database\Seeders\DanhMucNgachVienChucSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,11 +26,9 @@ class DatabaseSeeder extends Seeder
         $this->call(DanhMucNgachVienChucSeeder::class);
         $this->call(DanhMucQuocGia::class);
         $this->call(DanhMucTinhThanh::class);
-        $this->call(DanhMucPhanLoaiNoiCongTac::class);
+        $this->call(DanhMucPhanLoaiToChuc::class);
         $this->call(DanhMucDonVi::class);
-        $this->call(DanhMucNoiCongTac::class);
+        $this->call(DanhMucToChuc::class);
         $this->call(UserSeeder::class);
-        $this->call(DanhMucPhanLoaiTapChi::class);
-
     }
 }

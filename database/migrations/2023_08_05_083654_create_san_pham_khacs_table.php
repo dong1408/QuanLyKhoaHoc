@@ -15,12 +15,16 @@ return new class extends Migration
     {
         Schema::create('san_pham_khacs', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            //Chi tiết về sản phẩm khác
             $table->string('maso')->nullable();
-            $table->string('loaisanpham');
             $table->string('capcongnhan');
-            $table->unsignedBigInteger('id_tacgia');
-            $table->foreign('id_tacgia')->references('id')->on('users')->onDelete('cascade');
+            $table->string('ngaycongnhan');
+            $table->string('files');
+            //Đơn vị nào công nhận
+            $table->unsignedBigInteger('id_donvicongnhan')->nullable();
+            $table->foreign('id_donvicongnhan')->references('id')->on('d_m_to_chucs')->onDelete('cascade');
+
+            $table->string('ghichu');
             $table->timestamps();
         });
     }
