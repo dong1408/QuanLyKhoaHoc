@@ -18,8 +18,6 @@ return new class extends Migration
             //Tạp chí nào
             $table->unsignedBigInteger('id_tapchi');
             $table->foreign('id_tapchi')->references('id')->on('tap_chis')->onDelete('cascade');
-            //Tính vào năm nào
-            $table->string('namtinhdiem')->nullable();
             //Xét theo Hội đồng ngành nào
             $table->unsignedBigInteger('id_nganhtinhdiem');
             $table->foreign('id_nganhtinhdiem')->references('id')->on('d_m_nganh_tinh_diems')->onDelete('cascade');
@@ -28,6 +26,8 @@ return new class extends Migration
             $table->foreign('id_chuyennganhtinhdiem')->references('id')->on('d_m_chuyen_nganh_tinh_diems')->onDelete('cascade');
             //Được tính mấy điểm
             $table->string('diem')->nullable();
+            //Điểm bắt đầu được tính từ năm nào
+            $table->string('namtinhdiem')->nullable();
             //Ai cập nhật thông tin này
             $table->unsignedBigInteger('id_nguoicapnhat')->nullable();
             $table->foreign('id_nguoicapnhat')->references('id')->on('users')->onDelete('cascade');

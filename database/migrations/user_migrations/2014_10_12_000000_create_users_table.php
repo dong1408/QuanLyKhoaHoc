@@ -33,6 +33,11 @@ return new class extends Migration
             $table->unsignedBigInteger('id_donvi')->nullable();
             $table->foreign('id_donvi')->references('id')->on('d_m_don_vis')->onDelete('cascade');
             $table->string('mavienchuc')->unique()->nullable(); //mã viên chức
+            //Có phải đang đi học nghiên cứu sinh không (null; caohoc; ncs)
+            $table->string('dangdihoc')->unique()->nullable();
+            $table->unsignedBigInteger('id_noihoc')->nullable();
+            $table->foreign('id_noihoc')->references('id')->on('d_m_to_chucs')->onDelete('cascade');
+
             //Ngạch viên chức (chỉ dùng cho Trường ĐHSG, để quản lý nội bộ)
             $table->unsignedBigInteger('id_ngachvienchuc')->nullable();
             $table->foreign('id_ngachvienchuc')->references('id')->on('d_m_ngach_vien_chucs')->onDelete('cascade');

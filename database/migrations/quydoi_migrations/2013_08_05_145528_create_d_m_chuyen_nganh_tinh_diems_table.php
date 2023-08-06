@@ -21,6 +21,7 @@ return new class extends Migration
             //Chuyên ngành nào
             $table->string('machuyennganh')->unique();
             $table->string('tenchuyennganh')->nullable();
+            $table->string('tenchuyennganh_en')->nullable();
             $table->timestamps();
         });
     }

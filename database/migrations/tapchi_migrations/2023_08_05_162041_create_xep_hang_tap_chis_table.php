@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('abs')->nullable();
             //có thuộc ABCD không? (nhận các giá trị null; A*, A, B, C)
             $table->string('abcd')->nullable();
+            //có thuộc ACI không? (nhận các giá trị 1, 0)
+            $table->string('aci')->nullable();
 
             $table->string('ghichu')->nullable();
             $table->unsignedBigInteger('id_user')->nullable();

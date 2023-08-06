@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('d_m_nganh_tinh_diems', function (Blueprint $table) {
             $table->id();
-            $table->string('manganh')->unique();
-            $table->string('tennganh')->nullable();
+            $table->string('manganhtinhdiem')->unique();
+            $table->string('tennganhtinhdiem')->nullable();
+            $table->string('tennganh_en')->nullable();
             $table->timestamps();
         });
     }
