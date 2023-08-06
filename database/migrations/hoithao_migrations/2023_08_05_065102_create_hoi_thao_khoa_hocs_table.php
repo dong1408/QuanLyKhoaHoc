@@ -41,6 +41,11 @@ return new class extends Migration
             $table->foreign('id_nhaxuatban')->references('id')->on('nha_xuat_bans')->onDelete('cascade');
             //Kỷ yếu có phản biện không?
             $table->string('phanbien')->nullable();
+            //Status, mô tả trạng thái tạp chí đã được phê duyệt
+            //Đề phòng Hội thảo do Viên chức thêm vào
+            $table->boolean('trangthai')->nullable(); //Đang xem xét; Được chấp thuận
+            $table->unsignedBigInteger('id_nguoithem')->nullable();
+            $table->foreign('id_nguoithem')->references('id')->on('users')->onDelete('cascade');
 
             $table->string('ghichu')->nullable();
 

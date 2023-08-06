@@ -33,6 +33,12 @@ return new class extends Migration
             $table->foreign('id_address_city')->references('id')->on('d_m_tinh_thanhs')->onDelete('cascade');
             $table->unsignedBigInteger('id_address_country')->nullable();
             $table->foreign('id_address_country')->references('id')->on('d_m_quoc_gias')->onDelete('cascade');
+            //Status, mô tả trạng thái tạp chí đã được phê duyệt
+            //Đề phòng tạp chí do Viên chức thêm vào
+            $table->boolean('trangthai')->nullable(); //Đang xem xét; Được chấp thuận
+            $table->unsignedBigInteger('id_nguoithem')->nullable();
+            $table->foreign('id_nguoithem')->references('id')->on('users')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

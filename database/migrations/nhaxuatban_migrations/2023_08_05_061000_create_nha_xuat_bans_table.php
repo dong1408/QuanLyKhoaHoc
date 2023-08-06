@@ -29,6 +29,11 @@ return new class extends Migration
             //Có thuộc đơn vị chủ quản nào không
             $table->unsignedBigInteger('id_donvichuquan')->nullable();
             $table->foreign('id_donvichuquan')->references('id')->on('d_m_to_chucs')->onDelete('cascade');
+            //Status, mô tả trạng thái Nhà xuất đã được phê duyệt
+            //Đề phòng Nhà xuất bản do Viên chức thêm vào
+            $table->boolean('trangthai')->nullable(); //Đang xem xét; Được chấp thuận
+            $table->unsignedBigInteger('id_nguoithem')->nullable();
+            $table->foreign('id_nguoithem')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });
