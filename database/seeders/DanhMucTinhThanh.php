@@ -17,8 +17,9 @@ class DanhMucTinhThanh extends Seeder
     {
         DB::table('d_m_tinh_thanhs')->insert(
             [
-                'name' => 'TP.HCM',
-                'fullname' => 'Thành phố Hồ Chí Minh'
+                'id_quocgia' => 1,
+                'matinhthanh' => 'HCM',
+                'tentinhthanh' => 'Thành phố Hồ Chí Minh'
             ],
         );
     }

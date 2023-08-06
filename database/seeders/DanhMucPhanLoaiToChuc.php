@@ -17,13 +17,9 @@ class DanhMucPhanLoaiToChuc extends Seeder
     {
         DB::table('d_m_phan_loai_to_chucs')->insert(
             [
-                'name' => 'Trường đại học',
-            ],
-            [
-                'name' => 'Đại học',
-            ],
-            [
-                'name' => 'Viện nghiên cứu',
+                'maloai' => 'TrDH',
+                'tenloai' => 'Trường đại học',
+                'tenloai_en' => ''
             ],
         );
     }

@@ -17,8 +17,8 @@ class DanhMucQuocGia extends Seeder
     {
         DB::table('d_m_quoc_gias')->insert(
             [
-                'name' => 'VN',
-                'fullname' => 'Việt Nam'
+                'maquocgia' => 'VN',
+                'tenquocgia' => 'Việt Nam'
             ],
         );
     }

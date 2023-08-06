@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('d_m_chuyen_mons', function (Blueprint $table) {
-            //Chuyên môn được đào tạo: LLPPDH BMVL; Sinh học; ...
+        Schema::create('d_m_san_phams', function (Blueprint $table) {
+            //Bài báo khoa học; Báo cáo khoa học; Đề tài; ...
             $table->id();
-            $table->string('machuyenmon')->unique();
-            $table->string('tenchuyenmon')->nullable();
-            $table->string('tenchuyenmon_en')->nullable();
+            $table->string('masanpham')->unique();
+            $table->string('tensanpham')->unique();
+            $table->string('mota')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('d_m_chuyen_mons');
+        Schema::dropIfExists('d_m_san_phams');
     }
 };

@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('bao_cao_khoa_hocs', function (Blueprint $table) {
             $table->id();
+            //Báo cáo nào
+            $table->unsignedBigInteger('id_sanpham');
+            $table->foreign('id_sanpham')->references('id')->on('san_phams')->onDelete('cascade');
             //Thông tin chi tiết Báo cáo khoa học
             $table->string('doi')->nullable();
             $table->string('url')->nullable();
@@ -24,10 +27,9 @@ return new class extends Migration
             $table->string('abstract')->nullable();
             $table->text('keywords')->nullable(); //dài nên để định dạng text
             $table->string('file')->nullable();
-            //Thuộc Hội thảo nào nào
+            //Thuộc Hội thảo nào
             $table->unsignedBigInteger('id_hoithao');
             $table->foreign('id_hoithao')->references('id')->on('hoi_thao_khoa_hocs')->onDelete('cascade');
-            //Báo cáo thuộc trang nào của kỷ yếu
             $table->string('pages')->nullable();
             $table->timestamps();
         });

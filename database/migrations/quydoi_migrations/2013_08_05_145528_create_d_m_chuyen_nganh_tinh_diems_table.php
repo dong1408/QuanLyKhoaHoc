@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('d_m_chuyen_nganh_tinh_diems', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('fullname')->nullable();
+            //Thuộc về Hội đồng ngành nào
             $table->unsignedBigInteger('id_nganhtinhdiem')->nullable();
             $table->foreign('id_nganhtinhdiem')->references('id')->on('d_m_nganh_tinh_diems')->onDelete('cascade');
+            //Chuyên ngành nào
+            $table->string('machuyennganh')->unique();
+            $table->string('tenchuyennganh')->nullable();
             $table->timestamps();
         });
     }

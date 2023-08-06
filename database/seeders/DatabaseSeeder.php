@@ -27,8 +27,8 @@ class DatabaseSeeder extends Seeder
         $this->call(DanhMucQuocGia::class);
         $this->call(DanhMucTinhThanh::class);
         $this->call(DanhMucPhanLoaiToChuc::class);
-        $this->call(DanhMucDonVi::class);
         $this->call(DanhMucToChuc::class);
+        $this->call(DanhMucDonVi::class);
         $this->call(UserSeeder::class);
     }
 }

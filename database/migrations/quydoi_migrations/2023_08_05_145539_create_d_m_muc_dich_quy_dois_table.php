@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('d_m_muc_dich_quy_dois', function (Blueprint $table) {
             //Nghĩa vụ; Vượt giờ
             $table->id();
-            $table->string('name')->unique();
-            $table->string('fullname')->nullable();
+            $table->string('mamucdich')->unique();
+            $table->string('tenmucdich')->nullable();
             $table->timestamps();
         });
     }

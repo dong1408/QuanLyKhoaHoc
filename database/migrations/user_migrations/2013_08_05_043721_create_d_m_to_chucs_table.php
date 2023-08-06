@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('d_m_to_chucs', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('fullname')->nullable();
-            $table->string('eng_name')->nullable();
+            $table->string('matochuc')->unique();
+            $table->string('tentochuc')->nullable();
+            $table->string('tentochuc_en')->nullable();
             $table->string('website')->nullable();
             $table->string('dienthoai')->nullable();
             $table->string('address')->nullable();
@@ -25,8 +25,8 @@ return new class extends Migration
             $table->foreign('id_address_city')->references('id')->on('d_m_tinh_thanhs')->onDelete('cascade');
             $table->unsignedBigInteger('id_address_country')->nullable();
             $table->foreign('id_address_country')->references('id')->on('d_m_quoc_gias')->onDelete('cascade');
-            $table->unsignedBigInteger('id_phanloainoicongtac')->nullable();
-            $table->foreign('id_phanloainoicongtac')->references('id')->on('d_m_phan_loai_to_chucs')->onDelete('cascade');
+            $table->unsignedBigInteger('id_phanloaitochuc')->nullable();
+            $table->foreign('id_phanloaitochuc')->references('id')->on('d_m_phan_loai_to_chucs')->onDelete('cascade');
             $table->timestamps();
         });
     }

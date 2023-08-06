@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('d_m_ngach_vien_chucs', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('fullname')->nullable();
-            $table->string('eng_name')->nullable();
+            $table->string('mangach')->unique();
+            $table->string('tenngach')->nullable();
+            $table->string('tenngach_en')->nullable();
             $table->timestamps();
         });
     }

@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('d_m_hoc_ham_hoc_vis', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('fullname')->nullable();
-            $table->string('eng_name')->nullable();
+            $table->string('mahochamhocvi')->unique();
+            $table->string('tenhochamhocvi')->nullable();
+            $table->string('tenhochamhocvi_en')->nullable();
             $table->timestamps();
         });
     }

@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('de_tais', function (Blueprint $table) {
             $table->id();
+            //Đề tài nào
+            $table->unsignedBigInteger('id_sanpham');
+            $table->foreign('id_sanpham')->references('id')->on('san_phams')->onDelete('cascade');
             //Thông tin chi tiết đề tài
             $table->string('maso')->unique();
             $table->string('kinhphi')->nullable();

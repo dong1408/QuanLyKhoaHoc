@@ -20,7 +20,9 @@ return new class extends Migration
             $table->foreign('id_loaisanpham')->references('id')->on('d_m_san_phams')->onDelete('cascade');
             $table->integer('tongsotacgia')->default(0);
             $table->integer('solandaquydoi')->default(0);
-            $table->string('thoidiemdaquydoi')->nullable();
+            //Năm 2023, cần 2 trường thông tin này để import cho dễ
+            //Sau này GV nhập chi tiết rồi
+            $table->string('thongtinchitiet');
             $table->timestamps();
         });
     }

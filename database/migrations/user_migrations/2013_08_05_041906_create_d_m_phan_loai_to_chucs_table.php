@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('d_m_phan_loai_to_chucs', function (Blueprint $table) {
             //Trường, Viện, Trung tâm, ...
             $table->id();
-            $table->string('name')->unique();
-            $table->string('eng_name')->nullable();
+            $table->string('maloai')->unique();
+            $table->string('tenloai')->unique();
+            $table->string('tenloai_en')->nullable();
             $table->timestamps();
         });
     }

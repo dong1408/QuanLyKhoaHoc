@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('phan_loai_de_tais', function (Blueprint $table) {
             $table->id();
+            $table->string('maloai')->nullable();
             $table->string('tenloai')->unique();
-            $table->string('mota')->nullable();
             $table->string('kinhphi')->nullable();
-            $table->text('kihieu')->nullable();
+            $table->text('mota')->nullable();
             $table->timestamps();
         });
     }

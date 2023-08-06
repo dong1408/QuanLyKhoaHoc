@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('san_pham_khacs', function (Blueprint $table) {
             $table->id();
+            //Sản phẩm khác nào
+            $table->unsignedBigInteger('id_sanpham');
+            $table->foreign('id_sanpham')->references('id')->on('san_phams')->onDelete('cascade');
             //Chi tiết về sản phẩm khác
             $table->string('maso')->nullable();
             $table->string('capcongnhan');

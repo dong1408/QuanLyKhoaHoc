@@ -17,28 +17,28 @@ class DanhMucHocHamHocViSeeder extends Seeder
     {
         DB::table('d_m_hoc_ham_hoc_vis')->insert(
             [
-                'name' => 'GS.TS',
-                'fullname' => 'Giáo sư - Tiến sĩ'
+                'mahochamhocvi' => 'GS.TS',
+                'tenhochamhocvi' => 'Giáo sư - Tiến sĩ'
             ],
             [
-                'name' => 'PGS.TS',
-                'fullname' => 'Phó Giáo sư - Tiến sĩ'
+                'mahochamhocvi' => 'PGS.TS',
+                'tenhochamhocvi' => 'Phó Giáo sư - Tiến sĩ'
             ],
             [
-                'name' => 'TS',
-                'fullname' => 'Tiến sĩ'
+                'mahochamhocvi' => 'TS',
+                'tenhochamhocvi' => 'Tiến sĩ'
             ],
             [
-                'name' => 'ThS',
-                'fullname' => 'Thạc sĩ'
+                'mahochamhocvi' => 'ThS',
+                'tenhochamhocvi' => 'Thạc sĩ'
             ],
             [
                 'name' => 'CN',
-                'fullname' => 'Cử nhân'
+                'tenhochamhocvi' => 'Cử nhân'
             ],
             [
-                'name' => 'KS',
-                'fullname' => 'Kỹ sư'
+                'mahochamhocvi' => 'KS',
+                'tenhochamhocvi' => 'Kỹ sư'
             ],
         );
     }

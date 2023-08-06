@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('d_m_san_phams', function (Blueprint $table) {
-            //Bài báo khoa học; Báo cáo khoa học; Đề tài; ...
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('tensanpham')->unique();
-            $table->string('mota')->nullable();
+            $table->string('key');
+            $table->string('value');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('d_m_san_phams');
+        Schema::dropIfExists('settings');
     }
 };

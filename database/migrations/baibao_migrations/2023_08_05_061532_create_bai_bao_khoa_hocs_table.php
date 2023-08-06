@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('bai_bao_khoa_hocs', function (Blueprint $table) {
             $table->id();
+            //Bài báo nào
+            $table->unsignedBigInteger('id_sanpham');
+            $table->foreign('id_sanpham')->references('id')->on('san_phams')->onDelete('cascade');
             //Thông tin chi tiết bài báo
             $table->string('doi')->nullable();
             $table->string('url')->nullable();

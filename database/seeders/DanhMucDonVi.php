@@ -17,8 +17,9 @@ class DanhMucDonVi extends Seeder
     {
         DB::table('d_m_don_vis')->insert(
             [
-                'name' => 'Khoa_SPKHTN',
-                'fullname' => 'Khoa Sư phạm Khoa học Tự nhiên'
+                'id_tochuc' => 1,
+                'madonvi' => 'QLKH',
+                'tendonvi' => 'Phòng Quản lý Khoa học'
             ],
         );
     }

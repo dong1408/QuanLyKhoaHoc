@@ -15,9 +15,14 @@ return new class extends Migration
     {
         Schema::create('d_m_tinh_thanhs', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('fullname')->nullable();
-            $table->string('eng_name')->nullable();
+            //Thuộc về Quốc gia nào
+            $table->unsignedBigInteger('id_quocgia')->nullable();
+            $table->foreign('id_quocgia')->references('id')->on('d_m_quoc_gias')->onDelete('cascade');
+            //Ký hiệu thành phố
+            $table->string('matinhthanh');
+            //Tên Tiếng Việt và tên Tiếng Anh
+            $table->string('tentinhthanh')->nullable();
+            $table->string('tentinhthanh_en')->nullable();
             $table->timestamps();
         });
     }

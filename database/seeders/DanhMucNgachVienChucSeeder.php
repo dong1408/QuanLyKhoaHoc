@@ -17,25 +17,9 @@ class DanhMucNgachVienChucSeeder extends Seeder
     {
         DB::table('d_m_ngach_vien_chucs')->insert(
             [
-                'name' => 'GV',
-                'fullname' => 'Giảng viên'
+                'mangach' => 'GV',
+                'tenngach' => 'Giảng viên'
             ],
-            [
-                'name' => 'GVC',
-                'fullname' => 'Giảng viên chính'
-            ],
-            [
-                'name' => 'GVCC',
-                'fullname' => 'Giảng viên cao cấp'
-            ],
-            [
-                'name' => 'CV',
-                'fullname' => 'Chuyên viên'
-            ],
-            [
-                'name' => 'NCV',
-                'fullname' => 'Nghiên cứu viên'
-            ]
         );
     }
 }

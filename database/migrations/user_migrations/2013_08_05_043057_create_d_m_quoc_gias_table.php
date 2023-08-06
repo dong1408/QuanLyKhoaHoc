@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('d_m_quoc_gias', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('fullname')->nullable();
-            $table->string('eng_name')->nullable();
+            $table->string('maquocgia')->unique();
+            $table->string('tenquocgia')->nullable();
+            $table->string('tenquocgia_en')->nullable();
             $table->timestamps();
         });
     }
