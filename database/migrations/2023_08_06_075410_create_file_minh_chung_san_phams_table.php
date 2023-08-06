@@ -13,20 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('san_pham_khacs', function (Blueprint $table) {
+        Schema::create('file_minh_chung_san_phams', function (Blueprint $table) {
             $table->id();
-            //Sản phẩm khác nào
+            //Sản phẩm nào
             $table->unsignedBigInteger('id_sanpham');
             $table->foreign('id_sanpham')->references('id')->on('san_phams')->onDelete('cascade');
-            //Chi tiết về sản phẩm khác
-            $table->string('maso')->nullable();
-            //Đơn vị nào công nhận
-            $table->unsignedBigInteger('id_donvicongnhan')->nullable();
-            $table->foreign('id_donvicongnhan')->references('id')->on('d_m_to_chucs')->onDelete('cascade');
-            $table->string('capcongnhan');
-            $table->string('ngaycongnhan');
-
-            $table->string('ghichu');
+            //Chi tiết file
+            $table->string('loaiminhchung')->nullable();
+            $table->string('url');
             $table->timestamps();
         });
     }
@@ -38,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('san_pham_khacs');
+        Schema::dropIfExists('file_minh_chung_san_phams');
     }
 };

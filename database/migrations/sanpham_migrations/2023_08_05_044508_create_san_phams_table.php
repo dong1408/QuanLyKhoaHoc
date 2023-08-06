@@ -35,6 +35,17 @@ return new class extends Migration
             $table->unsignedBigInteger('id_donvitaitro')->nullable();
             $table->foreign('id_donvitaitro')->references('id')->on('d_m_to_chucs')->onDelete('cascade');
             $table->string('chitietdonvitaitro')->nullable();
+            //Thông tin kê khai
+            $table->string('ngaykekhai');
+            $table->unsignedBigInteger('id_nguoikekhai');
+            $table->foreign('id_nguoikekhai')->references('id')->on('users')->onDelete('cascade');
+            //Thông tin trạng thái rà soát (Đang rà soát/Đã xác nhận)
+            $table->string('trangthairasoat');
+            $table->string('ngayrasoat');
+            $table->unsignedBigInteger('id_nguoirasoat');
+            $table->foreign('id_nguoirasoat')->references('id')->on('users')->onDelete('cascade');
+            $table->string('diemquydoi');
+            $table->string('gioquydoi');
 
             //Năm 2023, cần 2 trường thông tin dưới đây để import cho dễ
             //Sau này GV nhập chi tiết rồi

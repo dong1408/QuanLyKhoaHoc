@@ -13,20 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('san_pham_khacs', function (Blueprint $table) {
+        Schema::create('bao_cao_tien_dos', function (Blueprint $table) {
             $table->id();
-            //Sản phẩm khác nào
+            //Đề tài nào
             $table->unsignedBigInteger('id_sanpham');
             $table->foreign('id_sanpham')->references('id')->on('san_phams')->onDelete('cascade');
-            //Chi tiết về sản phẩm khác
-            $table->string('maso')->nullable();
-            //Đơn vị nào công nhận
-            $table->unsignedBigInteger('id_donvicongnhan')->nullable();
-            $table->foreign('id_donvicongnhan')->references('id')->on('d_m_to_chucs')->onDelete('cascade');
-            $table->string('capcongnhan');
-            $table->string('ngaycongnhan');
-
-            $table->string('ghichu');
+            //Thông tin báo cáo tiến độ
+            $table->string('ngaynopbaocao')->nullable();
+            $table->string('ketquaxet')->nullable();
+            $table->string('thoigiangiahan')->nullable();
             $table->timestamps();
         });
     }
@@ -38,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('san_pham_khacs');
+        Schema::dropIfExists('bao_cao_tien_dos');
     }
 };

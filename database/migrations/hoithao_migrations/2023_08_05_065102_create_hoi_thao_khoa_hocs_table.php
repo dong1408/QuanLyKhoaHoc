@@ -35,12 +35,12 @@ return new class extends Migration
             //Cấp tổ chức Hội thảo (Quốc tế/Quốc Gia/Trường)
             $table->string('caphoithao')->nullable();
             //Có kỷ yếu không, nếu có thì thuộc nhà xuất bản nào
+            $table->string('tenkyyeu')->nullable();
+            $table->string('thoidiemxuatban')->nullable();
             $table->unsignedBigInteger('id_nhaxuatban')->nullable();
             $table->foreign('id_nhaxuatban')->references('id')->on('nha_xuat_bans')->onDelete('cascade');
             //Kỷ yếu có phản biện không?
             $table->string('phanbien')->nullable();
-            //File minh chứng của kỷ yếu
-            $table->string('file')->nullable();
 
             $table->string('ghichu')->nullable();
 

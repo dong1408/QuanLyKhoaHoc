@@ -29,18 +29,18 @@ return new class extends Migration
             $table->unsignedBigInteger('id_mucdichquydoi')->nullable();
             $table->foreign('id_mucdichquydoi')->references('id')->on('d_m_muc_dich_quy_dois')->onDelete('cascade');
             //Ai là người tính lần 1, kết quả thế nào?
-            $table->string('diemlan1')->nullable();
-            $table->string('gioquydoilan1')->nullable();
             $table->unsignedBigInteger('id_nguoiquydoilan1')->nullable();
             $table->foreign('id_nguoiquydoilan1')->references('id')->on('users')->onDelete('cascade');
             //Ai là người tính lần 2, kết quả thế nào?
-            $table->string('diemlan2')->nullable();
-            $table->string('gioquydoilan2')->nullable();
             $table->unsignedBigInteger('id_nguoiquydoilan2')->nullable();
             $table->foreign('id_nguoiquydoilan2')->references('id')->on('users')->onDelete('cascade');
-             //Chốt lại tính ra bao nhiêu giờ, bao nhiêu điểm?
-             $table->string('diem')->nullable();
-             $table->string('gioquydoi')->nullable();
+            //Chốt lại tính ra bao nhiêu giờ, bao nhiêu điểm, ai chốt?
+            $table->string('diem')->nullable();
+            $table->string('gioquydoi')->nullable();
+            $table->string('ngaychot')->nullable();
+            $table->unsignedBigInteger('id_nguoichot')->nullable();
+            $table->foreign('id_nguoichot')->references('id')->on('users')->onDelete('cascade');
+
             //Trạng thái quy đổi (chưa thực hiện/đang thực hiện/đã xong)
             $table->string('status')->nullable();
             $table->timestamps();

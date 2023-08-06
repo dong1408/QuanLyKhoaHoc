@@ -26,7 +26,6 @@ return new class extends Migration
             $table->string('published')->nullable();
             $table->string('abstract')->nullable();
             $table->text('keywords')->nullable(); //dài nên để định dạng text
-            $table->string('file')->nullable();
             //Thuộc Hội thảo nào
             $table->unsignedBigInteger('id_hoithao');
             $table->foreign('id_hoithao')->references('id')->on('hoi_thao_khoa_hocs')->onDelete('cascade');
