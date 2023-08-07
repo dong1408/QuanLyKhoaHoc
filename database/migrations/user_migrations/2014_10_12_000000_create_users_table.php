@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             //Thông tin đăng nhập
             $table->string('name');
+            $table->string('username')->unique(); //Mã viên chức
             $table->string('email')->unique();
             $table->string('password');
             $table->integer('role')->default(0);
@@ -32,9 +33,10 @@ return new class extends Migration
             $table->foreign('id_tochuc')->references('id')->on('d_m_to_chucs')->onDelete('cascade');
             $table->unsignedBigInteger('id_donvi')->nullable();
             $table->foreign('id_donvi')->references('id')->on('d_m_don_vis')->onDelete('cascade');
-            $table->string('mavienchuc')->unique()->nullable(); //mã viên chức
-            $table->boolean('cohuu')->nullable(); //Có phải cơ hữu không viên chức
-            $table->boolean('keodai')->nullable(); //Có phải kéo dài không
+            //Có phải cơ hữu không viên chức
+            $table->boolean('cohuu')->nullable();
+            //Có phải kéo dài không
+            $table->boolean('keodai')->nullable();
             //Định mức NCKH bao nhiêu giờ
             $table->string('dinhmucnghiavunckh')->nullable();
             //Có phải đang đi học nghiên cứu sinh không (null; caohoc; ncs)
