@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             //Thông tin đăng nhập
+            'username' => '11074',
             'name' => 'Nguyễn Đăng Thuấn',
             'email' => 'thuannguyen@sgu.edu.vn',
             'role' => '9',
@@ -33,7 +34,6 @@ class UserSeeder extends Seeder
             //Thuộc tổ chức, đơn vị nào
             'id_tochuc' => 1,
             'id_donvi' => 1,
-            'mavienchuc' => '11074',
             'id_ngachvienchuc' => 1,
             //Quốc tịch gì
             'id_quoctich' => 1,
