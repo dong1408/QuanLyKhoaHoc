@@ -1,0 +1,5 @@
+Ngày 29/6/2023
+    - Set up laravel 10
+    - Install composer require barryvdh/laravel-dompdf (https://github.com/barryvdh/laravel-dompdf)
+    - Install Laravel Excel (https://docs.laravel-excel.com/3.1/getting-started/installation.html)
+    - Install Laravel password strength (https://github.com/schuppo/PasswordStrengthPackage)
