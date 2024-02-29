@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BaiBaoKhoaHocController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,3 +30,5 @@ Route::group([
     Route::post('auth/refresh', [AuthController::class, 'refresh']);
     Route::get('auth/profile', [AuthController::class, 'profile']);
 });
+
+
