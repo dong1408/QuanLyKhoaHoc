@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('nha_xuat_bans', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->unique();
+            $table->string('name',255)->unique();
             $table->string('isbn')->nullable();
             $table->string('website')->nullable();
             $table->boolean('quocte')->nullable(); //phải quốc tế hay không

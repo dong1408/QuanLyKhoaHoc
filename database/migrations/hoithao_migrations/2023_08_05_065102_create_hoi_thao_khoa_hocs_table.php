@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('hoi_thao_khoa_hocs', function (Blueprint $table) {
             $table->id();
             //Tên Hội thảo
-            $table->text('name')->unique();
+            $table->string('name',500)->unique();
             //Đơn vị tổ chức
             $table->unsignedBigInteger('id_donvitochuc')->nullable();
             $table->foreign('id_donvitochuc')->references('id')->on('d_m_to_chucs')->onDelete('cascade');

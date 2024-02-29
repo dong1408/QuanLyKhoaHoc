@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('tap_chis', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->unique();
+            $table->string('name',255)->unique();
             $table->string('issn')->nullable();
             $table->string('eissn')->nullable();
             $table->string('pissn')->nullable();

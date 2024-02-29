@@ -16,20 +16,23 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 |
 */
 
-Route::get('/', function () {
-    if(Auth::user() && Auth::user()->changed == 0){
-        return view('site.passwordchange');
-    }
-    return view('trangchu');
-})->name('trangchu');
 
-Auth::routes([
-    'register' =>false,
-    // 'reset' => false,
-    'verify' => false,
-]);
 
-Route::get('/change-password', [SiteController::class, 'changePassword'])->name('passwordchange')->middleware('checkRole:1;2;9,/');
-Route::post('/changePassword',[ResetPasswordController::class, 'changePassword'])->name('changePassword');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/', function () {
+//     if(Auth::user() && Auth::user()->changed == 0){
+//         return view('site.passwordchange');
+//     }
+//     return view('trangchu');
+// })->name('trangchu');
+
+// Auth::routes([
+//     'register' =>false,
+//     // 'reset' => false,
+//     'verify' => false,
+// ]);
+
+// Route::get('/change-password', [SiteController::class, 'changePassword'])->name('passwordchange')->middleware('checkRole:1;2;9,/');
+// Route::post('/changePassword',[ResetPasswordController::class, 'changePassword'])->name('changePassword');
+
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
