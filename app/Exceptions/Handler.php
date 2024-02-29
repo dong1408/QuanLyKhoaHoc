@@ -47,4 +47,28 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+            // Xử lý ngoại lệ CustomException ở đây
+            return response()->json([
+                'message' => 'unauthorized'
+            ], 403);
+        }
+
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException){
+            return response()->json([
+                'message' => 'method is not support'
+            ], 405);   
+        }
+
+        if($exception instanceof \Symfony\Component\Routing\Exception\RouteNotFoundException){
+            return response()->json([
+                'message' => 'route not defined'
+            ], 404);   
+        }
+
+        return parent::render($request, $exception);
+    }
 }
