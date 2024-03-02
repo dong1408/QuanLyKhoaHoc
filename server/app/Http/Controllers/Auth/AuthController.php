@@ -22,7 +22,7 @@ class AuthController extends Controller
     
     public function login(Request $request): Response
     {
-        $result = $this->authService->login();
+        $result = $this->authService->login($request);
         return response()->json($result, 200);
     }
 

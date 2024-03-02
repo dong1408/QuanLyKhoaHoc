@@ -8,7 +8,7 @@ use App\Utilities\ResponseSuccess;
 
 interface AuthService
 {
-    public function login(): ResponseSuccess;
+    public function login(Request $request): ResponseSuccess;
     public function register(Request $request): ResponseSuccess;
     public function getMe() : ResponseSuccess;
     public function refreshToken(Request $request) : ResponseSuccess;

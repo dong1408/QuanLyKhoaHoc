@@ -16,10 +16,14 @@ use App\ViewModel\User\Me;
 
 class AuthServiceImpl implements AuthService // chuyển logic qua đây
 {
-    public function login(): ResponseSuccess
+    public function login(Request $request): ResponseSuccess
     {
         try {
-            $credentials = request(['email', 'password']);
+            // $credentials = request(['username', 'password']);
+            $credentials = [
+                'username' => $request->username,
+                'password' => $request->password,
+            ];
             // Xác thực và tạo access token
             if (!$accessToken = auth('api')->attempt($credentials)) { // thực hiện xác thực với thông tin đăng nhập được cung cấp. Nếu xác thực thành công thì sẽ trả về một token JWT.            
                 throw new UserNotFound();
@@ -32,7 +36,7 @@ class AuthServiceImpl implements AuthService // chuyển logic qua đây
             ];
             $refreshToken = JWTAuth::getJWTProvider()->encode($data);
             $authenVm = new AuthenVm($accessToken, $refreshToken);
-            return new ResponseSuccess("Dang nhap thanh cong", $authenVm);
+            return new ResponseSuccess("Đăng nhập thành công", $authenVm);
         } catch (JWTException $e) {
             return response()->json($e);
         }
@@ -58,13 +62,13 @@ class AuthServiceImpl implements AuthService // chuyển logic qua đây
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
-        return new ResponseSuccess("Dang ky thanh cong", $user);
+        return new ResponseSuccess("Đăng ký thành công", $user);
     }
 
     public function logout(): ResponseSuccess
     {
         auth('api')->logout();
-        return new ResponseSuccess("Dang xuat thanh cong", "");
+        return new ResponseSuccess("Đăng xuất thành công", "");
     }
 
     public function getMe(): ResponseSuccess
@@ -72,7 +76,7 @@ class AuthServiceImpl implements AuthService // chuyển logic qua đây
         $user = auth('api')->user();
         $me = new Me();
         $me->convert($user);
-        return new ResponseSuccess("Thanh cong", $me);
+        return new ResponseSuccess("Thành công", $me);
     }
 
     // public function refreshTokenOld(Request $request): ResponseSuccess
@@ -99,6 +103,6 @@ class AuthServiceImpl implements AuthService // chuyển logic qua đây
         // Tạo mới access token
         $accessNewToken = auth('api')->login($user);
         $authenVm = new AuthenVm($accessNewToken, $refreshToken);
-        return new ResponseSuccess("Refresh token thanh cong", $authenVm);
+        return new ResponseSuccess("Thành công", $authenVm);
     }
 }

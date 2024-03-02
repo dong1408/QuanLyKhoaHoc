@@ -31,25 +31,25 @@ class BaiBaoKhoaHocVm
     {
     }
 
-    function convert(BaiBaoKhoaHoc $baiBaoKhoaHoc)
-    {
-        $this->id = $baiBaoKhoaHoc->id;
-        $this->sanpham = sanphamVm->convert($baiBaoKhoaHoc->sanPham);
-        $this->doi = $baiBaoKhoaHoc->doi;
-        $this->url = $baiBaoKhoaHoc->url;
-        $this->received = $baiBaoKhoaHoc->recieived;
-        $this->accepted = $baiBaoKhoaHoc->accepted;
-        $this->published = $baiBaoKhoaHoc->published;
-        $this->abstract = $baiBaoKhoaHoc->abstract;
-        $this->keywords = $baiBaoKhoaHoc->keywords;
-        $this->tapchi = tapchiVm->convert($baiBaoKhoaHoc->tapChi);
-        $this->volume = $baiBaoKhoaHoc->volume;
-        $this->issue = $baiBaoKhoaHoc->issue;
-        $this->number = $baiBaoKhoaHoc->number;
-        $this->page = $baiBaoKhoaHoc->page;
-        $this->created_at = $baiBaoKhoaHoc->created_at;
-        $this->updated_at = $baiBaoKhoaHoc->updated_at;
-    }
+    // function convert(BaiBaoKhoaHoc $baiBaoKhoaHoc)
+    // {
+    //     $this->id = $baiBaoKhoaHoc->id;
+    //     $this->sanpham = sanphamVm->convert($baiBaoKhoaHoc->sanPham);
+    //     $this->doi = $baiBaoKhoaHoc->doi;
+    //     $this->url = $baiBaoKhoaHoc->url;
+    //     $this->received = $baiBaoKhoaHoc->recieived;
+    //     $this->accepted = $baiBaoKhoaHoc->accepted;
+    //     $this->published = $baiBaoKhoaHoc->published;
+    //     $this->abstract = $baiBaoKhoaHoc->abstract;
+    //     $this->keywords = $baiBaoKhoaHoc->keywords;
+    //     $this->tapchi = tapchiVm->convert($baiBaoKhoaHoc->tapChi);
+    //     $this->volume = $baiBaoKhoaHoc->volume;
+    //     $this->issue = $baiBaoKhoaHoc->issue;
+    //     $this->number = $baiBaoKhoaHoc->number;
+    //     $this->page = $baiBaoKhoaHoc->page;
+    //     $this->created_at = $baiBaoKhoaHoc->created_at;
+    //     $this->updated_at = $baiBaoKhoaHoc->updated_at;
+    // }
 
     function getId()
     {
