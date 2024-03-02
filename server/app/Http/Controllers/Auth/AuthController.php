@@ -19,7 +19,7 @@ class AuthController extends Controller
     }
 
 
-    
+
     public function login(Request $request): Response
     {
         $result = $this->authService->login($request);
@@ -29,6 +29,20 @@ class AuthController extends Controller
 
     public function register(Request $request): Response
     {
+        $request->validate([
+            "name" => "required",
+            "username" => "required|unique:users,username", // Ma so giang vien
+            "email" => "required|unique:users,email",
+            "password" => "required"
+        ], [
+            "username.required" => "Không được để trống username",
+            "username.unique" => "Username đã tồn tại trên hệ thống",
+            "name.required" => "Không được để trống tên đăng nhập",
+            "email.required" => "Không được để trống email",
+            "email.unique" => "Email đã tồn tại trên hệ thống",
+            "password" => "Vui lòng nhập password"
+        ]);
+        
         $result = $this->authService->register($request);
         return response()->json($result, 200);
     }
@@ -53,5 +67,4 @@ class AuthController extends Controller
         $result = $this->authService->refreshToken($request);
         return response()->json($result, 200);
     }
-
 }

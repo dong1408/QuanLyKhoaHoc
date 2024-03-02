@@ -45,17 +45,6 @@ class AuthServiceImpl implements AuthService // chuyển logic qua đây
 
     public function register(Request $request): ResponseSuccess
     {
-        $validated = $request->validate([
-            "name" => "required",
-            "username" => "required|unique:users,username", // Ma so giang vien
-            "email" => "required|unique:users,email",
-            "password" => "required"
-        ], [
-            "name.required" => "Không được để trống tên đăng nhập",
-            "email.required" => "Không được để trống email",
-            "email.unique" => "Email đã tồn tại trên hệ thống",
-            "password" => "Vui lòng nhập password"
-        ]);
         $user = new User();
         $user->name = $request->name;
         $user->username = $request->username;
@@ -78,16 +67,6 @@ class AuthServiceImpl implements AuthService // chuyển logic qua đây
         $me->convert($user);
         return new ResponseSuccess("Thành công", $me);
     }
-
-    // public function refreshTokenOld(Request $request): ResponseSuccess
-    // {
-    //     try {
-    //         $accessNewToken = Auth::refresh(); // Cach nay yeu cau request gui len co ca access token            
-    //         return new ResponseSuccess("thanh cong", $accessNewToken);
-    //     } catch (JWTException $e) {
-    //         return response()->json(["error" => $e->getMessage()], 500);
-    //     }
-    // }
 
 
     public function refreshToken(Request $request): ResponseSuccess
