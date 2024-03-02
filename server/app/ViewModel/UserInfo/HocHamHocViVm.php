@@ -2,14 +2,16 @@
 
 namespace App\ViewModel\UserInfo;
 
+use Ramsey\Uuid\Type\Integer;
+
 class HocHamHocViVm
 {
-    private $id;
-    private $mahochamhocvi;
-    private $tenhochamhocvi;
-    private $tenhochamhocvi_en;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $mahochamhocvi;
+    public string $tenhochamhocvi;
+    public string $tenhochamhocvi_en;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {

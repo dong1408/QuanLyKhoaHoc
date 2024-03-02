@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\User;
+namespace App\Exceptions\TokenInvalid;
 
 use App\Custom\StatusText;
 use App\Utilities\ResponseError;
@@ -8,17 +8,17 @@ use Exception;
 use Illuminate\Http\Request;
 use Throwable;
 
-class UserNotFound extends Exception 
+class RefreshTokenInvalid extends Exception
 {
     public function render($request)
     {
         return response()->json(
             new ResponseError(
-                "NOT FOUND",
-                404,
-                "Không tìm thấy người dùng"
+                "BAD_REQUEST",
+                400,
+                "Phiên đăng nhập hết hạn"
             ),
-            404
+            400
         );
     }
 }

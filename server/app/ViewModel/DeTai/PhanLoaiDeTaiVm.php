@@ -1,13 +1,15 @@
 <?php
 
+use Ramsey\Uuid\Type\Integer;
+
 class PhanLoaiDeTaiVm{
-    private $id;
-    private $maloai;
-    private $tenloai;
-    private $kinhphi;
-    private $mota;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $maloai;
+    public string $tenloai;
+    public string $kinhphi;
+    public string $mota;
+    public string $created_at;
+    public string $updated_at;
 
     function __construct()
     {

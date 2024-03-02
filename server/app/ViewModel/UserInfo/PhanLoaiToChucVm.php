@@ -2,14 +2,16 @@
 
 namespace App\ViewModel\UserInfo;
 
+use Ramsey\Uuid\Type\Integer;
+
 class PhanLoaiToChucVm
 {
-    private $id;
-    private $maloai;
-    private $tenloai;
-    private $tenloai_en;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $maloai;
+    public string $tenloai;
+    public string $tenloai_en;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {

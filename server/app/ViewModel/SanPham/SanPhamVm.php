@@ -4,34 +4,36 @@ namespace App\ViewModel\SanPham;
 
 use App\ViewModel\User\UserVm;
 use App\ViewModel\UserInfo\ToChucVm;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
+use Ramsey\Uuid\Type\Integer;
 
 class SanPhamVm
 {
-    private $id;
-    private $tensanpham;
-    private $loaiSanPhamVm; // $id_loaisanpham -- DMSanPhamVm
-    private $tongsotacgia;
-    private $solanquydoi;
-    private $cosudungemailtruong;
-    private $cosudungemaildonvikhac;
-    private $cothongtintruong;
-    private $cothongtindonvikhac;
-    private $thongTinNoiKhacVm; // $id_thongtinnoikhac -- ToChucVm
-    private $conhantaitro;
-    private $donViTaiTroVm; // $id_donvitaitro -- ToChucVm
-    private $chitietdonvitaitro;
-    private $ngaykekhai;
-    private $nguoiKeKhaiVm; // $id_nguoikekhai -- UserVm
-    private $trangthairasoat;
-    private $ngayrasoat;
-    private $nguoiRaSoatVm; // $id_nguoirasoat -- UserVm
-    private $diemquydoi;
-    private $gioquydoi;
-    private $thongtinchitiet;
-    private $capsanpham;
-    private $thoidiemcongbohoanthanh;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $tensanpham;
+    public DMSanPhamVm $loaisanpham; // $id_loaisanpham -- DMSanPhamVm
+    public Integer $tongsotacgia;
+    public Integer $solanquydoi;
+    public Boolean $cosudungemailtruong;
+    public Boolean $cosudungemaildonvikhac;
+    public Boolean $cothongtintruong;
+    public Boolean $cothongtindonvikhac;
+    public ToChucVm $thongtinnoikhac; // $id_thongtinnoikhac -- ToChucVm
+    public Boolean $conhantaitro;
+    public ToChucVm $donvitaitro; // $id_donvitaitro -- ToChucVm
+    public string $chitietdonvitaitro;
+    public string $ngaykekhai;
+    public UserVm $nguoikekhai; // $id_nguoikekhai -- UserVm
+    public string $trangthairasoat;
+    public string $ngayrasoat;
+    public UserVm $nguoirasoat; // $id_nguoirasoat -- UserVm
+    public string $diemquydoi;
+    public string $gioquydoi;
+    public string $thongtinchitiet;
+    public string $capsanpham;
+    public string $thoidiemcongbohoanthanh;
+    public string $created_at;
+    public string$updated_at;
 
     function __construct()
     {
@@ -57,14 +59,14 @@ class SanPhamVm
         $this->tensanpham = $tensanpham;
     }
 
-    function getLoaiSanPhamVm()
+    function getLoaiSanPham()
     {
-        return $this->loaiSanPhamVm;
+        return $this->loaisanpham;
     }
 
-    function setLoaiSanPhamVm(DMSanPhamVm $loaiSanPhamVm)
+    function setLoaiSanPham(DMSanPhamVm $loaiSanPhamVm)
     {
-        $this->loaiSanPhamVm = $loaiSanPhamVm;
+        $this->loaisanpham = $loaiSanPhamVm;
     }
 
     function getTongSoTacGia()
@@ -127,14 +129,14 @@ class SanPhamVm
         $this->cothongtindonvikhac = $cothongtindonvikhac;
     }
 
-    function getThongTinNoiKhacVm()
+    function getThongTinNoiKhac()
     {
-        return $this->thongTinNoiKhacVm;
+        return $this->thongtinnoikhac;
     }
 
-    function setThongTinNoiKhacVm(ToChucVm $thongTinNoiKhacVm)
+    function setThongTinNoiKhac(ToChucVm $thongTinNoiKhacVm)
     {
-        $this->thongTinNoiKhacVm = $thongTinNoiKhacVm;
+        $this->thongtinnoikhac = $thongTinNoiKhacVm;
     }
 
     function getCoNhanTaiTro()
@@ -147,14 +149,14 @@ class SanPhamVm
         $this->conhantaitro = $conhantaitro;
     }
 
-    function getDonViTaiTroVm()
+    function getDonViTaiTro()
     {
-        return $this->donViTaiTroVm;
+        return $this->donvitaitro;
     }
 
-    function setDonViTaiTroVm(ToChucVm $donViTaiTroVm)
+    function setDonViTaiTro(ToChucVm $donViTaiTroVm)
     {
-        $this->donViTaiTroVm = $donViTaiTroVm;
+        $this->donvitaitro = $donViTaiTroVm;
     }
 
     function getChiTietDonViTaiTro()
@@ -177,14 +179,14 @@ class SanPhamVm
         $this->ngaykekhai = $ngaykekhai;
     }
 
-    function getNguoiKeKhaiVm()
+    function getNguoiKeKhai()
     {
-        return $this->nguoiKeKhaiVm;
+        return $this->nguoikekhai;
     }
 
-    function setNguoiKeKhaiVm(UserVm $nguoiKeKhaiVm)
+    function setNguoiKeKhai(UserVm $nguoiKeKhaiVm)
     {
-        $this->nguoiKeKhaiVm = $nguoiKeKhaiVm;
+        $this->nguoikekhai = $nguoiKeKhaiVm;
     }
 
     function getTrangThaiRaSoat()
@@ -207,14 +209,14 @@ class SanPhamVm
         $this->ngayrasoat = $ngayrasoat;
     }
 
-    function getNguoiRaSoatVm()
+    function getNguoiRaSoat()
     {
-        return $this->nguoiRaSoatVm;
+        return $this->nguoirasoat;
     }
 
-    function setNguoiRaSoatVm(UserVm $nguoiRaSoatVm)
+    function setNguoiRaSoat(UserVm $nguoiRaSoatVm)
     {
-        $this->nguoiRaSoatVm = $nguoiRaSoatVm;
+        $this->nguoirasoat = $nguoiRaSoatVm;
     }
 
     function getDiemQuyDoi()

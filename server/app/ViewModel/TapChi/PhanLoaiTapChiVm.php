@@ -2,13 +2,15 @@
 
 namespace App\ViewModel\TapChi;
 
+use Ramsey\Uuid\Type\Integer;
+
 class PhanLoaiTapChiVm
 {
-    private $id;
-    private $ma;
-    private $ten;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $ma;
+    public string $ten;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {

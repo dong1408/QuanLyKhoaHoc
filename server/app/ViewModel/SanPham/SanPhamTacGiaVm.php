@@ -3,17 +3,18 @@
 namespace App\ViewModel\SanPham;
 
 use App\ViewModel\User\UserVm;
+use Ramsey\Uuid\Type\Integer;
 
 class SanPhamTacGiaVm
 {
-    private $id;
-    private $sanPhamVm; //$id_sanpham
-    private $tacGiaVm; // $id_tacgia -- user
-    private $vaiTroTacGiaVm; //$id_vaotrotacgia 
-    private $thutu;
-    private $tyledonggop;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public SanPhamVm $sanpham; //$id_sanpham
+    public UserVm $tacgia; // $id_tacgia -- user
+    public VaiTroTacGiaVm $vaitrotacgia; //$id_vaotrotacgia 
+    public string $thutu;
+    public string $tyledonggop;
+    public string $created_at;
+    public string $updated_at;
 
     function __construct()
     {
@@ -29,34 +30,34 @@ class SanPhamTacGiaVm
         $this->id = $id;
     }
 
-    function getSanPhamVm()
+    function getSanPham()
     {
-        return $this->sanPhamVm;
+        return $this->sanpham;
     }
 
-    function setSanPhamVm(SanPhamVm $sanPhamVm)
+    function setSanPham(SanPhamVm $sanPhamVm)
     {
-        $this->sanPhamVm = $sanPhamVm;
+        $this->sanpham = $sanPhamVm;
     }
 
-    function getTacGiaVm()
+    function getTacGia()
     {
-        return $this->tacGiaVm;
+        return $this->tacgia;
     }
 
-    function setTacGiaVm(UserVm $tacGiaVm)
+    function setTacGia(UserVm $tacGiaVm)
     {
-        $this->tacGiaVm = $tacGiaVm;
+        $this->tacgia = $tacGiaVm;
     }
 
-    function getVaiTroTacGiaVm()
+    function getVaiTroTacGia()
     {
-        return $this->vaiTroTacGiaVm;
+        return $this->vaitrotacgia;
     }
 
-    function setVaiTroTacGiaVm(VaiTroTacGiaVm $vaiTroTacGiaVm)
+    function setVaiTroTacGia(VaiTroTacGiaVm $vaiTroTacGiaVm)
     {
-        $this->vaiTroTacGiaVm = $vaiTroTacGiaVm;
+        $this->vaitrotacgia = $vaiTroTacGiaVm;
     }
 
     function getThuTu()

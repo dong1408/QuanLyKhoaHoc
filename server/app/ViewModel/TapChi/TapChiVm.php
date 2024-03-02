@@ -7,25 +7,27 @@ use App\ViewModel\User\UserVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\TinhThanhVm;
 use App\ViewModel\UserInfo\ToChucVm;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
+use Ramsey\Uuid\Type\Integer;
 
 class TapChiVm
 {
-    private $id;
-    private $name;
-    private $issn;
-    private $eissn;
-    private $pissn;
-    private $website;
-    private $quocte;
-    private $nhaXuatBanVm; // $id_nhaxuatban
-    private $donViChuQuanVm; // $id_donvichuquan -- ToChucVm
-    private $address;
-    private $addressCityVm; // $id_address_city -- TinhThanhVM
-    private $addressCountryVm; // id_address_country -- QuocGiaVm
-    private $trangthai;
-    private $nguoiThemVm; // $di_nguoithem -- UserVm
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $name;
+    public string $issn;
+    public string $eissn;
+    public string $pissn;
+    public string $website;
+    public Boolean $quocte;
+    public NhaXuatBanVm $nhaxuatban; // $id_nhaxuatban
+    public ToChucVm $donvichuquan; // $id_donvichuquan -- ToChucVm
+    public string $address;
+    public TinhThanhVm $addresscity; // $id_address_city -- TinhThanhVM
+    public QuocGiaVm $addresscountry; // id_address_country -- QuocGiaVm
+    public Boolean $trangthai;
+    public UserVm $nguoithem; // $di_nguoithem -- UserVm
+    public $created_at;
+    public $updated_at;
 
     public function __construct()
     {
@@ -101,24 +103,24 @@ class TapChiVm
         $this->quocte = $quocte;
     }
 
-    function getNhaXuatBanVm()
+    function getNhaXuatBan()
     {
-        return $this->nhaXuatBanVm;
+        return $this->nhaxuatban;
     }
 
-    function setNhaXuatBanVm(NhaXuatBanVm $nhaXuatBanVm)
+    function setNhaXuatBan(NhaXuatBanVm $nhaXuatBanVm)
     {
-        $this->nhaXuatBanVm = $nhaXuatBanVm;
+        $this->nhaxuatban = $nhaXuatBanVm;
     }
 
     function getDonViChuQuan()
     {
-        return $this->donViChuQuanVm;
+        return $this->donvichuquan;
     }
 
-    function setDonViChuQuanVm(ToChucVm $donViChuQuanVm)
+    function setDonViChuQuan(ToChucVm $donViChuQuanVm)
     {
-        $this->donViChuQuanVm = $donViChuQuanVm;
+        $this->donvichuquan = $donViChuQuanVm;
     }
 
     function getAddress()
@@ -131,24 +133,24 @@ class TapChiVm
         $this->address = $address;
     }
 
-    function getAddressCityVm()
+    function getAddressCity()
     {
-        return $this->addressCityVm;
+        return $this->addresscity;
     }
 
-    function setAddressCityVm(TinhThanhVm $addressCityVm)
+    function setAddressCity(TinhThanhVm $addressCityVm)
     {
-        $this->addressCityVm = $addressCityVm;
+        $this->addresscity = $addressCityVm;
     }
 
-    function getAddressCountryVm()
+    function getAddressCountry()
     {
-        return $this->addressCountryVm;
+        return $this->addresscountry;
     }
 
-    function setAddressCountryVm(QuocGiaVm $addressCountryVm)
+    function setAddressCountry(QuocGiaVm $addressCountryVm)
     {
-        $this->addressCountryVm = $addressCountryVm;
+        $this->addresscountry = $addressCountryVm;
     }
 
     function getTrangThai()
@@ -161,14 +163,14 @@ class TapChiVm
         $this->trangthai = $trangthai;
     }
 
-    function getNguoiThemVm()
+    function getNguoiThem()
     {
-        return $this->nguoiThemVm;
+        return $this->nguoithem;
     }
 
-    function setNguoiThemVm(UserVm $nguoiThemVm)
+    function setNguoiThem(UserVm $nguoiThemVm)
     {
-        $this->nguoiThemVm = $nguoiThemVm;
+        $this->nguoithem = $nguoiThemVm;
     }
 
     function getCreatedAt()

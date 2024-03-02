@@ -2,15 +2,17 @@
 
 namespace App\ViewModel\UserInfo;
 
+use Ramsey\Uuid\Type\Integer;
+
 class DonViVm
 {
-    private $id;
-    private $toChucVm; // $id_tochuc
-    private $madonvi;
-    private $tendonvi;
-    private $tendonvi_en;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public ToChucVm $tochuc; // $id_tochuc
+    public string $madonvi;
+    public string $tendonvi;
+    public string $tendonvi_en;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
@@ -26,14 +28,14 @@ class DonViVm
         $this->id = $id;
     }
 
-    function getToChucVm()
+    function getToChuc()
     {
-        return $this->toChucVm;
+        return $this->tochuc;
     }
 
-    function setToChucVm(ToChucVm $toChucVm)
+    function setToChuc(ToChucVm $toChucVm)
     {
-        $this->toChucVm = $toChucVm;
+        $this->tochuc = $toChucVm;
     }
 
     function getMaDonVi()

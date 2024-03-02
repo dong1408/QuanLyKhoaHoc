@@ -9,6 +9,8 @@ class DMQuocGia extends Model
 {
     use HasFactory;
 
+    protected $table = 'd_m_quoc_gias';
+
     // relation 1-n to user
     public function users()
     {

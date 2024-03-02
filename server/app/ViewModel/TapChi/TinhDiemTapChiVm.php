@@ -5,19 +5,20 @@ namespace App\ViewModel\TapChi;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\User\UserVm;
+use Ramsey\Uuid\Type\Integer;
 
 class TinhDiemTapChiVm
 {
-    private $id;
-    private $tapChiVm; // $id_tapchi
-    private $nganhTinhDiemVm; // $id_nganhtinhdiem
-    private $chuyenNganhTinhDiemVm; // $id_chuyennganhtinhdiem
-    private $diem;
-    private $namtinhdiem;
-    private $nguoiCapNhatVm; // $id_nguoicapnhat -- UserVm
-    private $ghichu;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public TapChiVm $tapchi; // $id_tapchi
+    public NganhTinhDiemVm $nganhtinhdiem; // $id_nganhtinhdiem
+    public ChuyenNganhTinhDiemVm $chuyennganhtinhdiem; // $id_chuyennganhtinhdiem
+    public string $diem;
+    public string $namtinhdiem;
+    public UserVm $nguoicapnhat; // $id_nguoicapnhat -- UserVm
+    public string $ghichu;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
@@ -33,34 +34,34 @@ class TinhDiemTapChiVm
         $this->id = $id;
     }
 
-    function getTapChiVm()
+    function getTapChi()
     {
-        return $this->tapChiVm;
+        return $this->tapchi;
     }
 
-    function setTapChiVm(TapChiVm $tapChiVm)
+    function setTapChi(TapChiVm $tapChiVm)
     {
-        $this->tapChiVm = $tapChiVm;
+        $this->tapchi = $tapChiVm;
     }
 
-    function getNganhTinhDiemVm()
+    function getNganhTinhDiem()
     {
-        return $this->nganhTinhDiemVm;
+        return $this->nganhtinhdiem;
     }
 
     function setNganhTinhDiemVm(NganhTinhDiemVm $nganhTinhDiemVm)
     {
-        $this->nganhTinhDiemVm = $nganhTinhDiemVm;
+        $this->nganhtinhdiem = $nganhTinhDiemVm;
     }
 
-    function getChuyenNganhTinhDiemVm()
+    function getChuyenNganhTinhDiem()
     {
-        return $this->chuyenNganhTinhDiemVm;
+        return $this->chuyennganhtinhdiem;
     }
 
-    function setChuyenNganhTinhDiemVm(ChuyenNganhTinhDiemVm $chuyenNganhTinhDiemVm)
+    function setChuyenNganhTinhDiem(ChuyenNganhTinhDiemVm $chuyenNganhTinhDiemVm)
     {
-        $this->chuyenNganhTinhDiemVm = $chuyenNganhTinhDiemVm;
+        $this->chuyennganhtinhdiem = $chuyenNganhTinhDiemVm;
     }
 
     function getDiem()
@@ -83,14 +84,14 @@ class TinhDiemTapChiVm
         $this->namtinhdiem = $namtinhdiem;
     }
 
-    function getNguoiCapNhatVm()
+    function getNguoiCapNhat()
     {
-        return $this->nguoiCapNhatVm;
+        return $this->nguoicapnhat;
     }
 
     function setNguoiCapNhat(UserVm $nguoiCapNhatVm)
     {
-        $this->nguoiCapNhatVm = $nguoiCapNhatVm;
+        $this->nguoicapnhat = $nguoiCapNhatVm;
     }
 
     function getGhiChu()

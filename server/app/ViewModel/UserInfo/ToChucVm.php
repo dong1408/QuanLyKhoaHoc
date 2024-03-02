@@ -2,20 +2,22 @@
 
 namespace App\ViewModel\UserInfo;
 
+use Ramsey\Uuid\Type\Integer;
+
 class ToChucVm
 {
-    private $id;
-    private $matochuc;
-    private $tentochuc;
-    private $tentochuc_en;
-    private $website;
-    private $dienthoai;
-    private $address;
-    private $addressCityVm; // $id_address_city -- TinhThanhVm
-    private $addressCountryVm; // $id_address_country -- QuocGiaVm
-    private $phanLoaiToChucVm; // $id_phanloaitochuc
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $matochuc;
+    public string $tentochuc;
+    public string $tentochuc_en;
+    public string $website;
+    public string $dienthoai;
+    public string $address;
+    public TinhThanhVm $addresscity; // $id_address_city -- TinhThanhVm
+    public QuocGiaVm $addresscountry; // $id_address_country -- QuocGiaVm
+    public PhanLoaiToChucVm $phanloaitochuc; // $id_phanloaitochuc
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
@@ -91,34 +93,34 @@ class ToChucVm
         $this->address = $address;
     }
 
-    function getAddressCityVm()
+    function getAddressCity()
     {
-        return $this->addressCityVm;
+        return $this->addresscity;
     }
 
-    function setAddressCityVm(TinhThanhVm $addressCityVm)
+    function setAddressCity(TinhThanhVm $addressCityVm)
     {
-        $this->addressCityVm = $addressCityVm;
+        $this->addresscity = $addressCityVm;
     }
 
-    function getAddressCountryVm()
+    function getAddressCountry()
     {
-        return $this->addressCountryVm;
+        return $this->addresscountry;
     }
 
-    function setAddressCountryVm(QuocGiaVm $addressCountryVm)
+    function setAddressCountry(QuocGiaVm $addressCountryVm)
     {
-        $this->addressCountryVm = $addressCountryVm;
+        $this->addresscountry = $addressCountryVm;
     }
 
-    function getPhanLoaiToChucVm()
+    function getPhanLoaiToChuc()
     {
-        return $this->phanLoaiToChucVm;
+        return $this->phanloaitochuc;
     }
 
-    function setPhanLoaiToChucVm(PhanLoaiToChucVm $phanLoaiToChucVm)
+    function setPhanLoaiToChuc(PhanLoaiToChucVm $phanLoaiToChucVm)
     {
-        $this->phanLoaiToChucVm = $phanLoaiToChucVm;
+        $this->phanloaitochuc = $phanLoaiToChucVm;
     }
 
     function getCreatedAt()

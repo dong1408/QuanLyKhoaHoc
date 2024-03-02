@@ -4,16 +4,16 @@ use App\ViewModel\SanPham\SanPhamVm;
 
 class NghiemThuVm
 {
-    private $id;
-    private $sanPhamVm; // $id_sanpham;
-    private $hoidongnghiemthu;
-    private $ngaynghiemthu;
-    private $ketquanghiemthu;
-    private $ngaycongnhanhoanthanh;
-    private $soqdcongnhanhoanthanh;
-    private $thoigianhoanthanh;
-    private $created_at;
-    private $updated_at;
+    public $id;
+    public SanPhamVm $sanpham; // $id_sanpham;
+    public string $hoidongnghiemthu;
+    public string $ngaynghiemthu;
+    public string $ketquanghiemthu;
+    public string $ngaycongnhanhoanthanh;
+    public string $soqdcongnhanhoanthanh;
+    public string $thoigianhoanthanh;
+    public string $created_at;
+    public string $updated_at;
 
     function __construct()
     {
@@ -29,14 +29,14 @@ class NghiemThuVm
         $this->id = $id;
     }
 
-    function getSanPhamVm()
+    function getSanPham()
     {
-        return $this->sanPhamVm;
+        return $this->sanpham;
     }
 
-    function setSanPhamVm(SanPhamVm $sanPhamVm)
+    function setSanPham(SanPhamVm $sanPhamVm)
     {
-        $this->sanPhamVm = $sanPhamVm;
+        $this->sanpham = $sanPhamVm;
     }
 
     function getHoiDongNghiemThu()

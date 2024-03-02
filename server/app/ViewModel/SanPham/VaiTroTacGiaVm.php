@@ -2,14 +2,16 @@
 
 namespace App\ViewModel\SanPham;
 
+use Ramsey\Uuid\Type\Integer;
+
 class VaiTroTacGiaVm
 {
-    private $id;
-    private $tenvaitro;
-    private $tenvaitro_en;
-    private $mota;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $tenvaitro;
+    public string $tenvaitro_en;
+    public string $mota;
+    public string $created_at;
+    public string $updated_at;
 
     function __construct()
     {

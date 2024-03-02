@@ -2,23 +2,25 @@
 
 use App\ViewModel\SanPham\SanPhamVm;
 use App\ViewModel\UserInfo\ToChucVm;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
+use Ramsey\Uuid\Type\Integer;
 
 class DeTaiVm
 {
-    private $id;
-    private $sanPhamVM; // $id_sanpham
-    private $maso;
-    private $ngaydangky;
-    private $ngoaitruong;
-    private $truongchutri;
-    private $tochucchuquanVm; // $id_tochuchuquan -- tochuc
-    private $loaidetaiVm; // $id_loaidetai -- phanloaidetai
-    private $detaihoptac;
-    private $tochuchoptacVm; // $id_tochuchoptac -- tochuc
-    private $tylekinhphidonvihoptac;
-    private $capdetai;
-    private $created_at;
-    private $updated_at;
+    public int $id;
+    public SanPhamVm $sanpham; // $id_sanpham
+    public string $maso;
+    public string $ngaydangky;
+    public Boolean $ngoaitruong;
+    public Boolean $truongchutri;
+    public ToChucVm $tochucchuquan; // $id_tochuchuquan -- tochuc
+    public PhanLoaiDeTaiVm $loaidetaiVm; // $id_loaidetai -- phanloaidetai
+    public Boolean $detaihoptac;
+    public ToChucVm $tochuchoptac; // $id_tochuchoptac -- tochuc
+    public string $tylekinhphidonvihoptac;
+    public string $capdetai;
+    public $created_at;
+    public $updated_at;
 
     function __construct()
     {
@@ -34,14 +36,14 @@ class DeTaiVm
         $this->id = $id;
     }
 
-    function getSanPhamVm()
+    function getSanPham()
     {
-        return $this->sanPhamVM;
+        return $this->sanpham;
     }
 
-    function setSanPhamVm(SanPhamVm $sanPhamVM)
+    function setSanPham(SanPhamVm $sanPhamVM)
     {
-        $this->sanPhamVM = $sanPhamVM;
+        $this->sanpham = $sanPhamVM;
     }
 
     function getMaSo()
@@ -84,14 +86,14 @@ class DeTaiVm
         $this->truongchutri = $truongchutri;
     }
 
-    function getToChucChuQuanVm()
+    function getToChucChuQuan()
     {
-        return $this->tochucchuquanVm;
+        return $this->tochucchuquan;
     }
 
-    function setToChucChuQuanVm(ToChucVm $tochucchuquanVm)
+    function setToChucChuQuan(ToChucVm $tochucchuquanVm)
     {
-        $this->tochucchuquanVm = $tochucchuquanVm;
+        $this->tochucchuquan = $tochucchuquanVm;
     }
 
     function getLoaiDeTaiVm()
@@ -114,14 +116,14 @@ class DeTaiVm
         $this->detaihoptac = $detaihoptac;
     }
 
-    function getToChucHopTacVm()
+    function getToChucHopTac()
     {
-        return $this->tochuchoptacVm;
+        return $this->tochuchoptac;
     }
 
-    function setToChucHopTacVm(ToChucVm $tochuchoptacVm)
+    function setToChucHopTac(ToChucVm $tochuchoptacVm)
     {
-        $this->tochuchoptacVm = $tochuchoptacVm;
+        $this->tochuchoptac = $tochuchoptacVm;
     }
 
     function getTyLeKinhPhiDonViHopTac()
