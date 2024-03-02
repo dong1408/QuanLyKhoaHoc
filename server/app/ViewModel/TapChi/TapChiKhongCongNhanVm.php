@@ -3,16 +3,18 @@
 namespace App\ViewModel\TapChi;
 
 use App\ViewModel\User\UserVm;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
+use Ramsey\Uuid\Type\Integer;
 
 class TapChiKhongCongNhanVm
 {
-    private $id;
-    private $tapChiVm; // $id_tapchi
-    private $khongduoccongnhan;
-    private $ghichu;
-    private $nguoiCapNhatVm; // $id_nguoicapnhap -- UserVm 
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public TapChiVm $tapchi; // $id_tapchi
+    public Boolean $khongduoccongnhan;
+    public string $ghichu;
+    public UserVm $nguoicapnhat; // $id_nguoicapnhap -- UserVm 
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
@@ -28,14 +30,14 @@ class TapChiKhongCongNhanVm
         $this->id = $id;
     }
 
-    function getTapChiVm()
+    function getTapChi()
     {
-        return $this->tapChiVm;
+        return $this->tapchi;
     }
 
-    function setTapChiVm($tapChiVm)
+    function setTapChi(TapChiVm $tapChiVm)
     {
-        $this->tapChiVm = $tapChiVm;
+        $this->tapchi = $tapChiVm;
     }
 
     function getKhongDuocCongNhan()
@@ -58,14 +60,14 @@ class TapChiKhongCongNhanVm
         $this->ghichu = $ghichu;
     }
 
-    function getNguoiCapNhatVm()
+    function getNguoiCapNhat()
     {
-        return $this->nguoiCapNhatVm;
+        return $this->nguoicapnhat;
     }
 
-    function setNguoiCapNhatVm(UserVm $nguoiCapNhatVm)
+    function setNguoiCapNhat(UserVm $nguoiCapNhatVm)
     {
-        $this->nguoiCapNhatVm = $nguoiCapNhatVm;
+        $this->nguoicapnhat = $nguoiCapNhatVm;
     }
 
     function getCreatedAt()

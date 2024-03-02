@@ -10,47 +10,49 @@ use App\ViewModel\UserInfo\HocHamHocViVm;
 use App\ViewModel\UserInfo\NgachVienChucVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\ToChucVm;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
+use Ramsey\Uuid\Type\Integer;
 
 class UserVm
 {
-    private $id;
-    private $name;
-    private $username;
-    private $email;
-    // private $password;
-    private $role;
-    private $changed;
-    // private $remember_token
-    private $ngaysinh;
-    private $dienthoai;
-    private $email2;
-    private $orchid;
-    private $toChucVm; // $id_tochuc
-    private $donViVm; // $id_donvi
-    private $cohuu;
-    private $keodai;
-    private $dinhmucnghiavunckh;
-    private $dangdihoc;
-    private $noiHocVm; // $id_noihoc -- ToChucVm 
-    private $ngachVienChucVm; // $id_ngachvienchuc -- NgachVienChucVm
-    private $quocTichVm; // $id_quoctich -- QuocGiaVm
-    private $hocHamHocViVm; // $id_hochamhocvi
-    private $chuyenMonVm; // $id_chuyenmon
-    private $nganhTinhDiemVm; // $id_nganhtinhdiem
-    private $chuyenNganhTinhDiemVm; // $id_chuyennganhtinhdiem
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $name;
+    public string $username;
+    public string $email;
+    // public $password;
+    public Integer $role;
+    public Boolean $changed;
+    // public $remember_token
+    public string $ngaysinh;
+    public string $dienthoai;
+    public string $email2;
+    public string $orchid;
+    public ToChucVm $tochuc; // $id_tochuc
+    public DonViVm $donvi; // $id_donvi
+    public Boolean $cohuu;
+    public Boolean $keodai;
+    public string $dinhmucnghiavunckh;
+    public string $dangdihoc;
+    public ToChucVm $noihoc; // $id_noihoc -- ToChucVm 
+    public NgachVienChucVm $ngachvienchuc; // $id_ngachvienchuc -- NgachVienChucVm
+    public QuocGiaVm $quoctich; // $id_quoctich -- QuocGiaVm
+    public HocHamHocViVm $hochamhocvi; // $id_hochamhocvi
+    public ChuyenMonVm $chuyenmon; // $id_chuyenmon
+    public NganhTinhDiemVm $nganhtinhdiem; // $id_nganhtinhdiem
+    public ChuyenNganhTinhDiemVm $chuyennganhtinhdiem; // $id_chuyennganhtinhdiem
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
     }
 
-    function getId()
+    public function getId()
     {
         return $this->id;
     }
 
-    function setId($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -145,24 +147,24 @@ class UserVm
         $this->orchid = $orchid;
     }
 
-    function getToChucVm()
+    function getToChuc()
     {
-        return $this->toChucVm;
+        return $this->tochuc;
     }
 
-    function setToChucVm(ToChucVm $toChucVm)
+    function setToChuc(ToChucVm $toChucVm)
     {
-        $this->toChucVm = $toChucVm;
+        $this->tochuc = $toChucVm;
     }
 
-    function getDonViVm()
+    function getDonVi()
     {
-        return $this->donViVm;
+        return $this->donvi;
     }
 
-    function setDonViVm(DonViVm $donViVm)
+    function setDonVi(DonViVm $donViVm)
     {
-        $this->donViVm = $donViVm;
+        $this->donvi = $donViVm;
     }
 
     function getCoHuu()
@@ -205,74 +207,74 @@ class UserVm
         $this->dangdihoc = $dangdihoc;
     }
 
-    function getNoiHocVm()
+    function getNoiHoc()
     {
-        return $this->noiHocVm;
+        return $this->noihoc;
     }
 
-    function setNoiHocVm(ToChucVm $noiHocVm)
+    function setNoiHoc(ToChucVm $noiHocVm)
     {
-        $this->noiHocVm = $noiHocVm;
+        $this->noihoc = $noiHocVm;
     }
 
-    function getNgachVienChucVm()
+    function getNgachVienChuc()
     {
-        return $this->ngachVienChucVm;
+        return $this->ngachvienchuc;
     }
 
-    function setNgachVienChucVm(NgachVienChucVm $ngachVienChucVm)
+    function setNgachVienChuc(NgachVienChucVm $ngachVienChucVm)
     {
-        $this->ngachVienChucVm = $ngachVienChucVm;
+        $this->ngachvienchuc = $ngachVienChucVm;
     }
 
-    function getQuocTichVm()
+    function getQuocTich()
     {
-        return $this->quocTichVm;
+        return $this->quoctich;
     }
 
-    function setQuocTichVm(QuocGiaVm $quocTichVm)
+    function setQuocTich(QuocGiaVm $quocTichVm)
     {
-        $this->quocTichVm;
+        $this->quoctich;
     }
 
-    function getHocHamHocViVm()
+    function getHocHamHocVi()
     {
-        return $this->hocHamHocViVm;
+        return $this->hochamhocvi;
     }
 
     function setHocHamHocVi(HocHamHocViVm $hocHamHocViVm)
     {
-        $this->hocHamHocViVm = $hocHamHocViVm;
+        $this->hochamhocvi = $hocHamHocViVm;
     }
 
-    function getChuyenMonVm()
+    function getChuyenMon()
     {
-        return $this->chuyenMonVm;
+        return $this->chuyenmon;
     }
 
-    function setChuyenMonVm(ChuyenMonVm $chuyenMonVm)
+    function setChuyenMon(ChuyenMonVm $chuyenMonVm)
     {
-        $this->chuyenMonVm = $chuyenMonVm;
+        $this->chuyenmon = $chuyenMonVm;
     }
 
-    function getNganhTinhDiemVm()
+    function getNganhTinhDiem()
     {
-        return $this->nganhTinhDiemVm;
+        return $this->nganhtinhdiem;
     }
 
-    function setNganhTinhDiemVm(NganhTinhDiemVm $nganhTinhDiemVm)
+    function setNganhTinhDiem(NganhTinhDiemVm $nganhTinhDiemVm)
     {
-        $this->nganhTinhDiemVm = $nganhTinhDiemVm;
+        $this->nganhtinhdiem = $nganhTinhDiemVm;
     }
 
-    function getChuyenNganhTinhDiemVm()
+    function getChuyenNganhTinhDiem()
     {
-        return $this->chuyenNganhTinhDiemVm;
+        return $this->chuyennganhtinhdiem;
     }
 
-    function setChuyenNganhTinhDiemVm(ChuyenNganhTinhDiemVm $chuyenNganhTinhDiemVm)
+    function setChuyenNganhTinhDiem(ChuyenNganhTinhDiemVm $chuyenNganhTinhDiemVm)
     {
-        $this->chuyenNganhTinhDiemVm = $chuyenNganhTinhDiemVm;
+        $this->chuyennganhtinhdiem = $chuyenNganhTinhDiemVm;
     }
 
     function getCreatedAt()

@@ -3,15 +3,15 @@
 use App\ViewModel\SanPham\SanPhamVm;
 
 class XetDuyetVm{
-    private $id;
-    private $sanPhamVm; // $id_sanpham
-    private $ngayxetduyet;
-    private $sohopdong;
-    private $ngaykyhopdong;
-    private $thoihanhopdong;
-    private $kinhphi;
-    private $created_at;
-    private $updated_at;
+    public $id;
+    public SanPhamVm $sanpham; // $id_sanpham
+    public string $ngayxetduyet;
+    public string $sohopdong;
+    public string $ngaykyhopdong;
+    public string $thoihanhopdong;
+    public string $kinhphi;
+    public string $created_at;
+    public string $updated_at;
 
     function __construct()
     {
@@ -28,12 +28,12 @@ class XetDuyetVm{
         $this->id = $id;
     }
 
-    function getSanPhamVm(){
-        return $this->sanPhamVm;
+    function getSanPham(){
+        return $this->sanpham;
     }
 
-    function setSanPhamVm(SanPhamVm $sanPhamVm){
-        $this->sanPhamVm = $sanPhamVm;
+    function setSanPham(SanPhamVm $sanPhamVm){
+        $this->sanpham = $sanPhamVm;
     }
 
     function getNgayXetDuyet(){

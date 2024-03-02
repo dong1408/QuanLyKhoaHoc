@@ -2,14 +2,16 @@
 
 namespace App\ViewModel\UserInfo;
 
+use Ramsey\Uuid\Type\Integer;
+
 class QuocGiaVm
 {
-    private $id;
-    private $maquocgia;
-    private $tenquocgia;
-    private $tenquocgia_en;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $maquocgia;
+    public string $tenquocgia;
+    public string $tenquocgia_en;
+    public string $created_at;
+    public string$updated_at;
 
     public function __construct()
     {

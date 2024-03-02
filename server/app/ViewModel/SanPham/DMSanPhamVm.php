@@ -2,13 +2,15 @@
 
 namespace App\ViewModel\SanPham;
 
+use Ramsey\Uuid\Type\Integer;
+
 class DMSanPhamVm{
-    private $id;
-    private $madmsanpham;
-    private $tendmsanpham;
-    private $mota;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $madmsanpham;
+    public string $tendmsanpham;
+    public string $mota;
+    public string $created_at;
+    public string $updated_at;
 
     function __construct()
     {

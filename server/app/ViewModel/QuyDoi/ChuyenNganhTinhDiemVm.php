@@ -2,15 +2,17 @@
 
 namespace App\ViewModel\QuyDoi;
 
+use Ramsey\Uuid\Type\Integer;
+
 class ChuyenNganhTinhDiemVm
 {
-    private $id;
-    private $nganhTinhDiemVm; // $id_nganhtinhdiem 
-    private $machuyennganh;
-    private $tenchuyennganh;
-    private $tenchuyennganh_en;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public NganhTinhDiemVm $nganhtinhdiem; // $id_nganhtinhdiem 
+    public string $machuyennganh;
+    public string $tenchuyennganh;
+    public string $tenchuyennganh_en;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
@@ -26,14 +28,14 @@ class ChuyenNganhTinhDiemVm
         $this->id = $id;
     }
 
-    function getNganhTinhDiemVm()
+    function getNganhTinhDiem()
     {
-        return $this->nganhTinhDiemVm;
+        return $this->nganhtinhdiem;
     }
 
-    function setNganhTinhDiemVm(NganhTinhDiemVm $nganhTinhDiemVm)
+    function setNganhTinhDiem(NganhTinhDiemVm $nganhTinhDiemVm)
     {
-        $this->nganhTinhDiemVm = $nganhTinhDiemVm;
+        $this->nganhtinhdiem = $nganhTinhDiemVm;
     }
 
     function getMaChuyenNganh()

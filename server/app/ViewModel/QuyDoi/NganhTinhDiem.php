@@ -2,14 +2,16 @@
 
 namespace App\ViewModel\QuyDoi;
 
+use Ramsey\Uuid\Type\Integer;
+
 class NganhTinhDiemVm
 {
-    private $id;
-    private $manganhtinhdiem;
-    private $tennganhtinhdiem;
-    private $tennganh_en;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $manganhtinhdiem;
+    public string $tennganhtinhdiem;
+    public string $tennganh_en;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {

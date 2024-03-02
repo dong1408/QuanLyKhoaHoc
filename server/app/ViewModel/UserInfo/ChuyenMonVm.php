@@ -2,14 +2,16 @@
 
 namespace App\ViewModel\UserInfo;
 
+use Ramsey\Uuid\Type\Integer;
+
 class ChuyenMonVm
 {
-    private $id;
-    private $machuyenmon;
-    private $tenchuyenmon;
-    private $tenchuyenmon_en;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $machuyenmon;
+    public string $tenchuyenmon;
+    public string $tenchuyenmon_en;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {

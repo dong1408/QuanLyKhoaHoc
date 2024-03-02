@@ -2,14 +2,16 @@
 
 namespace App\ViewModel\UserInfo;
 
+use Ramsey\Uuid\Type\Integer;
+
 class NgachVienChucVm
 {
-    private $id;
-    private $mangach;
-    private $tenngach;
-    private $tenngach_en;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $mangach;
+    public string $tenngach;
+    public string $tenngach_en;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {

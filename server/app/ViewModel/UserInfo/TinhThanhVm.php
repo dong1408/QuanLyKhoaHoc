@@ -2,15 +2,17 @@
 
 namespace App\ViewModel\UserInfo;
 
+use Ramsey\Uuid\Type\Integer;
+
 class TinhThanhVm
-{
-    private $id;
-    private $quocGiaVm; // $id_quocgia
-    private $matinhthanh;
-    private $tentinhthanh;
-    private $tentinhthanh_en;
-    private $created_at;
-    private $updated_at;
+{ // bip
+    public Integer $id;
+    public QuocGiaVm $quocGiaVm; 
+    public string $matinhthanh;
+    public string $tentinhthanh; 
+    public string $tentinhthanh_en;
+    public string $created_at;
+    public string $updated_at;  
 
     public function __construct()
     {

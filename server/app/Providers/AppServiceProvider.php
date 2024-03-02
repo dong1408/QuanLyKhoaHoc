@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Service\Auth\AuthService;
+use App\Service\Auth\AuthServiceImpl;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,9 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // dk service
+        $this->app->bind(AuthService::class, AuthServiceImpl::class);
     }
-
     /**
      * Bootstrap any application services.
      *

@@ -6,21 +6,25 @@ use App\ViewModel\User\UserVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\TinhThanhVm;
 use App\ViewModel\UserInfo\ToChucVm;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
+use Ramsey\Uuid\Type\Integer;
+use Symfony\Component\Console\Input\StringInput;
 
 class NhaXuatBanVm
 {
-    private $id;
-    private $isbn;
-    private $website;
-    private $quocte;
-    private $address;
-    private $addressCityVm; // $id_address_city -- TinhThanhVm
-    private $addressCountryVm; // $id_address_country -- QuocGiaVm
-    private $donViChuQuanVm; // $id_donvichuquan -- ToChucVm
-    private $trangthai;
-    private $nguoiThemVm; // $id_nguoithem -- UserVm
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public string $name;
+    public string $isbn;
+    public string $website;
+    public Boolean $quocte;
+    public StringInput $address;
+    public TinhThanhVm $addresscity; // $id_address_city -- TinhThanhVm
+    public QuocGiaVm $addresscountry; // $id_address_country -- QuocGiaVm
+    public ToChucVm $donvichuquan; // $id_donvichuquan -- ToChucVm
+    public Boolean $trangthai;
+    public UserVm $nguoithem; // $id_nguoithem -- UserVm
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
@@ -34,6 +38,16 @@ class NhaXuatBanVm
     function setId($id)
     {
         $this->id = $id;
+    }
+
+    function getName()
+    {
+        return $this->name;
+    }
+
+    function setName($name)
+    {
+        $this->name = $name;
     }
 
     function getIsbn()
@@ -76,34 +90,34 @@ class NhaXuatBanVm
         $this->address = $address;
     }
 
-    function getAddressCityVm()
+    function getAddressCity()
     {
-        return $this->addressCityVm;
+        return $this->addresscity;
     }
 
-    function setAddressCityVm(TinhThanhVm $addressCityVm)
+    function setAddressCity(TinhThanhVm $addressCityVm)
     {
-        $this->addressCityVm = $addressCityVm;
+        $this->addresscity = $addressCityVm;
     }
 
-    function getAddressCountryVm()
+    function getAddressCountry()
     {
-        return $this->addressCountryVm;
+        return $this->addresscountry;
     }
 
-    function setAddressCountryVm(QuocGiaVm $addressCountryVm)
+    function setAddressCountry(QuocGiaVm $addressCountryVm)
     {
-        $this->addressCountryVm = $addressCountryVm;
+        $this->addresscountry = $addressCountryVm;
     }
 
-    function getDonViChuQuanVm()
+    function getDonViChuQuan()
     {
-        return $this->donViChuQuanVm;
+        return $this->donvichuquan;
     }
 
-    function setDonViChuQuanVm(ToChucVm $donViChuQuanVm)
+    function setDonViChuQuan(ToChucVm $donViChuQuanVm)
     {
-        $this->donViChuQuanVm = $donViChuQuanVm;
+        $this->donvichuquan = $donViChuQuanVm;
     }
 
     function getTrangThai()
@@ -116,14 +130,14 @@ class NhaXuatBanVm
         $this->trangthai = $trangthai;
     }
 
-    function getNguoiThemVm()
+    function getNguoiThem()
     {
-        return $this->nguoiThemVm;
+        return $this->nguoithem;
     }
 
-    function setNguoiThemVm(UserVm $nguoiThemVm)
+    function setNguoiThem(UserVm $nguoiThemVm)
     {
-        $this->nguoiThemVm = $nguoiThemVm;
+        $this->nguoithem = $nguoiThemVm;
     }
 
     function getCreatedAt()

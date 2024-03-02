@@ -1,16 +1,17 @@
 <?php
 
 use App\ViewModel\SanPham\SanPhamVm;
+use Ramsey\Uuid\Type\Integer;
 
 class BaoCaoTienDoVm
 {
-    private $id;
-    private $sanPhamVM; // $id_sanpham
-    private $ngaynopbaocao;
-    private $ketquaxet;
-    private $thoigiangiahan;
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public SanPhamVm $sanpham; // $id_sanpham
+    public string $ngaynopbaocao;
+    public string $ketquaxet;
+    public string $thoigiangiahan;
+    public string $created_at;
+    public string $updated_at;
 
     function __construct()
     {
@@ -26,14 +27,14 @@ class BaoCaoTienDoVm
         $this->id = $id;
     }
 
-    public function getSanPhamVm()
+    public function getsanpham()
     {
-        return $this->sanPhamVM;
+        return $this->sanpham;
     }
 
-    public function setSanPhamVm(SanPhamVm $sanPhamVm)
+    public function setsanpham(SanPhamVm $sanPhamVm)
     {
-        $this->sanPhamVM = $sanPhamVm;
+        $this->sanpham = $sanPhamVm;
     }
 
     public function getNgayNopBaoCao()

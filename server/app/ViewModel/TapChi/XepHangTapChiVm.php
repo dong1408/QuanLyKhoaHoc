@@ -3,21 +3,22 @@
 namespace App\ViewModel\TapChi;
 
 use App\ViewModel\User\UserVm;
+use Ramsey\Uuid\Type\Integer;
 
 class XepHangTapChiVm
 {
-    private $id;
-    private $tapChiVm; // $id_tapchi
-    private $wos;
-    private $if;
-    private $quartile;
-    private $abs;
-    private $abcd;
-    private $aci;
-    private $ghichu;
-    private $userVm; // $id_user
-    private $created_at;
-    private $updated_at;
+    public Integer $id;
+    public TapChiVm $tapchi; // $id_tapchi
+    public string $wos;
+    public string $if;
+    public string $quartile;
+    public string $abs;
+    public string $abcd;
+    public string $aci;
+    public string $ghichu;
+    public UserVm $user; // $id_user
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
@@ -33,14 +34,14 @@ class XepHangTapChiVm
         $this->id = $id;
     }
 
-    function getgetTapChiVm()
+    function getgetTapChi()
     {
-        return $this->tapChiVm;
+        return $this->tapchi;
     }
 
-    function setTapChiVm(TapChiVm $tapChiVm)
+    function setTapChi(TapChiVm $tapChiVm)
     {
-        $this->tapChiVm = $tapChiVm;
+        $this->tapchi = $tapChiVm;
     }
 
     function getWos()
@@ -113,14 +114,14 @@ class XepHangTapChiVm
         $this->ghichu = $ghichu;
     }
 
-    function getUserVm()
+    function getUser()
     {
-        return $this->userVm;
+        return $this->user;
     }
 
-    function setUserVm(UserVm $userVm)
+    function setUser(UserVm $userVm)
     {
-        $this->userVm = $userVm;
+        $this->user = $userVm;
     }
 
     function getCreatedAt()
