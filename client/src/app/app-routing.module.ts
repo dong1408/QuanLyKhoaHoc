@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
 import {authGuards} from "./core/guards/auth.guards";
 import {notAuthGuard} from "./core/guards/not-auth.guards";
 
@@ -9,7 +9,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+      RouterModule.forRoot(
+          routes,
+          {
+            preloadingStrategy: PreloadAllModules // ky thuat preloading, load cac bundle o bg
+          }
+      )
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
