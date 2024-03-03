@@ -5,6 +5,7 @@ import { environment } from "src/environments/environment";
 import {LocalStorageService} from "../services/local-storage.service";
 import {AuthService} from "../services/auth.service";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "../../shared/commons/constants";
+import {Token} from "../types/auth.type";
 
 @Injectable({
     providedIn:"root"
@@ -21,8 +22,8 @@ export class AuthInterceptor implements HttpInterceptor{
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let request = req;
-        const token = this.localStorageService.get("accessToken")
-        const rfToken = this.localStorageService.get("refreshToken")
+        const token = this.localStorageService.get(ACCESS_TOKEN)
+        const rfToken = this.localStorageService.get(REFRESH_TOKEN)
 
 
         if (rfToken !== null) {
@@ -50,7 +51,7 @@ export class AuthInterceptor implements HttpInterceptor{
     }
 
     private handleRefreshToken(request: HttpRequest<any>, next: HttpHandler) {
-        const refreshToken = this.localStorageService.get("refreshToken")
+        const refreshToken = this.localStorageService.get(REFRESH_TOKEN)
         if (!this.isRetry) {
             this.isRetry = true
 
@@ -58,9 +59,10 @@ export class AuthInterceptor implements HttpInterceptor{
             if (refreshToken) {
                 return this.authService.getAccessToken().pipe(
                     concatMap((response: any) => {
+                        console.log("abcadsasd lỗi chỗ interceptor")
                         this.isRetry = false
-                        this.localStorageService.set("accessToken", response.data)
-                        return next.handle(this.addTokenToHeader(request, response.data))
+                        this.localStorageService.set(ACCESS_TOKEN, response.accessToken)
+                        return next.handle(this.addTokenToHeader(request, response.accessToken))
                     }),
                     catchError((error: any) => {
                         this.isRetry = false
@@ -77,7 +79,6 @@ export class AuthInterceptor implements HttpInterceptor{
 
     private addTokenToHeader(request: HttpRequest<any>, token?: string) {
         let headers = request.headers;
-
         if (token) {
             headers = headers.set("Authorization", `Bearer ${token}`)
         }
