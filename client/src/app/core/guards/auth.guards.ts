@@ -15,6 +15,7 @@ export const authGuards:CanActivateFn = (route:ActivatedRouteSnapshot,state:Rout
         return false
     }
     const currentUser = authService.getCurrentUser()
+    console.log(authService.getCurrentUser())
     if(currentUser){
         return true
     }

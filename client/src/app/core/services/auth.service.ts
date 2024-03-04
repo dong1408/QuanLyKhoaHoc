@@ -5,6 +5,7 @@ import {User} from "../types/user.type";
 import {ApiResponse} from "../types/api-response.type";
 import {environment} from "../../../environments/environment";
 import {handleError} from "../../shared/commons/handler-error-http";
+import {Login, Token} from "../types/auth.type";
 
 @Injectable({
     providedIn:"root"
@@ -26,12 +27,26 @@ export class AuthService{
     }
 
     getMe():Observable<ApiResponse<User>>{
-        return this.http.get<ApiResponse<User>>(`${environment.apiUrl}/auth/me`).pipe(
+        return this.http.get<ApiResponse<User>>(`${environment.apiUrl}/auth/getMe`).pipe(
             catchError(handleError)
         )
     }
 
-    getAccessToken():Observable<ApiResponse<string>> {
-        return this.http.post<ApiResponse<string>>(`${environment.apiUrl}/auth/refresh`,{})
+    getAccessToken():Observable<ApiResponse<Token>> {
+        return this.http.post<ApiResponse<Token>>(`${environment.apiUrl}/auth/refreshToken`,{}).pipe(
+            catchError(handleError)
+        )
+    }
+
+    login(login:Login):Observable<ApiResponse<Token>> {
+        return this.http.post<ApiResponse<Token>>(`${environment.apiUrl}/auth/login`,login).pipe(
+            catchError(handleError)
+        )
+    }
+
+    logout():Observable<ApiResponse<string>> {
+        return this.http.post<ApiResponse<string>>(`${environment.apiUrl}/auth/logout`,{}).pipe(
+            catchError(handleError)
+        )
     }
 }
