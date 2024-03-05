@@ -88,7 +88,7 @@ class TapChiController extends Controller
         return response()->json($result, 200);
     }
 
-    public function updateTapChi(UpdateTapChiRequest $request, $id): Response
+    public function updateTapChi(UpdateTapChiRequest $request, $id)
     {
         $result = $this->tapChiService->updateTapChi($request, $id);
         return response()->json($result, 200);

@@ -214,7 +214,7 @@ class TapChiServiceImpl implements TapChiService
                 'name' => $validated['name'],
                 'issn' => $validated['issn'],
                 'eissn' => $validated['eissn'],
-                'pissn' => $validated[''],
+                'pissn' => $validated['pissn'],
                 'website' => $validated['website'],
                 'quocte' => $validated['quocte'],
                 'id_nhaxuatban' => $validated['id_nhaxuatban'],
@@ -290,14 +290,11 @@ class TapChiServiceImpl implements TapChiService
 
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
 
-        $validated = $request->validated();
-
-        $findTapChiByName = TapChi::where('name',$validated['name']);
-
-        if($findTapChiByName != null && $findTapChiByName->id != $tapChi->id){
-            throw new NameTapChiUsedException();
+        if($tapChi == null){
+            throw new TapChiNotFoundException();
         }
 
+        $validated = $request->validated();
 
         DB::transaction(function () use ($validated, &$tapChi) {
             $tapChi->name = $validated['name'];

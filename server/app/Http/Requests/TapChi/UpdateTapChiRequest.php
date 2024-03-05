@@ -4,6 +4,7 @@ namespace App\Http\Requests\TapChi;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Route;
 
 class UpdateTapChiRequest extends FormRequest
 {
@@ -25,8 +26,13 @@ class UpdateTapChiRequest extends FormRequest
     public function rules()
     {
         return [
+            'id' => [
+                'required',
+                'exists:tap_chis,id',
+            ],
             "name" => [
-                "bail","required"
+                "bail","required",
+                Rule::unique('tap_chis')->ignore(Route::input('id'), 'id')
             ] ,
             "issn" => "bail|nullable|string",
             "eissn" => "bail|nullable|string",
@@ -78,8 +84,15 @@ class UpdateTapChiRequest extends FormRequest
             'id_donvichuquan.exists' =>'Đơn vị chủ quản không tồn tại trên hệ thống',
             'id_address_city.exists' =>'Thành phố không tồn tại trên hệ thống',
             'id_address_country.exists' => 'Quốc gia không tồn tại trên hệ thống',
-            'name.unique' =>'Tên tạp chí đã tồn tại trong hệ thống'
+            'name.unique' =>'Tên tạp chí đã tồn tại trong hệ thống',
+            'id.exists' => 'Tạp chí không tồn tại'
         ];
     }
 
+    public function validationData()
+{
+    return array_merge($this->all(), [
+        'id' => $this->route('id'),
+    ]);
+}
 }
