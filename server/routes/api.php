@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\BaiBao\BaiBaoKhoaHocController;
+use App\Http\Controllers\Admin\TapChi\TapChiController;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,4 +36,26 @@ Route::group([
 
     // Admin-BaiBaoKhoaHoc
     Route::get('baibaokhoahoc', [BaiBaoKhoaHocController::class, 'getAll']);
+
+    // Admin-TapChi
+    Route::get('test', [TapChiController::class, 'test']);
+    Route::get('tapchi', [TapChiController::class, 'getAllTapChi']);
+    Route::get('tapchi/paging', [TapChiController::class, 'getTapChiPaging']);
+    Route::get('tapchi/{id}', [TapChiController::class, 'getTapChiById']);
+    Route::get('tapchi/{id}/khongcongnhan', [TapChiController::class, 'getLichSuTapChiKhongCongNhan']);
+    Route::get('tapchi/{id}/xephang', [TapChiController::class, 'getLichSuXepHangTapChi']);
+    Route::get('tapchi/{id}/tinhdiem', [TapChiController::class, 'getLichSuTinhDiemTapChi']);
+    Route::get('tapchi/{id}/detail', [TapChiController::class, 'getDetailTapChi']);
+
+    Route::post('tapchi', [TapChiController::class, 'createTapChi']);
+
+    Route::patch('tapchi/{id}/trangthai', [TapChiController::class, 'updateTrangThaiTapChi']);
+    Route::patch('tapchi/{id}', [TapChiController::class, 'updateTapChi']);
+    Route::post('tapchi/{id}/khongcongnhan', [TapChiController::class, 'updateKhongCongNhanTapChi']);
+    Route::post('tapchi/{id}/xephang', [TapChiController::class, 'updateXepHangTapChi']);
+    Route::post('tapchi/{id}/tinhdiem', [TapChiController::class, 'updateTinhDiemTapChi']);
+
+    Route::delete('tapchi/{id}', [TapChiController::class, 'deleteTapChi']);
+    Route::post('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
+    Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
 });

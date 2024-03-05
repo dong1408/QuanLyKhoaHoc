@@ -1,13 +1,23 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\TapChi;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DMNganhTheoHSGS extends Model
 {
     use HasFactory;
+    // use SoftDeletes;
+    protected $table = 'd_m_nganh_theo_hdgs';
+    protected $fillable = [
+        'id',
+        'ma',
+        'ten',
+        'created_at',
+        'updated_at'
+    ];
 
     // relation n-n to tap_chi
     public function tapChis(){

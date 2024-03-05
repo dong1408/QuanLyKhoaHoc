@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Service\Auth\AuthService;
 use App\Service\Auth\AuthServiceImpl;
+use App\Service\TapChi\TapChiService;
+use App\Service\TapChi\TapChiServiceImpl;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // dk service
         $this->app->bind(AuthService::class, AuthServiceImpl::class);
+        $this->app->bind(TapChiService::class, TapChiServiceImpl::class);
     }
     /**
      * Bootstrap any application services.

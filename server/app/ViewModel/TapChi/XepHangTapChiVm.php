@@ -2,26 +2,43 @@
 
 namespace App\ViewModel\TapChi;
 
+use App\Models\TapChi\XepHangTapChi;
 use App\ViewModel\User\UserVm;
 use Ramsey\Uuid\Type\Integer;
 
 class XepHangTapChiVm
 {
-    public Integer $id;
+    public int $id;
     public TapChiVm $tapchi; // $id_tapchi
-    public string $wos;
-    public string $if;
-    public string $quartile;
-    public string $abs;
-    public string $abcd;
-    public string $aci;
-    public string $ghichu;
-    public UserVm $user; // $id_user
+    public ?string $wos;
+    public ?string $if;
+    public ?string $quartile;
+    public ?string $abs;
+    public ?string $abcd;
+    public ?string $aci;
+    public ?string $ghichu;
+    public ?UserVm $user; // $id_user
     public string $created_at;
     public string $updated_at;
 
     public function __construct()
     {
+    }
+
+    public function convert(XepHangTapChi $xepHangTapChi)
+    {
+        $this->id = $xepHangTapChi->id;
+        // $this->tapchi = $this->tapChiVm->convert($xepHangTapChi->tapChi);
+        $this->wos = $xepHangTapChi->wos;
+        $this->if = $xepHangTapChi->if;
+        $this->quartile = $xepHangTapChi->quartile;
+        $this->abs = $xepHangTapChi->abs;
+        $this->abcd = $xepHangTapChi->abcd;
+        $this->aci = $xepHangTapChi->aci;
+        $this->ghichu = $xepHangTapChi->ghichu;
+        // $this->user = $this->userVm->convert($xepHangTapChi->user);
+        $this->created_at = $xepHangTapChi->created_at;
+        $this->updated_at = $xepHangTapChi->updated_at;
     }
 
     function getId()

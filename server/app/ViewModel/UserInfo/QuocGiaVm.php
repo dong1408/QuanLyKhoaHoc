@@ -2,19 +2,30 @@
 
 namespace App\ViewModel\UserInfo;
 
+use App\Models\UserInfo\DMQuocGia;
 use Ramsey\Uuid\Type\Integer;
 
 class QuocGiaVm
 {
-    public Integer $id;
+    public int $id;
     public string $maquocgia;
     public string $tenquocgia;
     public string $tenquocgia_en;
     public string $created_at;
-    public string$updated_at;
+    public string $updated_at;
 
     public function __construct()
     {
+    }
+
+    public function convert(DMQuocGia $dMQuocGia)
+    {
+        $this->id = $dMQuocGia->id;
+        $this->maquocgia = $dMQuocGia->maquocgia;
+        $this->tenquocgia = $dMQuocGia->tenquocgia;
+        $this->tenquocgia_en = $dMQuocGia->tenquocgia_en;
+        $this->created_at = $dMQuocGia->created_at;
+        $this->updated_at = $dMQuocGia->updated_at;
     }
 
     function getId()

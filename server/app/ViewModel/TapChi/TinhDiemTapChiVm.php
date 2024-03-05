@@ -2,27 +2,44 @@
 
 namespace App\ViewModel\TapChi;
 
+use App\Models\TapChi\TapChi;
+use App\Models\TapChi\TinhDiemTapChi;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\User\UserVm;
-use Ramsey\Uuid\Type\Integer;
 
 class TinhDiemTapChiVm
 {
-    public Integer $id;
+    public int $id;
     public TapChiVm $tapchi; // $id_tapchi
     public NganhTinhDiemVm $nganhtinhdiem; // $id_nganhtinhdiem
     public ChuyenNganhTinhDiemVm $chuyennganhtinhdiem; // $id_chuyennganhtinhdiem
-    public string $diem;
-    public string $namtinhdiem;
+    public ?string $diem;
+    public ?string $namtinhdiem;
     public UserVm $nguoicapnhat; // $id_nguoicapnhat -- UserVm
-    public string $ghichu;
+    public ?string $ghichu;
     public string $created_at;
     public string $updated_at;
+
+
 
     public function __construct()
     {
     }
+
+    // public function convert(TinhDiemTapChi $tinhDiemTapChi)
+    // {
+    //     $this->id = $tinhDiemTapChi->id;
+    //     $this->tapchi = $this->tapChiVm->convert($tinhDiemTapChi->tapChi);
+    //     $this->nganhtinhdiem = $this->nganhTinhDiemVm->convert($tinhDiemTapChi->nganhTinhDiem);
+    //     $this->chuyennganhtinhdiem = $this->chuyenNganhTinhDiemVm->convert($tinhDiemTapChi->chuyenNganhTinhDiem);
+    //     $this->diem = $tinhDiemTapChi->diem;
+    //     $this->namtinhdiem = $tinhDiemTapChi->namtinhdiem;
+    //     $this->nguoicapnhat = $this->userVm->convert($tinhDiemTapChi->nguoiCapNhat);
+    //     $this->ghichu = $    tinhDiemTapChi->ghichu;
+    //     $this->created_at = $tinhDiemTapChi->created_at;
+    //     $this->updated_at = $tinhDiemTapChi->updated_at;
+    // }
 
     function getId()
     {

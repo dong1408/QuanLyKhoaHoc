@@ -9,7 +9,7 @@ use Ramsey\Uuid\Type\Integer;
 
 class BaiBaoKhoaHocVm
 {
-    public Integer $id;
+    public int $id;
     public SanPhamVm $sanpham;  // $id_sanpham
     public string $doi;
     public string $url;
@@ -27,29 +27,34 @@ class BaiBaoKhoaHocVm
     public string $updated_at;
 
 
+    private $sanPhamVm;
+    private $tapChiVm;
+
     function __construct()
     {
+        $this->sanPhamVm = new SanPhamVm();
+        $this->tapChiVm = new TapChiVm();
     }
 
-    // function convert(BaiBaoKhoaHoc $baiBaoKhoaHoc)
-    // {
-    //     $this->id = $baiBaoKhoaHoc->id;
-    //     $this->sanpham = sanphamVm->convert($baiBaoKhoaHoc->sanPham);
-    //     $this->doi = $baiBaoKhoaHoc->doi;
-    //     $this->url = $baiBaoKhoaHoc->url;
-    //     $this->received = $baiBaoKhoaHoc->recieived;
-    //     $this->accepted = $baiBaoKhoaHoc->accepted;
-    //     $this->published = $baiBaoKhoaHoc->published;
-    //     $this->abstract = $baiBaoKhoaHoc->abstract;
-    //     $this->keywords = $baiBaoKhoaHoc->keywords;
-    //     $this->tapchi = tapchiVm->convert($baiBaoKhoaHoc->tapChi);
-    //     $this->volume = $baiBaoKhoaHoc->volume;
-    //     $this->issue = $baiBaoKhoaHoc->issue;
-    //     $this->number = $baiBaoKhoaHoc->number;
-    //     $this->page = $baiBaoKhoaHoc->page;
-    //     $this->created_at = $baiBaoKhoaHoc->created_at;
-    //     $this->updated_at = $baiBaoKhoaHoc->updated_at;
-    // }
+    function convert(BaiBaoKhoaHoc $baiBaoKhoaHoc)
+    {
+        $this->id = $baiBaoKhoaHoc->id;
+        $this->sanpham = $this->sanPhamVm->convert($baiBaoKhoaHoc->sanPham);
+        $this->doi = $baiBaoKhoaHoc->doi;
+        $this->url = $baiBaoKhoaHoc->url;
+        $this->received = $baiBaoKhoaHoc->recieived;
+        $this->accepted = $baiBaoKhoaHoc->accepted;
+        $this->published = $baiBaoKhoaHoc->published;
+        $this->abstract = $baiBaoKhoaHoc->abstract;
+        $this->keywords = $baiBaoKhoaHoc->keywords;
+        $this->tapchi = $this->tapChiVm->convert($baiBaoKhoaHoc->tapChi);
+        $this->volume = $baiBaoKhoaHoc->volume;
+        $this->issue = $baiBaoKhoaHoc->issue;
+        $this->number = $baiBaoKhoaHoc->number;
+        $this->page = $baiBaoKhoaHoc->page;
+        $this->created_at = $baiBaoKhoaHoc->created_at;
+        $this->updated_at = $baiBaoKhoaHoc->updated_at;
+    }
 
     function getId()
     {

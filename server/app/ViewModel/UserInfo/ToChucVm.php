@@ -2,11 +2,12 @@
 
 namespace App\ViewModel\UserInfo;
 
+use App\Models\UserInfo\DMToChuc;
 use Ramsey\Uuid\Type\Integer;
 
 class ToChucVm
 {
-    public Integer $id;
+    public int $id;
     public string $matochuc;
     public string $tentochuc;
     public string $tentochuc_en;
@@ -19,8 +20,31 @@ class ToChucVm
     public string $created_at;
     public string $updated_at;
 
+    private $tinhThanhVm;
+    private $quocGiaVm;
+    private $phanLoaiToChucVm;
+
     public function __construct()
     {
+        $this->tinhThanhVm = new TinhThanhVm();
+        $this->quocGiaVm = new QuocGiaVm();
+        $this->phanLoaiToChucVm = new PhanLoaiToChucVm();
+    }
+
+    public function convert(DMToChuc $dmToChuc)
+    {
+        $this->id = $dmToChuc->id;
+        $this->matochuc = $dmToChuc->matochuc;
+        $this->tentochuc = $dmToChuc->tentochuc;
+        $this->tentochuc_en = $dmToChuc->tentochuc_en;
+        $this->website = $dmToChuc->website;
+        $this->dienthoai = $dmToChuc->dienthoai;
+        $this->address = $dmToChuc->address;
+        $this->addresscity = $this->tinhThanhVm->convert($dmToChuc->tinhThanh);
+        $this->addresscountry = $this->quocGiaVm->convert($dmToChuc->quocGia);
+        $this->phanloaitochuc = $this->phanLoaiToChucVm->convert($dmToChuc->phanLoaiToChuc);
+        $this->created_at = $dmToChuc->created_at;
+        $this->updated_at = $dmToChuc->updated_at;
     }
 
     function getId()

@@ -2,12 +2,13 @@
 
 namespace App\ViewModel\SanPham;
 
+use App\Models\SanPham\SanPhamTacGia;
 use App\ViewModel\User\UserVm;
 use Ramsey\Uuid\Type\Integer;
 
 class SanPhamTacGiaVm
 {
-    public Integer $id;
+    public int $id;
     public SanPhamVm $sanpham; //$id_sanpham
     public UserVm $tacgia; // $id_tacgia -- user
     public VaiTroTacGiaVm $vaitrotacgia; //$id_vaotrotacgia 
@@ -16,9 +17,29 @@ class SanPhamTacGiaVm
     public string $created_at;
     public string $updated_at;
 
+    private $sanPhamVm;
+    private $userVm;
+    private $vaiTroTacGiaVm;
+
     function __construct()
     {
+        $this->sanPhamVm = new SanPhamVm();
+        $this->userVm = new UserVm();
+        $this->vaiTroTacGiaVm = new VaiTroTacGiaVm();
     }
+
+    public function convert(SanPhamTacGia $sanPhamTacGia)
+    {
+        $this->id = $sanPhamTacGia->id;
+        $this->sanpham = $this->sanPhamVm->convert($sanPhamTacGia->sanPham);
+        $this->tacgia = $this->userVm->convert($sanPhamTacGia->tacGia);
+        $this->vaitrotacgia = $this->vaiTroTacGiaVm->convert($sanPhamTacGia->vaiTroTacGia);
+        $this->thutu = $sanPhamTacGia->thutu;
+        $this->tyledonggop = $sanPhamTacGia->tyledonggop;
+        $this->created_at = $sanPhamTacGia->created_at;
+        $this->updated_at = $sanPhamTacGia->updated_at;
+    }
+
 
     function getId()
     {

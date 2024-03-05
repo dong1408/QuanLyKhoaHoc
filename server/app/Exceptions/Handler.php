@@ -6,6 +6,7 @@ use App\Exceptions\User\UserNotFound;
 use App\Utilities\ResponseError;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -84,6 +85,14 @@ class Handler extends ExceptionHandler
         if ($exception instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
             return response()->json(new ResponseError("BAD_REQUEST", 400, "Phiên đăng nhập hết hạn"), 400);
         }
+
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return response()->json(new ResponseError("BAD_REQUEST", 400, $exception->getMessage()), 400);
+        }
+
+        // if ($exception instanceof ValidationException) {
+        //     return response()->json(new ResponseError("BAD_REQUEST", 400, $exception->getMessage()));
+        // }
 
 
         return parent::render($request, $exception);
