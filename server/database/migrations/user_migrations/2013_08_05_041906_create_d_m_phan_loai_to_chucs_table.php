@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('maloai')->unique();
             $table->string('tenloai')->unique();
             $table->string('tenloai_en')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

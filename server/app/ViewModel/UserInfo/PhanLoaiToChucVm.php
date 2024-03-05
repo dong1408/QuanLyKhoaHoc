@@ -2,11 +2,12 @@
 
 namespace App\ViewModel\UserInfo;
 
+use App\Models\UserInfo\DMPhanLoaiToChuc;
 use Ramsey\Uuid\Type\Integer;
 
 class PhanLoaiToChucVm
 {
-    public Integer $id;
+    public int $id;
     public string $maloai;
     public string $tenloai;
     public string $tenloai_en;
@@ -15,6 +16,16 @@ class PhanLoaiToChucVm
 
     public function __construct()
     {
+    }
+
+    public function convert(DMPhanLoaiToChuc $dMPhanLoaiToChuc)
+    {
+        $this->id = $dMPhanLoaiToChuc->id;
+        $this->maloai = $dMPhanLoaiToChuc->maloai;
+        $this->tenloai = $dMPhanLoaiToChuc->tenloai;
+        $this->tenloai_en = $dMPhanLoaiToChuc->tenloai_en;
+        $this->created_at = $dMPhanLoaiToChuc->created_at;
+        $this->updated_at = $dMPhanLoaiToChuc->updated_at;
     }
 
     function getId()

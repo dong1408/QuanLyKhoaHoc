@@ -30,10 +30,10 @@ class AuthController extends Controller
     public function register(Request $request): Response
     {
         $request->validate([
-            "name" => "required",
-            "username" => "required|unique:users,username", // Ma so giang vien
-            "email" => "required|unique:users,email",
-            "password" => "required"
+            "name" => "bail|required",
+            "username" => "bail|required|digits|unique:users,username", // Ma so giang vien
+            "email" => "bail|email|unique:users,email",
+            "password" => "bail|required"
         ], [
             "username.required" => "Không được để trống username",
             "username.unique" => "Username đã tồn tại trên hệ thống",

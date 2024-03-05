@@ -2,11 +2,12 @@
 
 namespace App\ViewModel\SanPham;
 
+use App\Models\SanPham\DMVaiTroTacGia;
 use Ramsey\Uuid\Type\Integer;
 
 class VaiTroTacGiaVm
 {
-    public Integer $id;
+    public int $id;
     public string $tenvaitro;
     public string $tenvaitro_en;
     public string $mota;
@@ -15,6 +16,16 @@ class VaiTroTacGiaVm
 
     function __construct()
     {
+    }
+
+    public function convert(DMVaiTroTacGia $dmVaiTroTacGia)
+    {
+        $this->id = $dmVaiTroTacGia->id;
+        $this->tenvaitro = $dmVaiTroTacGia->tenvaitro;
+        $this->tenvaitro_en = $dmVaiTroTacGia->tenvaitro_en;
+        $this->mota = $dmVaiTroTacGia->mota;
+        $this->created_at = $dmVaiTroTacGia->created_at;
+        $this->updated_at = $dmVaiTroTacGia->updated_at;
     }
 
     function getId()

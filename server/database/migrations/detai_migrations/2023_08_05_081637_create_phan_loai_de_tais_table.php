@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('tenloai')->unique();
             $table->string('kinhphi')->nullable();
             $table->text('mota')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

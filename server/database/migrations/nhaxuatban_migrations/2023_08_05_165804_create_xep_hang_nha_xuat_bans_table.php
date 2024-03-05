@@ -33,6 +33,8 @@ return new class extends Migration
             $table->string('ghichu')->nullable();
             $table->unsignedBigInteger('id_user')->nullable();
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

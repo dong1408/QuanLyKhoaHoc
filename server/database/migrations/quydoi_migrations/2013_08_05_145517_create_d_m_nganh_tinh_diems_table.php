@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('manganhtinhdiem')->unique();
             $table->string('tennganhtinhdiem')->nullable();
             $table->string('tennganh_en')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

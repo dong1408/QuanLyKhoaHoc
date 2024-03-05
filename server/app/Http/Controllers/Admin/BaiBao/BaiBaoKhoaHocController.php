@@ -62,9 +62,9 @@ class BaiBaoKhoaHocController extends Controller
         // return response()->json($tinhthanhs);
 
         $user = new User();
-        $user->name = "GS Trần Văn Đồng";
-        $user->username = "3120410134";
-        $user->email = "dongden@gmail.com";
+        $user->name = "Trần Quang Đạo";
+        $user->username = "3119410082";
+        $user->email = "quangdao2601@gmail.com";
         $user->password = Hash::make("vandong123");
         $user->save();
 

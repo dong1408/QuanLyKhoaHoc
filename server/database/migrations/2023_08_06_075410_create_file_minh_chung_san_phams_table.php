@@ -21,6 +21,8 @@ return new class extends Migration
             //Chi tiết file
             $table->string('loaiminhchung')->nullable();
             $table->string('url');
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

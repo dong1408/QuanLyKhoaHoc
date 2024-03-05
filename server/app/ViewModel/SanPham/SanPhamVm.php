@@ -2,6 +2,7 @@
 
 namespace App\ViewModel\SanPham;
 
+use App\Models\SanPham\SanPham;
 use App\ViewModel\User\UserVm;
 use App\ViewModel\UserInfo\ToChucVm;
 use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
@@ -9,11 +10,11 @@ use Ramsey\Uuid\Type\Integer;
 
 class SanPhamVm
 {
-    public Integer $id;
+    public int $id;
     public string $tensanpham;
     public DMSanPhamVm $loaisanpham; // $id_loaisanpham -- DMSanPhamVm
-    public Integer $tongsotacgia;
-    public Integer $solanquydoi;
+    public int $tongsotacgia;
+    public int $solanquydoi;
     public Boolean $cosudungemailtruong;
     public Boolean $cosudungemaildonvikhac;
     public Boolean $cothongtintruong;
@@ -33,10 +34,45 @@ class SanPhamVm
     public string $capsanpham;
     public string $thoidiemcongbohoanthanh;
     public string $created_at;
-    public string$updated_at;
+    public string $updated_at;
+
+    private $dmSanPhamVM;
+    private $toChucVm;
+    private $userVm;
 
     function __construct()
     {
+        $this->dmSanPhamVM = new DMSanPhamVm();
+        $this->toChucVm = new ToChucVm();
+        $this->userVm = new UserVm();
+    }
+
+    public function convert(SanPham $sanPham){
+        $this->id;
+        $this->tensanpham = $sanPham->tensanpham;
+        $this->loaisanpham = $this->dmSanPhamVM->convert($sanPham->dmSanPham);
+        $this->tongsotacgia = $sanPham->tongsotacgia;
+        $this->solanquydoi = $sanPham->solanquydoi;
+        $this->cosudungemailtruong = $sanPham->cosudungemailtruong;
+        $this->cosudungemaildonvikhac = $sanPham->cosudungemaildonvikhac;
+        $this->cothongtintruong = $sanPham->cothongtintruong;
+        $this->cothongtindonvikhac = $sanPham->cothongtindonvikhac;
+        $this->thongtinnoikhac = $this->toChucVm->convert($sanPham->thongTinNoiKhac);
+        $this->conhantaitro = $sanPham->conhantaitro;
+        $this->donvitaitro = $this->toChucVm->convert($sanPham->donViTaiTro);
+        $this->chitietdonvitaitro = $sanPham->chitietdonvitaitro;
+        $this->ngaykekhai = $sanPham->ngaykekhai;
+        $this->nguoikekhai = $this->userVm->convert($sanPham->nguoiKeKhai);
+        $this->trangthairasoat = $sanPham->trangthairasoat;
+        $this->ngayrasoat = $sanPham->ngayrasoat;
+        $this->nguoirasoat = $this->userVm->convert($sanPham->nguoiRaSoat);
+        $this->diemquydoi = $sanPham->diemquydoi;
+        $this->gioquydoi = $sanPham->gioquydoi;
+        $this->thongtinchitiet = $sanPham->thongtinchitiet;
+        $this->capsanpham = $sanPham->capsanpham;
+        $this->thoidiemcongbohoanthanh = $sanPham->thoidiemcongbohoanthanh;
+        $this->created_at = $sanPham->created_at;
+        $this->updated_at = $sanPham->updated_at;
     }
 
     function getId()

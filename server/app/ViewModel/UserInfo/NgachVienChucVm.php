@@ -2,11 +2,12 @@
 
 namespace App\ViewModel\UserInfo;
 
+use App\Models\UserInfo\DMNgachVienChuc;
 use Ramsey\Uuid\Type\Integer;
 
 class NgachVienChucVm
 {
-    public Integer $id;
+    public int $id;
     public string $mangach;
     public string $tenngach;
     public string $tenngach_en;
@@ -15,6 +16,16 @@ class NgachVienChucVm
 
     public function __construct()
     {
+    }
+
+    public function convert(DMNgachVienChuc $dMNgachVienChuc)
+    {
+        $this->id = $dMNgachVienChuc->id;
+        $this->mangach = $dMNgachVienChuc->mangach;
+        $this->tenngach = $dMNgachVienChuc->tenngach;
+        $this->tenngach_en = $dMNgachVienChuc->tenngach_en;
+        $this->created_at = $dMNgachVienChuc->created_at;
+        $this->updated_at = $dMNgachVienChuc->updated_at;
     }
 
     function getId()
@@ -47,11 +58,13 @@ class NgachVienChucVm
         $this->tenngach = $tenngach;
     }
 
-    function getTenNgach_en(){
+    function getTenNgach_en()
+    {
         return $this->tenngach_en;
     }
 
-    function setTenNgach_en($tenngach_en){
+    function setTenNgach_en($tenngach_en)
+    {
         $this->tenngach_en = $tenngach_en;
     }
 

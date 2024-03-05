@@ -4,10 +4,25 @@ namespace App\Models\TapChi;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TinhDiemTapChi extends Model
 {
     use HasFactory;
+    // use SoftDeletes;
+    protected $table = 'tinh_diem_tap_chis';
+    protected $fillable = [
+        'id',
+        'id_tapchi',
+        'id_nganhtinhdiem',
+        'diem',
+        'namtinhdiem',
+        'id_nguoicapnhat',
+        'ghichu',
+        'created_at',
+        'updated_at',
+        'id_chuyennganhtinhdiem'
+    ];
 
     // relation 1-1, inverse to tap_chi
     public function tapChi()
@@ -28,7 +43,7 @@ class TinhDiemTapChi extends Model
     }
 
     // inverse to user (nguoi cap nhat)
-    public function user(){
+    public function nguoiCapNhat(){
         return $this->belongsTo('App\Models\User', 'id_nguoicapnhat');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\DeTai\DeTai;
+use App\Models\SanPham\SanPham;
 use App\ViewModel\SanPham\SanPhamVm;
 use App\ViewModel\UserInfo\ToChucVm;
 use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
@@ -14,7 +16,7 @@ class DeTaiVm
     public Boolean $ngoaitruong;
     public Boolean $truongchutri;
     public ToChucVm $tochucchuquan; // $id_tochuchuquan -- tochuc
-    public PhanLoaiDeTaiVm $loaidetaiVm; // $id_loaidetai -- phanloaidetai
+    public PhanLoaiDeTaiVm $loaidetai; // $id_loaidetai -- phanloaidetai
     public Boolean $detaihoptac;
     public ToChucVm $tochuchoptac; // $id_tochuchoptac -- tochuc
     public string $tylekinhphidonvihoptac;
@@ -22,8 +24,36 @@ class DeTaiVm
     public $created_at;
     public $updated_at;
 
+
+    private $sanPhamVM;
+    private $toChucChuQuanVm;
+    private $loaiDeTaiVm;
+    private $toChucHopTacVm;    
+
     function __construct()
     {
+        $this->sanPhamVM = new SanPhamVm();
+        $this->toChucChuQuanVm = new ToChucVm();
+        $this->loaiDeTaiVm = new PhanLoaiDeTaiVm();
+        $this->toChucHopTacVm = new ToChucVm(); 
+    }
+
+    public function convert(DeTai $deTai)
+    {
+        $this->id = $deTai->id;
+        $this->sanpham = $this->sanPhamVM->convert($deTai->sanPham);
+        $this->maso = $deTai->maso;
+        $this->ngaydangky = $deTai->ngaydangky;
+        $this->ngoaitruong = $deTai->ngoaitruong;
+        $this->truongchutri = $deTai->truongchutri;
+        $this->tochucchuquan = $this->toChucChuQuanVm->convert($deTai->toChucChuQuan);
+        $this->loaidetai = $this->loaiDeTaiVm->convert($deTai->phanLoaiDeTai);
+        $this->detaihoptac = $deTai->detaihoptac;
+        $this->tochuchoptac = $this->toChucHopTacVm->convert($deTai->toChucHopTac);
+        $this->tylekinhphidonvihoptac = $deTai->tylekinhphidonvihoptac;
+        $this->capdetai = $deTai->capdetai;
+        $this->created_at = $deTai->created_at;
+        $this->updated_at = $deTai->updated_at;
     }
 
     function getId()
@@ -96,14 +126,14 @@ class DeTaiVm
         $this->tochucchuquan = $tochucchuquanVm;
     }
 
-    function getLoaiDeTaiVm()
+    function getLoaiDeTai()
     {
-        return $this->loaidetaiVm;
+        return $this->loaidetai;
     }
 
-    function setLoaiDeTaiVm(PhanLoaiDeTaiVm $loaidetaiVm)
+    function setLoaiDeTai(PhanLoaiDeTaiVm $loaidetaiVm)
     {
-        $this->loaidetaiVm = $loaidetaiVm;
+        $this->loaidetai = $loaidetaiVm;
     }
 
     function getDeTaiHopTac()
