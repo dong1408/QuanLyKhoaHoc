@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\BaiBao\BaiBaoKhoaHocController;
+use App\Http\Controllers\Admin\QuyDoi\ChuyenNganhTinhDiemController;
+use App\Http\Controllers\Admin\QuyDoi\NganhTinhDiemController;
 use App\Http\Controllers\Admin\TapChi\TapChiController;
 use App\Http\Controllers\Admin\UserInfo\QuocGiaController;
 use App\Http\Controllers\Admin\UserInfo\TinhThanhController;
@@ -62,9 +64,17 @@ Route::group([
     Route::post('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
     Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
 
+    // =============================== UserInfo ============================================== //
     // Quoc Gia
     Route::get('quocgia', [QuocGiaController::class, 'getAllQuocGia']);
-
     // Tinh Thanh
     Route::get('tinhthanh', [TinhThanhController::class, 'getAllTinhThanh']);
+
+
+    // ============================== Nganh Tinh Diem ======================================== //
+    Route::get('nganhtinhdiem', [NganhTinhDiemController::class, 'getAllNganhTinhDiem']);
+
+
+    // ============================== Chuyen Nganh Tinh Diem ================================= //
+    Route::get('chuyennganhtinhdiem', [ChuyenNganhTinhDiemController::class, 'getAllChuyenNganhTinhDiem']);
 });

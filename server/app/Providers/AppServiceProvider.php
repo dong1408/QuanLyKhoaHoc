@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use App\Service\Auth\AuthService;
 use App\Service\Auth\AuthServiceImpl;
+use App\Service\QuyDoi\ChuyenNganhTinhDiemService;
+use App\Service\QuyDoi\ChuyenNganhTinhDiemServiceImpl;
+use App\Service\QuyDoi\NganhTinhDiemService;
+use App\Service\QuyDoi\NganhTinhDiemServiceImpl;
 use App\Service\TapChi\PhanLoaiTapChiService;
 use App\Service\TapChi\PhanLoaiTapChiServiceImpl;
 use App\Service\TapChi\TapChiService;
@@ -29,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PhanLoaiTapChiService::class, PhanLoaiTapChiServiceImpl::class);
         $this->app->bind(QuocGiaService::class, QuocGiaServiceImpl::class);
         $this->app->bind(TinhThanhService::class, TinhThanhServiceImpl::class);
+        $this->app->bind(NganhTinhDiemService::class, NganhTinhDiemServiceImpl::class);
+        $this->app->bind(ChuyenNganhTinhDiemService::class, ChuyenNganhTinhDiemServiceImpl::class);
     }
     /**
      * Bootstrap any application services.
