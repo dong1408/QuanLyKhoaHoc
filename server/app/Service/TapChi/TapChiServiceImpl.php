@@ -3,9 +3,11 @@
 namespace App\Service\TapChi;
 
 use App\Exceptions\Delete\DeleteFailException;
+use App\Exceptions\InvalidValueException;
 use App\Exceptions\NhaXuatBan\NhaXuatBanNotFoundException;
 use App\Exceptions\QuyDoi\ChuyenNganhTinhDiemNotFoundException;
 use App\Exceptions\QuyDoi\NganhTinhDiemNotFoundException;
+use App\Exceptions\TapChi\NameTapChiUsedException;
 use App\Exceptions\TapChi\NganhTheoHDGSNotFoundException;
 use App\Exceptions\TapChi\PhanLoaiTapChiNotFoundException;
 use App\Exceptions\TapChi\TapChiNotFoundException;
@@ -13,6 +15,12 @@ use App\Exceptions\TapChi\UpdateKhongCongNhanException;
 use App\Exceptions\ToChuc\DonViChuQuanNotFoundException;
 use App\Exceptions\UserInfo\QuocGiaNotFoundException;
 use App\Exceptions\UserInfo\TinhThanhNotFoundException;
+use App\Http\Requests\TapChi\CreateTapChiRequest;
+use App\Http\Requests\TapChi\UpdateTapChiKhongCongNhanRequest;
+use App\Http\Requests\TapChi\UpdateTapChiRequest;
+use App\Http\Requests\TapChi\UpdateTinhDiemTapChiRequest;
+use App\Http\Requests\TapChi\UpdateTrangThaiTapChiRequest;
+use App\Http\Requests\TapChi\UpdateXepHangTapChiRequest;
 use App\Models\NhaXuatBan\NhaXuatBan;
 use App\Models\QuyDoi\DMChuyenNganhTinhDiem;
 use App\Models\QuyDoi\DMNganhTinhDiem;
@@ -30,7 +38,6 @@ use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\Global_;
 
 class TapChiServiceImpl implements TapChiService
 {
@@ -89,6 +96,11 @@ class TapChiServiceImpl implements TapChiService
     public function getTapChiById(int $id): ResponseSuccess
     {
         $id = (int) $id;
+
+        if(!is_int($id)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
@@ -100,6 +112,11 @@ class TapChiServiceImpl implements TapChiService
     public function getDetailTapChi(int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
@@ -112,6 +129,11 @@ class TapChiServiceImpl implements TapChiService
     public function getLichSuTapChiKhongCongNhan(Request $request, int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
@@ -134,6 +156,11 @@ class TapChiServiceImpl implements TapChiService
     public function getLichSuXepHangTapChi(Request $request, int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
@@ -156,6 +183,11 @@ class TapChiServiceImpl implements TapChiService
     public function getLichSuTinhDiemTapChi(Request $request, int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
@@ -173,254 +205,176 @@ class TapChiServiceImpl implements TapChiService
     }
 
 
-    public function createTapChi(Request $request): ResponseSuccess
+    public function createTapChi(CreateTapChiRequest $request): ResponseSuccess
     {
-        if (!empty($request->id_nhaxuatban) && !NhaXuatBan::find($request->id_nhaxuatban)) {
-            throw new NhaXuatBanNotFoundException();
-        }
-        if (!empty($request->id_donvichuquan) && !DMToChuc::find($request->id_donvichuquan)) {
-            throw new DonViChuQuanNotFoundException();
-        }
-        if (!empty($request->id_address_city) && !DMTinhThanh::find($request->id_address_city)) {
-            throw new TinhThanhNotFoundException();
-        }
-        if (!empty($request->id_address_country) && !DMQuocGia::find($request->id_address_country)) {
-            throw new QuocGiaNotFoundException();
-        }
-        if (!empty($request->tinhdiemtapchi['id_nganhtinhdiem']) && !DMNganhTinhDiem::find($request->tinhdiemtapchi['id_nganhtinhdiem'])) {
-            throw new NganhTinhDiemNotFoundException();
-        }
-        if (!empty($request->tinhdiemtapchi['id_chuyennganhtinhdiem']) && !DMChuyenNganhTinhDiem::find($request->tinhdiemtapchi['id_chuyennganhtinhdiem'])) {
-            throw new ChuyenNganhTinhDiemNotFoundException();
-        }
-        if (!empty($request->dmphanloaitapchi) && !collect($request->dmphanloaitapchi)->diff(DMPhanLoaiTapChi::whereIn('id', $request->dmphanloaitapchi)->get()->pluck('id')->all())->isEmpty()) {
-            throw new PhanLoaiTapChiNotFoundException();
-        }
-        if (!empty($request->dmnganhtheohdgs) && !collect($request->dmnganhtheohdgs)->diff(DMNganhTheoHDGS::whereIn('id', $request->dmnganhtheohdgs)->get()->pluck('id')->all())->isEmpty()) {
-            throw new NganhTheoHDGSNotFoundException();
-        }
-
-        $request->validate([
-            "name" => "bail|required|unique:tap_chis,name",
-            "issn" => "bail|nullable|string",
-            "eissn" => "bail|nullable|string",
-            "pissn" => "bail|nullable|string",
-            "website" => "bail|nullable|url",
-            "quocte" => "bail|nullable|boolean",
-            "id_nhaxuatban" => "bail|nullable|integer",
-            "id_donvichuquan" => "bail|nullable|integer",
-            "address" => "bail|nullable|string",
-            "id_address_city" => "bail|nullable|integer",
-            "id_address_country" => "bail|nullable|integer",
-            "trangthai" => "bail|nullable|boolean",
-
-            "tapchikhongcongnhan.khongduoccongnhan" => "bail|nullable|boolean",
-            "tapchikhongcongnhan.ghichu" => "bail|nullable|string",
-
-            "xephangtapchi.wos" => "bail|nullable|string",
-            "xephangtapchi.if" => "bail|nullable|string",
-            "xephangtapchi.quartile" => "bail|nullable|string",
-            "xephangtapchi.abs" => "bail|nullable|string",
-            "xephangtapchi.abcd" => "bail|nullable|string",
-            "xephangtapchi.aci" => "bail|nullable|string",
-            "xephangtapchi.ghichu" => "bail|nullable|string",
-
-            "tinhdiemtapchi.id_nganhtinhdiem" => "bail|required|integer",
-            "tinhdiemtapchi.id_chuyennganhtinhdiem" => "bail|required|integer",
-            "tinhdiemtapchi.diem" => "bail|nullable|string",
-            "tinhdiemtapchi.namtinhdiem" => "bail|nullable|string",
-            "tinhdiemtapchi.ghichu" => "bail|nullable|string",
-
-            "dmphanloaitapchi" => "bail|nullable|array",
-            'dmnganhtheohdgs' => "bail|nullable|array",
-        ], [
-            // "tapchikhongcongnhan.khongduoccongnhan.required" => "yeu cau kh dc bo trong"
-            // "tapchikhongcongnhan.khongduoccongnhan.required.boolean" => ""
-        ]);
+        $validated = $request->validated();
         $tapChi = new TapChi();
-        DB::transaction(function () use ($request, &$tapChi) {
+        DB::transaction(function () use ($validated, &$tapChi) {
             $tapChi = TapChi::create([
-                'name' => $request->name,
-                'issn' => $request->issn,
-                'eissn' => $request->eissn,
-                'pissn' => $request->pissn,
-                'website' => $request->website,
-                'quocte' => $request->quocte,
-                'id_nhaxuatban' => $request->id_nhaxuatban,
-                'id_donvichuquan' => $request->id_donvichuquan,
-                'address' => $request->address,
-                'id_address_city' => $request->id_address_city,
-                'id_address_country' => $request->id_address_country,
-                'trangthai' => $request->trangthai,
+                'name' => $validated->name,
+                'issn' => $validated->issn,
+                'eissn' => $validated->eissn,
+                'pissn' => $validated->pissn,
+                'website' => $validated->website,
+                'quocte' => $validated->quocte,
+                'id_nhaxuatban' => $validated->id_nhaxuatban,
+                'id_donvichuquan' => $validated->id_donvichuquan,
+                'address' => $validated->address,
+                'id_address_city' => $validated->id_address_city,
+                'id_address_country' => $validated->id_address_country,
+                'trangthai' => $validated->trangthai,
                 'id_nguoithem' => auth('api')->user()->id,
             ]);
             TapChiKhongCongNhan::create([
                 'id_tapchi' => $tapChi->id,
-                'khongduoccongnhan' => $request->tapchikhongcongnhan['khongduoccongnhan'],
-                'ghichu' => $request->tapchikhongcongnhan['ghichu'],
+                'khongduoccongnhan' => $validated->tapchikhongcongnhan['khongduoccongnhan'],
+                'ghichu' => $validated->tapchikhongcongnhan['ghichu'],
                 'id_nguoicapnhat' => auth('api')->user()->id,
             ]);
             XepHangTapChi::create([
                 'id_tapchi' => $tapChi->id,
-                'wos' => $request->xephangtapchi['wos'],
-                'if' => $request->xephangtapchi['if'],
-                'quartile' => $request->xephangtapchi['quartile'],
-                'abs' => $request->xephangtapchi['abs'],
-                'abcd' => $request->xephangtapchi['abcd'],
-                'aci' => $request->xephangtapchi['aci'],
-                'ghichu' => $request->xephangtapchi['ghichu'],
+                'wos' => $validated->xephangtapchi['wos'],
+                'if' => $validated->xephangtapchi['if'],
+                'quartile' => $validated->xephangtapchi['quartile'],
+                'abs' => $validated->xephangtapchi['abs'],
+                'abcd' => $validated->xephangtapchi['abcd'],
+                'aci' => $validated->xephangtapchi['aci'],
+                'ghichu' => $validated->xephangtapchi['ghichu'],
                 'id_user' => auth('api')->user()->id
             ]);
             TinhDiemTapChi::create([
                 'id_tapchi' => $tapChi->id,
-                'id_chuyennganhtinhdiem' => $request->tinhdiemtapchi['id_chuyennganhtinhdiem'],
-                'id_nganhtinhdiem' => $request->tinhdiemtapchi['id_nganhtinhdiem'],
-                'diem' => $request->tinhdiemtapchi['diem'],
-                'namtinhdiem' => $request->tinhdiemtapchi['namtinhdiem'],
+                'id_chuyennganhtinhdiem' => $validated->tinhdiemtapchi['id_chuyennganhtinhdiem'],
+                'id_nganhtinhdiem' => $validated->tinhdiemtapchi['id_nganhtinhdiem'],
+                'diem' => $validated->tinhdiemtapchi['diem'],
+                'namtinhdiem' => $validated->tinhdiemtapchi['namtinhdiem'],
                 'id_nguoicapnhat' => auth('api')->user()->id,
-                'ghichu' => $request->tinhdiemtapchi['ghichu']
+                'ghichu' => $validated->tinhdiemtapchi['ghichu']
             ]);
-            $tapChi->dmPhanLoaiTapChis()->attach($request->dmphanloaitapchi);
-            $tapChi->dmNganhTheoHDGS()->attach($request->dmnganhtheohdgs);
+            $tapChi->dmPhanLoaiTapChis()->attach($validated->dmphanloaitapchi);
+            $tapChi->dmNganhTheoHDGS()->attach($validated->dmnganhtheohdgs);
         });
         $result = Convert::getTapChiVm($tapChi);
         return new ResponseSuccess("Thành công", $result);
     }
 
 
-    public function updateTrangThaiTapChi(Request $request, int $id): ResponseSuccess
+    public function updateTrangThaiTapChi(UpdateTrangThaiTapChiRequest $request, int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
-        $request->validate([
-            "trangthai" => "required|boolean"
-        ]);
-        $tapChi->trangthai = $request->trangthai;
+
+        $validated = $request->validated();
+
+        $tapChi->trangthai = $validated->trangthai;
         $tapChi->save();
         $result = Convert::getTapChiVm($tapChi);
         return new ResponseSuccess("Thành công", $result);
     }
 
 
-    public function updateTapChi(Request $request, int $id): ResponseSuccess
+    public function updateTapChi(UpdateTapChiRequest $request, int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
-        if ($tapChi == null) {
-            throw new TapChiNotFoundException();
-        }
-        if (!empty($request->id_nhaxuatban) && !NhaXuatBan::find($request->id_nhaxuatban)) {
-            throw new NhaXuatBanNotFoundException();
-        }
-        if (!empty($request->id_donvichuquan) && !DMToChuc::find($request->id_donvichuquan)) {
-            throw new DonViChuQuanNotFoundException();
-        }
-        if (!empty($request->id_address_city) && !DMTinhThanh::find($request->id_address_city)) {
-            throw new TinhThanhNotFoundException();
-        }
-        if (!empty($request->id_address_country) && !DMQuocGia::find($request->id_address_country)) {
-            throw new QuocGiaNotFoundException();
-        }
-        if (!empty($request->dmphanloaitapchi) && !collect($request->dmphanloaitapchi)->diff(DMPhanLoaiTapChi::whereIn('id', $request->dmphanloaitapchi)->get()->pluck('id')->all())->isEmpty()) {
-            throw new PhanLoaiTapChiNotFoundException();
-        }
-        if (!empty($request->dmnganhtheohdgs) && !collect($request->dmnganhtheohdgs)->diff(DMNganhTheoHDGS::whereIn('id', $request->dmnganhtheohdgs)->get()->pluck('id')->all())->isEmpty()) {
-            throw new NganhTheoHDGSNotFoundException();
+
+        $validated = $request->validated();
+
+        $findTapChiByName = TapChi::where('name',$validated->name);
+
+        if($findTapChiByName != null && $findTapChiByName->id != $tapChi->id){
+            throw new NameTapChiUsedException();
         }
 
-        $uniqueNameRule = $tapChi->name === $request->name ? '' : '|unique:tap_chis,name';
-        $request->validate([
-            "name" => "bail|required|" . $uniqueNameRule,
-            "issn" => "bail|nullable|string",
-            "eissn" => "bail|nullable|string",
-            "pissn" => "bail|nullable|string",
-            "website" => "bail|nullable|url",
-            "quocte" => "bail|nullable|boolean",
-            "id_nhaxuatban" => "bail|nullable|integer",
-            "id_donvichuquan" => "bail|nullable|integer",
-            "address" => "bail|nullable|string",
-            "id_address_city" => "bail|nullable|integer",
-            "id_address_country" => "bail|nullable|integer",
 
-            "dmphanloaitapchi" => "bail|nullable|array",
-            "dmnganhtheohdgs" => "bail|nullable|array"
-        ]);
-        DB::transaction(function () use ($request, &$tapChi) {
-            $tapChi->name = $request->name;
-            $tapChi->issn = $request->issn;
-            $tapChi->eissn = $request->eissn;
-            $tapChi->pissn = $request->pissn;
-            $tapChi->website = $request->website;
-            $tapChi->quocte = $request->quocte;
-            $tapChi->id_nhaxuatban = $request->id_nhaxuatban;
-            $tapChi->id_donvichuquan = $request->id_donvichuquan;
-            $tapChi->address = $request->address;
-            $tapChi->id_address_city = $request->id_address_city;
-            $tapChi->id_address_country = $request->id_address_country;
+        DB::transaction(function () use ($validated, &$tapChi) {
+            $tapChi->name = $validated->name;
+            $tapChi->issn = $validated->issn;
+            $tapChi->eissn = $validated->eissn;
+            $tapChi->pissn = $validated->pissn;
+            $tapChi->website = $validated->website;
+            $tapChi->quocte = $validated->quocte;
+            $tapChi->id_nhaxuatban = $validated->id_nhaxuatban;
+            $tapChi->id_donvichuquan = $validated->id_donvichuquan;
+            $tapChi->address = $validated->address;
+            $tapChi->id_address_city = $validated->id_address_city;
+            $tapChi->id_address_country = $validated->id_address_country;
             $tapChi->id_nguoithem = auth('api')->user()->id;
             $tapChi->save();
-            $tapChi->dmPhanLoaiTapChis()->sync($request->dmphanloaitapchi);
-            $tapChi->dmNganhTheoHDGS()->sync($request->dmnganhtheohdgs);
+            $tapChi->dmPhanLoaiTapChis()->sync($validated->dmphanloaitapchi);
+            $tapChi->dmNganhTheoHDGS()->sync($validated->dmnganhtheohdgs);
         });
         $result = Convert::getTapChiVm($tapChi);
         return new ResponseSuccess("Thành công", $result);
     }
 
 
-    public function updateKhongCongNhanTapChi(Request $request, int $id): ResponseSuccess
+    public function updateKhongCongNhanTapChi(UpdateTapChiKhongCongNhanRequest $request, int $id): ResponseSuccess
     {
-        $request->validate([
-            "khongduoccongnhan" => "bail|nullable|boolean",
-            "ghichu" => "bail|nullable|string",
-        ]);
 
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
-        if($tapChi->khongduoccongnhan == $request->khongduoccongnhan){
+
+        $validated = $request->validated();
+
+        if($tapChi->khongduoccongnhan == $validated->khongduoccongnhan){
             throw new UpdateKhongCongNhanException();
         }
     
         $tapChiKhongCongNhan = TapChiKhongCongNhan::create([
             'id_tapchi' => $tapChi->id,
-            'khongduoccongnhan' => $request->khongduoccongnhan,
-            'ghichu' => $request->ghichu,
+            'khongduoccongnhan' => $validated->khongduoccongnhan,
+            'ghichu' => $validated->ghichu,
             'id_nguoicapnhat' => auth('api')->user()->id,
         ]);
         $result = Convert::getTapChiKhongCongNhanVm($tapChiKhongCongNhan);
         return new ResponseSuccess("Thành công", $result);
     }
 
-    public function updateXepHangTapChi(Request $request, int $id): ResponseSuccess
+    public function updateXepHangTapChi(UpdateXepHangTapChiRequest $request, int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
-        $request->validate([
-            "wos" => "bail|nullable|string",
-            "if" => "bail|nullable|string",
-            "quartile" => "bail|nullable|string",
-            "abs" => "bail|nullable|string",
-            "abcd" => "bail|nullable|string",
-            "aci" => "bail|nullable|string",
-            "ghichu" => "bail|nullable|string",
-        ]);
+
+        $validated = $request->validated();
+
         $xepHangTapChi = XepHangTapChi::create([
             'id_tapchi' => $tapChi->id,
-            'wos' => $request->wos,
-            'if' => $request->if,
-            'quartile' => $request->quartile,
-            'abs' => $request->abs,
-            'abcd' => $request->abcd,
-            'aci' => $request->aci,
-            'ghichu' => $request->ghichu,
+            'wos' => $validated->wos,
+            'if' => $validated->if,
+            'quartile' => $validated->quartile,
+            'abs' => $validated->abs,
+            'abcd' => $validated->abcd,
+            'aci' => $validated->aci,
+            'ghichu' => $validated->ghichu,
             'id_user' => auth('api')->user()->id,
         ]);
         $result = Convert::getXepHangTapChiVm($xepHangTapChi);
@@ -428,34 +382,29 @@ class TapChiServiceImpl implements TapChiService
     }
 
 
-    public function updateTinhDiemTapChi(Request $request, int $id): ResponseSuccess
+    public function updateTinhDiemTapChi(UpdateTinhDiemTapChiRequest $request, int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
-        if (!empty($request->id_nganhtinhdiem) && !DMNganhTinhDiem::find($request->id_nganhtinhdiem)) {
-            throw new NganhTinhDiemNotFoundException();
-        }
-        if (!empty($request->id_chuyennganhtinhdiem) && !DMChuyenNganhTinhDiem::find($request->id_chuyennganhtinhdiem)) {
-            throw new ChuyenNganhTinhDiemNotFoundException();
-        }
-        $request->validate([
-            "id_nganhtinhdiem" => "bail|required|integer",
-            "id_chuyennganhtinhdiem" => "bail|required|integer",
-            "diem" => "bail|nullable|string",
-            "namtinhdiem" => "bail|nullable|string",
-            "ghichu" => "bail|nullable|string",
-        ]);
+
+        $validated = $request->validated();
+
         $tinhDiemTapChi = TinhDiemTapChi::create([
             'id_tapchi' => $tapChi->id,
-            'id_chuyennganhtinhdiem' => $request->id_chuyennganhtinhdiem,
-            'id_nganhtinhdiem' => $request->id_nganhtinhdiem,
-            'diem' => $request->diem,
-            'namtinhdiem' => $request->namtinhdiem,
+            'id_chuyennganhtinhdiem' => $validated->id_chuyennganhtinhdiem,
+            'id_nganhtinhdiem' => $validated->id_nganhtinhdiem,
+            'diem' => $validated->diem,
+            'namtinhdiem' => $validated->namtinhdiem,
             'id_nguoicapnhat' => auth('api')->user()->id,
-            'ghichu' => $request->ghichu
+            'ghichu' => $validated->ghichu
         ]);
         $result = Convert::getTinhDIemTapChiVm($tinhDiemTapChi);
         return new ResponseSuccess("Thành công", $result);
@@ -466,6 +415,11 @@ class TapChiServiceImpl implements TapChiService
     public function deleteTapChi(int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
@@ -479,6 +433,11 @@ class TapChiServiceImpl implements TapChiService
     public function restoreTapChi(int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::onlyTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
@@ -490,6 +449,11 @@ class TapChiServiceImpl implements TapChiService
     public function forceDeleteTapChi(int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
+
+        if(!is_int($id_tapchi)){
+            throw new InvalidValueException();
+        }
+
         $tapChi = TapChi::onlyTrashed()->find($id_tapchi);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();

@@ -41,8 +41,7 @@ Route::group([
     // BaiBaoKhoaHoc
     Route::get('baibaokhoahoc', [BaiBaoKhoaHocController::class, 'getAll']);
 
-    // TapChi    
-    Route::get('test', [TapChiController::class, 'test']);
+    // TapChi
     Route::get('tapchi', [TapChiController::class, 'getAllTapChi']);
     Route::get('tapchi/paging', [TapChiController::class, 'getTapChiPaging']);
     Route::get('tapchi/{id}', [TapChiController::class, 'getTapChiById']);
