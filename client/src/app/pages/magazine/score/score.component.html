@@ -1,0 +1,66 @@
+<div>
+    <nz-modal
+            [nzVisible]="isOpenRecognizeForm"
+            nzTitle="Công Nhận Tạp Chí"
+            nzOkText="Gửi"
+            (nzOnOk)="updateMagazineRecognize()"
+            (nzOnCancel)="openRecognizeForm()"
+            [nzOkLoading]="false"
+    >
+        <ng-container *nzModalContent>
+            <form nz-form class="tw-space-y-[16px]" [formGroup]="formRecognize">
+                <div>
+                    <h3 class="tw-text-center">Trạng Thái</h3>
+                    <nz-form-control>
+                        <nz-select formControlName="khongduoccongnhan">
+                            <nz-option nzLabel="Công Nhận" [nzValue]=true></nz-option>
+                            <nz-option nzLabel="Không Công Nhận" [nzValue]=false></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="formRecognize.controls?.['khongduoccongnhan']?.touched && formRecognize.controls?.['khongduoccongnhan']?.dirty">
+                            <small *ngIf="formRecognize.controls?.['khongduoccongnhan']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div>
+                    <h3 class="tw-text-center">Ghi Chú</h3>
+                    <nz-form-control>
+            <textarea
+                    nz-input
+                    placeholder="Ghi chú"
+                    formControlName="ghichu"
+                    [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+            ></textarea>
+                        <ng-container *ngIf="formRecognize.controls?.['ghichu']?.touched && formRecognize.controls?.['ghichu']?.dirty">
+                            <small *ngIf="formRecognize.controls?.['ghichu']?.errors?.['whitespace']" class="tw-ml-2 tw-text-red-600">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
+<div class="tw-space-y-[16px]">
+    <button nz-button nzType="primary" routerLink="/tap-chi">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+    <h1 class="text-primary tw-text-5xl">LỊCH SỬ TÍNH ĐIỂM TẠP CHÍ</h1>
+    <div class="tw-mt-[15] tw-space-y-[6px]">
+        <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-space-y-[4px] lg:tw-space-x-[8px]">
+            <button nz-button nzType="primary" (click)="openRecognizeForm()">
+                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                Cập Nhật Lịch Sử Mới
+            </button>
+        </div>
+    </div>
+    <div class="tw-space-y-[10px]">
+        <h2 class="primary tw-text-3xl tw-text-center">LỊCH SỬ</h2>
+        <div>
+            <app-score-card [score]="data"></app-score-card>
+        </div>
+        <div class="tw-text-right">
+            <nz-pagination [nzPageIndex]="1" [nzTotal]="500"></nz-pagination>
+        </div>
+    </div>
+</div>
+

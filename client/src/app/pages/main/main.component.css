@@ -6,7 +6,8 @@
 }
 
 .app-layout {
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
 }
 
 .menu-sidebar {
@@ -53,7 +54,6 @@ h1,h2,h3,h4,h5,h6 {
     padding-left: 24px;
     overflow: hidden;
     line-height: 64px;
-    background: #001529;
     transition: all .3s;
 }
 
@@ -98,5 +98,6 @@ nz-content {
 .inner-content {
     padding: 24px;
     background: #fff;
-    height: 100%;
+    min-height: 100vh;
+    height: auto;
 }

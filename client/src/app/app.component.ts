@@ -21,21 +21,21 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit() {
-    if(this.localStorageService.get(ACCESS_TOKEN) !== null && this.localStorageService.get(REFRESH_TOKEN) !== null && this.authService.getCurrentUser() === null){
-      this.authService.getMe().pipe().subscribe({
-        next:(response) => {
-          this.authService.setCurrentUser(response.data)
-          this.authService.userState$.next(response.data)
-        },
-        error:(error) => {
-          this.notificationService.create(
-              'error',
-              "Lỗi",
-              error
-          )
-          this.router.navigate(["/dang-nhap"])
-        }
-      })
-    }
+    // if(this.localStorageService.get(ACCESS_TOKEN) !== null && this.localStorageService.get(REFRESH_TOKEN) !== null && this.authService.getCurrentUser() === null){
+    //   this.authService.getMe().pipe().subscribe({
+    //     next:(response) => {
+    //       this.authService.setCurrentUser(response.data)
+    //       this.authService.userState$.next(response.data)
+    //     },
+    //     error:(error) => {
+    //       this.notificationService.create(
+    //           'error',
+    //           "Lỗi",
+    //           error
+    //       )
+    //       this.router.navigate(["/dang-nhap"])
+    //     }
+    //   })
+    // }
   }
 }

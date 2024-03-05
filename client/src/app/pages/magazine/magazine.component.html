@@ -1,0 +1,88 @@
+<div class="tw-space-y-[16px]">
+    <h1 class="text-primary tw-text-5xl">TẠP CHÍ</h1>
+    <div class="tw-mt-[15] tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+        <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+            <button nz-button nzType="primary">
+                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                Tạo Mới
+            </button>
+            <button nz-button nzType="default" routerLink="lich-su-cong-nhan">
+                <span nz-icon nzType="history" nzTheme="outline"></span>
+                Lịch Sử Công Nhận
+            </button>
+            <button nz-button nzType="default" routerLink="lich-su-tinh-diem">
+                <span nz-icon nzType="history" nzTheme="outline"></span>
+                Lịch Sử Tính Điểm
+            </button>
+            <button nz-button nzType="default">
+                <span nz-icon nzType="history" nzTheme="outline"></span>
+                Lịch Sử Xếp Hạng
+            </button>
+        </div>
+    </div>
+
+    <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+        <button nz-button [nzType]="currentButton === 1 ? 'primary' : 'default'" (click)="setCurrentButton(1)">
+            Đã Phê Duyệt
+        </button>
+        <button nz-button [nzType]="currentButton === 2 ? 'primary' : 'default'" (click)="setCurrentButton(2)">
+            Chưa Phê Duyệt
+        </button>
+        <button nz-button [nzType]="currentButton === 3 ? 'primary' : 'default'" nzDanger (click)="setCurrentButton(3)">
+            Đã Xóa
+        </button>
+    </div>
+
+<!--    class="tw-overflow-x-auto tw-h-screen-->
+
+    <div class="tw-space-y-[10px]">
+        <nz-table
+            #tapchi
+            [nzData]="magazines"
+            [nzLoading]="false"
+            [nzShowPagination]="false"
+            [nzScroll]="{x:'auto' }"
+        >
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Tạp Chí</th>
+                <th>Người Tạo</th>
+                <th>Trạng Thái</th>
+                <th>Ngày Cập Nhật</th>
+                <th>Thao Tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of tapchi.data">
+                <td>{{ data.id }}</td>
+                <td nzEllipsis>{{ data.name }}</td>
+                <td nzEllipsis>{{ data.nguoithem?.name }}</td>
+                <td class="{{data.trangthai ? 'success' : 'error'}}">{{ data.trangthai ? 'Đã Phê Duyệt' : 'Chưa Phê Duyệt'}}</td>
+                <td>{{ data.updated_at }}</td>
+                <td class="tw-flex tw-items-center tw-space-x-[4px]">
+                    <button nz-button nzType="primary">
+                        <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+                        Chi Tiết
+                    </button>
+                    <button
+                            nz-button
+                            nz-popconfirm
+                            nzPopconfirmTitle="Xóa tạp chí ?"
+                            (nzOnConfirm)="onDeleteMagazine(data.id)"
+                            nz-button
+                            nzType="default"
+                            nzDanger
+                    >
+                        <span nz-icon nzType="delete" nzTheme="outline"></span>
+                        Xóa
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </nz-table>
+        <div class="tw-text-right">
+            <nz-pagination [nzPageIndex]="1" [nzTotal]="500"></nz-pagination>
+        </div>
+    </div>
+</div>
