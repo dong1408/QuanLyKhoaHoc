@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('ngaynopbaocao')->nullable();
             $table->string('ketquaxet')->nullable();
             $table->string('thoigiangiahan')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

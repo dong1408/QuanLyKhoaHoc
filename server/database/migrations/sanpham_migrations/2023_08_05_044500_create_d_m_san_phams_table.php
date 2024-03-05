@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('masanpham')->unique();
             $table->string('tensanpham')->unique();
             $table->string('mota')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

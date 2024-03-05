@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('madonvi')->unique();
             $table->string('tendonvi')->nullable();
             $table->string('tendonvi_en')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('tenvaitro')->unique();
             $table->string('mota')->nullable();
             $table->string('tenvaitro_en')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

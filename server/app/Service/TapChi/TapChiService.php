@@ -14,11 +14,16 @@ interface TapChiService
     public function getLichSuTapChiKhongCongNhan(Request $request, int $id): ResponseSuccess;
     public function getLichSuXepHangTapChi(Request $request, int $id): ResponseSuccess;
     public function getLichSuTinhDiemTapChi(Request $request, int $id): ResponseSuccess;
+
     public function createTapChi(Request $request): ResponseSuccess;
+
     public function updateTrangThaiTapChi(Request $request, int $id): ResponseSuccess;
     public function updateTapChi(Request $request, int $id): ResponseSuccess;
     public function updateKhongCongNhanTapChi(Request $request, int $id): ResponseSuccess;
     public function updateXepHangTapChi(Request $request, int $id): ResponseSuccess;
     public function updateTinhDiemTapChi(Request $request, int $id): ResponseSuccess;
-    // public function deleteTapChi();
+
+    public function deleteTapChi(int $id): ResponseSuccess;
+    public function restoreTapChi(int $id): ResponseSuccess;
+    public function forceDeleteTapChi(int $id): ResponseSuccess;
 }

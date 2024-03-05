@@ -2,26 +2,58 @@
 
 namespace App\Http\Controllers\Admin\TapChi;
 
-use App\Exceptions\Delete\DeleteFailException;
-use App\Exceptions\TapChi\TapChiNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\TapChi\TapChi;
+use App\Service\TapChi\PhanLoaiTapChiService;
 use App\Service\TapChi\TapChiService;
 use App\Utilities\Convert;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 
 class TapChiController extends Controller
 {
     private TapChiService $tapChiService;
+    private PhanLoaiTapChiService $phanLoaiTapChiService;
 
-    public function __construct(TapChiService $tapChiService)
+    public function __construct(TapChiService $tapChiService, PhanLoaiTapChiService $phanLoaiTapChiService)
     {
         $this->tapChiService = $tapChiService;
-        $this->middleware('auth:api');
+        $this->phanLoaiTapChiService = $phanLoaiTapChiService;
+        $this->middleware('auth:api', ['except' => ['test']]);
     }
 
+
+    public function test()
+    {
+        $a = "abc";
+        // $sql = User::where([['name', 'LIKE', '%a%'], ['username', 'LIKE', '%ô%']])->toSql();
+
+        // $sql = DB::table('users')
+        //     ->where('role', 1)
+        //     ->orWhere(function (Builder $query) {
+        //         $query->where('name', 'abc')
+        //             ->where('username', 'abc');
+        //     })->toSql();
+
+        // $sql = User::where([['name', 'abc'], ['username', 'xyz']])->orWhere('role', '1')->toSql();
+
+        $sql = TapChi::onlyTrashed()->where(function ($query) {
+            $query->where('name', 'a')
+                ->orWhere('issn', 'LIKE', 'b');
+        })->where(function ($query) {
+            $query->where('trangthai', true);
+        })->toSql();
+        return response()->json($sql, 200);
+    }
+
+    public function getPhanLoaiTapChiByIdTapChi($id): Response
+    {
+        $result = $this->phanLoaiTapChiService->getPhanLoaiByTapChiId($id);
+        return response()->json($result, 200);
+    }
 
     public function getAllTapChi(): Response
     {
@@ -101,36 +133,21 @@ class TapChiController extends Controller
         return response()->json($result, 200);
     }
 
-    // public function deleteTapChi($id)
-    // {
-    //     $id_tapchi = (int) $id;
-    //     $tapChi = TapChi::find($id_tapchi);
-    //     if ($tapChi == null) {
-    //         throw new TapChiNotFoundException();
-    //     }
-    //     if (!$tapChi->delete()) {
-    //         throw new DeleteFailException();
-    //     }
-    //     return response()->json("Thành công", 200);
-    // }
+    public function deleteTapChi($id)
+    {
+        $result = $this->tapChiService->deleteTapChi($id);
+        return response()->json($result, 200);
+    }
 
-    // public function restoreTapChi($id)
-    // {
-    //     $id_tapchi = (int) $id;
-    //     $tapChi = TapChi::find($id_tapchi);
-    //     if ($tapChi == null) {
-    //         throw new TapChiNotFoundException();
-    //     }
-    //     TapChi::onlyTrashed()->where('id', $id_tapchi)->restore();
-    // }
+    public function restoreTapChi($id)
+    {
+        $result = $this->tapChiService->restoreTapChi($id);
+        return response()->json($result, 200);
+    }
 
-    // public function forceDeleteTapChi($id)
-    // {
-    //     $id_tapchi = (int) $id;
-    //     $tapChi = TapChi::find($id_tapchi);
-    //     if ($tapChi == null) {
-    //         throw new TapChiNotFoundException();
-    //     }
-    //     TapChi::onlyTrashed()->where('id', $id_tapchi)->forceDelete();
-    // }
+    public function forceDeleteTapChi($id)
+    {
+        $result = $this->tapChiService->forceDeleteTapChi($id);
+        return response()->json($result, 200);
+    }
 }

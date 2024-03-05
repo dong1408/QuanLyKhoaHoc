@@ -43,6 +43,8 @@ return new class extends Migration
 
             //Trạng thái quy đổi (chưa thực hiện/đang thực hiện/đã xong)
             $table->string('status')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

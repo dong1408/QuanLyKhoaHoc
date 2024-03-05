@@ -9,12 +9,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DMPhanLoaiTapChi extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'd_m_phan_loai_tap_chi';
     protected $fillable = [
         'id',
         'ma',
         'ten',
+        'deleted_at',
         'created_at',
         'updated_at'
     ];

@@ -8,6 +8,7 @@ use App\Models\TapChi\DMPhanLoaiTapChi;
 use App\Models\QuyDoi\DMChuyenNganhTinhDiem;
 use App\Models\QuyDoi\DMNganhTinhDiem;
 use App\Models\SanPham\DMSanPham;
+use App\Models\TapChi\DMNganhTheoHDGS;
 use App\Models\TapChi\TapChi;
 use App\Models\TapChi\TapChiKhongCongNhan;
 use App\Models\TapChi\TinhDiemTapChi;
@@ -110,7 +111,7 @@ class Convert
         return $a;
     }
 
-    public static function getNganhTheoHDGSVm(DMNganhTheoHSGS $dMNganhTheoHSGS): NganhTheoHDGSVm
+    public static function getNganhTheoHDGSVm(DMNganhTheoHDGS $dMNganhTheoHSGS): NganhTheoHDGSVm
     {
         $a = new NganhTheoHDGSVm();
         $a->id = $dMNganhTheoHSGS->id;
@@ -203,6 +204,17 @@ class Convert
         return $a;
     }
 
+    public static function getTinhThanhDetailVm(DMTinhThanh $dmTinhThanh)
+    {
+        $a = new TinhThanhVm();
+        $a->id = $dmTinhThanh->id;
+        $a->quocgia = Convert::getQuocGiaVm($dmTinhThanh->quocGia);
+        $a->matinhthanh = $dmTinhThanh->matinhthanh;
+        $a->tentinhthanh = $dmTinhThanh->tentinhthanh;
+        $a->tentinhthanh_en = $dmTinhThanh->tentinhthanh_en;
+        return $a;
+    }
+
     public static function getQuocGiaVm(DMQuocGia $dMQuocGia)
     {
         $a = new QuocGiaVm();
@@ -210,6 +222,7 @@ class Convert
         $a->maquocgia = $dMQuocGia->maquocgia;
         $a->tenquocgia = $dMQuocGia->tenquocgia;
         $a->tenquocgia_en = $dMQuocGia->tenquocgia_en;
+        return $a;
     }
 
     // ========================= SAN PHAM ============================= //

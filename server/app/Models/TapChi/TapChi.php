@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TapChi extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'tap_chis';
     protected $fillable = [
         'id',
@@ -89,7 +89,7 @@ class TapChi extends Model
     // relation n-n to d_m_nganh_theo_hdgs
     public function dmNganhTheoHDGS()
     {
-        return $this->belongsToMany('App\Models\TapChi\DMNganhTheoHDGS', 'tap_chi_d_m_nganh_theo_hdgs', 'id_dmnganhtheohdgs');
+        return $this->belongsToMany('App\Models\TapChi\DMNganhTheoHDGS', 'tap_chi_d_m_nganh_theo_hdgs', 'id_tapchi' ,'id_dmnganhtheohdgs');
     }
 
     // relation 1-n to bai_bao

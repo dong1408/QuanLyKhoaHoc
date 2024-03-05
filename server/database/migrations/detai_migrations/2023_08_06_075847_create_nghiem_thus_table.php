@@ -15,16 +15,18 @@ return new class extends Migration
     {
         Schema::create('nghiem_thus', function (Blueprint $table) {
             $table->id();
-             //Đề tài nào
-             $table->unsignedBigInteger('id_sanpham');
-             $table->foreign('id_sanpham')->references('id')->on('san_phams')->onDelete('cascade');
-             //Thông tin nghiệm thu
-             $table->string('hoidongnghiemthu')->nullable();
-             $table->string('ngaynghiemthu')->nullable();
-             $table->string('ketquanghiemthu')->nullable();
-             $table->string('ngaycongnhanhoanthanh')->nullable();
-             $table->string('soqdcongnhanhoanthanh')->nullable();
-             $table->string('thoigiangiahan')->nullable();
+            //Đề tài nào
+            $table->unsignedBigInteger('id_sanpham');
+            $table->foreign('id_sanpham')->references('id')->on('san_phams')->onDelete('cascade');
+            //Thông tin nghiệm thu
+            $table->string('hoidongnghiemthu')->nullable();
+            $table->string('ngaynghiemthu')->nullable();
+            $table->string('ketquanghiemthu')->nullable();
+            $table->string('ngaycongnhanhoanthanh')->nullable();
+            $table->string('soqdcongnhanhoanthanh')->nullable();
+            $table->string('thoigiangiahan')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

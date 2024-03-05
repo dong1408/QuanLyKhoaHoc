@@ -63,6 +63,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_chuyennganhtinhdiem')->nullable();
             $table->foreign('id_chuyennganhtinhdiem')->references('id')->on('d_m_chuyen_nganh_tinh_diems')->onDelete('cascade');
 
+            $table->softDeletes();
             $table->timestamps();
 
         });
