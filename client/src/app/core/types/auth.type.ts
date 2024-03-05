@@ -1,4 +1,9 @@
 export interface Login{
-    userName:string,
+    username:string,
     password:string
+}
+
+export interface Token{
+    accessToken:string,
+    refreshToken:string
 }
