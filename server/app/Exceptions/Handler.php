@@ -86,7 +86,7 @@ class Handler extends ExceptionHandler
             foreach((array)$exception->errors() as $key => $item){
                 $errorArray[] = $item;
             }
-            return response()->json(new ResponseError("BAD_REQUEST", 400, $errorArray[0][0]), 404);
+            return response()->json(new ResponseError("BAD_REQUEST", 400, $errorArray[0][0]), 400);
         }
 
         // Could not decode token: Error while decoding from JSON
