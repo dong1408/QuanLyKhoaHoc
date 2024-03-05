@@ -153,7 +153,6 @@ class Convert
     {
         $a = new XepHangTapChiVm();
         $a->id = $xepHangTapChi->id;
-        $a->tapchi = Convert::getTapChiVm($xepHangTapChi->tapChi);
         $a->wos = $xepHangTapChi->wos;
         $a->if = $xepHangTapChi->if;
         $a->quartile = $xepHangTapChi->quartile;

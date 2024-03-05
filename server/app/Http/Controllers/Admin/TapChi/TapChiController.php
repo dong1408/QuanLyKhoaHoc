@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Admin\TapChi;
 
 use App\Http\Controllers\Controller;
-use App\Models\TapChi\TapChi;
+use App\Http\Requests\TapChi\CreateTapChiRequest;
+use App\Http\Requests\TapChi\UpdateTapChiKhongCongNhanRequest;
+use App\Http\Requests\TapChi\UpdateTapChiRequest;
+use App\Http\Requests\TapChi\UpdateTinhDiemTapChiRequest;
+use App\Http\Requests\TapChi\UpdateTrangThaiTapChiRequest;
+use App\Http\Requests\TapChi\UpdateXepHangTapChiRequest;
 use App\Service\TapChi\PhanLoaiTapChiService;
 use App\Service\TapChi\TapChiService;
-use App\Utilities\Convert;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -25,29 +27,6 @@ class TapChiController extends Controller
         $this->middleware('auth:api', ['except' => ['test']]);
     }
 
-
-    public function test()
-    {
-        $a = "abc";
-        // $sql = User::where([['name', 'LIKE', '%a%'], ['username', 'LIKE', '%ô%']])->toSql();
-
-        // $sql = DB::table('users')
-        //     ->where('role', 1)
-        //     ->orWhere(function (Builder $query) {
-        //         $query->where('name', 'abc')
-        //             ->where('username', 'abc');
-        //     })->toSql();
-
-        // $sql = User::where([['name', 'abc'], ['username', 'xyz']])->orWhere('role', '1')->toSql();
-
-        $sql = TapChi::onlyTrashed()->where(function ($query) {
-            $query->where('name', 'a')
-                ->orWhere('issn', 'LIKE', 'b');
-        })->where(function ($query) {
-            $query->where('trangthai', true);
-        })->toSql();
-        return response()->json($sql, 200);
-    }
 
     public function getPhanLoaiTapChiByIdTapChi($id): Response
     {
@@ -97,37 +76,37 @@ class TapChiController extends Controller
         return response()->json($result, 200);
     }
 
-    public function createTapChi(Request $request): Response
+    public function createTapChi(CreateTapChiRequest $request): Response
     {
         $result = $this->tapChiService->createTapChi($request);
         return response()->json($result, 200);
     }
 
-    public function updateTrangThaiTapChi(Request $request, $id): Response
+    public function updateTrangThaiTapChi(UpdateTrangThaiTapChiRequest $request, $id): Response
     {
         $result = $this->tapChiService->updateTrangThaiTapChi($request, $id);
         return response()->json($result, 200);
     }
 
-    public function updateTapChi(Request $request, $id): Response
+    public function updateTapChi(UpdateTapChiRequest $request, $id)
     {
         $result = $this->tapChiService->updateTapChi($request, $id);
         return response()->json($result, 200);
     }
 
-    public function updateKhongCongNhanTapChi(Request $request, $id): Response
+    public function updateKhongCongNhanTapChi(UpdateTapChiKhongCongNhanRequest $request, $id): Response
     {
         $result = $this->tapChiService->updateKhongCongNhanTapChi($request, $id);
         return response()->json($result);
     }
 
-    public function updateXepHangTapChi(Request $request, $id): Response
+    public function updateXepHangTapChi(UpdateXepHangTapChiRequest $request, $id): Response
     {
         $result = $this->tapChiService->updateXepHangTapChi($request, $id);
         return response()->json($result, 200);
     }
 
-    public function updateTinhDiemTapChi(Request $request, $id): Response
+    public function updateTinhDiemTapChi(UpdateTinhDiemTapChiRequest $request, $id): Response
     {
         $result = $this->tapChiService->updateTinhDiemTapChi($request, $id);
         return response()->json($result, 200);

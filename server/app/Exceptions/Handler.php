@@ -73,12 +73,20 @@ class Handler extends ExceptionHandler
 
         // route khong duoc dinh nghia
         if ($exception instanceof \Symfony\Component\Routing\Exception\RouteNotFoundException) {
-            return response()->json(new ResponseError("NOT FOUND", 404, "Đường dẫn không tồn tại trên hệ thống"), 404);
+            return response()->json(new ResponseError("NOT_FOUND", 404, "Đường dẫn không tồn tại trên hệ thống"), 404);
         }
 
         // route could not be found
         if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            return response()->json(new ResponseError("Not Found", 404, "Đường dẫn không tồn tại trên hệ thống"), 404);
+            return response()->json(new ResponseError("NOT_FOUND", 404, "Đường dẫn không tồn tại trên hệ thống"), 404);
+        }
+
+        if ($exception instanceof ValidationException) {
+            $errorArray = [];
+            foreach((array)$exception->errors() as $key => $item){
+                $errorArray[] = $item;
+            }
+            return response()->json(new ResponseError("BAD_REQUEST", 400, $errorArray[0][0]), 400);
         }
 
         // Could not decode token: Error while decoding from JSON
