@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -13,6 +14,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +25,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'username',
     ];
 
     /**
@@ -77,8 +80,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo('App\Models\UserInfo\DMToChuc', 'id_tochuc');
     }
 
-    // inverse to d_m_to_chuc by khoa ngoai id_noihoc
-    public function toChucByNoiHoc()
+    // inverse to d_m_to_chuc
+    public function noiHoc()
     {
         return $this->belongsTo('App\Models\UserInfo\DMToChuc', 'id_noihoc');
     }
@@ -166,5 +169,12 @@ class User extends Authenticatable implements JWTSubject
     public function tinhDiemTapChis()
     {
         return $this->hasMany('App\Models\TapChi\TinhDiemTapChi', 'id_nguoicapnhat');
+    }
+
+
+    // relation 1-n to nha_xuat_ban == vai tro la nguoi them nha xuat ban vao he thong
+    public function nhaXuatBans()
+    {
+        return $this->hasMany('App\Models\NhaXuatBan\NhaXuatBan', 'id_nguoithem');
     }
 }

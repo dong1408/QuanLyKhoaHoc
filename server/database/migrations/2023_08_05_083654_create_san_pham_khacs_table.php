@@ -25,8 +25,9 @@ return new class extends Migration
             $table->foreign('id_donvicongnhan')->references('id')->on('d_m_to_chucs')->onDelete('cascade');
             $table->string('capcongnhan');
             $table->string('ngaycongnhan');
-
             $table->string('ghichu');
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

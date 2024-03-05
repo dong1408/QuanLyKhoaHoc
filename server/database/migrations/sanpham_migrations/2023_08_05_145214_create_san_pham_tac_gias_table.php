@@ -27,6 +27,8 @@ return new class extends Migration
             //Thứ tự và tỷ lệ đóng góp (nếu có) của tác giả
             $table->string('thutu')->nullable();
             $table->string('tyledonggop')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

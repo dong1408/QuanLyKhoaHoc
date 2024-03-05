@@ -2,18 +2,34 @@
 
 namespace App\ViewModel\UserInfo;
 
+use App\Models\UserInfo\DMDonVi;
+use Ramsey\Uuid\Type\Integer;
+
 class DonViVm
 {
-    private $id;
-    private $toChucVm; // $id_tochuc
-    private $madonvi;
-    private $tendonvi;
-    private $tendonvi_en;
-    private $created_at;
-    private $updated_at;
+    public int $id;
+    public ToChucVm $tochuc; // $id_tochuc
+    public string $madonvi;
+    public string $tendonvi;
+    public string $tendonvi_en;
+    public string $created_at;
+    public string $updated_at;
+
+    private $toChucVm;
 
     public function __construct()
     {
+        $this->toChucVm = new ToChucVm();
+    }
+
+    public function convert(DMDonVi $dMDonVi){
+        $this->id = $dMDonVi->id;
+        $this->tochuc = $this->toChucVm->convert($dMDonVi->toChuc);
+        $this->madonvi = $dMDonVi->madonvi;
+        $this->tendonvi = $dMDonVi->tendonvi;
+        $this->tendonvi_en = $dMDonVi->tendonvi_en;
+        $this->created_at = $dMDonVi->created_at;
+        $this->updated_at = $dMDonVi->updated_at;
     }
 
     function getId()
@@ -26,14 +42,14 @@ class DonViVm
         $this->id = $id;
     }
 
-    function getToChucVm()
+    function getToChuc()
     {
-        return $this->toChucVm;
+        return $this->tochuc;
     }
 
-    function setToChucVm(ToChucVm $toChucVm)
+    function setToChuc(ToChucVm $toChucVm)
     {
-        $this->toChucVm = $toChucVm;
+        $this->tochuc = $toChucVm;
     }
 
     function getMaDonVi()

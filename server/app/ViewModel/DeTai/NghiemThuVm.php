@@ -1,22 +1,41 @@
 <?php
 
+use App\Models\DeTai\NghiemThu;
 use App\ViewModel\SanPham\SanPhamVm;
 
 class NghiemThuVm
 {
-    private $id;
-    private $sanPhamVm; // $id_sanpham;
-    private $hoidongnghiemthu;
-    private $ngaynghiemthu;
-    private $ketquanghiemthu;
-    private $ngaycongnhanhoanthanh;
-    private $soqdcongnhanhoanthanh;
-    private $thoigianhoanthanh;
-    private $created_at;
-    private $updated_at;
+    public $id;
+    public SanPhamVm $sanpham; // $id_sanpham;
+    public string $hoidongnghiemthu;
+    public string $ngaynghiemthu;
+    public string $ketquanghiemthu;
+    public string $ngaycongnhanhoanthanh;
+    public string $soqdcongnhanhoanthanh;
+    public string $thoigianhoanthanh;
+    public string $created_at;
+    public string $updated_at;
+
+
+    private $sanPhamVm;
 
     function __construct()
     {
+        $this->sanPhamVm = new SanPhamVm();
+    }
+
+    public function convert(NghiemThu $nghiemThu)
+    {
+        $this->id = $nghiemThu->id;
+        $this->sanpham = $this->sanPhamVm->convert($nghiemThu->sanPham);
+        $this->hoidongnghiemthu = $nghiemThu->hoidongnghiemthu;
+        $this->ngaynghiemthu = $nghiemThu->ngaynghiemthu;
+        $this->ketquanghiemthu = $nghiemThu->ketquanghiemthu;
+        $this->ngaycongnhanhoanthanh = $nghiemThu->ngaycongnhanhoanthanh;
+        $this->soqdcongnhanhoanthanh = $nghiemThu->soqdcongnhanhoanthanh;
+        $this->thoigianhoanthanh = $nghiemThu->thoigianhoanthanh;
+        $this->created_at = $nghiemThu->created_at;
+        $this->updated_at = $nghiemThu->updated_at;
     }
 
     function getId()
@@ -29,14 +48,14 @@ class NghiemThuVm
         $this->id = $id;
     }
 
-    function getSanPhamVm()
+    function getSanPham()
     {
-        return $this->sanPhamVm;
+        return $this->sanpham;
     }
 
-    function setSanPhamVm(SanPhamVm $sanPhamVm)
+    function setSanPham(SanPhamVm $sanPhamVm)
     {
-        $this->sanPhamVm = $sanPhamVm;
+        $this->sanpham = $sanPhamVm;
     }
 
     function getHoiDongNghiemThu()

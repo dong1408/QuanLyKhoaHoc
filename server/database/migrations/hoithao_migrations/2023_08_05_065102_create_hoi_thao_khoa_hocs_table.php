@@ -49,6 +49,7 @@ return new class extends Migration
 
             $table->string('ghichu')->nullable();
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

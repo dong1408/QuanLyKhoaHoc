@@ -4,10 +4,13 @@ namespace App\Models\UserInfo;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DMToChuc extends Model
 {
     use HasFactory;
+    // use SoftDeletes;
+    protected $table = 'd_m_to_chucs';
 
     // relation 1-n to user
     public function usersByToChuc()
@@ -73,5 +76,10 @@ class DMToChuc extends Model
     public function deTaisHopTac()
     {
         return $this->hasMany('App\Models\DeTai\DeTai', 'id_tochuchoptac');
+    }
+
+    // relation 1-n to nha_xuat_ban (trong vai tro don vi chu quan)
+    public function nhaXuatBans(){
+        return $this->hasMany('App\Models\NhaXuatBan\NhaXuatBan', 'id_donvichuquan');
     }
 }

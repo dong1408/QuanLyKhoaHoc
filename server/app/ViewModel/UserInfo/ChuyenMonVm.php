@@ -2,17 +2,28 @@
 
 namespace App\ViewModel\UserInfo;
 
+use App\Models\UserInfo\DMChuyenMon;
+
 class ChuyenMonVm
 {
-    private $id;
-    private $machuyenmon;
-    private $tenchuyenmon;
-    private $tenchuyenmon_en;
-    private $created_at;
-    private $updated_at;
+    public int $id;
+    public string $machuyenmon;
+    public string $tenchuyenmon;
+    public string $tenchuyenmon_en;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
+    }
+
+    public function convert(DMChuyenMon $dMChuyenMon){
+        $this->id = $dMChuyenMon->id;
+        $this->machuyenmon = $dMChuyenMon->machuyenmon;
+        $this->tenchuyenmon = $dMChuyenMon->tenchuyenmon;
+        $this->tenchuyenmon_en = $dMChuyenMon->tenchuyenmon_en;
+        $this->created_at = $dMChuyenMon->created_at;
+        $this->updated_at = $dMChuyenMon->updated_at;
     }
 
     function getId()

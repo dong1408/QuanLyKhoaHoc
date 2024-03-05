@@ -2,6 +2,7 @@
 
 namespace App\ViewModel\User;
 
+use App\Models\User;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\UserInfo\ChuyenMonVm;
@@ -10,47 +11,95 @@ use App\ViewModel\UserInfo\HocHamHocViVm;
 use App\ViewModel\UserInfo\NgachVienChucVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\ToChucVm;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 
 class UserVm
 {
-    private $id;
-    private $name;
-    private $username;
-    private $email;
-    // private $password;
-    private $role;
-    private $changed;
-    // private $remember_token
-    private $ngaysinh;
-    private $dienthoai;
-    private $email2;
-    private $orchid;
-    private $toChucVm; // $id_tochuc
-    private $donViVm; // $id_donvi
-    private $cohuu;
-    private $keodai;
-    private $dinhmucnghiavunckh;
-    private $dangdihoc;
-    private $noiHocVm; // $id_noihoc -- ToChucVm 
-    private $ngachVienChucVm; // $id_ngachvienchuc -- NgachVienChucVm
-    private $quocTichVm; // $id_quoctich -- QuocGiaVm
-    private $hocHamHocViVm; // $id_hochamhocvi
-    private $chuyenMonVm; // $id_chuyenmon
-    private $nganhTinhDiemVm; // $id_nganhtinhdiem
-    private $chuyenNganhTinhDiemVm; // $id_chuyennganhtinhdiem
-    private $created_at;
-    private $updated_at;
+    public int $id;
+    public string $name;
+    public string $username;
+    public string $email;
+    // public $password;
+    public int $role;
+    public Boolean $changed;
+    // public $remember_token
+    public string $ngaysinh;
+    public string $dienthoai;
+    public string $email2;
+    public string $orchid;
+    public ToChucVm $tochuc; // $id_tochuc
+    public DonViVm $donvi; // $id_donvi
+    public Boolean $cohuu;
+    public Boolean $keodai;
+    public string $dinhmucnghiavunckh;
+    public string $dangdihoc;
+    public ToChucVm $noihoc; // $id_noihoc -- ToChucVm 
+    public NgachVienChucVm $ngachvienchuc; // $id_ngachvienchuc -- NgachVienChucVm
+    public QuocGiaVm $quoctich; // $id_quoctich -- QuocGiaVm
+    public HocHamHocViVm $hochamhocvi; // $id_hochamhocvi
+    public ChuyenMonVm $chuyenmon; // $id_chuyenmon
+    public NganhTinhDiemVm $nganhtinhdiem; // $id_nganhtinhdiem
+    public ChuyenNganhTinhDiemVm $chuyennganhtinhdiem; // $id_chuyennganhtinhdiem
+    public string $created_at;
+    public string $updated_at;
+
+
+    private $toChucVm;
+    private $donViVm;
+    private $ngachVienChucVm;
+    private $quocGiaVm;
+    private $hocHamHocViVm;
+    private $chuyenMonVm;
+    private NganhTinhDiemVm $nganhTinhDiemVm;
+    private $chuyenNganhTinhDiemVm;
 
     public function __construct()
     {
+        $this->toChucVm = new ToChucVm();
+        $this->donViVm = new DonViVm();
+        $this->ngachVienChucVm = new NgachVienChucVm;
+        $this->quocGiaVm = new QuocGiaVm();
+        $this->hocHamHocViVm = new HocHamHocViVm();
+        $this->chuyenMonVm = new ChuyenMonVm();
+        // $this->nganhTinhDiemVm = new NganhTinhDiemVm();
+        $this->chuyenNganhTinhDiemVm = new ChuyenNganhTinhDiemVm();
     }
 
-    function getId()
+    public function convert(User $user)
+    {
+        $this->id = $user->id;
+        $this->name = $user->name;
+        $this->username = $user->username;
+        $this->email = $user->email;
+        $this->role = $user->role;
+        $this->changed = $user->changed;
+        $this->ngaysinh = $user->ngaysinh;
+        $this->dienthoai = $user->dienthoai;
+        $this->email2 = $user->email2;
+        $this->orchid = $user->orchid;
+        $this->tochuc = $this->toChucVm->convert($user->toChuc);
+        $this->donvi = $this->donViVm->convert($user->donVi);
+        $this->cohuu = $user->cohuu;
+        $this->keodai = $user->keodai;
+        $this->dinhmucnghiavunckh = $user->dinhmucnghiavunckh;
+        $this->dangdihoc = $user->dangdihoc;
+        $this->noihoc = $this->toChucVm->convert($user->noiHoc);
+        $this->ngachvienchuc = $this->ngachVienChucVm->convert($user->ngachVienChuc);
+        $this->quoctich = $this->quocGiaVm->convert($user->quocGia);
+        $this->hochamhocvi = $this->hocHamHocViVm->convert($user->hocHamHocVi);
+        $this->chuyenmon = $this->chuyenMonVm->convert($user->chuyenMon);
+        $this->nganhtinhdiem = $this->nganhTinhDiemVm->convert($user->nganhTinhDiem);
+        $this->chuyennganhtinhdiem = $this->chuyenNganhTinhDiemVm->convert($user->chuyenNganhTinhDiem);
+        $this->created_at = $user->created_at;
+        $this->updated_at = $user->updated_at;
+    }
+
+    public function getId()
     {
         return $this->id;
     }
 
-    function setId($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -145,24 +194,24 @@ class UserVm
         $this->orchid = $orchid;
     }
 
-    function getToChucVm()
+    function getToChuc()
     {
-        return $this->toChucVm;
+        return $this->tochuc;
     }
 
-    function setToChucVm(ToChucVm $toChucVm)
+    function setToChuc(ToChucVm $toChucVm)
     {
-        $this->toChucVm = $toChucVm;
+        $this->tochuc = $toChucVm;
     }
 
-    function getDonViVm()
+    function getDonVi()
     {
-        return $this->donViVm;
+        return $this->donvi;
     }
 
-    function setDonViVm(DonViVm $donViVm)
+    function setDonVi(DonViVm $donViVm)
     {
-        $this->donViVm = $donViVm;
+        $this->donvi = $donViVm;
     }
 
     function getCoHuu()
@@ -205,74 +254,74 @@ class UserVm
         $this->dangdihoc = $dangdihoc;
     }
 
-    function getNoiHocVm()
+    function getNoiHoc()
     {
-        return $this->noiHocVm;
+        return $this->noihoc;
     }
 
-    function setNoiHocVm(ToChucVm $noiHocVm)
+    function setNoiHoc(ToChucVm $noiHocVm)
     {
-        $this->noiHocVm = $noiHocVm;
+        $this->noihoc = $noiHocVm;
     }
 
-    function getNgachVienChucVm()
+    function getNgachVienChuc()
     {
-        return $this->ngachVienChucVm;
+        return $this->ngachvienchuc;
     }
 
-    function setNgachVienChucVm(NgachVienChucVm $ngachVienChucVm)
+    function setNgachVienChuc(NgachVienChucVm $ngachVienChucVm)
     {
-        $this->ngachVienChucVm = $ngachVienChucVm;
+        $this->ngachvienchuc = $ngachVienChucVm;
     }
 
-    function getQuocTichVm()
+    function getQuocTich()
     {
-        return $this->quocTichVm;
+        return $this->quoctich;
     }
 
-    function setQuocTichVm(QuocGiaVm $quocTichVm)
+    function setQuocTich(QuocGiaVm $quocTichVm)
     {
-        $this->quocTichVm;
+        $this->quoctich;
     }
 
-    function getHocHamHocViVm()
+    function getHocHamHocVi()
     {
-        return $this->hocHamHocViVm;
+        return $this->hochamhocvi;
     }
 
     function setHocHamHocVi(HocHamHocViVm $hocHamHocViVm)
     {
-        $this->hocHamHocViVm = $hocHamHocViVm;
+        $this->hochamhocvi = $hocHamHocViVm;
     }
 
-    function getChuyenMonVm()
+    function getChuyenMon()
     {
-        return $this->chuyenMonVm;
+        return $this->chuyenmon;
     }
 
-    function setChuyenMonVm(ChuyenMonVm $chuyenMonVm)
+    function setChuyenMon(ChuyenMonVm $chuyenMonVm)
     {
-        $this->chuyenMonVm = $chuyenMonVm;
+        $this->chuyenmon = $chuyenMonVm;
     }
 
-    function getNganhTinhDiemVm()
+    function getNganhTinhDiem()
     {
-        return $this->nganhTinhDiemVm;
+        return $this->nganhtinhdiem;
     }
 
-    function setNganhTinhDiemVm(NganhTinhDiemVm $nganhTinhDiemVm)
+    function setNganhTinhDiem(NganhTinhDiemVm $nganhTinhDiemVm)
     {
-        $this->nganhTinhDiemVm = $nganhTinhDiemVm;
+        $this->nganhtinhdiem = $nganhTinhDiemVm;
     }
 
-    function getChuyenNganhTinhDiemVm()
+    function getChuyenNganhTinhDiem()
     {
-        return $this->chuyenNganhTinhDiemVm;
+        return $this->chuyennganhtinhdiem;
     }
 
-    function setChuyenNganhTinhDiemVm(ChuyenNganhTinhDiemVm $chuyenNganhTinhDiemVm)
+    function setChuyenNganhTinhDiem(ChuyenNganhTinhDiemVm $chuyenNganhTinhDiemVm)
     {
-        $this->chuyenNganhTinhDiemVm = $chuyenNganhTinhDiemVm;
+        $this->chuyennganhtinhdiem = $chuyenNganhTinhDiemVm;
     }
 
     function getCreatedAt()

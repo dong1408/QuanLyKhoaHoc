@@ -23,6 +23,8 @@ return new class extends Migration
             //Tên Tiếng Việt và tên Tiếng Anh
             $table->string('tentinhthanh')->nullable();
             $table->string('tentinhthanh_en')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

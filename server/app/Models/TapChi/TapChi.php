@@ -4,11 +4,32 @@ namespace App\Models\TapChi;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TapChi extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     protected $table = 'tap_chis';
+    protected $fillable = [
+        'id',
+        'name',
+        'issn',
+        'eissn',
+        'pissn',
+        'website',
+        'quocte',
+        'id_nhaxuatban',
+        'id_donvichuquan',
+        'address',
+        'id_address_city',
+        'id_address_country',
+        'trangthai',
+        'id_nguoithem',
+        'created_at',
+        'updated_at'
+    ];
+
 
 
     // inverse to nha_xuat_ban
@@ -47,28 +68,28 @@ class TapChi extends Model
         return $this->hasMany('App\Models\TapChi\TapChiKhongCongNhan', 'id_tapchi');
     }
 
-    // relation 1-1 to xep_hang_tap_chi
-    public function xepHangTapChi()
+    // relation 1-n to xep_hang_tap_chi
+    public function xepHangTapChis()
     {
-        return $this->hasOne('App\Models\TapChi\XepHangTapChi', 'id_tapchi');
+        return $this->hasMany('App\Models\TapChi\XepHangTapChi', 'id_tapchi');
     }
 
-    // relation 1-1 to tinh_diem_tap_chi
-    public function tinhDiemTapChi()
+    // relation 1-n to tinh_diem_tap_chi
+    public function tinhDiemTapChis()
     {
-        return $this->hasOne('App\Models\TapChi\TinhDiemTapChi', 'id_tapchi');
+        return $this->hasMany('App\Models\TapChi\TinhDiemTapChi', 'id_tapchi');
     }
 
     // relation n-n to d_m_phan_loai_tap_chi
     public function dmPhanLoaiTapChis()
     {
-        return $this->belongsToMany('App\Models\TapChi\DMPhanLoaiTapChi', 'tap_chi_d_m_phan_loai_tap_chi', 'id_dmphanloaitapchi');
+        return $this->belongsToMany('App\Models\TapChi\DMPhanLoaiTapChi', 'tap_chi_d_m_phan_loai_tap_chi', 'id_tapchi' ,'id_dmphanloaitapchi');
     }
 
     // relation n-n to d_m_nganh_theo_hdgs
     public function dmNganhTheoHDGS()
     {
-        return $this->belongsToMany('App\Models\TapChi\DMNganhTheoHDGS', 'tap_chi_d_m_nganh_theo_hdgs', 'id_dmnganhtheohdgs');
+        return $this->belongsToMany('App\Models\TapChi\DMNganhTheoHDGS', 'tap_chi_d_m_nganh_theo_hdgs', 'id_tapchi' ,'id_dmnganhtheohdgs');
     }
 
     // relation 1-n to bai_bao

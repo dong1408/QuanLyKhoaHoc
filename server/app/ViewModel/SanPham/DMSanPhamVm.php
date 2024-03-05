@@ -2,17 +2,30 @@
 
 namespace App\ViewModel\SanPham;
 
-class DMSanPhamVm{
-    private $id;
-    private $madmsanpham;
-    private $tendmsanpham;
-    private $mota;
-    private $created_at;
-    private $updated_at;
+use App\Models\SanPham\DMSanPham;
+use Ramsey\Uuid\Type\Integer;
+
+class DMSanPhamVm
+{
+    public int $id;
+    public string $madmsanpham;
+    public string $tendmsanpham;
+    public string $mota;
+    public string $created_at;
+    public string $updated_at;
 
     function __construct()
     {
-        
+    }
+
+    public function convert(DMSanPham $dmSanPham)
+    {
+        $this->id = $dmSanPham->id;
+        $this->madmsanpham = $dmSanPham->madmsanpham;
+        $this->tendmsanpham = $dmSanPham->tensanpham;
+        $this->mota = $dmSanPham->mota;
+        $this->created_at = $dmSanPham->created_at;
+        $this->updated_at = $dmSanPham->updated_at;
     }
 
     function getId()
@@ -25,45 +38,53 @@ class DMSanPhamVm{
         $this->id = $id;
     }
 
-    function getMaDmSanPham(){
+    function getMaDmSanPham()
+    {
         return $this->madmsanpham;
     }
 
-    function setMaDmSanPham($madmsanpham){
+    function setMaDmSanPham($madmsanpham)
+    {
         $this->madmsanpham = $madmsanpham;
     }
 
-    function getTenDmSanPham(){
+    function getTenDmSanPham()
+    {
         return $this->tendmsanpham;
     }
 
-    function setTenDmSanPham($tendmsanpham){
+    function setTenDmSanPham($tendmsanpham)
+    {
         $this->tendmsanpham = $tendmsanpham;
     }
 
-    function getMoTa(){
+    function getMoTa()
+    {
         return $this->mota;
     }
 
-    function setMoTa($mota){
+    function setMoTa($mota)
+    {
         $this->mota = $mota;
     }
 
-    function getCreatedAt(){
+    function getCreatedAt()
+    {
         return $this->created_at;
     }
 
-    function setCreatedAt($created_at){
+    function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
     }
 
-    function getUpdatedAt(){
+    function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
-    function setUpdatedAt($updated_at){
+    function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
     }
 }
-
-?>

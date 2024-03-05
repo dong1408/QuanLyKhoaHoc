@@ -4,10 +4,13 @@ namespace App\Models\SanPham;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SanPhamTacGia extends Model
 {
     use HasFactory;
+    // use SoftDeletes;
+    protected $table = 'san_pham_tac_gias';
 
     // inverse tac gia (user)
     public function tacGia()

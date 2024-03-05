@@ -2,17 +2,30 @@
 
 namespace App\ViewModel\UserInfo;
 
+use App\Models\UserInfo\DMHocHamHocVi;
+use Ramsey\Uuid\Type\Integer;
+
 class HocHamHocViVm
 {
-    private $id;
-    private $mahochamhocvi;
-    private $tenhochamhocvi;
-    private $tenhochamhocvi_en;
-    private $created_at;
-    private $updated_at;
+    public int $id;
+    public string $mahochamhocvi;
+    public string $tenhochamhocvi;
+    public string $tenhochamhocvi_en;
+    public string $created_at;
+    public string $updated_at;
 
     public function __construct()
     {
+    }
+
+    public function convert(DMHocHamHocVi $dMHocHamHocVi)
+    {
+        $this->id = $dMHocHamHocVi->id;
+        $this->mahochamhocvi = $dMHocHamHocVi->mahochamhocvi;
+        $this->tenhochamhocvi = $dMHocHamHocVi->tenhochamhocvi;
+        $this->tenhochamhocvi_en = $dMHocHamHocVi->tenhochamhocvi_en;
+        $this->created_at = $dMHocHamHocVi->created_at;
+        $this->updated_at = $dMHocHamHocVi->updated_at;
     }
 
     function getId()

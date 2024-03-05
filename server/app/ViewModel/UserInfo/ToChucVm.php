@@ -2,23 +2,49 @@
 
 namespace App\ViewModel\UserInfo;
 
+use App\Models\UserInfo\DMToChuc;
+use Ramsey\Uuid\Type\Integer;
+
 class ToChucVm
 {
-    private $id;
-    private $matochuc;
-    private $tentochuc;
-    private $tentochuc_en;
-    private $website;
-    private $dienthoai;
-    private $address;
-    private $addressCityVm; // $id_address_city -- TinhThanhVm
-    private $addressCountryVm; // $id_address_country -- QuocGiaVm
-    private $phanLoaiToChucVm; // $id_phanloaitochuc
-    private $created_at;
-    private $updated_at;
+    public int $id;
+    public string $matochuc;
+    public string $tentochuc;
+    public string $tentochuc_en;
+    public string $website;
+    public string $dienthoai;
+    public string $address;
+    public TinhThanhVm $addresscity; // $id_address_city -- TinhThanhVm
+    public QuocGiaVm $addresscountry; // $id_address_country -- QuocGiaVm
+    public PhanLoaiToChucVm $phanloaitochuc; // $id_phanloaitochuc
+    public string $created_at;
+    public string $updated_at;
+
+    private $tinhThanhVm;
+    private $quocGiaVm;
+    private $phanLoaiToChucVm;
 
     public function __construct()
     {
+        $this->tinhThanhVm = new TinhThanhVm();
+        $this->quocGiaVm = new QuocGiaVm();
+        $this->phanLoaiToChucVm = new PhanLoaiToChucVm();
+    }
+
+    public function convert(DMToChuc $dmToChuc)
+    {
+        $this->id = $dmToChuc->id;
+        $this->matochuc = $dmToChuc->matochuc;
+        $this->tentochuc = $dmToChuc->tentochuc;
+        $this->tentochuc_en = $dmToChuc->tentochuc_en;
+        $this->website = $dmToChuc->website;
+        $this->dienthoai = $dmToChuc->dienthoai;
+        $this->address = $dmToChuc->address;
+        $this->addresscity = $this->tinhThanhVm->convert($dmToChuc->tinhThanh);
+        $this->addresscountry = $this->quocGiaVm->convert($dmToChuc->quocGia);
+        $this->phanloaitochuc = $this->phanLoaiToChucVm->convert($dmToChuc->phanLoaiToChuc);
+        $this->created_at = $dmToChuc->created_at;
+        $this->updated_at = $dmToChuc->updated_at;
     }
 
     function getId()
@@ -91,34 +117,34 @@ class ToChucVm
         $this->address = $address;
     }
 
-    function getAddressCityVm()
+    function getAddressCity()
     {
-        return $this->addressCityVm;
+        return $this->addresscity;
     }
 
-    function setAddressCityVm(TinhThanhVm $addressCityVm)
+    function setAddressCity(TinhThanhVm $addressCityVm)
     {
-        $this->addressCityVm = $addressCityVm;
+        $this->addresscity = $addressCityVm;
     }
 
-    function getAddressCountryVm()
+    function getAddressCountry()
     {
-        return $this->addressCountryVm;
+        return $this->addresscountry;
     }
 
-    function setAddressCountryVm(QuocGiaVm $addressCountryVm)
+    function setAddressCountry(QuocGiaVm $addressCountryVm)
     {
-        $this->addressCountryVm = $addressCountryVm;
+        $this->addresscountry = $addressCountryVm;
     }
 
-    function getPhanLoaiToChucVm()
+    function getPhanLoaiToChuc()
     {
-        return $this->phanLoaiToChucVm;
+        return $this->phanloaitochuc;
     }
 
-    function setPhanLoaiToChucVm(PhanLoaiToChucVm $phanLoaiToChucVm)
+    function setPhanLoaiToChuc(PhanLoaiToChucVm $phanLoaiToChucVm)
     {
-        $this->phanLoaiToChucVm = $phanLoaiToChucVm;
+        $this->phanloaitochuc = $phanLoaiToChucVm;
     }
 
     function getCreatedAt()

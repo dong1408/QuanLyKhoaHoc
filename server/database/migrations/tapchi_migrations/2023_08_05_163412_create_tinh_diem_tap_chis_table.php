@@ -34,6 +34,7 @@ return new class extends Migration
             //Ghi chú
             $table->string('ghichu')->nullable();
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

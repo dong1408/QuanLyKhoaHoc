@@ -52,6 +52,8 @@ return new class extends Migration
             $table->string('thongtinchitiet');
             $table->string('capsanpham');
             $table->string('thoidiemcongbohoanthanh');
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

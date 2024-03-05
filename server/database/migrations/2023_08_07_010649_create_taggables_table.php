@@ -22,6 +22,8 @@ return new class extends Migration
             //Model nào, id nào
             $table->string('taggable_type');
             $table->integer('taggable_id');
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

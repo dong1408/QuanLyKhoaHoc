@@ -4,10 +4,14 @@ namespace App\Models\SanPham;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SanPham extends Model
 {
     use HasFactory;
+    // use SoftDeletes;
+    protected $table = 'san_phams';
+
 
     // inverse to d_m_san_pham (categories of product)
     public function dmSanPham()
@@ -16,13 +20,13 @@ class SanPham extends Model
     }
 
     // inverse to d_m_to_chuc // san pham co thong tin noi cong tac don vi (to chuc) khac khong
-    public function thongTinNoiKhac_toChuc()
+    public function thongTinNoiKhac()
     {
         return $this->belongsTo('App\Models\UserInfo\DMToChuc', 'id_thongtinnoikhac');
     }
 
     // inverse to d_m_to_chuc // san pham co nhan tai tro cua don vi (to chuc) nao khac khong
-    public function donViTaiTro_toChuc()
+    public function donViTaiTro()
     {
         return $this->belongsTo('App\Models\UserInfo\DmToChuc', 'id_donvitaitro');
     }

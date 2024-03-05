@@ -2,18 +2,35 @@
 
 namespace App\ViewModel\UserInfo;
 
+use App\Models\UserInfo\DMTinhThanh;
+use Ramsey\Uuid\Type\Integer;
+
 class TinhThanhVm
-{
-    private $id;
-    private $quocGiaVm; // $id_quocgia
-    private $matinhthanh;
-    private $tentinhthanh;
-    private $tentinhthanh_en;
-    private $created_at;
-    private $updated_at;
+{ // bip
+    public int $id;
+    public QuocGiaVm $quocgia;
+    public string $matinhthanh;
+    public string $tentinhthanh;
+    public string $tentinhthanh_en;
+    public string $created_at;
+    public string $updated_at;
+
+    private $quocGiaVm;
 
     public function __construct()
     {
+        $this->quocGiaVm = new QuocGiaVm();
+    }
+
+    public function convert(DMTinhThanh $dMTinhThanh)
+    {
+        $this->id = $dMTinhThanh->id;
+        $this->quocgia = $this->quocGiaVm->convert($dMTinhThanh->quocGia);
+        $this->matinhthanh = $dMTinhThanh->matinhthanh;
+        $this->tentinhthanh = $dMTinhThanh->tentinhthanh;
+        $this->tentinhthanh_en = $dMTinhThanh->tentinhthanh_en;
+        $this->created_at = $dMTinhThanh->created_at;
+        $this->updated_at = $dMTinhThanh->updated_at;
     }
 
     function getId()
@@ -26,14 +43,14 @@ class TinhThanhVm
         $this->id = $id;
     }
 
-    function getQuocGiaVm()
+    function getQuocGia()
     {
-        return $this->quocGiaVm;
+        return $this->quocgia;
     }
 
-    function setQuocGiaVm(QuocGiaVm $quocGiaVm)
+    function setQuocGia(QuocGiaVm $quocGiaVm)
     {
-        $this->quocGiaVm = $quocGiaVm;
+        $this->quocgia = $quocGiaVm;
     }
 
     function getMaTinhThanh()

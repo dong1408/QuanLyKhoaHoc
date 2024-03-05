@@ -2,20 +2,44 @@
 
 namespace App\ViewModel\TapChi;
 
+use App\Models\TapChi\TapChiKhongCongNhan;
 use App\ViewModel\User\UserVm;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
+use Ramsey\Uuid\Type\Integer;
 
 class TapChiKhongCongNhanVm
 {
-    private $id;
-    private $tapChiVm; // $id_tapchi
-    private $khongduoccongnhan;
-    private $ghichu;
-    private $nguoiCapNhatVm; // $id_nguoicapnhap -- UserVm 
-    private $created_at;
-    private $updated_at;
+    public int $id;
+    public TapChiVm $tapchi; // $id_tapchi
+    public ?bool $khongduoccongnhan;
+    public ?string $ghichu;
+    public ?UserVm $nguoicapnhat; // $id_nguoicapnhap -- UserVm 
+    public string $created_at;
+    public string $updated_at;
+
+
+    private UserVm $userVm;
 
     public function __construct()
     {
+    }
+
+    public function getTapChiKhongCongNhanVm(TapChiKhongCongNhan $tapChiKhongCongNhan):TapChiKhongCongNhanVm{
+        $a = new TapChiKhongCongNhanVm();
+        $a->id = $tapChiKhongCongNhan->id;
+
+        return $a;
+    }
+
+    public function convert(TapChiKhongCongNhan $tapChiKhongCongNhan)
+    {
+        $this->id = $tapChiKhongCongNhan->id;
+        // $this->tapchi = $this->tapChiVm->convert($tapChiKhongCongNhan->tapChi);
+        $this->khongduoccongnhan = $tapChiKhongCongNhan->khongduoccongnhan;
+        // $this->ghichu = $tapChiKhongCongNhan->ghichu;
+        // $this->nguoicapnhat = $this->userVm->convert($tapChiKhongCongNhan->nguoiCapNhat);
+        // $this->created_at = $tapChiKhongCongNhan->created_at;
+        // $this->updated_at = $tapChiKhongCongNhan->updated_at;
     }
 
     function getId()
@@ -28,14 +52,14 @@ class TapChiKhongCongNhanVm
         $this->id = $id;
     }
 
-    function getTapChiVm()
+    function getTapChi()
     {
-        return $this->tapChiVm;
+        return $this->tapchi;
     }
 
-    function setTapChiVm($tapChiVm)
+    function setTapChi(TapChiVm $tapChiVm)
     {
-        $this->tapChiVm = $tapChiVm;
+        $this->tapchi = $tapChiVm;
     }
 
     function getKhongDuocCongNhan()
@@ -58,14 +82,14 @@ class TapChiKhongCongNhanVm
         $this->ghichu = $ghichu;
     }
 
-    function getNguoiCapNhatVm()
+    function getNguoiCapNhat()
     {
-        return $this->nguoiCapNhatVm;
+        return $this->nguoicapnhat;
     }
 
-    function setNguoiCapNhatVm(UserVm $nguoiCapNhatVm)
+    function setNguoiCapNhat(UserVm $nguoiCapNhatVm)
     {
-        $this->nguoiCapNhatVm = $nguoiCapNhatVm;
+        $this->nguoicapnhat = $nguoiCapNhatVm;
     }
 
     function getCreatedAt()
