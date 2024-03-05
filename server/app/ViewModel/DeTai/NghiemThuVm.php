@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\DeTai\NghiemThu;
 use App\ViewModel\SanPham\SanPhamVm;
 
 class NghiemThuVm
@@ -15,8 +16,26 @@ class NghiemThuVm
     public string $created_at;
     public string $updated_at;
 
+
+    private $sanPhamVm;
+
     function __construct()
     {
+        $this->sanPhamVm = new SanPhamVm();
+    }
+
+    public function convert(NghiemThu $nghiemThu)
+    {
+        $this->id = $nghiemThu->id;
+        $this->sanpham = $this->sanPhamVm->convert($nghiemThu->sanPham);
+        $this->hoidongnghiemthu = $nghiemThu->hoidongnghiemthu;
+        $this->ngaynghiemthu = $nghiemThu->ngaynghiemthu;
+        $this->ketquanghiemthu = $nghiemThu->ketquanghiemthu;
+        $this->ngaycongnhanhoanthanh = $nghiemThu->ngaycongnhanhoanthanh;
+        $this->soqdcongnhanhoanthanh = $nghiemThu->soqdcongnhanhoanthanh;
+        $this->thoigianhoanthanh = $nghiemThu->thoigianhoanthanh;
+        $this->created_at = $nghiemThu->created_at;
+        $this->updated_at = $nghiemThu->updated_at;
     }
 
     function getId()

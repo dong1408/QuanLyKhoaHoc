@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('machuyenmon')->unique();
             $table->string('tenchuyenmon')->nullable();
             $table->string('tenchuyenmon_en')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

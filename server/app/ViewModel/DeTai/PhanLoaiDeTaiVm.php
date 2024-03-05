@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\DeTai\PhanLoaiDeTai;
 use Ramsey\Uuid\Type\Integer;
 
-class PhanLoaiDeTaiVm{
-    public Integer $id;
+class PhanLoaiDeTaiVm
+{
+    public int $id;
     public string $maloai;
     public string $tenloai;
     public string $kinhphi;
@@ -11,9 +13,21 @@ class PhanLoaiDeTaiVm{
     public string $created_at;
     public string $updated_at;
 
+
+
     function __construct()
     {
-        
+    }
+
+    public function convert(PhanLoaiDeTai $phanLoaiDeTai)
+    {
+        $this->id = $phanLoaiDeTai->id;
+        $this->maloai = $phanLoaiDeTai->maloai;
+        $this->tenloai = $phanLoaiDeTai->tenloai;
+        $this->kinhphi = $phanLoaiDeTai->kinhphi;
+        $this->mota = $phanLoaiDeTai->mota;
+        $this->created_at = $phanLoaiDeTai->created_at;
+        $this->updated_at = $phanLoaiDeTai->updated_at;
     }
 
     function getId()
@@ -26,53 +40,63 @@ class PhanLoaiDeTaiVm{
         $this->id = $id;
     }
 
-    function getMaLoai(){
+    function getMaLoai()
+    {
         return $this->maloai;
     }
 
-    function setMaLoai($maloai){
+    function setMaLoai($maloai)
+    {
         $this->maloai = $maloai;
     }
 
-    function getTenLoai(){
+    function getTenLoai()
+    {
         return $this->tenloai;
     }
 
-    function setTenLoai($tenloai){
+    function setTenLoai($tenloai)
+    {
         $this->tenloai = $tenloai;
     }
 
-    function getKinhPhi(){
+    function getKinhPhi()
+    {
         return $this->kinhphi;
     }
 
-    function setKinhPhi($kinhphi){
+    function setKinhPhi($kinhphi)
+    {
         $this->kinhphi = $kinhphi;
     }
 
-    function getMoTa(){
+    function getMoTa()
+    {
         return $this->mota;
     }
 
-    function setMoTa($mota){
+    function setMoTa($mota)
+    {
         $this->mota = $mota;
     }
 
-    function getCreatedAt(){
+    function getCreatedAt()
+    {
         return $this->created_at;
     }
 
-    function setCreatedAt($created_at){
+    function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
     }
 
-    function getUpdatedAt(){
+    function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
-    function setUpdatedAt($updated_at){
+    function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
     }
 }
-
-?>

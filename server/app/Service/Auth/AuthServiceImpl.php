@@ -2,7 +2,7 @@
 
 namespace App\Service\Auth;
 
-use App\Exceptions\User\UserNotFound;
+use App\Exceptions\Auth\LoginException;
 use App\Models\User;
 use App\Utilities\ResponseSuccess;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -14,19 +14,18 @@ use App\Exceptions\TokenInvalid\RefreshTokenInvalid;
 use App\ViewModel\Auth\AuthenVm;
 use App\ViewModel\User\Me;
 
-class AuthServiceImpl implements AuthService // chuyển logic qua đây
+class AuthServiceImpl implements AuthService 
 {
     public function login(Request $request): ResponseSuccess
     {
         try {
-            // $credentials = request(['username', 'password']);
             $credentials = [
                 'username' => $request->username,
                 'password' => $request->password,
             ];
             // Xác thực và tạo access token
             if (!$accessToken = auth('api')->attempt($credentials)) { // thực hiện xác thực với thông tin đăng nhập được cung cấp. Nếu xác thực thành công thì sẽ trả về một token JWT.            
-                throw new UserNotFound();
+                throw new LoginException();
             }
             // Tạo refresh token
             // playload refresh token

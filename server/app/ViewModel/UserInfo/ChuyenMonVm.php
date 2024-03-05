@@ -2,11 +2,11 @@
 
 namespace App\ViewModel\UserInfo;
 
-use Ramsey\Uuid\Type\Integer;
+use App\Models\UserInfo\DMChuyenMon;
 
 class ChuyenMonVm
 {
-    public Integer $id;
+    public int $id;
     public string $machuyenmon;
     public string $tenchuyenmon;
     public string $tenchuyenmon_en;
@@ -15,6 +15,15 @@ class ChuyenMonVm
 
     public function __construct()
     {
+    }
+
+    public function convert(DMChuyenMon $dMChuyenMon){
+        $this->id = $dMChuyenMon->id;
+        $this->machuyenmon = $dMChuyenMon->machuyenmon;
+        $this->tenchuyenmon = $dMChuyenMon->tenchuyenmon;
+        $this->tenchuyenmon_en = $dMChuyenMon->tenchuyenmon_en;
+        $this->created_at = $dMChuyenMon->created_at;
+        $this->updated_at = $dMChuyenMon->updated_at;
     }
 
     function getId()

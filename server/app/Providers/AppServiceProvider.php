@@ -4,6 +4,18 @@ namespace App\Providers;
 
 use App\Service\Auth\AuthService;
 use App\Service\Auth\AuthServiceImpl;
+use App\Service\QuyDoi\ChuyenNganhTinhDiemService;
+use App\Service\QuyDoi\ChuyenNganhTinhDiemServiceImpl;
+use App\Service\QuyDoi\NganhTinhDiemService;
+use App\Service\QuyDoi\NganhTinhDiemServiceImpl;
+use App\Service\TapChi\PhanLoaiTapChiService;
+use App\Service\TapChi\PhanLoaiTapChiServiceImpl;
+use App\Service\TapChi\TapChiService;
+use App\Service\TapChi\TapChiServiceImpl;
+use App\Service\UserInfo\QuocGiaService;
+use App\Service\UserInfo\QuocGiaServiceImpl;
+use App\Service\UserInfo\TinhThanhService;
+use App\Service\UserInfo\TinhThanhServiceImpl;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,6 +29,12 @@ class AppServiceProvider extends ServiceProvider
     {
         // dk service
         $this->app->bind(AuthService::class, AuthServiceImpl::class);
+        $this->app->bind(TapChiService::class, TapChiServiceImpl::class);
+        $this->app->bind(PhanLoaiTapChiService::class, PhanLoaiTapChiServiceImpl::class);
+        $this->app->bind(QuocGiaService::class, QuocGiaServiceImpl::class);
+        $this->app->bind(TinhThanhService::class, TinhThanhServiceImpl::class);
+        $this->app->bind(NganhTinhDiemService::class, NganhTinhDiemServiceImpl::class);
+        $this->app->bind(ChuyenNganhTinhDiemService::class, ChuyenNganhTinhDiemServiceImpl::class);
     }
     /**
      * Bootstrap any application services.

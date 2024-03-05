@@ -2,6 +2,7 @@
 
 namespace App\ViewModel\TapChi;
 
+use App\Models\TapChi\TapChi;
 use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\User\UserVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
@@ -12,25 +13,49 @@ use Ramsey\Uuid\Type\Integer;
 
 class TapChiVm
 {
-    public Integer $id;
+    public int $id;
     public string $name;
-    public string $issn;
-    public string $eissn;
-    public string $pissn;
-    public string $website;
-    public Boolean $quocte;
-    public NhaXuatBanVm $nhaxuatban; // $id_nhaxuatban
-    public ToChucVm $donvichuquan; // $id_donvichuquan -- ToChucVm
-    public string $address;
-    public TinhThanhVm $addresscity; // $id_address_city -- TinhThanhVM
-    public QuocGiaVm $addresscountry; // id_address_country -- QuocGiaVm
-    public Boolean $trangthai;
-    public UserVm $nguoithem; // $di_nguoithem -- UserVm
-    public $created_at;
-    public $updated_at;
+    public ?bool $quocte;
+    public ?string $address;
+    public ?bool $trangthai;
+    public ?UserVm $nguoithem; // $di_nguoithem -- UserVm
+    public string $created_at;
+    public string $updated_at;
+
+
+    public NhaXuatBanVm $nhaXuatBanVm;
+    public ToChucVm $donViChuQuanVm;
+    public TinhThanhVm $addressCityVm;
+    public QuocGiaVm $addressCountryVm;
+    public UserVm $userVm;
 
     public function __construct()
     {
+        // $this->nhaXuatBanVm = new NhaXuatBanVm();
+        // $this->donViChuQuanVm = new ToChucVm();
+        // $this->addressCityVm = new TinhThanhVm();
+        // $this->addressCountryVm = new QuocGiaVm();
+        // $this->userVm = new UserVm();
+    }
+
+    public function convert(TapChi $tapChi)
+    {
+        $this->id = $tapChi->id;
+        $this->name = $tapChi->name;
+        // $this->issn = $tapChi->issn;
+        // $this->eissn = $tapChi->eissn;
+        // $this->pissn = $tapChi->pissn;
+        // $this->website = $tapChi->website;
+        // $this->quocte = $tapChi->quocte;
+        // $this->nhaxuatban = $this->nhaXuatBanVm->convert($tapChi->nhaXuatBan);
+        // $this->donvichuquan = $this->donViChuQuanVm->convert($tapChi->donViChuQuan);
+        $this->address = $tapChi->address;
+        // $this->addresscity = $this->addressCityVm->convert($tapChi->tinhThanh);
+        // $this->addresscountry = $this->addressCountryVm->convert($tapChi->quocGia);
+        $this->trangthai = $tapChi->trangthai;
+        // $this->nguoithem = $this->userVm->convert($tapChi->nguoiThem);
+        // $this->created_at = $tapChi->created_at;
+        // $this->updated_at = $tapChi->updated_at;
     }
 
     function getId()
@@ -53,75 +78,75 @@ class TapChiVm
         $this->name = $name;
     }
 
-    function getIssn()
-    {
-        return $this->issn;
-    }
+    // function getIssn()
+    // {
+    //     return $this->issn;
+    // }
 
-    function setIssn($issn)
-    {
-        $this->issn = $issn;
-    }
+    // function setIssn($issn)
+    // {
+    //     $this->issn = $issn;
+    // }
 
-    function getEissn()
-    {
-        return $this->eissn;
-    }
+    // function getEissn()
+    // {
+    //     return $this->eissn;
+    // }
 
-    function setEissn($eissn)
-    {
-        $this->eissn = $eissn;
-    }
+    // function setEissn($eissn)
+    // {
+    //     $this->eissn = $eissn;
+    // }
 
-    function getPissn()
-    {
-        return $this->pissn;
-    }
+    // function getPissn()
+    // {
+    //     return $this->pissn;
+    // }
 
-    function setPissn($pissn)
-    {
-        $this->pissn = $pissn;
-    }
+    // function setPissn($pissn)
+    // {
+    //     $this->pissn = $pissn;
+    // }
 
-    function getWebsite()
-    {
-        return $this->website;
-    }
+    // function getWebsite()
+    // {
+    //     return $this->website;
+    // }
 
-    function setWebsite($website)
-    {
-        $this->website = $website;
-    }
+    // function setWebsite($website)
+    // {
+    //     $this->website = $website;
+    // }
 
-    function getQuocTe()
-    {
-        return $this->quocte;
-    }
+    // function getQuocTe()
+    // {
+    //     return $this->quocte;
+    // }
 
-    function setQuocTe($quocte)
-    {
-        $this->quocte = $quocte;
-    }
+    // function setQuocTe($quocte)
+    // {
+    //     $this->quocte = $quocte;
+    // }
 
-    function getNhaXuatBan()
-    {
-        return $this->nhaxuatban;
-    }
+    // function getNhaXuatBan()
+    // {
+    //     return $this->nhaxuatban;
+    // }
 
-    function setNhaXuatBan(NhaXuatBanVm $nhaXuatBanVm)
-    {
-        $this->nhaxuatban = $nhaXuatBanVm;
-    }
+    // function setNhaXuatBan(NhaXuatBanVm $nhaXuatBanVm)
+    // {
+    //     $this->nhaxuatban = $nhaXuatBanVm;
+    // }
 
-    function getDonViChuQuan()
-    {
-        return $this->donvichuquan;
-    }
+    // function getDonViChuQuan()
+    // {
+    //     return $this->donvichuquan;
+    // }
 
-    function setDonViChuQuan(ToChucVm $donViChuQuanVm)
-    {
-        $this->donvichuquan = $donViChuQuanVm;
-    }
+    // function setDonViChuQuan(ToChucVm $donViChuQuanVm)
+    // {
+    //     $this->donvichuquan = $donViChuQuanVm;
+    // }
 
     function getAddress()
     {
@@ -133,25 +158,25 @@ class TapChiVm
         $this->address = $address;
     }
 
-    function getAddressCity()
-    {
-        return $this->addresscity;
-    }
+    // function getAddressCity()
+    // {
+    //     return $this->addresscity;
+    // }
 
-    function setAddressCity(TinhThanhVm $addressCityVm)
-    {
-        $this->addresscity = $addressCityVm;
-    }
+    // function setAddressCity(TinhThanhVm $addressCityVm)
+    // {
+    //     $this->addresscity = $addressCityVm;
+    // }
 
-    function getAddressCountry()
-    {
-        return $this->addresscountry;
-    }
+    // function getAddressCountry()
+    // {
+    //     return $this->addresscountry;
+    // }
 
-    function setAddressCountry(QuocGiaVm $addressCountryVm)
-    {
-        $this->addresscountry = $addressCountryVm;
-    }
+    // function setAddressCountry(QuocGiaVm $addressCountryVm)
+    // {
+    //     $this->addresscountry = $addressCountryVm;
+    // }
 
     function getTrangThai()
     {
@@ -163,33 +188,33 @@ class TapChiVm
         $this->trangthai = $trangthai;
     }
 
-    function getNguoiThem()
-    {
-        return $this->nguoithem;
-    }
+    // function getNguoiThem()
+    // {
+    //     return $this->nguoithem;
+    // }
 
-    function setNguoiThem(UserVm $nguoiThemVm)
-    {
-        $this->nguoithem = $nguoiThemVm;
-    }
+    // function setNguoiThem(UserVm $nguoiThemVm)
+    // {
+    //     $this->nguoithem = $nguoiThemVm;
+    // }
 
-    function getCreatedAt()
-    {
-        return $this->created_at;
-    }
+    // function getCreatedAt()
+    // {
+    //     return $this->created_at;
+    // }
 
-    function setCreatedAt($created_at)
-    {
-        $this->created_at = $created_at;
-    }
+    // function setCreatedAt($created_at)
+    // {
+    //     $this->created_at = $created_at;
+    // }
 
-    function getUpdatedAt()
-    {
-        return $this->updated_at;
-    }
+    // function getUpdatedAt()
+    // {
+    //     return $this->updated_at;
+    // }
 
-    function setUpdatedAt($updated_at)
-    {
-        $this->updated_at = $updated_at;
-    }
+    // function setUpdatedAt($updated_at)
+    // {
+    //     $this->updated_at = $updated_at;
+    // }
 }

@@ -2,6 +2,7 @@
 
 namespace App\ViewModel\User;
 
+use App\Models\User;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\UserInfo\ChuyenMonVm;
@@ -11,16 +12,15 @@ use App\ViewModel\UserInfo\NgachVienChucVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\ToChucVm;
 use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
-use Ramsey\Uuid\Type\Integer;
 
 class UserVm
 {
-    public Integer $id;
+    public int $id;
     public string $name;
     public string $username;
     public string $email;
     // public $password;
-    public Integer $role;
+    public int $role;
     public Boolean $changed;
     // public $remember_token
     public string $ngaysinh;
@@ -43,8 +43,55 @@ class UserVm
     public string $created_at;
     public string $updated_at;
 
+
+    private $toChucVm;
+    private $donViVm;
+    private $ngachVienChucVm;
+    private $quocGiaVm;
+    private $hocHamHocViVm;
+    private $chuyenMonVm;
+    private NganhTinhDiemVm $nganhTinhDiemVm;
+    private $chuyenNganhTinhDiemVm;
+
     public function __construct()
     {
+        $this->toChucVm = new ToChucVm();
+        $this->donViVm = new DonViVm();
+        $this->ngachVienChucVm = new NgachVienChucVm;
+        $this->quocGiaVm = new QuocGiaVm();
+        $this->hocHamHocViVm = new HocHamHocViVm();
+        $this->chuyenMonVm = new ChuyenMonVm();
+        // $this->nganhTinhDiemVm = new NganhTinhDiemVm();
+        $this->chuyenNganhTinhDiemVm = new ChuyenNganhTinhDiemVm();
+    }
+
+    public function convert(User $user)
+    {
+        $this->id = $user->id;
+        $this->name = $user->name;
+        $this->username = $user->username;
+        $this->email = $user->email;
+        $this->role = $user->role;
+        $this->changed = $user->changed;
+        $this->ngaysinh = $user->ngaysinh;
+        $this->dienthoai = $user->dienthoai;
+        $this->email2 = $user->email2;
+        $this->orchid = $user->orchid;
+        $this->tochuc = $this->toChucVm->convert($user->toChuc);
+        $this->donvi = $this->donViVm->convert($user->donVi);
+        $this->cohuu = $user->cohuu;
+        $this->keodai = $user->keodai;
+        $this->dinhmucnghiavunckh = $user->dinhmucnghiavunckh;
+        $this->dangdihoc = $user->dangdihoc;
+        $this->noihoc = $this->toChucVm->convert($user->noiHoc);
+        $this->ngachvienchuc = $this->ngachVienChucVm->convert($user->ngachVienChuc);
+        $this->quoctich = $this->quocGiaVm->convert($user->quocGia);
+        $this->hochamhocvi = $this->hocHamHocViVm->convert($user->hocHamHocVi);
+        $this->chuyenmon = $this->chuyenMonVm->convert($user->chuyenMon);
+        $this->nganhtinhdiem = $this->nganhTinhDiemVm->convert($user->nganhTinhDiem);
+        $this->chuyennganhtinhdiem = $this->chuyenNganhTinhDiemVm->convert($user->chuyenNganhTinhDiem);
+        $this->created_at = $user->created_at;
+        $this->updated_at = $user->updated_at;
     }
 
     public function getId()

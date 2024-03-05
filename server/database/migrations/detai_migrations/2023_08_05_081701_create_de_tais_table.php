@@ -39,6 +39,7 @@ return new class extends Migration
             //Cấp đề tài: Khoa, Cơ sở, Tỉnh, Bộ, Ngành, Nhà nước, Nước ngoài
             $table->string('capdetai')->nullable();
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }
