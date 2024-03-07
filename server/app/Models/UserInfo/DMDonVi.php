@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DMDonVi extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'd_m_don_vis';
 
     // relation 1-n to user

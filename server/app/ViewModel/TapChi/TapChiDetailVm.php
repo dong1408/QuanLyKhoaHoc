@@ -33,19 +33,7 @@ class TapChiDetailVm
 
     public ?bool $khongduoccongnhan;
 
-    public ?XepHangTapChiVm $xephangtapchi;
+    public ?XepHangTapChiDetailVm $xephangtapchi;
 
-    // public ?string $wos;
-    // public ?string $if;
-    // public ?string $quartile;
-    // public ?string $abs;
-    // public ?string $abcd;
-    // public ?string $aci;
-
-    public ?TinhDiemTapChiVm $tinhdiemtapchi;
-
-    // public ?NganhTinhDiemVm $nganhtinhdiem;
-    // public ?ChuyenNganhTinhDiemVm $chuyennganhtinhdiem;
-    // public ?string $diem;
-    // public ?string $namtinhdiem;
+    public ?TinhDiemTapChiDetailVm $tinhdiemtapchi;
 }

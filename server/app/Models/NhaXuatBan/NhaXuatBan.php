@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class NhaXuatBan extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'nha_xuat_bans';
 
     // relation 1-n to tap_chi

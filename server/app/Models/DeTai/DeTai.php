@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DeTai extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'de_tais';
 

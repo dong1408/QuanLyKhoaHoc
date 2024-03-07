@@ -4,35 +4,18 @@ namespace App\Service\TapChi;
 
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\InvalidValueException;
-use App\Exceptions\NhaXuatBan\NhaXuatBanNotFoundException;
-use App\Exceptions\QuyDoi\ChuyenNganhTinhDiemNotFoundException;
-use App\Exceptions\QuyDoi\NganhTinhDiemNotFoundException;
-use App\Exceptions\TapChi\NameTapChiUsedException;
-use App\Exceptions\TapChi\NganhTheoHDGSNotFoundException;
-use App\Exceptions\TapChi\PhanLoaiTapChiNotFoundException;
 use App\Exceptions\TapChi\TapChiNotFoundException;
 use App\Exceptions\TapChi\UpdateKhongCongNhanException;
-use App\Exceptions\ToChuc\DonViChuQuanNotFoundException;
-use App\Exceptions\UserInfo\QuocGiaNotFoundException;
-use App\Exceptions\UserInfo\TinhThanhNotFoundException;
 use App\Http\Requests\TapChi\CreateTapChiRequest;
 use App\Http\Requests\TapChi\UpdateTapChiKhongCongNhanRequest;
 use App\Http\Requests\TapChi\UpdateTapChiRequest;
 use App\Http\Requests\TapChi\UpdateTinhDiemTapChiRequest;
 use App\Http\Requests\TapChi\UpdateTrangThaiTapChiRequest;
 use App\Http\Requests\TapChi\UpdateXepHangTapChiRequest;
-use App\Models\NhaXuatBan\NhaXuatBan;
-use App\Models\QuyDoi\DMChuyenNganhTinhDiem;
-use App\Models\QuyDoi\DMNganhTinhDiem;
-use App\Models\TapChi\DMNganhTheoHDGS;
-use App\Models\TapChi\DMPhanLoaiTapChi;
 use App\Models\TapChi\TapChi;
 use App\Models\TapChi\TapChiKhongCongNhan;
 use App\Models\TapChi\TinhDiemTapChi;
 use App\Models\TapChi\XepHangTapChi;
-use App\Models\UserInfo\DMQuocGia;
-use App\Models\UserInfo\DMTinhThanh;
-use App\Models\UserInfo\DMToChuc;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
@@ -138,7 +121,7 @@ class TapChiServiceImpl implements TapChiService
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
-        $page = $request->request('page',1);
+        $page = $request->query('page',1);
 
         $result = [];
         $tapChiKhongCongNhans = TapChiKhongCongNhan::withTrashed()
@@ -146,7 +129,7 @@ class TapChiServiceImpl implements TapChiService
             ->orderBy('created_at', 'desc')
             ->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($tapChiKhongCongNhans as $tapChiKhongCongNhan) {
-            $result[] = Convert::getTapChiKhongCongNhanVm($tapChiKhongCongNhan);
+            $result[] = Convert::getTapChiKhongCongNhanDetailVm($tapChiKhongCongNhan);
         }
         $pagingResponse = new PagingResponse($tapChiKhongCongNhans->lastPage(), $tapChiKhongCongNhans->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
@@ -166,14 +149,14 @@ class TapChiServiceImpl implements TapChiService
             throw new TapChiNotFoundException();
         }
 
-        $page = $request->request('page',1);
+        $page = $request->query('page',1);
 
         $result = [];
         $xepHangTapChis = XepHangTapChi::withTrashed()->where('id_tapchi', '=', $id_tapchi)
             ->orderBy('created_at', 'desc')
             ->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($xepHangTapChis as $xepHangTapChi) {
-            $result[] = Convert::getXepHangTapChiVm($xepHangTapChi);
+            $result[] = Convert::getXepHangTapChiDetailVm($xepHangTapChi);
         }
         $pagingResponse = new PagingResponse($xepHangTapChis->lastPage(), $xepHangTapChis->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
@@ -193,12 +176,12 @@ class TapChiServiceImpl implements TapChiService
             throw new TapChiNotFoundException();
         }
 
-        $page = $request->request('page',1);
+        $page = $request->query('page',1);
 
         $result = [];
         $tinhDiemTapChis = TinhDiemTapChi::withTrashed()->where('id_tapchi', '=', $id_tapchi)->orderBy('created_at', 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($tinhDiemTapChis as $tinhDiemTapChi) {
-            $result[] = Convert::getTinhDIemTapChiVm($tinhDiemTapChi);
+            $result[] = Convert::getTinhDIemTapChiDetailVm($tinhDiemTapChi);
         }
         $pagingResponse = new PagingResponse($tinhDiemTapChis->lastPage(), $tinhDiemTapChis->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);

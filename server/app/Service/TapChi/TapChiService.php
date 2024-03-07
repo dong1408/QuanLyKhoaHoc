@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 interface TapChiService
 {
     public function getAllTapChi(): ResponseSuccess;
+    public function getAllTapChiChoDuyet(): ResponseSuccess;
     public function getTapChiPaging(Request $request): ResponseSuccess;
     public function getTapChiById(int $id): ResponseSuccess;
     public function getDetailTapChi(int $id);

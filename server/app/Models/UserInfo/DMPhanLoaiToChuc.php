@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DMPhanLoaiToChuc extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'd_m_phan_loai_to_chucs';
 
     // relation 1-n to d_m_to_chuc

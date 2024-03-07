@@ -26,12 +26,12 @@ class UpdateTinhDiemTapChiRequest extends FormRequest
     {
         return [
             "id_nganhtinhdiem" => [
-                "bail","required","integer",
-                Rule::exists('d_m_nganh_tinh_diems','id')
+                "bail", "required", "integer",
+                Rule::exists('d_m_nganh_tinh_diems', 'id')
             ],
             "id_chuyennganhtinhdiem" => [
-                "bail","required","integer",
-                Rule::exists('d_m_chuyen_nganh_tinh_diems','id')
+                "bail", "required", "integer",
+                Rule::exists('d_m_chuyen_nganh_tinh_diems', 'id')
             ],
             "diem" => "bail|nullable|string",
             "namtinhdiem" => "bail|nullable|string",
@@ -39,7 +39,8 @@ class UpdateTinhDiemTapChiRequest extends FormRequest
         ];
     }
 
-    public function messages(){
+    public function messages()
+    {
         return [
             'required' => 'Trường :attribute là bắt buộc',
             'integer' => 'Trường :attribute phải là một số',

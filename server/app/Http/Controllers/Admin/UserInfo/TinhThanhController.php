@@ -21,4 +21,9 @@ class TinhThanhController extends Controller
         $result = $this->tinhThanhService->getAllTinhThanh();
         return response()->json($result, 200);
     }
+
+    public function getAllTinhThanhByIdQuocGia($id){
+        $result = $this->tinhThanhService->getAllTinhThanhByIdQuocGia($id);
+        return response()->json($result, 200);
+    }
 }
