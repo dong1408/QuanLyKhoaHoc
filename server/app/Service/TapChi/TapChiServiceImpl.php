@@ -17,6 +17,7 @@ use App\Models\TapChi\TapChi;
 use App\Models\TapChi\TapChiKhongCongNhan;
 use App\Models\TapChi\TinhDiemTapChi;
 use App\Models\TapChi\XepHangTapChi;
+use App\Models\QuyDoi\DMChuyenNganhTinhDiem;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
@@ -46,7 +47,7 @@ class TapChiServiceImpl implements TapChiService
                 ->orWhere('issn', 'LIKE', '%' . $keysearch . '%')
                 ->orWhere('pissn', 'LIKE', '%' . $keysearch . '%')
                 ->orWhere('eissn', 'LIKE', '%' . $keysearch . '%');
-        })->orderBy($sortby,'desc')->where(function ($query) {
+        })->orderBy($sortby, 'desc')->where(function ($query) {
             $query->where('trangthai', false);
         })->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
 
@@ -73,7 +74,7 @@ class TapChiServiceImpl implements TapChiService
                     ->orWhere('issn', 'LIKE', '%' . $keysearch . '%')
                     ->orWhere('pissn', 'LIKE', '%' . $keysearch . '%')
                     ->orWhere('eissn', 'LIKE', '%' . $keysearch . '%');
-            })->orderBy($sortby,'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+            })->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         } else { // Lấy những bản ghi not softdelete
             $tapChis = TapChi::where(function ($query) use ($keysearch) {
                 $query->where('name', 'LIKE', '%' . $keysearch . '%')
@@ -82,7 +83,7 @@ class TapChiServiceImpl implements TapChiService
                     ->orWhere('eissn', 'LIKE', '%' . $keysearch . '%');
             })->where(function ($query) {
                 $query->where('trangthai', true);
-            })->orderBy($sortby,'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+            })->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         }
         $result = [];
         foreach ($tapChis as $tapChi) {
@@ -96,7 +97,7 @@ class TapChiServiceImpl implements TapChiService
     {
         $id = (int) $id;
 
-        if(!is_int($id)){
+        if (!is_int($id)) {
             throw new InvalidValueException();
         }
 
@@ -112,7 +113,7 @@ class TapChiServiceImpl implements TapChiService
     {
         $id_tapchi = (int) $id;
 
-        if(!is_int($id_tapchi)){
+        if (!is_int($id_tapchi)) {
             throw new InvalidValueException();
         }
 
@@ -129,7 +130,7 @@ class TapChiServiceImpl implements TapChiService
     {
         $id_tapchi = (int) $id;
 
-        if(!is_int($id_tapchi)){
+        if (!is_int($id_tapchi)) {
             throw new InvalidValueException();
         }
 
@@ -137,14 +138,14 @@ class TapChiServiceImpl implements TapChiService
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
-        $page = $request->query('page',1);
+        $page = $request->query('page', 1);
 
         $result = [];
         $tapChiKhongCongNhans = TapChiKhongCongNhan::where('id_tapchi', $id_tapchi)
             ->orderBy('created_at', 'desc')
             ->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($tapChiKhongCongNhans as $tapChiKhongCongNhan) {
-            $result[] = Convert::getTapChiKhongCongNhanDetailVm($tapChiKhongCongNhan);
+            $result[] = Convert::getTapChiKhongCongNhanVm($tapChiKhongCongNhan);
         }
         $pagingResponse = new PagingResponse($tapChiKhongCongNhans->lastPage(), $tapChiKhongCongNhans->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
@@ -155,7 +156,7 @@ class TapChiServiceImpl implements TapChiService
     {
         $id_tapchi = (int) $id;
 
-        if(!is_int($id_tapchi)){
+        if (!is_int($id_tapchi)) {
             throw new InvalidValueException();
         }
 
@@ -164,14 +165,14 @@ class TapChiServiceImpl implements TapChiService
             throw new TapChiNotFoundException();
         }
 
-        $page = $request->query('page',1);
+        $page = $request->query('page', 1);
 
         $result = [];
         $xepHangTapChis = XepHangTapChi::where('id_tapchi', '=', $id_tapchi)
             ->orderBy('created_at', 'desc')
             ->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($xepHangTapChis as $xepHangTapChi) {
-            $result[] = Convert::getXepHangTapChiDetailVm($xepHangTapChi);
+            $result[] = Convert::getXepHangTapChiVm($xepHangTapChi);
         }
         $pagingResponse = new PagingResponse($xepHangTapChis->lastPage(), $xepHangTapChis->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
@@ -182,7 +183,7 @@ class TapChiServiceImpl implements TapChiService
     {
         $id_tapchi = (int) $id;
 
-        if(!is_int($id_tapchi)){
+        if (!is_int($id_tapchi)) {
             throw new InvalidValueException();
         }
 
@@ -191,7 +192,7 @@ class TapChiServiceImpl implements TapChiService
             throw new TapChiNotFoundException();
         }
 
-        $page = $request->query('page',1);
+        $page = $request->query('page', 1);
 
         $result = [];
         $tinhDiemTapChis = TinhDiemTapChi::where('id_tapchi', '=', $id_tapchi)->orderBy('created_at', 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
@@ -260,7 +261,7 @@ class TapChiServiceImpl implements TapChiService
     public function updateTrangThaiTapChi(UpdateTrangThaiTapChiRequest $request, int $id): ResponseSuccess
     {
         $id_tapchi = (int) $id;
-        if(!is_int($id_tapchi)){
+        if (!is_int($id_tapchi)) {
             throw new InvalidValueException();
         }
 
@@ -282,13 +283,13 @@ class TapChiServiceImpl implements TapChiService
     {
         $id_tapchi = (int) $id;
 
-        if(!is_int($id_tapchi)){
+        if (!is_int($id_tapchi)) {
             throw new InvalidValueException();
         }
 
         $tapChi = TapChi::withTrashed()->find($id_tapchi);
 
-        if($tapChi == null){
+        if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
 
@@ -326,9 +327,9 @@ class TapChiServiceImpl implements TapChiService
 
         $validated = $request->validated();
 
-        $last_recognize = TapChiKhongCongNhan::where('id_tapchi',$id)->orderBy('created_at','desc')->first();
+        $last_recognize = TapChiKhongCongNhan::where('id_tapchi', $id)->orderBy('created_at', 'desc')->first();
 
-        if($last_recognize && $last_recognize->khongduoccongnhan == $validated['khongduoccongnhan']){
+        if ($last_recognize && $last_recognize->khongduoccongnhan == $validated['khongduoccongnhan']) {
             throw new UpdateKhongCongNhanException();
         }
 
@@ -378,7 +379,7 @@ class TapChiServiceImpl implements TapChiService
 
         $cnTinhDiem = DMChuyenNganhTinhDiem::find($validated['id_chuyennganhtinhdiem']);
 
-        if($cnTinhDiem->nganhTinhDiem->id != $validated['id_nganhtinhdiem']){
+        if ($cnTinhDiem->nganhTinhDiem->id != $validated['id_nganhtinhdiem']) {
             throw new TinhDiemTapChiException();
         }
 

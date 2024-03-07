@@ -19,4 +19,9 @@ class TapChiVm
     public ?UserVm $nguoithem; // $di_nguoithem -- UserVm
     public string $created_at;
     public string $updated_at;
+    public ?string $issn;
+    public ?string $eissn;
+    public ?string $pissn;
+    public ?bool $quocte;
+    public ?string $deleted_at;
 }
