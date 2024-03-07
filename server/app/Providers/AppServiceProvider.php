@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Service\Auth\AuthService;
 use App\Service\Auth\AuthServiceImpl;
+use App\Service\BaiBao\BaiBaoService;
+use App\Service\BaiBao\BaiBaoServiceImpl;
 use App\Service\QuyDoi\ChuyenNganhTinhDiemService;
 use App\Service\QuyDoi\ChuyenNganhTinhDiemServiceImpl;
 use App\Service\QuyDoi\NganhTinhDiemService;
@@ -35,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TinhThanhService::class, TinhThanhServiceImpl::class);
         $this->app->bind(NganhTinhDiemService::class, NganhTinhDiemServiceImpl::class);
         $this->app->bind(ChuyenNganhTinhDiemService::class, ChuyenNganhTinhDiemServiceImpl::class);
+        $this->app->bind(BaiBaoService::class, BaiBaoServiceImpl::class);
     }
     /**
      * Bootstrap any application services.

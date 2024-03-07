@@ -9,8 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DMSanPham extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'd_m_san_phams';
+
+    
 
     // relation 1-n to san_pham
     public function sanPhams()

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class XepHangTapChi extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'xep_hang_tap_chis';
     protected $fillable = [
         'id',

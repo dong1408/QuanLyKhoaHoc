@@ -40,7 +40,16 @@ Route::group([
     Route::get('auth/getMe', [AuthController::class, 'getMe']);
 
     // BaiBaoKhoaHoc
-    Route::get('baibaokhoahoc', [BaiBaoKhoaHocController::class, 'getAll']);
+    Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
+    Route::get('baibaochoduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
+    Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']);
+    Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao']);
+    Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);
+    Route::patch('baibao/{id}/delete', [BaiBaoKhoaHocController::class, 'deleteBaiBao']);
+    Route::patch('baibao/{id}/restore', [BaiBaoKhoaHocController::class, 'restoreBaiBao']);
+    Route::delete('baibao/{id}/force', [BaiBaoKhoaHocController::class, 'forceDeleteBaiBao']);
+
+    Route::post('baibao/test', [BaiBaoKhoaHocController::class, 'test']);
 
     // TapChi
     Route::get('tapchi', [TapChiController::class, 'getAllTapChi']);
@@ -60,7 +69,7 @@ Route::group([
     Route::post('tapchi/{id}/xephang', [TapChiController::class, 'updateXepHangTapChi']);
     Route::post('tapchi/{id}/tinhdiem', [TapChiController::class, 'updateTinhDiemTapChi']);
 
-    Route::delete('tapchi/{id}', [TapChiController::class, 'deleteTapChi']);
+    Route::patch('tapchi/{id}/delete', [TapChiController::class, 'deleteTapChi']);
     Route::patch('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
     Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
 
@@ -69,6 +78,7 @@ Route::group([
     Route::get('quocgia', [QuocGiaController::class, 'getAllQuocGia']);
     // Tinh Thanh
     Route::get('tinhthanh', [TinhThanhController::class, 'getAllTinhThanh']);
+    Route::get('tinhthanh/{id}/quocgia', [TinhThanhController::class, 'getAllTinhThanhByIdQuocGia']);
 
 
     // ============================== Nganh Tinh Diem ======================================== //

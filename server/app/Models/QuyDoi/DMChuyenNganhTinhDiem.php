@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DMChuyenNganhTinhDiem extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'd_m_chuyen_nganh_tinh_diems';
 
     // relation 1-n to user
