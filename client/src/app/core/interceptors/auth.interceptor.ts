@@ -79,6 +79,8 @@ export class AuthInterceptor implements HttpInterceptor{
 
     private addTokenToHeader(request: HttpRequest<any>, token?: string) {
         let headers = request.headers;
+        headers = headers.set("Accept","application/json")
+        headers = headers.set("Content-Type","application/json")
         if (token) {
             headers = headers.set("Authorization", `Bearer ${token}`)
         }

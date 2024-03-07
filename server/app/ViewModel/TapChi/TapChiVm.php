@@ -15,12 +15,16 @@ class TapChiVm
 {
     public int $id;
     public string $name;
+    public ?string $issn;
+    public ?string $eissn;
+    public ?string $pissn;
     public ?bool $quocte;
     public ?string $address;
     public ?bool $trangthai;
     public ?UserVm $nguoithem; // $di_nguoithem -- UserVm
     public string $created_at;
     public string $updated_at;
+    public ?string $deleted_at;
 
 
     public NhaXuatBanVm $nhaXuatBanVm;

@@ -31,7 +31,7 @@ class AuthController extends Controller
     {
         $request->validate([
             "name" => "bail|required",
-            "username" => "bail|required|digits|unique:users,username", // Ma so giang vien
+            "username" => "bail|required|unique:users,username", // Ma so giang vien
             "email" => "bail|email|unique:users,email",
             "password" => "bail|required"
         ], [

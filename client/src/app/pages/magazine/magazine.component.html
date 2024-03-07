@@ -22,15 +22,31 @@
     </div>
 
     <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
-        <button nz-button [nzType]="currentButton === 1 ? 'primary' : 'default'" (click)="setCurrentButton(1)">
+        <button nz-button [nzType]="currentButton$.value === 1 ? 'primary' : 'default'" (click)="setCurrentButton(1)">
             Đã Phê Duyệt
         </button>
-        <button nz-button [nzType]="currentButton === 2 ? 'primary' : 'default'" (click)="setCurrentButton(2)">
-            Chưa Phê Duyệt
-        </button>
-        <button nz-button [nzType]="currentButton === 3 ? 'primary' : 'default'" nzDanger (click)="setCurrentButton(3)">
+        <button nz-button [nzType]="currentButton$.value === 2 ? 'primary' : 'default'" nzDanger (click)="setCurrentButton(2)">
             Đã Xóa
         </button>
+        <button nz-button routerLink="cho-phe-duyet">
+            Chờ Phê Duyệt
+        </button>
+    </div>
+
+    <div class="tw-flex tw-flex-col tw-gap-[6px] tw-w-[300px]">
+        <form nz-form [formGroup]="formAction" class="tw-space-y-[6px]">
+            <input nz-input nzSize='large' formControlName="search" placeholder="Tìm Kiếm"  (input)="onChangeSearch($event)" type="text" />
+            <nz-select
+                    (ngModelChange)="onChangeSortBy($event)"
+                    nzSize='large'
+                    nzPlaceHolder="Sắp Xếp"
+                    formControlName="select"
+                    class="tw-w-full"
+            >
+                <nz-option  nzValue="created_at" nzLabel="Mới Nhất"></nz-option>
+                <nz-option nzValue="updated_at" nzLabel="Mới Cập Nhật"></nz-option>
+            </nz-select>
+        </form>
     </div>
 
 <!--    class="tw-overflow-x-auto tw-h-screen-->
@@ -39,7 +55,7 @@
         <nz-table
             #tapchi
             [nzData]="magazines"
-            [nzLoading]="false"
+            [nzLoading]="isTableLoading"
             [nzShowPagination]="false"
             [nzScroll]="{x:'auto' }"
         >
@@ -50,6 +66,9 @@
                 <th>Người Tạo</th>
                 <th>Trạng Thái</th>
                 <th>Ngày Cập Nhật</th>
+                <ng-container *ngIf="columnDelete">
+                    <th>Ngày Xóa</th>
+                </ng-container>
                 <th>Thao Tác</th>
             </tr>
             </thead>
@@ -58,31 +77,89 @@
                 <td>{{ data.id }}</td>
                 <td nzEllipsis>{{ data.name }}</td>
                 <td nzEllipsis>{{ data.nguoithem?.name }}</td>
-                <td class="{{data.trangthai ? 'success' : 'error'}}">{{ data.trangthai ? 'Đã Phê Duyệt' : 'Chưa Phê Duyệt'}}</td>
+                <td nzEllipsis class="{{data.trangthai ? 'success' : 'error'}}">{{ data.trangthai ? 'Đã Phê Duyệt' : 'Chưa Phê Duyệt'}}</td>
                 <td>{{ data.updated_at }}</td>
-                <td class="tw-flex tw-items-center tw-space-x-[4px]">
-                    <button nz-button nzType="primary">
-                        <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
-                        Chi Tiết
-                    </button>
-                    <button
-                            nz-button
-                            nz-popconfirm
-                            nzPopconfirmTitle="Xóa tạp chí ?"
-                            (nzOnConfirm)="onDeleteMagazine(data.id)"
-                            nz-button
-                            nzType="default"
-                            nzDanger
-                    >
-                        <span nz-icon nzType="delete" nzTheme="outline"></span>
-                        Xóa
-                    </button>
-                </td>
+                <ng-container *ngIf="columnDelete">
+                    <td nzEllipsis>{{ data?.deleted_at }}</td>
+                </ng-container>
+                <ng-container *ngIf="data.deleted_at === null">
+                    <td  class="tw-flex tw-items-center tw-space-x-[4px]">
+                        <button nz-button nzType="primary">
+                            <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+                            Chi Tiết
+                        </button>
+                        <button
+                                [nzLoading]="data.isChangeStatus"
+                                nz-popconfirm
+                                nzPopconfirmTitle="Hủy Duyệt Tạp Chí ?"
+                                (nzOnConfirm)="onChangeStatusTapChi(data)"
+                                nz-button
+                                nzType="primary"
+                                nzDanger
+
+                        >
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                            Hủy Duyệt
+                        </button>
+                        <button
+                                [nzLoading]="data.isSoftDelete"
+                                nz-popconfirm
+                                nzPopconfirmTitle="Xóa Tạp Chí ?"
+                                (nzOnConfirm)="onSoftDeleteMagazine(data)"
+                                nz-button
+                                nzType="default"
+                                nzDanger
+
+                        >
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                            Xóa
+                        </button>
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="data.deleted_at !== null">
+                    <td nzEllipsis class="tw-flex tw-items-center tw-space-x-[4px]">
+                        <button
+                                nz-button
+                                nzType="primary"
+                        >
+                            <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+                            Chi Tiết
+                        </button>
+                        <button
+                                [nzLoading]="data.isReStore"
+                                nz-popconfirm
+                                nzPopconfirmTitle="Hoàn Tác Xóa ?"
+                                (nzOnConfirm)="onRestoreMagazine(data)"
+                                nz-button
+                                nzType="primary"
+                                nzDanger
+                        >
+                            <span nz-icon nzType="rollback" nzTheme="outline"></span>
+                            Hoàn Tác
+                        </button>
+                        <button
+                                [nzLoading]="data.isDelete"
+                                nz-popconfirm
+                                nzPopconfirmTitle="Xóa Hoàn Toàn ?"
+                                (nzOnConfirm)="onForceDeleteMagazine(data)"
+                                nz-button
+                                nzType="default"
+                                nzDanger
+                        >
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                            Xóa
+                        </button>
+                    </td>
+                </ng-container>
             </tr>
             </tbody>
         </nz-table>
         <div class="tw-text-right">
-            <nz-pagination [nzPageIndex]="1" [nzTotal]="500"></nz-pagination>
+            <nz-pagination
+                    [nzPageIndex]="1"
+                    [nzTotal]="totalPage*10"
+                    (nzPageIndexChange)="onChangePage($event)"
+            ></nz-pagination>
         </div>
     </div>
 </div>

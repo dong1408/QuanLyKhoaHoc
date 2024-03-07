@@ -7,6 +7,11 @@ import {NzTableModule} from "ng-zorro-antd/table";
 import {CommonModule} from "@angular/common";
 import {NzPopconfirmModule} from "ng-zorro-antd/popconfirm";
 import {NzPaginationModule} from "ng-zorro-antd/pagination";
+import {NzInputModule} from "ng-zorro-antd/input";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {NzSelectModule} from "ng-zorro-antd/select";
+import {PagingServiceFactory} from "../../core/services/paging-service.factory";
+import {PagingService} from "../../core/services/paging.service";
 
 @NgModule({
     declarations:[
@@ -19,10 +24,18 @@ import {NzPaginationModule} from "ng-zorro-antd/pagination";
         NzTableModule,
         CommonModule,
         NzPopconfirmModule,
-        NzPaginationModule
+        NzPaginationModule,
+        NzInputModule,
+        FormsModule,
+        NzSelectModule,
+        ReactiveFormsModule
     ],
     exports:[
 
+    ],
+    providers:[
+        PagingServiceFactory,
+        PagingService
     ]
 })
 

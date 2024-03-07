@@ -1,23 +1,64 @@
 <div>
     <nz-modal
-            [nzVisible]="isOpenRecognizeForm"
-            nzTitle="Công Nhận Tạp Chí"
+            [nzVisible]="isOpenForm"
+            nzTitle="Tính Điểm Tạp Chí"
             nzOkText="Gửi"
-            (nzOnOk)="updateMagazineRecognize()"
+            (nzOnOk)="tinhDiemTapChi()"
             (nzOnCancel)="openRecognizeForm()"
-            [nzOkLoading]="false"
+            [nzOkLoading]="isCapNhatTinhDiem"
     >
         <ng-container *nzModalContent>
-            <form nz-form class="tw-space-y-[16px]" [formGroup]="formRecognize">
+            <form nz-form class="tw-space-y-[16px]" [formGroup]="formTinhDiem">
                 <div>
-                    <h3 class="tw-text-center">Trạng Thái</h3>
+                    <h3 class="tw-text-center">Ngành Tính Điểm</h3>
                     <nz-form-control>
-                        <nz-select formControlName="khongduoccongnhan">
-                            <nz-option nzLabel="Công Nhận" [nzValue]=true></nz-option>
-                            <nz-option nzLabel="Không Công Nhận" [nzValue]=false></nz-option>
+                        <nz-select
+                                (ngModelChange)="onSelectChange($event)"
+                                nzAllowClear
+                                nzPlaceHolder="Ngành Tính Điểm"
+                                formControlName="id_nganhtinhdiem"
+                                [nzLoading]="isNganhTinhDiemLoading"
+                                [nzDisabled]="isNganhTinhDiemLoading"
+                        >
+                            <nz-option *ngFor="let data of nganhTinhDiems" [nzValue]="data.id" [nzLabel]="data.tennganhtinhdiem ? data.tennganhtinhdiem : 'Không có tên'"></nz-option>
                         </nz-select>
-                        <ng-container *ngIf="formRecognize.controls?.['khongduoccongnhan']?.touched && formRecognize.controls?.['khongduoccongnhan']?.dirty">
-                            <small *ngIf="formRecognize.controls?.['khongduoccongnhan']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        <ng-container *ngIf="formTinhDiem.controls?.['id_nganhtinhdiem']?.touched && formTinhDiem.controls?.['id_nganhtinhdiem']?.dirty">
+                            <small *ngIf="formTinhDiem.controls?.['id_nganhtinhdiem']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div>
+                    <h3 class="tw-text-center">Chuyên Ngành Tính Điểm</h3>
+                    <nz-form-control>
+                        <nz-select
+                                nzAllowClear
+                                nzPlaceHolder="Chuyên Ngành Tính Điểm"
+                                formControlName="id_chuyennganhtinhdiem"
+                                [nzLoading]="isChuyenNganhTinhDiemLoading"
+                                [nzDisabled]="isChuyenNganhTinhDiemLoading"
+                        >
+                            <nz-option *ngFor="let data of chuyenNganhTinhDiems" [nzValue]="data.id" [nzLabel]="data.tenchuyennganh ? data.tenchuyennganh : 'Không có tên'"></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="formTinhDiem.controls?.['id_chuyennganhtinhdiem']?.touched && formTinhDiem.controls?.['id_chuyennganhtinhdiem']?.dirty">
+                            <small *ngIf="formTinhDiem.controls?.['id_chuyennganhtinhdiem']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div>
+                    <h3 class="tw-text-center">Điểm</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Điểm"  type="text" formControlName="diem"/>
+                        <ng-container *ngIf="formTinhDiem.controls?.['diem']?.touched && formTinhDiem.controls?.['diem']?.dirty">
+                            <small *ngIf="formTinhDiem.controls?.['diem']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div>
+                    <h3 class="tw-text-center">Năm Tính Điểm</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Năm Tính Điểm"  type="text" formControlName="namtinhdiem"/>
+                        <ng-container *ngIf="formTinhDiem.controls?.['diem']?.touched && formTinhDiem.controls?.['diem']?.dirty">
+                            <small *ngIf="formTinhDiem.controls?.['diem']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
                         </ng-container>
                     </nz-form-control>
                 </div>
@@ -30,8 +71,8 @@
                     formControlName="ghichu"
                     [nzAutosize]="{ minRows: 3, maxRows: 6 }"
             ></textarea>
-                        <ng-container *ngIf="formRecognize.controls?.['ghichu']?.touched && formRecognize.controls?.['ghichu']?.dirty">
-                            <small *ngIf="formRecognize.controls?.['ghichu']?.errors?.['whitespace']" class="tw-ml-2 tw-text-red-600">Không được sử dụng dấu khoảng trắng</small>
+                        <ng-container *ngIf="formTinhDiem.controls?.['ghichu']?.touched && formTinhDiem.controls?.['ghichu']?.dirty">
+                            <small *ngIf="formTinhDiem.controls?.['ghichu']?.errors?.['whitespace']" class="tw-ml-2 tw-text-red-600">Không được sử dụng dấu khoảng trắng</small>
                         </ng-container>
                     </nz-form-control>
                 </div>
@@ -55,12 +96,19 @@
     </div>
     <div class="tw-space-y-[10px]">
         <h2 class="primary tw-text-3xl tw-text-center">LỊCH SỬ</h2>
-        <div>
-            <app-score-card [score]="data"></app-score-card>
-        </div>
-        <div class="tw-text-right">
-            <nz-pagination [nzPageIndex]="1" [nzTotal]="500"></nz-pagination>
-        </div>
+        <ng-container *ngIf="tinhDiemTapChis.length > 0">
+            <div>
+                <app-score-card *ngFor="let card of tinhDiemTapChis" [score]="card"></app-score-card>
+            </div>
+            <div class="tw-text-right">
+                <nz-pagination [nzPageIndex]="this.pagingService.pageIndex$ | async" [nzTotal]="totalPage * 10"></nz-pagination>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="tinhDiemTapChis.length < 1">
+            <div class="tw-text-center tw-mt-[7rem]">
+                <h1 class="text-primary tw-text-5xl">LỊCH SỬ TRỐNG</h1>
+            </div>
+        </ng-container>
     </div>
 </div>
 

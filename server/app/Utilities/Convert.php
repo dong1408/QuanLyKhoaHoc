@@ -48,6 +48,11 @@ class Convert
         $a->nguoithem = Convert::getUserVm($tapChi->nguoiThem);
         $a->created_at = $tapChi->created_at;
         $a->updated_at = $tapChi->updated_at;
+        $a->deleted_at = $tapChi->deleted_at;
+        $a->issn = $tapChi->issn;
+        $a->pissn = $tapChi->pissn;
+        $a->eissn = $tapChi->eissn;
+        $a->quocte = $tapChi->quocte;
         return $a;
     }
 
@@ -91,11 +96,11 @@ class Convert
         $a->created_at = $tapChi->id;
         $a->updated_at = $tapChi->id;
 
-        $a->khongduoccongnhan = $tapChi->tapChiKhongCongNhans()->latest()->first()->khongduoccongnhan;
+        $a->khongduoccongnhan = Convert::getTapChiKhongCongNhanVm($tapChi->tapChiKhongCongNhans()->latest()->first());
 
         $a->xephangtapchi = Convert::getXepHangTapChiVm($tapChi->xepHangTapChis()->latest()->first());
         $a->tinhdiemtapchi = Convert::getTinhDIemTapChiVm($tapChi->tinhDiemTapChis()->latest()->first());
-
+        $a->deleted_at = $tapChi->deleted_at;
         return $a;
     }
 
@@ -262,7 +267,7 @@ class Convert
     {
         $a = new ChuyenNganhTinhDiemVm();
         $a->id = $dmChuyenNganhTinhDiem->id;
-        $a->nganhtinhdiem = Convert::getNganhTinhDiemVm($dmChuyenNganhTinhDiem->nganhTinhDiem);
+        //$a->nganhtinhdiem = Convert::getNganhTinhDiemVm($dmChuyenNganhTinhDiem->nganhTinhDiem);
         $a->machuyennganh = $dmChuyenNganhTinhDiem->machuyennganh;
         $a->tenchuyennganh = $dmChuyenNganhTinhDiem->tenchuyennganh;
         $a->tenchuyennganh_en = $dmChuyenNganhTinhDiem->tenchuyennganh_en;

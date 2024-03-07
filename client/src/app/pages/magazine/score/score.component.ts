@@ -1,8 +1,18 @@
-import {Component} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NzModalService} from "ng-zorro-antd/modal";
-import {MagazineRecognize, TinhDiemTapChi} from "../../../core/types/tap-chi.type";
+import {MagazineRecognize, TinhDiemTapChi, UpdateTinhDiem} from "../../../core/types/tap-chi.type";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
+import {LoadingService} from "../../../core/services/loading.service";
+import {TapChiService} from "../../../core/services/tap-chi.service";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {PagingService} from "../../../core/services/paging.service";
+import {NganhTinhDiem} from "../../../core/types/nganh-tinh-diem.type";
+import {ChuyenNganhTinhDiem} from "../../../core/types/chuyen-nganh-tinh-diem.type";
+import {ActivatedRoute, Router} from "@angular/router";
+import {combineLatest, debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil, tap} from "rxjs";
+import {NganhTinhDiemService} from "../../../core/services/nganh-tinh-diem.service";
+import {ChuyenNganhTinhDiemService} from "../../../core/services/chuyen-nganh-tinh-diem.service";
 
 @Component({
     selector:'app-magazine-score',
@@ -10,54 +20,73 @@ import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.v
     styleUrls:['./score.component.css']
 })
 
-export class ScoreComponent{
+export class ScoreComponent implements OnInit,OnDestroy{
+    id:number
+    totalPage:number
 
-    formRecognize: FormGroup
-    isOpenRecognizeForm:boolean = false
+    formTinhDiem: FormGroup
+    isOpenForm:boolean = false
+
+    nganhTinhDiems:NganhTinhDiem[] = []
+    chuyenNganhTinhDiems:ChuyenNganhTinhDiem[] = []
+
+    tinhDiemTapChis:TinhDiemTapChi[] = []
+
+    destroy$ = new Subject<void>()
+    paging$: Observable<[number]>
+
+    isNganhTinhDiemLoading:boolean = false
+    isChuyenNganhTinhDiemLoading:boolean = false
+    isCapNhatTinhDiem:boolean = false
 
     constructor(
         private modal: NzModalService,
-        private fb:FormBuilder
+        private fb:FormBuilder,
+        public loadingService:LoadingService,
+        private tapChiService:TapChiService,
+        private notificationService:NzNotificationService,
+        private _router: ActivatedRoute,
+        private router:Router,
+        private nganhTinhDiemService:NganhTinhDiemService,
+        private chuyenNganhTinhDiemService:ChuyenNganhTinhDiemService,
+        public pagingService:PagingService
     ) {
     }
 
-    data:TinhDiemTapChi = {
-        id:1,
-        created_at:"30/3/2024",
-        updated_at:"30/04/2024",
-        ghichu:"Đây là ghi chú nhé fen !!",
-        nguoicapnhat:{
-            id:1,
-            name:"Thiên Đạt",
-            username:"3120410116",
-            email:"hyperiondat@gmail.com"
-        },
-        nganhtinhdiem:{
-            id:1,
-            tennganhtinhdiem:"Nam Hoang",
-            tennganhtinhdiem_en:"Nam Hoang",
-            manganhtinhdiem:"1",
-            created_at:"30/3/2024",
-            updated_at:"30/04/2024",
-        },
-        chuyennganhtinhdiem:{
-            created_at:"30/3/2024",
-            updated_at:"30/04/2024",
-            id:1,
-            machuyennganh:"1",
-            tenchuyennganh_en:"Thien Nhan",
-            tenchuyennganh:"Thien Nhan"
-        },
-        diem:"100",
-        namtinhdiem:"2024"
-    }
-
     ngOnInit() {
-        this.formRecognize = this.fb.group({
-            khongduoccongnhan:[
-                true,
+
+        this._router.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+            if(parseInt(params.get("id") as string)){
+                this.id = parseInt(params.get("id") as string)
+            }else{
+                this.router.navigate(["/tap-chi"])
+                return;
+            }
+        })
+
+        this.formTinhDiem = this.fb.group({
+            id_nganhtinhdiem:[
+                null,
                 Validators.compose([
                     Validators.required
+                ])
+            ],
+            id_chuyennganhtinhdiem:[
+                null,
+                Validators.compose([
+                    Validators.required
+                ])
+            ],
+            diem:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            namtinhdiem:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
                 ])
             ],
             ghichu:[
@@ -67,14 +96,147 @@ export class ScoreComponent{
                 ])
             ]
         })
+        //this.getLichSuTinhDiem()
+    }
+
+    getLichSuTinhDiem(){
+        this.paging$ = combineLatest([
+            this.pagingService.pageIndex$,
+        ]).pipe(
+            takeUntil(this.destroy$)
+        )
+        this.paging$.pipe(
+            takeUntil(this.destroy$),
+            tap(() => this.loadingService.startLoading()),
+            debounceTime(700),
+            distinctUntilChanged(),
+            switchMap(([pageIndex]) => {
+                return this.tapChiService.getTapChiTinhDiem(this.id,pageIndex)
+            })
+        ).subscribe({
+            next: (response) => {
+                this.totalPage = response.data.totalPage
+                this.tinhDiemTapChis = response.data.data
+                this.loadingService.stopLoading()
+            },
+            error: (error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.loadingService.stopLoading()
+                this.router.navigate(["/tap-chi"])
+                return
+            }
+        })
+    }
+
+    getNganhTinhDiem(){
+        this.isNganhTinhDiemLoading = true
+        this.nganhTinhDiemService.getNganhTinhDiem()
+            .pipe(
+                takeUntil(this.destroy$)
+            ).subscribe({
+            next:(response) => {
+                this.nganhTinhDiems = response.data
+                console.log(response.data,"nganh")
+                this.isNganhTinhDiemLoading = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isNganhTinhDiemLoading = false
+            }
+        })
+    }
+
+    getChuyenNganhTinhDiem(idNganhTinhDiem:number){
+        this.isChuyenNganhTinhDiemLoading = true
+        this.chuyenNganhTinhDiemService.getChuyenNganhTinhDiemByIdNganhTinhDiem(idNganhTinhDiem)
+            .pipe(
+                takeUntil(this.destroy$)
+            ).subscribe({
+            next:(response) => {
+                this.chuyenNganhTinhDiems = response.data
+                console.log(response.data,"chuiyen gnah")
+                this.isChuyenNganhTinhDiemLoading = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isChuyenNganhTinhDiemLoading = false
+            }
+        })
     }
 
     openRecognizeForm(){
-        this.isOpenRecognizeForm = !this.isOpenRecognizeForm
+        this.isOpenForm = !this.isOpenForm
+        this.getNganhTinhDiem()
     }
 
-    updateMagazineRecognize(){
-        const data = this.formRecognize.value
-        console.log(data)
+    tinhDiemTapChi(){
+        const form = this.formTinhDiem
+        if(form.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng nhập đầy đủ dữ liệu'
+            )
+            return
+        }
+
+        const data:UpdateTinhDiem = form.value
+        this.isCapNhatTinhDiem = true
+        this.tapChiService.updateTinhDiem(this.id,data).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) => {
+                this.tinhDiemTapChis = [response.data,...this.tinhDiemTapChis]
+                this.notificationService.create(
+                    'success',
+                    'Thành Công',
+                    response.message
+                )
+                this.isCapNhatTinhDiem = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isCapNhatTinhDiem = false
+            }
+        })
+    }
+
+    onChangePage(event:any){
+        this.pagingService.updatePageIndex(event)
+    }
+
+    onSelectChange(event:any){
+        if(typeof(event) === 'number'){
+            console.log(event)
+            this.formTinhDiem.controls?.['id_chuyennganhtinhdiem'].setValue(null)
+            this.getChuyenNganhTinhDiem(event)
+        }else{
+            this.chuyenNganhTinhDiems = []
+        }
+        if(!this.formTinhDiem.controls?.['id_nganhtinhdiem'].value){
+            this.chuyenNganhTinhDiems = []
+        }
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+        this.pagingService.resetValues()
     }
 }

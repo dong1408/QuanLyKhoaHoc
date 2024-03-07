@@ -1,0 +1,39 @@
+<div class="tw-space-y-[16px]">
+    <button nz-button nzType="primary" routerLink="/tap-chi">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+    <h1 class="text-primary tw-text-5xl">LỊCH SỬ TÍNH ĐIỂM TẠP CHÍ</h1>
+    <div class="tw-mt-[15] tw-space-y-[6px]">
+        <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-space-y-[4px] lg:tw-space-x-[8px]">
+            <button nz-button nzType="primary" (click)="openRecognizeForm()">
+                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                Cập Nhật Lịch Sử Mới
+            </button>
+        </div>
+    </div>
+    <div class="tw-space-y-[10px]">
+        <h2 class="primary tw-text-3xl tw-text-center">LỊCH SỬ</h2>
+        <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+            <app-loading></app-loading>
+        </ng-template>
+        <ng-template #loaded>
+            <ng-container *ngIf="xepHangTapChi.length > 0">
+                <div>
+                    <app-magazine-rankcard *ngFor="let card of xepHangTapChi" [rank]="card"></app-magazine-rankcard>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="xepHangTapChi.length < 1">
+                <div class="tw-text-center tw-mt-[7rem]">
+                    <h1 class="text-primary tw-text-5xl">LỊCH SỬ TRỐNG</h1>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="xepHangTapChi.length > 0">
+                <div class="tw-text-right">
+                    <nz-pagination [nzPageIndex]="this.pagingService.pageIndex$ | async" [nzTotal]="totalPage * 10"></nz-pagination>
+                </div>
+            </ng-container>
+
+        </ng-template>
+    </div>
+</div>
+

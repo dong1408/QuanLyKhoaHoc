@@ -23,4 +23,13 @@ class PhanLoaiTapChiServiceImpl implements PhanLoaiTapChiService
         }
         return new ResponseSuccess("Thành công", $result);
     }
+
+    public function getAllPhanLoaiTapChi():ResponseSuccess{
+        $tapChis = TapChi::withTrashed()->all();
+        $result = [];
+        foreach ($tapChis as $tapChi) {
+            $result[] = Convert::getDMPhanLoaiTapChiVm($tapChi);
+        }
+        return new ResponseSuccess("Thành công",$result);
+    }
 }

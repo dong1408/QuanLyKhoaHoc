@@ -13,13 +13,25 @@ const routes: Routes = [
           loadChildren: () => import('../magazine/magazine.module').then(m => m.MagazineModule)
       },
       {
-        path:"tap-chi/lich-su-cong-nhan",
+        path:"tap-chi/cho-phe-duyet",
+        loadChildren: () => import('../magazine/magazine-waiting/waiting.module').then(m => m.MagazineWaitingModule)
+      },
+      {
+        path:`tap-chi/:id/lich-su-cong-nhan`,
         loadChildren: () => import('../magazine/recognize/recognize.module').then(m => m.RecognizeModule)
       },
       {
-        path:"tap-chi/lich-su-tinh-diem",
+        path:"tap-chi/:id/lich-su-tinh-diem",
         loadChildren: () => import('../magazine/score/score.module').then(m => m.ScoreModule)
-      }
+      },
+      {
+        path:"tap-chi/:id/lich-su-xep-hang",
+        loadChildren: () => import('../magazine/rank/rank.module').then(m => m.RankModule)
+      },
+      {
+        path:"tap-chi/:id",
+        loadChildren: () => import('../magazine/detail/detail.module').then(m => m.MagazineDetailModule)
+      },
     ]
   },
 ];

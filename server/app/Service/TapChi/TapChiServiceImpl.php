@@ -11,6 +11,7 @@ use App\Exceptions\TapChi\NameTapChiUsedException;
 use App\Exceptions\TapChi\NganhTheoHDGSNotFoundException;
 use App\Exceptions\TapChi\PhanLoaiTapChiNotFoundException;
 use App\Exceptions\TapChi\TapChiNotFoundException;
+use App\Exceptions\TapChi\TinhDiemTapChiException;
 use App\Exceptions\TapChi\UpdateKhongCongNhanException;
 use App\Exceptions\ToChuc\DonViChuQuanNotFoundException;
 use App\Exceptions\UserInfo\QuocGiaNotFoundException;
@@ -51,14 +52,27 @@ class TapChiServiceImpl implements TapChiService
         return new ResponseSuccess("Thành công", $result);
     }
 
-    public function getAllTapChiChoDuyet(): ResponseSuccess
+    public function getAllTapChiChoDuyet(Request $request): ResponseSuccess
     {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+
+        $tapChis = TapChi::where(function ($query) use ($keysearch) {
+            $query->where('name', 'LIKE', '%' . $keysearch . '%')
+                ->orWhere('issn', 'LIKE', '%' . $keysearch . '%')
+                ->orWhere('pissn', 'LIKE', '%' . $keysearch . '%')
+                ->orWhere('eissn', 'LIKE', '%' . $keysearch . '%');
+        })->orderBy($sortby,'desc')->where(function ($query) {
+            $query->where('trangthai', false);
+        })->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+
         $result = [];
-        $tapChis = TapChi::where('trangthai', true)->get();
         foreach ($tapChis as $tapChi) {
             $result[] = Convert::getTapChiVm($tapChi);
         }
-        return new ResponseSuccess("Thành công", $result);
+        $pagingResponse = new PagingResponse($tapChis->lastPage(),  $tapChis->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
     }
 
 
@@ -73,17 +87,19 @@ class TapChiServiceImpl implements TapChiService
         if ($isLock == 1) {
             $tapChis = TapChi::onlyTrashed()->where(function ($query) use ($keysearch) {
                 $query->where('name', 'LIKE', '%' . $keysearch . '%')
-                    ->orWhere('issn', 'LIKE', '%' . $keysearch . '%');
-            })->where(function ($query) {
-                $query->where('trangthai', true);
-            })->orderBy($sortby)->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+                    ->orWhere('issn', 'LIKE', '%' . $keysearch . '%')
+                    ->orWhere('pissn', 'LIKE', '%' . $keysearch . '%')
+                    ->orWhere('eissn', 'LIKE', '%' . $keysearch . '%');
+            })->orderBy($sortby,'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         } else { // Lấy những bản ghi not softdelete
             $tapChis = TapChi::where(function ($query) use ($keysearch) {
                 $query->where('name', 'LIKE', '%' . $keysearch . '%')
-                    ->orWhere('issn', 'LIKE', '%' . $keysearch . '%');
+                    ->orWhere('issn', 'LIKE', '%' . $keysearch . '%')
+                    ->orWhere('pissn', 'LIKE', '%' . $keysearch . '%')
+                    ->orWhere('eissn', 'LIKE', '%' . $keysearch . '%');
             })->where(function ($query) {
                 $query->where('trangthai', true);
-            })->orderBy($sortby)->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+            })->orderBy($sortby,'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         }
         $result = [];
         foreach ($tapChis as $tapChi) {
@@ -138,11 +154,10 @@ class TapChiServiceImpl implements TapChiService
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
-        $page = $request->request('page',1);
+        $page = $request->query('page',1);
 
         $result = [];
-        $tapChiKhongCongNhans = TapChiKhongCongNhan::withTrashed()
-        ->where('id_tapchi', $id_tapchi)
+        $tapChiKhongCongNhans = TapChiKhongCongNhan::where('id_tapchi', $id_tapchi)
             ->orderBy('created_at', 'desc')
             ->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($tapChiKhongCongNhans as $tapChiKhongCongNhan) {
@@ -166,10 +181,10 @@ class TapChiServiceImpl implements TapChiService
             throw new TapChiNotFoundException();
         }
 
-        $page = $request->request('page',1);
+        $page = $request->query('page',1);
 
         $result = [];
-        $xepHangTapChis = XepHangTapChi::withTrashed()->where('id_tapchi', '=', $id_tapchi)
+        $xepHangTapChis = XepHangTapChi::where('id_tapchi', '=', $id_tapchi)
             ->orderBy('created_at', 'desc')
             ->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($xepHangTapChis as $xepHangTapChi) {
@@ -193,10 +208,10 @@ class TapChiServiceImpl implements TapChiService
             throw new TapChiNotFoundException();
         }
 
-        $page = $request->request('page',1);
+        $page = $request->query('page',1);
 
         $result = [];
-        $tinhDiemTapChis = TinhDiemTapChi::withTrashed()->where('id_tapchi', '=', $id_tapchi)->orderBy('created_at', 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        $tinhDiemTapChis = TinhDiemTapChi::where('id_tapchi', '=', $id_tapchi)->orderBy('created_at', 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($tinhDiemTapChis as $tinhDiemTapChi) {
             $result[] = Convert::getTinhDIemTapChiVm($tinhDiemTapChi);
         }
@@ -321,23 +336,19 @@ class TapChiServiceImpl implements TapChiService
     public function updateKhongCongNhanTapChi(UpdateTapChiKhongCongNhanRequest $request, int $id): ResponseSuccess
     {
 
-        $id_tapchi = (int) $id;
-
-        if(!is_int($id_tapchi)){
-            throw new InvalidValueException();
-        }
-
-        $tapChi = TapChi::withTrashed()->find($id_tapchi);
+        $tapChi = TapChi::find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
 
         $validated = $request->validated();
 
-        if($tapChi->khongduoccongnhan == $validated['khongduoccongnhan']){
+        $last_recognize = TapChiKhongCongNhan::where('id_tapchi',$id)->orderBy('created_at','desc')->first();
+
+        if($last_recognize && $last_recognize->khongduoccongnhan == $validated['khongduoccongnhan']){
             throw new UpdateKhongCongNhanException();
         }
-    
+
         $tapChiKhongCongNhan = TapChiKhongCongNhan::create([
             'id_tapchi' => $tapChi->id,
             'khongduoccongnhan' => $validated['khongduoccongnhan'],
@@ -350,13 +361,7 @@ class TapChiServiceImpl implements TapChiService
 
     public function updateXepHangTapChi(UpdateXepHangTapChiRequest $request, int $id): ResponseSuccess
     {
-        $id_tapchi = (int) $id;
-
-        if(!is_int($id_tapchi)){
-            throw new InvalidValueException();
-        }
-
-        $tapChi = TapChi::withTrashed()->find($id_tapchi);
+        $tapChi = TapChi::find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
@@ -381,18 +386,19 @@ class TapChiServiceImpl implements TapChiService
 
     public function updateTinhDiemTapChi(UpdateTinhDiemTapChiRequest $request, int $id): ResponseSuccess
     {
-        $id_tapchi = (int) $id;
-
-        if(!is_int($id_tapchi)){
-            throw new InvalidValueException();
-        }
-
-        $tapChi = TapChi::withTrashed()->find($id_tapchi);
+        $tapChi = TapChi::find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
 
         $validated = $request->validated();
+
+        $cnTinhDiem = DMChuyenNganhTinhDiem::find($validated['id_chuyennganhtinhdiem']);
+
+        if($cnTinhDiem->nganhTinhDiem->id != $validated['id_nganhtinhdiem']){
+            throw new TinhDiemTapChiException();
+        }
+
 
         $tinhDiemTapChi = TinhDiemTapChi::create([
             'id_tapchi' => $tapChi->id,
@@ -411,51 +417,35 @@ class TapChiServiceImpl implements TapChiService
 
     public function deleteTapChi(int $id): ResponseSuccess
     {
-        $id_tapchi = (int) $id;
 
-        if(!is_int($id_tapchi)){
-            throw new InvalidValueException();
-        }
-
-        $tapChi = TapChi::find($id_tapchi);
+        $tapChi = TapChi::find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
         if (!$tapChi->delete()) {
             throw new DeleteFailException();
         }
-        return new ResponseSuccess("Thành công", "");
+        return new ResponseSuccess("Thành công", true);
     }
 
     public function restoreTapChi(int $id): ResponseSuccess
     {
-        $id_tapchi = (int) $id;
 
-        if(!is_int($id_tapchi)){
-            throw new InvalidValueException();
-        }
-
-        $tapChi = TapChi::onlyTrashed()->find($id_tapchi);
+        $tapChi = TapChi::onlyTrashed()->find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
-        TapChi::onlyTrashed()->where('id', $id_tapchi)->restore();
-        return new ResponseSuccess("Thành công", "");
+        TapChi::onlyTrashed()->where('id', $id)->restore();
+        return new ResponseSuccess("Thành công", true);
     }
 
     public function forceDeleteTapChi(int $id): ResponseSuccess
     {
-        $id_tapchi = (int) $id;
-
-        if(!is_int($id_tapchi)){
-            throw new InvalidValueException();
-        }
-
-        $tapChi = TapChi::onlyTrashed()->find($id_tapchi);
+        $tapChi = TapChi::onlyTrashed()->find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
-        TapChi::onlyTrashed()->where('id', $id_tapchi)->forceDelete();
-        return new ResponseSuccess("Thành công", "");
+        TapChi::onlyTrashed()->where('id', $id)->forceDelete();
+        return new ResponseSuccess("Thành công", true);
     }
 }

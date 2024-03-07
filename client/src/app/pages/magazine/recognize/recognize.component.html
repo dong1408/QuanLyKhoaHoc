@@ -3,9 +3,9 @@
             [nzVisible]="isOpenRecognizeForm"
             nzTitle="Công Nhận Tạp Chí"
             nzOkText="Gửi"
-            (nzOnOk)="updateMagazineRecognize()"
+            (nzOnOk)="updateLichSuTapChi()"
             (nzOnCancel)="openRecognizeForm()"
-            [nzOkLoading]="false"
+            [nzOkLoading]="isUpdateLoading"
     >
         <ng-container *nzModalContent>
             <form nz-form class="tw-space-y-[16px]" [formGroup]="formRecognize">
@@ -55,12 +55,28 @@
     </div>
     <div class="tw-space-y-[10px]">
         <h2 class="primary tw-text-3xl tw-text-center">LỊCH SỬ</h2>
-        <div>
-            <app-recognize-card [recognize]="data"></app-recognize-card>
-        </div>
-        <div class="tw-text-right">
-            <nz-pagination [nzPageIndex]="1" [nzTotal]="500"></nz-pagination>
-        </div>
+
+        <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+            <app-loading></app-loading>
+        </ng-template>
+        <ng-template #loaded>
+            <ng-container *ngIf="recognizes.length > 0">
+                <div>
+                    <app-recognize-card *ngFor="let card of recognizes" [recognize]="card"></app-recognize-card>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="recognizes.length < 1">
+                <div class="tw-text-center">
+                    <h1 class="text-primary tw-text-5xl">LỊCH SỬ TRỐNG</h1>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="recognizes.length > 0">
+                <div class="tw-text-right">
+                    <nz-pagination (nzPageIndexChange)="onChangePage($event)" [nzPageIndex]="this.pagingService.pageIndex$ | async" [nzTotal]="totalPage * 10"></nz-pagination>
+                </div>
+            </ng-container>
+
+        </ng-template>
     </div>
 </div>
 

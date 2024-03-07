@@ -6,9 +6,8 @@ use App\Models\UserInfo\DMTinhThanh;
 use Ramsey\Uuid\Type\Integer;
 
 class TinhThanhVm
-{ // bip
+{
     public int $id;
-    public QuocGiaVm $quocgia;
     public string $matinhthanh;
     public string $tentinhthanh;
     public string $tentinhthanh_en;

@@ -30,8 +30,9 @@ class TapChiDetailVm
     public ?UserVm $nguoithem; // $di_nguoithem -- UserVm
     public string $created_at;
     public string $updated_at;
+    public ?string $deleted_at;
 
-    public ?bool $khongduoccongnhan;
+    public ?TapChiKhongCongNhanVm $khongduoccongnhan;
 
     public ?XepHangTapChiVm $xephangtapchi;
 

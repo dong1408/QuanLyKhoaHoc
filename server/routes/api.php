@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TapChi\PhanLoaiTapChiController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\BaiBao\BaiBaoKhoaHocController;
 use App\Http\Controllers\Admin\QuyDoi\ChuyenNganhTinhDiemController;
@@ -44,12 +45,12 @@ Route::group([
     // TapChi
     Route::get('tapchi', [TapChiController::class, 'getAllTapChi']);
     Route::get('tapchi/paging', [TapChiController::class, 'getTapChiPaging']);
+    Route::get('tapchi/choduyet/paging', [TapChiController::class, 'getAllTapChiChoDuyet']);
     Route::get('tapchi/{id}', [TapChiController::class, 'getTapChiById']);
     Route::get('tapchi/{id}/khongcongnhan', [TapChiController::class, 'getLichSuTapChiKhongCongNhan']);
     Route::get('tapchi/{id}/xephang', [TapChiController::class, 'getLichSuXepHangTapChi']);
     Route::get('tapchi/{id}/tinhdiem', [TapChiController::class, 'getLichSuTinhDiemTapChi']);
     Route::get('tapchi/{id}/detail', [TapChiController::class, 'getDetailTapChi']);
-    Route::get('phanloaitapchi/{id}/tapchi', [TapChiController::class, 'getPhanLoaiTapChiByIdTapChi']);
 
     Route::post('tapchi', [TapChiController::class, 'createTapChi']);
 
@@ -60,7 +61,7 @@ Route::group([
     Route::post('tapchi/{id}/tinhdiem', [TapChiController::class, 'updateTinhDiemTapChi']);
 
     Route::delete('tapchi/{id}', [TapChiController::class, 'deleteTapChi']);
-    Route::post('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
+    Route::patch('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
     Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
 
     // =============================== UserInfo ============================================== //
@@ -76,4 +77,9 @@ Route::group([
 
     // ============================== Chuyen Nganh Tinh Diem ================================= //
     Route::get('chuyennganhtinhdiem', [ChuyenNganhTinhDiemController::class, 'getAllChuyenNganhTinhDiem']);
+    Route::get('chuyennganhtinhdiem/{id}/nganhtinhdiem', [ChuyenNganhTinhDiemController::class, 'getChuyeNganhTinhDiemByIdNganhTinhDiem']);
+
+    // ============================== Phan Loai Tap Chi ================================= //
+    Route::get('phanloaitapchi/{id}/tapchi', [PhanLoaiTapChiController::class, 'getPhanLoaiTapChiByIdTapChi']);
+    Route::get('phanloaitapchi', [PhanLoaiTapChiController::class, 'getAllPhanLoaiTapChi']);
 });

@@ -3,8 +3,8 @@
     <p><strong>Mã:</strong> {{recognize.id}}</p>
     <p><strong>Trạng thái: </strong>
         <span *ngIf="recognize?.khongduoccongnhan === true" class="success">Được Công Nhận</span>
-        <span *ngIf="recognize?.khongduoccongnhan === false" class="success">Không Được Công Nhận</span>
-        <span *ngIf="!recognize.khongduoccongnhan" class="primary">Không Được Đánh Giá</span>
+        <span *ngIf="recognize?.khongduoccongnhan === false" class="error">Không Được Công Nhận</span>
+        <span *ngIf="recognize.khongduoccongnhan === undefined" class="primary">Không Được Đánh Giá</span>
     </p>
     <p><strong>Người cập nhật:</strong> <br>
         <strong class="tw-ml-[30px]"> + Mã: </strong>{{recognize.nguoicapnhat?.username}} <br>
@@ -12,5 +12,7 @@
         <strong class="tw-ml-[30px]"> + Email: </strong>{{recognize.nguoicapnhat?.email}}</p>
     <p><strong>Ghi chú:</strong> {{recognize.ghichu ? recognize.ghichu : 'Không có ghi chú nào'}}</p>
 
-    <nz-divider></nz-divider>
+    <div class="tw-my-[14px]">
+        <nz-divider ></nz-divider>
+    </div>
 </div>

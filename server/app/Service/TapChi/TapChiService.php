@@ -15,6 +15,7 @@ interface TapChiService
 {
     public function getAllTapChi(): ResponseSuccess;
     public function getTapChiPaging(Request $request): ResponseSuccess;
+    public function getAllTapChiChoDuyet(Request $request): ResponseSuccess;
     public function getTapChiById(int $id): ResponseSuccess;
     public function getDetailTapChi(int $id);
     public function getLichSuTapChiKhongCongNhan(Request $request, int $id): ResponseSuccess;

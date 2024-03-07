@@ -14,6 +14,7 @@ import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzModalModule} from "ng-zorro-antd/modal";
+import {PagingService} from "../../../core/services/paging.service";
 
 @NgModule({
     declarations:[
@@ -37,6 +38,9 @@ import {NzModalModule} from "ng-zorro-antd/modal";
     ],
     exports:[
 
+    ],
+    providers:[
+        PagingService
     ]
 })
 

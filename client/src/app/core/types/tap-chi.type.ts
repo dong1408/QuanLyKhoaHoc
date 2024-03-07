@@ -1,6 +1,7 @@
 import {User} from "./user.type";
 import {NganhTinhDiem} from "./nganh-tinh-diem.type";
 import {ChuyenNganhTinhDiem} from "./chuyen-nganh-tinh-diem.type";
+import {ToChuc} from "./to-chuc.type";
 
 export interface Magazine{
     id:number,
@@ -10,7 +11,35 @@ export interface Magazine{
     trangthai:boolean,
     nguoithem?:User,
     created_at:string,
-    updated_at:string
+    updated_at:string,
+    deleted_at?:string,
+    issn?:string,
+    pissn?:string,
+    eissn?:string,
+    //
+    isSoftDelete:boolean,
+    isDelete:boolean,
+    isReStore:boolean,
+    isChangeStatus:boolean,
+}
+
+export interface ChiTietTapChi{
+    id:number,
+    name?:string,
+    quocte?:boolean,
+    address?:string,
+    trangthai:boolean,
+    created_at:string,
+    updated_at:string,
+    deleted_at?:string,
+    issn?:string,
+    pissn?:string,
+    eissn?:string,
+    nguoithem?:User,
+    khongduoccongnhan?:MagazineRecognize,
+    xephangtapchi?:XepHangTapChi,
+    tinhdiemtapchi?:TinhDiemTapChi,
+    donvichuquan?:ToChuc
 }
 
 export interface MagazineRecognize{
@@ -33,3 +62,64 @@ export interface TinhDiemTapChi{
     nganhtinhdiem:NganhTinhDiem,
     chuyennganhtinhdiem:ChuyenNganhTinhDiem
 }
+
+export interface XepHangTapChi{
+    id:number,
+    wos?:string,
+    if?:string,
+    quartile?:string,
+    abs?:string,
+    abcd?:string,
+    aci?:string,
+    ghichu?:string,
+    user:User,
+    created_at:string,
+    updated_at:string
+}
+
+export interface UpdateTrangThaiTapChi{
+    trangthai:boolean
+}
+
+export interface UpdateTapChi{
+    name:string,
+    issn?:string,
+    eissn?:string,
+    pissn?:string,
+    website?:string,
+    quocte?:boolean,
+    id_nhaxuatban?:number,
+    id_donvichuquan?:number,
+    address?:string,
+    id_address_city?:number,
+    id_adress_country?:number,
+    dmphanloaitapchi?:Array<number>,
+    dmnganhtheohdgs?:Array<number>
+}
+
+export interface UpdateKhongCongNhan{
+    khongduoccongnhan?:boolean,
+    ghichu?:boolean
+}
+
+export interface UpdateXepHang{
+    wos?:string,
+    if?:string,
+    quartile?:string,
+    abs?:string,
+    abcd?:string,
+    aci?:string,
+    ghichu?:string
+    // con thieu id cua phan muc xep hang gi a' scopus, aci...
+}
+
+
+export interface UpdateTinhDiem{
+    id_nganhtinhdiem:number,
+    id_chuyennganhtinhdiem:number,
+    diem?:string,
+    namtinhdiem?:string
+    ghichu?:string
+}
+
+

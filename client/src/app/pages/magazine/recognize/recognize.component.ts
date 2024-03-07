@@ -1,9 +1,15 @@
-import {Component, OnInit} from "@angular/core";
-import {MagazineRecognize} from "../../../core/types/tap-chi.type";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {MagazineRecognize, UpdateKhongCongNhan} from "../../../core/types/tap-chi.type";
 import {data} from "autoprefixer";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
+import {TapChiService} from "../../../core/services/tap-chi.service";
+import {LoadingService} from "../../../core/services/loading.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {combineLatest, debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil, tap} from "rxjs";
+import {PagingService} from "../../../core/services/paging.service";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
     selector:'app-magazine-recognize',
@@ -11,33 +17,44 @@ import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.v
     styleUrls:['./recognize.component.css']
 })
 
-export class RecognizeComponent implements OnInit{
+export class RecognizeComponent implements OnInit,OnDestroy{
 
+    id:number
+    totalPage:number
+
+    isUpdateLoading:boolean = false
+
+    recognizes: MagazineRecognize[] = []
 
     formRecognize: FormGroup
     isOpenRecognizeForm:boolean = false
 
+    destroy$ = new Subject<void>()
+
+    paging$: Observable<[number]>
+
     constructor(
         private modal: NzModalService,
-        private fb:FormBuilder
+        private fb:FormBuilder,
+        private tapChiService:TapChiService,
+        public loadingService:LoadingService,
+        private _router: ActivatedRoute,
+        private router:Router,
+        private notificationService:NzNotificationService,
+        public pagingService:PagingService
     ) {
     }
 
-    data:MagazineRecognize = {
-        id:1,
-        created_at:"30/3/2024",
-        updated_at:"30/04/2024",
-        khongduoccongnhan:true,
-        ghichu:"Đây là ghi chú nhé fen !!",
-        nguoicapnhat:{
-            id:1,
-            name:"Thiên Đạt",
-            username:"3120410116",
-            email:"hyperiondat@gmail.com"
-        }
-    }
-
     ngOnInit() {
+        this._router.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+            if(parseInt(params.get("id") as string)){
+                this.id = parseInt(params.get("id") as string)
+            }else{
+                this.router.navigate(["/tap-chi"])
+                return;
+            }
+        })
+
         this.formRecognize = this.fb.group({
             khongduoccongnhan:[
                 true,
@@ -52,14 +69,88 @@ export class RecognizeComponent implements OnInit{
                 ])
             ]
         })
+        this.getLichSuTapChiKhongCongNhan()
+    }
+
+    onChangePage(event:any){
+        this.pagingService.updatePageIndex(event)
+    }
+
+    updateLichSuTapChi(){
+        const form = this.formRecognize
+        if(form.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng nhập đầy đủ dữ liệu'
+            )
+            return
+        }
+        this.isUpdateLoading = true
+        const data:UpdateKhongCongNhan = this.formRecognize.value
+        this.tapChiService.updateKhongCongNhan(this.id,data).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) => {
+                this.recognizes = [response.data,...this.recognizes]
+                this.notificationService.create(
+                    'success',
+                    'Thành công',
+                    response.message
+                )
+                this.isUpdateLoading = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    "Lỗi",
+                    error
+                )
+                this.isUpdateLoading = false
+            }
+        })
+    }
+
+    getLichSuTapChiKhongCongNhan(){
+        this.paging$ = combineLatest([
+            this.pagingService.pageIndex$,
+        ]).pipe(
+            takeUntil(this.destroy$)
+        )
+        this.paging$.pipe(
+            takeUntil(this.destroy$),
+            tap(() => this.loadingService.startLoading()),
+            debounceTime(700),
+            distinctUntilChanged(),
+            switchMap(([pageIndex]) => {
+                return this.tapChiService.getTapChiKhongCongNhan(this.id,pageIndex)
+            })
+        ).subscribe({
+            next: (response) => {
+                this.totalPage = response.data.totalPage
+                this.recognizes = response.data.data
+                this.loadingService.stopLoading()
+            },
+            error: (error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.loadingService.stopLoading()
+                this.router.navigate(["/tap-chi"])
+                return
+            }
+        })
     }
 
     openRecognizeForm(){
         this.isOpenRecognizeForm = !this.isOpenRecognizeForm
     }
 
-    updateMagazineRecognize(){
-        const data = this.formRecognize.value
-        console.log(data)
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+        this.pagingService.resetValues()
     }
 }
