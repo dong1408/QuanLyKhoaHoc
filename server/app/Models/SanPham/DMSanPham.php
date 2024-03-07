@@ -12,7 +12,15 @@ class DMSanPham extends Model
     use SoftDeletes;
     protected $table = 'd_m_san_phams';
 
-    
+    protected $fillable = [
+        'id',
+        'masanpham',
+        'tensanpham',
+        'mota',
+        'deleted_at',
+        'created_at',
+        'updated_at'
+    ];
 
     // relation 1-n to san_pham
     public function sanPhams()

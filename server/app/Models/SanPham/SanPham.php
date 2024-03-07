@@ -12,6 +12,35 @@ class SanPham extends Model
     use SoftDeletes;
     protected $table = 'san_phams';
 
+    protected $fillable = [
+        'id',
+        'tensanpham',
+        'id_loaisanpham',
+        'tongsotacgia',
+        'solandaquydoi',
+        'cosudungemailtruong',
+        'cosudungemaildonvikhac',
+        'cothongtintruong',
+        'cothongtindonvikhac',
+        'id_thongtinnoikhac',
+        'conhantaitro',
+        'id_donvitaitro',
+        'chitietdonvitaitro',
+        'ngaykekhai',
+        'id_nguoikekhai',
+        'trangthairasoat',
+        'ngayrasoat',
+        'id_nguoirasoat',
+        'diemquydoi',
+        'gioquydoi',
+        'thongtinchitiet',
+        'capsanpham',
+        'thoidiemcongbohoanthanh',
+        'deleted_at',
+        'created_at',
+        'updated_at'
+    ];
+
 
     // inverse to d_m_san_pham (categories of product)
     public function dmSanPham()
@@ -74,7 +103,8 @@ class SanPham extends Model
     }
 
     // relation 1-n to san_pham_tac_gia
-    public function sanPhamsTacGias(){
+    public function sanPhamsTacGias()
+    {
         return $this->hasMany('App\Models\SanPham\SanPhamTacGia', 'id_sanpham');
     }
 }
