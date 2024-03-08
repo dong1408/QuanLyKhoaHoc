@@ -49,38 +49,9 @@ class CreateTapChiRequest extends FormRequest
                 Rule::exists('d_m_quoc_gias', 'id')
             ],
             "trangthai" => "bail|nullable|boolean",
-
-            "tapchikhongcongnhan.khongduoccongnhan" => "bail|nullable|boolean",
-            "tapchikhongcongnhan.ghichu" => "bail|nullable|string",
-
-            "xephangtapchi.wos" => "bail|nullable|string",
-            "xephangtapchi.if" => "bail|nullable|string",
-            "xephangtapchi.quartile" => "bail|nullable|string",
-            "xephangtapchi.abs" => "bail|nullable|string",
-            "xephangtapchi.abcd" => "bail|nullable|string",
-            "xephangtapchi.aci" => "bail|nullable|string",
-            "xephangtapchi.ghichu" => "bail|nullable|string",
-
-            "tinhdiemtapchi.id_nganhtinhdiem" => [
-                "bail", "required", "integer",
-                Rule::exists('d_m_nganh_tinh_diems', 'id')
-            ],
-            "tinhdiemtapchi.id_chuyennganhtinhdiem" => [
-                "bail", "required", "integer",
-                Rule::exists('d_m_chuyen_nganh_tinh_diems', 'id')
-            ],
-            "tinhdiemtapchi.diem" => "bail|nullable|string",
-            "tinhdiemtapchi.namtinhdiem" => "bail|nullable|string",
-            "tinhdiemtapchi.ghichu" => "bail|nullable|string",
-
-            "dmphanloaitapchi" => "bail|nullable|array",
             "dmnganhtheohdgs" => "bail|nullable|array",
-            "dmphanloaitapchi.*" => [
-                "int",
-                Rule::exists('d_m_phan_loai_tap_chi', 'id')
-            ],
             "dmnganhtheohdgs.*" => [
-                "int",
+                "integer",
                 Rule::exists('d_m_nganh_theo_hdgs', 'id')
             ],
         ];

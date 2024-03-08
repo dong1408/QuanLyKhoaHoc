@@ -3,6 +3,7 @@
 namespace App\Service\TapChi;
 
 use App\Exceptions\TapChi\TapChiNotFoundException;
+use App\Models\TapChi\DMPhanLoaiTapChi;
 use App\Models\TapChi\TapChi;
 use App\Utilities\Convert;
 use App\Utilities\ResponseSuccess;
@@ -25,7 +26,7 @@ class PhanLoaiTapChiServiceImpl implements PhanLoaiTapChiService
     }
 
     public function getAllPhanLoaiTapChi():ResponseSuccess{
-        $tapChis = TapChi::withTrashed()->all();
+        $tapChis = DMPhanLoaiTapChi::all();
         $result = [];
         foreach ($tapChis as $tapChi) {
             $result[] = Convert::getDMPhanLoaiTapChiVm($tapChi);

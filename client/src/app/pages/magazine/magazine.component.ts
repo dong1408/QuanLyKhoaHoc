@@ -49,16 +49,6 @@ export class MagazineComponent implements OnInit,OnDestroy{
 
 
     ngOnInit() {
-        // this.selectValue = [
-        //     {
-        //         label: "Mới Nhất",
-        //         value:"created_at"
-        //     },
-        //     {
-        //         label:"Z-A",
-        //         value:"name"
-        //     }
-        // ]
         this.formAction = this.fb.group({
             search:null,
             select:"created_at"
@@ -97,6 +87,7 @@ export class MagazineComponent implements OnInit,OnDestroy{
                         isChangeStatus:false
                     }
                 })
+                console.log(response.data.data)
                 this.isTableLoading = false
             },
             error: (error) => {

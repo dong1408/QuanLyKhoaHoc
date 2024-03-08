@@ -8,7 +8,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NganhTinhDiemService} from "../../../core/services/nganh-tinh-diem.service";
 import {ChuyenNganhTinhDiemService} from "../../../core/services/chuyen-nganh-tinh-diem.service";
 import {Subject, takeUntil} from "rxjs";
-import {ChiTietTapChi} from "../../../core/types/tap-chi.type";
+import {ChiTietTapChi, Magazine, UpdateTrangThaiTapChi} from "../../../core/types/tap-chi.type";
 
 @Component({
     selector:'app-magazine-detail',
@@ -20,19 +20,21 @@ export class MagazineDetailComponent implements OnInit,OnDestroy{
 
     id:number
 
+    isRestore:boolean = false
+    isForceDelete:boolean = false
+    isSoftDelete:boolean = false
+    isChangeStatus:boolean = false
+
     magazine:ChiTietTapChi
 
     destroy$ = new Subject<void>()
     constructor(
-        private modal: NzModalService,
         private fb:FormBuilder,
         public loadingService:LoadingService,
         private tapChiService:TapChiService,
         private notificationService:NzNotificationService,
         private _router: ActivatedRoute,
         private router:Router,
-        private nganhTinhDiemService:NganhTinhDiemService,
-        private chuyenNganhTinhDiemService:ChuyenNganhTinhDiemService
     ) {
     }
 
@@ -58,6 +60,7 @@ export class MagazineDetailComponent implements OnInit,OnDestroy{
             next:(response) => {
                 this.magazine = response.data
                 this.loadingService.stopLoading()
+                console.log(response.data)
             },
             error:(error) => {
                 this.notificationService.create(
@@ -72,8 +75,117 @@ export class MagazineDetailComponent implements OnInit,OnDestroy{
         })
     }
 
-    ngOnDestroy() {
+    onRestoreMagazine(magazine:ChiTietTapChi){
+        this.isRestore = true;
+        this.tapChiService.restoreTapChi(magazine.id).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) => {
+                magazine.deleted_at = undefined
+                this.notificationService.create(
+                    'success',
+                    'Thành Công',
+                    response.message
+                )
+                this.isRestore = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isRestore = false
+            }
+        })
+    }
 
+    onChangeStatusTapChi(magazine:ChiTietTapChi,trangthai:boolean){
+        this.isChangeStatus = true
+
+        const data:UpdateTrangThaiTapChi = {
+            trangthai: trangthai
+        }
+
+        this.tapChiService.updateTrangThaiTapChi(magazine.id,data).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) => {
+                magazine.trangthai = trangthai
+
+                this.notificationService.create(
+                    'success',
+                    'Thành Công',
+                    response.message
+                )
+                this.isChangeStatus = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isChangeStatus = false
+            }
+        })
+    }
+
+    onForceDeleteMagazine(magazine:ChiTietTapChi){
+        this.isForceDelete = true
+        this.tapChiService.forceDeleteTapChi(magazine.id).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) => {
+                this.notificationService.create(
+                    'success',
+                    'Thành Công',
+                    response.message
+                )
+                this.router.navigate(['/tap-chi'])
+                this.isForceDelete = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isForceDelete = false
+            }
+        })
+    }
+
+    onSoftDeleteMagazine(magazine:ChiTietTapChi){
+        this.isSoftDelete = true;
+        this.tapChiService.softDeleteTapChi(magazine.id).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) => {
+                magazine.deleted_at = Date.now().toString()
+
+                this.notificationService.create(
+                    'success',
+                    'Thành Công',
+                    response.message
+                )
+                this.isSoftDelete = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isSoftDelete = false
+            }
+        })
+    }
+
+
+    ngOnDestroy() {
+        this.destroy$.next()
+        this.destroy$.complete()
     }
 
 }

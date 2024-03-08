@@ -96,7 +96,7 @@ export class ScoreComponent implements OnInit,OnDestroy{
                 ])
             ]
         })
-        //this.getLichSuTinhDiem()
+        this.getLichSuTinhDiem()
     }
 
     getLichSuTinhDiem(){

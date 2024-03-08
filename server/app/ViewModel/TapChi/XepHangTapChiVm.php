@@ -18,4 +18,6 @@ class XepHangTapChiVm
     public ?string $aci;
     public string $created_at;
     public string $updated_at;
+    public ?UserVm $nguoicapnhat;
+    public ?string $ghichu;
 }

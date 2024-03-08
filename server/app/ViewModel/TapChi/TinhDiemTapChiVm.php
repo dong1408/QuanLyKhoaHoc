@@ -15,4 +15,8 @@ class TinhDiemTapChiVm
     public ?string $namtinhdiem;
     public string $created_at;
     public string $updated_at;
+    public UserVm $nguoicapnhat;
+    public ?string $ghichu;
+    public ?NganhTinhDiemVm $nganhtinhdiem; // $id_nganhtinhdiem
+    public ?ChuyenNganhTinhDiemVm $chuyennganhtinhdiem; // $id_chuyennganhtinhdiem
 }

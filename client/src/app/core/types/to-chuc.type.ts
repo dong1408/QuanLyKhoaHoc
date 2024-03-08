@@ -3,15 +3,11 @@ import {QuocGia} from "./quoc-gia.type";
 
 export interface ToChuc{
     id:number,
-    matochuc:string,
-    tentochuc:string,
-    tentochuc_en:string,
-    website:string,
-    dienthoai:string,
-    address:string,
-    addresscity:TinhThanh,
-    addresscountry:QuocGia,
-    phanloaitochuc:PhanLoaiToChuc,
+    matochuc?:string,
+    tentochuc?:string,
+    tentochuc_en?:string,
+    website?:string,
+    dienthoai?:string,
     created_at:string,
     updated_at:string
 }

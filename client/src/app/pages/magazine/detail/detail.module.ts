@@ -13,6 +13,7 @@ import {NzPopconfirmModule} from "ng-zorro-antd/popconfirm";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzTableModule} from "ng-zorro-antd/table";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
+import {NzDividerModule} from "ng-zorro-antd/divider";
 
 @NgModule({
     declarations:[
@@ -32,6 +33,7 @@ import {NzWaveModule} from "ng-zorro-antd/core/wave";
         NzSelectModule,
         NzTableModule,
         NzWaveModule,
+        NzDividerModule,
     ],
     exports:[
 

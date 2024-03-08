@@ -2,6 +2,8 @@ import {User} from "./user.type";
 import {NganhTinhDiem} from "./nganh-tinh-diem.type";
 import {ChuyenNganhTinhDiem} from "./chuyen-nganh-tinh-diem.type";
 import {ToChuc} from "./to-chuc.type";
+import {Validators} from "@angular/forms";
+import {noWhiteSpaceValidator} from "../../shared/validators/no-white-space.validator";
 
 export interface Magazine{
     id:number,
@@ -27,6 +29,7 @@ export interface ChiTietTapChi{
     id:number,
     name?:string,
     quocte?:boolean,
+    website?:string,
     address?:string,
     trangthai:boolean,
     created_at:string,
@@ -40,6 +43,21 @@ export interface ChiTietTapChi{
     xephangtapchi?:XepHangTapChi,
     tinhdiemtapchi?:TinhDiemTapChi,
     donvichuquan?:ToChuc
+}
+
+export interface CreateTapChi{
+    name:string,
+    issn?:string,
+    pissn?:string,
+    eissn?:string,
+    website?:string,
+    quocte?:boolean,
+    id_nhaxuatban?:number,
+    id_donvichuquan:number,
+    address?:string,
+    id_address_city?:number,
+    id_address_country?:number,
+    trangthai:boolean
 }
 
 export interface MagazineRecognize{
@@ -72,7 +90,7 @@ export interface XepHangTapChi{
     abcd?:string,
     aci?:string,
     ghichu?:string,
-    user:User,
+    nguoicapnhat:User,
     created_at:string,
     updated_at:string
 }
@@ -109,7 +127,8 @@ export interface UpdateXepHang{
     abs?:string,
     abcd?:string,
     aci?:string,
-    ghichu?:string
+    ghichu?:string,
+    dmphanloaitapchi?:Array<number>
     // con thieu id cua phan muc xep hang gi a' scopus, aci...
 }
 

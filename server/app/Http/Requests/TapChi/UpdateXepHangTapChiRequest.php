@@ -47,13 +47,19 @@ class UpdateXepHangTapChiRequest extends FormRequest
                 Rule::in(["0","1"])
             ],
             "ghichu" => "bail|nullable|string",
+            "dmphanloaitapchi" => "bail|nullable|array",
+            "dmphanloaitapchi.*" => [
+                "int",
+                Rule::exists('d_m_phan_loai_tap_chi', 'id')
+            ],
         ];
     }
 
     public function  messages(){
         return [
             'string' => 'Trường :attribute phải là một chuỗi chữ',
-            'in' => 'Trường :attribute phải là một trong các giá trị :values'
+            'in' => 'Trường :attribute phải là một trong các giá trị :values',
+            'dmphanloaitapchi.*.exists' => 'Danh mục phân loại tạp chí không tồn tại trên hệ thống'
         ];
     }
 }

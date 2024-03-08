@@ -15,6 +15,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PagingService} from "../../../core/services/paging.service";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
+import {PhanLoaiTapChiService} from "../../../core/services/phan-loai-tap-chi.service";
+import {PhanLoaiTapChi} from "../../../core/types/phan-loai-tap-chi.type";
+import {validValuesValidator} from "../../../shared/validators/valid-value.validator";
 
 @Component({
     selector:'app-magazine-rank',
@@ -26,26 +29,30 @@ export class RankComponent implements OnInit,OnDestroy{
     id:number
     totalPage:number
 
+    isOpenForm:boolean = false
     isUpdateLoading:boolean = false
+    isPhanLoaiTapChiLoading:boolean = false
 
     xepHangTapChi: XepHangTapChi[] = []
+    phanLoaiTapChi:PhanLoaiTapChi[] = []
 
     formXepHang: FormGroup
-    isOpenRecognizeForm:boolean = false
 
     destroy$ = new Subject<void>()
 
     paging$: Observable<[number]>
 
+    selected:Array<string> = []
+
     constructor(
-        private modal: NzModalService,
         private fb:FormBuilder,
         private tapChiService:TapChiService,
         public loadingService:LoadingService,
         private _router: ActivatedRoute,
         private router:Router,
         private notificationService:NzNotificationService,
-        public pagingService:PagingService
+        public pagingService:PagingService,
+        private phanLoaiTapChiService:PhanLoaiTapChiService
     ) {
     }
 
@@ -60,10 +67,51 @@ export class RankComponent implements OnInit,OnDestroy{
         })
 
         this.formXepHang = this.fb.group({
-            khongduoccongnhan:[
-                true,
+            id_phanloaitapchi:[
+                null,
                 Validators.compose([
                     Validators.required
+                ])
+            ],
+            if:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            wos:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    validValuesValidator(["SCIE","SSCI","A&HCI","ESCI"])
+                ])
+            ],
+            quartile:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    validValuesValidator(["q1","q2","q3","q4"])
+                ])
+            ],
+            abs:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    validValuesValidator(["1","2","3","4"])
+                ])
+            ],
+            abcd:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    validValuesValidator(["A*","A","B","C"])
+                ])
+            ],
+            aci:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    validValuesValidator(["0","1"])
                 ])
             ],
             ghichu:[
@@ -71,51 +119,17 @@ export class RankComponent implements OnInit,OnDestroy{
                 Validators.compose([
                     noWhiteSpaceValidator()
                 ])
-            ]
+            ],
         })
-        this.getLichSuTapChiKhongCongNhan()
+        this.getXepHangTapChi()
     }
 
     onChangePage(event:any){
         this.pagingService.updatePageIndex(event)
     }
 
-    updateLichSuTapChi(){
-        const form = this.formXepHang
-        if(form.invalid){
-            this.notificationService.create(
-                'error',
-                'Lỗi',
-                'Vui lòng nhập đầy đủ dữ liệu'
-            )
-            return
-        }
-        this.isUpdateLoading = true
-        const data:UpdateXepHang = this.formXepHang.value
-        this.tapChiService.updateXepHang(this.id,data).pipe(
-            takeUntil(this.destroy$)
-        ).subscribe({
-            next:(response) => {
-                this.xepHangTapChi = [response.data,...this.xepHangTapChi]
-                this.notificationService.create(
-                    'success',
-                    'Thành công',
-                    response.message
-                )
-                this.isUpdateLoading = false
-            },
-            error:(error) => {
-                this.notificationService.create(
-                    'error',
-                    "Lỗi",
-                    error
-                )
-                this.isUpdateLoading = false
-            }
-        })
-    }
 
-    getLichSuTapChiKhongCongNhan(){
+    getXepHangTapChi(){
         this.paging$ = combineLatest([
             this.pagingService.pageIndex$,
         ]).pipe(
@@ -148,10 +162,88 @@ export class RankComponent implements OnInit,OnDestroy{
         })
     }
 
-    openRecognizeForm(){
-        this.isOpenRecognizeForm = !this.isOpenRecognizeForm
+
+
+    getPhanLoaiTapChi(){
+        this.isPhanLoaiTapChiLoading = true
+        this.phanLoaiTapChiService.getPhanLoaiTapChi()
+            .pipe(
+                takeUntil(this.destroy$)
+            ).subscribe({
+            next:(response) =>{
+                this.phanLoaiTapChi = response.data
+                this.isPhanLoaiTapChiLoading = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isPhanLoaiTapChiLoading = false
+            }
+        })
     }
 
+
+    onXepHangTapChi(){
+
+        if(this.formXepHang.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng nhập đầy đủ dữ liệu'
+            )
+            return
+        }
+
+        const values = this.formXepHang.controls['id_phanloaitapchi'].value
+        const idArr = values.map((item:any) => item.id)
+        const data:UpdateXepHang = {
+            if :this.formXepHang.controls['if'].value,
+            wos: this.selected.includes('wos') ? this.formXepHang.controls['wos'].value : null,
+            aci:this.selected.includes('aci') ? this.formXepHang.controls['aci'].value : null,
+            abs:this.selected.includes('abs') ? this.formXepHang.controls['abs'].value : null,
+            abcd:this.selected.includes('abcd') ? this.formXepHang.controls['abcd'].value : null,
+            quartile:this.selected.includes('quartile') ? this.formXepHang.controls['quartile'].value : null,
+            ghichu:this.formXepHang.controls['ghichu'].value,
+            dmphanloaitapchi:idArr
+        }
+        this.isUpdateLoading = true
+        this.tapChiService.updateXepHang(this.id,data).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) => {
+                this.xepHangTapChi = [response.data,...this.xepHangTapChi]
+                this.notificationService.create(
+                    'success',
+                    'Thành công',
+                    response.message
+                )
+                this.isUpdateLoading = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    "Lỗi",
+                    error
+                )
+                this.isUpdateLoading = false
+            }
+        })
+    }
+
+    openRecognizeForm(){
+        this.getPhanLoaiTapChi()
+        this.isOpenForm = !this.isOpenForm
+    }
+
+
+    onSelectChange(event:any){
+        const mas = event.map((item:any) => item.ma)
+        this.selected = []
+        this.selected = mas
+    }
 
     ngOnDestroy() {
         this.destroy$.next();

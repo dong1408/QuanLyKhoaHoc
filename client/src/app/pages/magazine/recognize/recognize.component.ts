@@ -130,6 +130,7 @@ export class RecognizeComponent implements OnInit,OnDestroy{
                 this.totalPage = response.data.totalPage
                 this.recognizes = response.data.data
                 this.loadingService.stopLoading()
+                console.log(response.data)
             },
             error: (error) => {
                 this.notificationService.create(

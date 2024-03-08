@@ -1,8 +1,128 @@
+<div>
+    <nz-modal
+            [nzVisible]="isOpenForm"
+            nzTitle="Tính Điểm Tạp Chí"
+            nzOkText="Gửi"
+            (nzOnOk)="onXepHangTapChi()"
+            (nzOnCancel)="openRecognizeForm()"
+            [nzOkLoading]="isUpdateLoading"
+    >
+        <ng-container *nzModalContent>
+            <form nz-form class="tw-space-y-[16px]" [formGroup]="formXepHang">
+                <div>
+                    <h3 class="tw-text-center">Phân Loại Tạp Chí</h3>
+                    <nz-form-control>
+                        <nz-select
+                                (ngModelChange)="onSelectChange($event)"
+                                nzMode="multiple"
+                                nzAllowClear
+                                nzPlaceHolder="Danh Mục Phân Loại"
+                                formControlName="id_phanloaitapchi"
+                                [nzLoading]="isPhanLoaiTapChiLoading"
+                                [nzDisabled]="isPhanLoaiTapChiLoading"
+                        >
+                            <nz-option *ngFor="let data of phanLoaiTapChi" [nzValue]="data" [nzLabel]="data.ten ? data.ten : 'Không có tên'"></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="formXepHang.controls?.['id_phanloaitapchi']?.touched && formXepHang.controls?.['id_phanloaitapchi']?.dirty">
+                            <small *ngIf="formXepHang.controls?.['id_phanloaitapchi']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div>
+                    <h3 class="tw-text-center">Chỉ Số IF</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Chỉ Số IF"  type="text" formControlName="if"/>
+                        <ng-container *ngIf="formXepHang.controls?.['if']?.touched && formXepHang.controls?.['if']?.dirty">
+                            <small *ngIf="formXepHang.controls?.['if']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <ng-container *ngIf="selected.includes('wos')">
+                    <div>
+                        <h3 class="tw-text-center">Điểm Wos (WoS)</h3>
+                        <nz-form-control>
+                            <input nz-input placeholder="Điểm WoS"  type="text" formControlName="wos"/>
+                            <ng-container *ngIf="formXepHang.controls?.['wos']?.touched && formXepHang.controls?.['wos']?.dirty">
+                                <small *ngIf="formXepHang.controls?.['wos']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                                <small *ngIf="formXepHang.controls?.['wos']?.errors?.['invalidValue']" class="tw-ml-2 error">Chỉ nhận các giá trị : SCIE,SSCI,A&HCI,ESCI</small>
+                            </ng-container>
+                        </nz-form-control>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selected.includes('quartile')">
+                    <div>
+                        <h3 class="tw-text-center">Điểm Quartile (Scopus)</h3>
+                        <nz-form-control>
+                            <input nz-input placeholder="Điểm Quartile"  type="text" formControlName="quartile"/>
+                            <ng-container *ngIf="formXepHang.controls?.['quartile']?.touched && formXepHang.controls?.['quartile']?.dirty">
+                                <small *ngIf="formXepHang.controls?.['quartile']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                                <small *ngIf="formXepHang.controls?.['quartile']?.errors?.['invalidValue']" class="tw-ml-2 error">Chỉ nhận các giá trị : q1,q2,q3,q4</small>
+                            </ng-container>
+                        </nz-form-control>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selected.includes('abs')">
+                    <div>
+                        <h3 class="tw-text-center">Điểm ABS</h3>
+                        <nz-form-control>
+                            <input nz-input placeholder="Điểm ABS"  type="text" formControlName="abs"/>
+                            <ng-container *ngIf="formXepHang.controls?.['abs']?.touched && formXepHang.controls?.['abs']?.dirty">
+                                <small *ngIf="formXepHang.controls?.['abs']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                                <small *ngIf="formXepHang.controls?.['abs']?.errors?.['invalidValue']" class="tw-ml-2 error">Chỉ nhận các giá trị : 1,2,3,4</small>
+                            </ng-container>
+                        </nz-form-control>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selected.includes('abcd')">
+                    <div>
+                        <h3 class="tw-text-center">Điểm ABCD</h3>
+                        <nz-form-control>
+                            <input nz-input placeholder="Điểm ABCD"  type="text" formControlName="abcd"/>
+                            <ng-container *ngIf="formXepHang.controls?.['abcd']?.touched && formXepHang.controls?.['abcd']?.dirty">
+                                <small *ngIf="formXepHang.controls?.['abcd']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                                <small *ngIf="formXepHang.controls?.['abcd']?.errors?.['invalidValue']" class="tw-ml-2 error">Chỉ nhận các giá trị : A*,A,B,C</small>
+                            </ng-container>
+                        </nz-form-control>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selected.includes('aci')">
+                    <div>
+                        <h3 class="tw-text-center">Điểm ACI</h3>
+                        <nz-form-control>
+                            <input nz-input placeholder="Điểm ACI"  type="text" formControlName="aci"/>
+                            <ng-container *ngIf="formXepHang.controls?.['aci']?.touched && formXepHang.controls?.['aci']?.dirty">
+                                <small *ngIf="formXepHang.controls?.['aci']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                                <small *ngIf="formXepHang.controls?.['aci']?.errors?.['invalidValue']" class="tw-ml-2 error">Chỉ nhận các giá trị : 0,1</small>
+                            </ng-container>
+                        </nz-form-control>
+                    </div>
+                </ng-container>
+                <div>
+                    <h3 class="tw-text-center">Ghi Chú</h3>
+                    <nz-form-control>
+            <textarea
+                    nz-input
+                    placeholder="Ghi chú"
+                    formControlName="ghichu"
+                    [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+            ></textarea>
+                        <ng-container *ngIf="formXepHang.controls?.['ghichu']?.touched && formXepHang.controls?.['ghichu']?.dirty">
+                            <small *ngIf="formXepHang.controls?.['ghichu']?.errors?.['whitespace']" class="tw-ml-2 tw-text-red-600">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
+
+
 <div class="tw-space-y-[16px]">
-    <button nz-button nzType="primary" routerLink="/tap-chi">
+    <button nz-button nzType="primary" [routerLink]="['/tap-chi',this.id]">
         <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
     </button>
-    <h1 class="text-primary tw-text-5xl">LỊCH SỬ TÍNH ĐIỂM TẠP CHÍ</h1>
+    <h1 class="text-primary tw-text-5xl">LỊCH SỬ XẾP HẠNG TẠP CHÍ</h1>
     <div class="tw-mt-[15] tw-space-y-[6px]">
         <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-space-y-[4px] lg:tw-space-x-[8px]">
             <button nz-button nzType="primary" (click)="openRecognizeForm()">
