@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {MagazineRecognize} from "../../../core/types/tap-chi.type";
+import {MagazineRecognize} from "../../../core/types/tapchi/tap-chi.type";
 
 @Component({
     selector:'app-recognize-card',

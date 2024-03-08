@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {XepHangTapChi} from "../../../core/types/tap-chi.type";
+import {XepHangTapChi} from "../../../core/types/tapchi/tap-chi.type";
 
 @Component({
     selector:'app-magazine-rankcard',

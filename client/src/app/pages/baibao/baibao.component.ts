@@ -15,17 +15,18 @@ import {
     tap
 } from "rxjs";
 import {TapChiService} from "../../core/services/tapchi/tap-chi.service";
-import {PagingServiceFactory} from "../../core/services/paging-service.factory";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {BaiBao} from "../../core/types/baibao/bai-bao.type";
+import {BaiBaoService} from "../../core/services/baibao/bai-bao.service";
 
 @Component({
-    selector:'app-magazine',
-    templateUrl:'./magazine.component.html',
-    styleUrls:['./magazine.component.css']
+    selector:'app-baibao',
+    templateUrl:'./baibao.component.html',
+    styleUrls:['./baibao.component.css']
 })
 
-export class MagazineComponent implements OnInit,OnDestroy{
-    magazines:Magazine[] = []
+export class BaiBaoComponent implements OnInit,OnDestroy{
+    baiBaos:BaiBao[] = []
     currentButton$ = new BehaviorSubject<number>(1)
     totalPage: number
     isTableLoading:boolean = false
@@ -37,12 +38,10 @@ export class MagazineComponent implements OnInit,OnDestroy{
 
     formAction: FormGroup
 
-    selectValue: Array<{label:string,value:string}>
-
     constructor(
         private pagingService:PagingService,
         private notificationService:NzNotificationService,
-        private tapChiService:TapChiService,
+        private baiBaoService:BaiBaoService,
         private fb:FormBuilder
     ) {
     }
@@ -53,11 +52,11 @@ export class MagazineComponent implements OnInit,OnDestroy{
             search:null,
             select:"created_at"
         })
-        this.getTapChiPaging()
+        this.getBaiBao()
     }
 
 
-    getTapChiPaging(){
+    getBaiBao(){
         this.searchIsLock$ = combineLatest([
             this.pagingService.pageIndex$,
             this.pagingService.keyword$,
@@ -73,12 +72,12 @@ export class MagazineComponent implements OnInit,OnDestroy{
             debounceTime(700),
             distinctUntilChanged(),
             switchMap(([pageIndex, keyword, sortBy,islock]) => {
-                return this.tapChiService.getTapChiPaging(pageIndex, keyword, sortBy,islock)
+                return this.baiBaoService.getBaiBao(pageIndex, keyword, sortBy,islock)
             })
         ).subscribe({
             next: (response) => {
                 this.totalPage = response.data.totalPage
-                this.magazines = response.data.data.map((item) => {
+                this.baiBaos = response.data.data.map((item) => {
                     return {
                         ...item,
                         isSoftDelete:false,
@@ -101,20 +100,20 @@ export class MagazineComponent implements OnInit,OnDestroy{
         })
     }
 
-     onSoftDeleteMagazine(magazine:Magazine){
-        magazine.isSoftDelete = true;
-        this.tapChiService.softDeleteTapChi(magazine.id).pipe(
+     onXoaMemBaiBao(baiBao:BaiBao){
+         baiBao.isSoftDelete = true;
+        this.baiBaoService.xoaMemBaiBao(baiBao.id).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.magazines = this.magazines.filter((item) => item.id !== magazine.id)
+                this.baiBaos = this.baiBaos.filter((item) => item.id !== baiBao.id)
 
                 this.notificationService.create(
                     'success',
                     'Thành Công',
                     response.message
                 )
-                magazine.isSoftDelete = false
+                baiBao.isSoftDelete = false
             },
             error:(error) => {
                 this.notificationService.create(
@@ -122,25 +121,25 @@ export class MagazineComponent implements OnInit,OnDestroy{
                     'Lỗi',
                     error
                 )
-                magazine.isSoftDelete = false
+                baiBao.isSoftDelete = false
             }
         })
      }
 
-    onForceDeleteMagazine(magazine:Magazine){
-        magazine.isDelete = true;
-        this.tapChiService.forceDeleteTapChi(magazine.id).pipe(
+    onXoaBaiBao(baiBao:BaiBao){
+        baiBao.isDelete = true;
+        this.baiBaoService.xoaBaiBao(baiBao.id).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.magazines = this.magazines.filter((item) => item.id !== magazine.id)
+                this.baiBaos = this.baiBaos.filter((item) => item.id !== baiBao.id)
 
                 this.notificationService.create(
                     'success',
                     'Thành Công',
                     response.message
                 )
-                magazine.isDelete = false
+                baiBao.isDelete = false
             },
             error:(error) => {
                 this.notificationService.create(
@@ -148,55 +147,59 @@ export class MagazineComponent implements OnInit,OnDestroy{
                     'Lỗi',
                     error
                 )
-                magazine.isDelete = false
+                baiBao.isDelete = false
             }
         })
     }
 
-    onChangeStatusTapChi(magazine:Magazine){
-        magazine.isChangeStatus = true;
+    onCapNhatTrangThai(baiBao:BaiBao){
 
-        const data:UpdateTrangThaiTapChi = {
-            trangthai: false
-        }
-
-        this.tapChiService.updateTrangThaiTapChi(magazine.id,data).pipe(
-            takeUntil(this.destroy$)
-        ).subscribe({
-            next:(response) => {
-                this.magazines = this.magazines.filter((item) => item.id !== magazine.id)
-
-                this.notificationService.create(
-                    'success',
-                    'Thành Công',
-                    response.message
-                )
-                magazine.isChangeStatus = false
-            },
-            error:(error) => {
-                this.notificationService.create(
-                    'error',
-                    'Lỗi',
-                    error
-                )
-                magazine.isChangeStatus = false
-            }
-        })
     }
 
-     onRestoreMagazine(magazine:Magazine){
-         magazine.isReStore = true;
-         this.tapChiService.restoreTapChi(magazine.id).pipe(
+    // onCapNhatTrangThai(baiBao:BaiBao){
+    //     baiBao.isChangeStatus = true;
+    //
+    //     const data:UpdateTrangThaiTapChi = {
+    //         trangthai: false
+    //     }
+    //
+    //     this.baiBaoService.(baiBao.id,data).pipe(
+    //         takeUntil(this.destroy$)
+    //     ).subscribe({
+    //         next:(response) => {
+    //             this.baiBaos = this.baiBaos.filter((item) => item.id !== baiBao.id)
+    //
+    //             this.notificationService.create(
+    //                 'success',
+    //                 'Thành Công',
+    //                 response.message
+    //             )
+    //             baiBao.isChangeStatus = false
+    //         },
+    //         error:(error) => {
+    //             this.notificationService.create(
+    //                 'error',
+    //                 'Lỗi',
+    //                 error
+    //             )
+    //             baiBao.isChangeStatus = false
+    //         }
+    //     })
+    // }
+
+     onHoanTacXoaBaiBao(baiBao:BaiBao){
+         baiBao.isReStore = true;
+         this.baiBaoService.hoanTacXoaBaiBao(baiBao.id).pipe(
              takeUntil(this.destroy$)
          ).subscribe({
              next:(response) => {
-                 this.magazines = this.magazines.filter((item) => item.id !== magazine.id)
+                 this.baiBaos = this.baiBaos.filter((item) => item.id !== baiBao.id)
                  this.notificationService.create(
                      'success',
                      'Thành Công',
                      response.message
                  )
-                 magazine.isReStore = false
+                 baiBao.isReStore = false
              },
              error:(error) => {
                  this.notificationService.create(
@@ -204,7 +207,7 @@ export class MagazineComponent implements OnInit,OnDestroy{
                      'Lỗi',
                      error
                  )
-                 magazine.isReStore = false
+                 baiBao.isReStore = false
              }
          })
      }
@@ -238,7 +241,6 @@ export class MagazineComponent implements OnInit,OnDestroy{
      }
 
     ngOnDestroy() {
-        console.log("magaazine run")
         this.destroy$.next();
         this.destroy$.complete();
         this.pagingService.resetValues()

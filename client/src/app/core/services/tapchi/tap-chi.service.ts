@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {ApiResponse, PagingResponse} from "../types/api-response.type";
+import {ApiResponse, PagingResponse} from "../../types/api-response.type";
 import {
     ChiTietTapChi, CreateTapChi,
     Magazine,
@@ -9,10 +9,10 @@ import {
     UpdateTapChi, UpdateTinhDiem,
     UpdateTrangThaiTapChi, UpdateXepHang,
     XepHangTapChi
-} from "../types/tap-chi.type";
-import {environment} from "../../../environments/environment";
+} from "../../types/tapchi/tap-chi.type";
+import {environment} from "../../../../environments/environment";
 import {catchError} from "rxjs";
-import {handleError} from "../../shared/commons/handler-error-http";
+import {handleError} from "../../../shared/commons/handler-error-http";
 
 @Injectable({
     providedIn:"root"
