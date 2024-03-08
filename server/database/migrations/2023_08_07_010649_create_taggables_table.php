@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('taggable_type');
             $table->integer('taggable_id');
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

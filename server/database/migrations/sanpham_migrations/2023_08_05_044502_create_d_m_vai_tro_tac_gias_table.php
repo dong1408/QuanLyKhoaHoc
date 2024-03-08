@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('mota')->nullable();
             $table->string('tenvaitro_en')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

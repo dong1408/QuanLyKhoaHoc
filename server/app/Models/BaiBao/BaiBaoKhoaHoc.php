@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class BaiBaoKhoaHoc extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+
     protected $table = 'bai_bao_khoa_hocs';
 
     protected $fillable = [

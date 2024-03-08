@@ -454,18 +454,24 @@ class Convert
         $a = new BaiBaoKhoaHocVm();
         $a->id = $baiBaoKhoaHoc->id;
         if ($baiBaoKhoaHoc->sanPham == null) {
-            $a->sanpham = null;
+            $a->tensanpham = null;
+            $a->id_sanpham = null;
         } else {
-            $a->sanpham = Convert::getSanPhamVm($baiBaoKhoaHoc->sanPham);
+            $a->id_sanpham = $baiBaoKhoaHoc->sanPham->id;
+            $a->tensanpham = $baiBaoKhoaHoc->sanPham->tensanpham;
         }
-        $a->abstract = $baiBaoKhoaHoc->abstract;
         $a->keywords = $baiBaoKhoaHoc->keyword;
         if ($baiBaoKhoaHoc->tapChi == null) {
-            $a->tapchi = null;
+            $a->tentapchi = null;
         } else {
-            $a->tapchi = Convert::getTapChiVm($baiBaoKhoaHoc->tapChi);
+            $a->tentapchi = $baiBaoKhoaHoc->tapChi->name;
         }
+        $a->volume = $baiBaoKhoaHoc->volume;
+        $a->issue = $baiBaoKhoaHoc->issue;
+        $a->number = $baiBaoKhoaHoc->number;
+        $a->pages = $baiBaoKhoaHoc->pages;
         $a->created_at = $baiBaoKhoaHoc->created_at;
+        
         $a->updated_at = $baiBaoKhoaHoc->updated_at;
 
         return $a;
@@ -476,9 +482,9 @@ class Convert
         $a = new BaiBaoKhoaHocDetailVm();
         $a->id = $baiBaoKhoaHoc->id;
         if ($baiBaoKhoaHoc->sanPham == null) {
-            $a->sanphamdetail = null;
+            $a->sanpham = null;
         } else {
-            $a->sanphamdetail = Convert::getSanPhamDetailVm($baiBaoKhoaHoc->sanPham);
+            $a->sanpham = Convert::getSanPhamDetailVm($baiBaoKhoaHoc->sanPham);
         }
         $a->doi = $baiBaoKhoaHoc->doi;
         $a->url = $baiBaoKhoaHoc->url;

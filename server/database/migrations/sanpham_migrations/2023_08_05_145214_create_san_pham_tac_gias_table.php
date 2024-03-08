@@ -28,7 +28,6 @@ return new class extends Migration
             $table->string('thutu')->nullable();
             $table->string('tyledonggop')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -18,8 +18,6 @@ return new class extends Migration
             $table->id();
             $table->string('mamucdich')->unique();
             $table->string('tenmucdich')->nullable();
-
-            $table->softDeletes();
             $table->timestamps();
         });
     }

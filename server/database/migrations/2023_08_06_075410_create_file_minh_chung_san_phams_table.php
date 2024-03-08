@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('loaiminhchung')->nullable();
             $table->string('url');
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

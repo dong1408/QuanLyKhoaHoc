@@ -12,12 +12,14 @@ use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateSanPhamRequest;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
+use App\Models\SanPham\DMVaiTroTacGia;
 use App\Models\SanPham\SanPham;
 use App\Models\SanPham\SanPhamTacGia;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\DB;
 
 class BaiBaoServiceImpl implements BaiBaoService
@@ -34,20 +36,28 @@ class BaiBaoServiceImpl implements BaiBaoService
         $keysearch = $request->query('search', "");
         $sortby = $request->query('sortby', "created_at");
         $isLock = $request->query('isLock', 0);
-
         $sanPhams = null;
         if ($isLock == 1) {
-            $sanPhams = SanPham::onlyTrashed()->where(function ($query) use ($keysearch) {
-                $query->where('tensanpham', 'LIKE', '%' . $keysearch . '%');
-            })->where(function ($query) {
-                $query->where('trangthairasoat', 'Đã xác nhận');
-            })->orderBy($sortby)->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-        } else { // Lấy những bản ghi not softdelete
-            $sanPhams = SanPham::where(function ($query) use ($keysearch) {
-                $query->where('tensanpham', 'LIKE', '%' . $keysearch . '%');
-            })->where(function ($query) {
-                $query->where('trangthairasoat', 'Đã xác nhận');
-            })->orderBy($sortby)->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+            $sanPhams = SanPham::onlyTrashed()->select('san_phams.*')
+                ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+                ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+                ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
+                ->where('d_m_san_phams.masanpham', '=', 'baibaokhoahoc')
+                ->where(function ($query) use ($keysearch) {
+                    $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
+                        ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
+                })->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        } else { // Lấy những bản ghi not softdelete            
+            $sanPhams = SanPham::select('san_phams.*')
+                ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+                ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+                ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
+                ->where('d_m_san_phams.masanpham', '=', 'baibaokhoahoc')
+                ->where(function ($query) use ($keysearch) {
+                    $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
+                        ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
+                })->where('san_phams.trangthairasoat', 'Đã xác nhận')
+                ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         }
         $result = [];
         foreach ($sanPhams as $sanPham) {
@@ -60,26 +70,25 @@ class BaiBaoServiceImpl implements BaiBaoService
 
 
 
-
-
-
-
     public function getBaiBaoChoDuyet(Request $request): ResponseSuccess
     {
         $page = $request->query('page', 1);
         $keysearch = $request->query('search', "");
         $sortby = $request->query('sortby', "created_at");
         $page = $request->query('page', 1);
-        // $sanPhams = SanPham::where('trangthairasoat', 'Đang rà soát')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-        $sanPhams = SanPham::withTrashed()->where(function ($query) use ($keysearch) {
-            $query->where('tensanpham', 'LIKE', '%' . $keysearch . '%')
-                ->orWhere();
-        })->where(function ($query) {
-            $query->where('trangthairasoat', 'Đang rà soát');
-        })->orderBy($sortby)->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        $sanPhams = SanPham::select('san_phams.*')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+            ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
+            ->where('d_m_san_phams.masanpham', '=', 'baibaokhoahoc')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
+                    ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_phams.trangthairasoat', 'Đang rà soát')
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         $result = [];
         foreach ($sanPhams as $sanPham) {
-            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
+            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham->baiBao);
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
@@ -120,27 +129,46 @@ class BaiBaoServiceImpl implements BaiBaoService
         $validated = $request->validated();
         $baiBao = new BaiBaoKhoaHoc();
         DB::transaction(function () use ($validated, &$baiBao) {
-            $tacGias = $validated['sanphamtacgia']['tacgias'];
-            $vaiTros = $validated['sanphamtacgia']['vaitros'];
+            $listIdTacGia = $validated['sanphamtacgia']['tacgias'];
+            $listIdVaiTro = $validated['sanphamtacgia']['vaitros'];
             $thuTus = $validated['sanphamtacgia']['thutu'];
             $tyLeDongGops = $validated['sanphamtacgia']['tyledonggop'];
 
+            $vaiTros = DMVaiTroTacGia::withTrashed()->whereIn('id', $listIdVaiTro)->get();
+
             // Kiểm tra bài báo phải có tác giả đầu tiên
-            if (array_search(1, $vaiTros) == null) {
+            $flag = false;
+            foreach ($vaiTros as $vaiTro) {
+                if ($vaiTro->mavaitro == 'tacgiadautien') {
+                    $flag = true;
+                    break;
+                }
+            }
+            if (!$flag) {
                 throw new BaiBaoNotHaveFirstAuthor();
             }
 
             // kiểm tra 1 người có 2 vai trò giống nhau trong bài báo
-            for ($i = 0; $i < count($tacGias) - 1; $i++) {
-                for ($z = $i + 1; $z < count($vaiTros); $z++) {
-                    if (($tacGias[$i] == $tacGias[$z]) && ($vaiTros[$i] == $vaiTros[$z])) {
+            for ($i = 0; $i < count($listIdTacGia) - 1; $i++) {
+                for ($z = $i + 1; $z < count($listIdVaiTro); $z++) {
+                    if (($listIdTacGia[$i] == $listIdTacGia[$z]) && ($listIdVaiTro[$i] == $listIdVaiTro[$z])) {
                         throw new TwoRoleSimilarForOnePersonException();
                     }
                 }
             }
 
             // Kiểm tra những vai trò quy ước chỉ đc có 1 người đảm nhiểm
-            if ((isset(array_count_values($vaiTros)[2]) && array_count_values($vaiTros)[2] >= 2) || (isset(array_count_values($vaiTros)[1]) && array_count_values($vaiTros)[1] >= 2)) {
+            $allVaiTroDB = DMVaiTroTacGia::all();
+            foreach ($allVaiTroDB as $vaitro) {
+                if ($vaitro->mavaitro == 'tacgiadautien') {
+                    $idVaiTroTacGiaDauTien = $vaitro->id;
+                }
+                if ($vaitro->mavaitro == 'tacgialienhe') {
+                    $idVaiTroTacGiaLienHe = $vaitro->id;
+                }
+            }
+
+            if ((isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien] >= 2) || (isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe] >= 2)) {
                 throw new RoleOnlyHeldByOnePersonException();
             }
 
@@ -185,14 +213,14 @@ class BaiBaoServiceImpl implements BaiBaoService
             ]);
             // Kiểm tra nếu bài báo này kh có tác giả nào đảm nhiệm vai trò tác giả liên hệ
             // (có id =2) thì set vai trò đó cho người có vai trò tác giả đứng đầu (có id =1) 
-            if (!in_array(2, $vaiTros)) {
-                $key = array_search(1, $vaiTros);
-                $vaiTros[] = 2;
-                $tacGias[] = $tacGias[$key];
+            if (!in_array($idVaiTroTacGiaLienHe, $listIdVaiTro)) {
+                $key = array_search($idVaiTroTacGiaDauTien, $listIdVaiTro);
+                $listIdVaiTro[] = $idVaiTroTacGiaLienHe;
+                $listIdTacGia[] = $listIdTacGia[$key];
             }
-            for ($i = 0; $i < count($tacGias); $i++) {
-                $tacGiaId = $tacGias[$i];
-                $vaiTroId = $vaiTros[$i];
+            for ($i = 0; $i < count($listIdTacGia); $i++) {
+                $tacGiaId = $listIdTacGia[$i];
+                $vaiTroId = $listIdVaiTro[$i];
                 $thuTu = isset($thuTus[$i]) ? $thuTus[$i] : null;
                 $tyLeDongGop = isset($tyLeDongGops[$i]) ? $tyLeDongGops[$i] : null;
 
@@ -270,26 +298,46 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
         $validated = $request->validated();
         DB::transaction(function () use ($validated, &$baiBao) {
-            $tacGias = $validated['sanphamtacgia']['tacgias'];
-            $vaiTros = $validated['sanphamtacgia']['vaitros'];
+
+            $listIdTacGia = $validated['sanphamtacgia']['tacgias'];
+            $listIdVaiTro = $validated['sanphamtacgia']['vaitros'];
             $thuTus = $validated['sanphamtacgia']['thutu'];
             $tyLeDongGops = $validated['sanphamtacgia']['tyledonggop'];
+            $vaiTros = DMVaiTroTacGia::withTrashed()->whereIn('id', $listIdVaiTro)->get();
             // Kiểm tra bài báo phải có tác giả đầu tiên
-            if (array_search(1, $vaiTros) == null) {
+            $flag = false;
+            foreach ($vaiTros as $vaiTro) {
+                if ($vaiTro->mavaitro == 'tacgiadautien') {
+                    $flag = true;
+                    break;
+                }
+            }
+            if (!$flag) {
                 throw new BaiBaoNotHaveFirstAuthor();
             }
             // kiểm tra 1 người có 2 vai trò giống nhau trong bài báo
-            for ($i = 0; $i < count($tacGias) - 1; $i++) {
-                for ($z = $i + 1; $z < count($vaiTros); $z++) {
-                    if (($tacGias[$i] == $tacGias[$z]) && ($vaiTros[$i] == $vaiTros[$z])) {
+            for ($i = 0; $i < count($listIdTacGia) - 1; $i++) {
+                for ($z = $i + 1; $z < count($listIdVaiTro); $z++) {
+                    if (($listIdTacGia[$i] == $listIdTacGia[$z]) && ($listIdVaiTro[$i] == $listIdVaiTro[$z])) {
                         throw new TwoRoleSimilarForOnePersonException();
                     }
                 }
             }
             // Kiểm tra những vai trò quy ước chỉ đc có 1 người đảm nhiểm
-            if ((isset(array_count_values($vaiTros)[2]) && array_count_values($vaiTros)[2] >= 2) || (isset(array_count_values($vaiTros)[1]) && array_count_values($vaiTros)[1] >= 2)) {
+            $allVaiTroDB = DMVaiTroTacGia::all();
+            foreach ($allVaiTroDB as $vaitro) {
+                if ($vaitro->mavaitro == 'tacgiadautien') {
+                    $idVaiTroTacGiaDauTien = $vaitro->id;
+                }
+                if ($vaitro->mavaitro == 'tacgialienhe') {
+                    $idVaiTroTacGiaLienHe = $vaitro->id;
+                }
+            }
+
+            if ((isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien] >= 2) || (isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe] >= 2)) {
                 throw new RoleOnlyHeldByOnePersonException();
             }
+
             $baiBao->doi = $validated['doi'];
             $baiBao->url = $validated['url'];
             $baiBao->received = $validated['received'];
@@ -304,16 +352,16 @@ class BaiBaoServiceImpl implements BaiBaoService
             $baiBao->pages = $validated['pages'];
             $baiBao->save();
             // Kiểm tra nếu bài báo này kh có tác giả nào đảm nhiệm vai trò tác giả liên hệ
-            // (có id =2) thì set vai trò đó cho người có vai trò tác giả đứng đầu (có id =1) 
-            if (!in_array(2, $vaiTros)) {
-                $key = array_search(1, $vaiTros);
-                $vaiTros[] = 2;
-                $tacGias[] = $tacGias[$key];
+            // (có id =2) thì set vai trò đó cho người có vai trò tác giả đứng đầu (có id =1)            
+            if (!in_array($idVaiTroTacGiaLienHe, $listIdVaiTro)) {
+                $key = array_search($idVaiTroTacGiaDauTien, $listIdVaiTro);
+                $listIdVaiTro[] = $idVaiTroTacGiaLienHe;
+                $listIdTacGia[] = $listIdTacGia[$key];
             }
             SanPhamTacGia::where('id_sanpham', $baiBao->id_sanpham)->forceDelete();
-            for ($i = 0; $i < count($tacGias); $i++) {
-                $tacGiaId = $tacGias[$i];
-                $vaiTroId = $vaiTros[$i];
+            for ($i = 0; $i < count($listIdTacGia); $i++) {
+                $tacGiaId = $listIdTacGia[$i];
+                $vaiTroId = $listIdVaiTro[$i];
                 $thuTu = isset($thuTus[$i]) ? $thuTus[$i] : null;
                 $tyLeDongGop = isset($tyLeDongGops[$i]) ? $tyLeDongGops[$i] : null;
                 SanPhamTacGia::create([

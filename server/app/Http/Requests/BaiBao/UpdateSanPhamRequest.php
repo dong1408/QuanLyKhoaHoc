@@ -30,13 +30,11 @@ class UpdateSanPhamRequest extends FormRequest
                 'required',
                 'exists:san_phams,id',
             ],
-            "tensanpham" => [
+            "tensanpham" => [ // từ từ, m có add cái trường mavaitro chưa , add roi
                 "bail", "required",
                 Rule::unique('san_phams')->ignore(Route::input('id'), 'id')
-            ],
-            // san pham
-            "tensanpham" => "bail|required|unique:san_phams,tensanpham",
-            "id_loaisanpham" => [
+            ], 
+           "id_loaisanpham" => [
                 "bail", "integer",
                 Rule::exists('d_m_san_phams', 'id')
             ],

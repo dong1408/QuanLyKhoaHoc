@@ -28,7 +28,6 @@ return new class extends Migration
             //File đính kèm
             $table->string('files');
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

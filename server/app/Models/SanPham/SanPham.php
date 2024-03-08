@@ -107,4 +107,8 @@ class SanPham extends Model
     {
         return $this->hasMany('App\Models\SanPham\SanPhamTacGia', 'id_sanpham');
     }
+
+    public function fileMinhChung(){
+        return $this->hasOne('App\Models\FileMinhChungSanPham', 'id_sanpham');
+    }
 }

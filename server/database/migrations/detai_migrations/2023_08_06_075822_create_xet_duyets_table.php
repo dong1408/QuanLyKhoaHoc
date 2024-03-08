@@ -26,7 +26,6 @@ return new class extends Migration
             $table->string('thoihanhopdong')->nullable();
             $table->string('kinhphi')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

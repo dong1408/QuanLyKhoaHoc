@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PhanLoaiDeTai extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $table = 'phan_loai_de_tais';
 

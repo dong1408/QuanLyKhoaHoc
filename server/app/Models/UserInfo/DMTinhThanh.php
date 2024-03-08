@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DMTinhThanh extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+
     protected $table = 'd_m_tinh_thanhs';
 
     // inverse to d_m_quoc_gia
