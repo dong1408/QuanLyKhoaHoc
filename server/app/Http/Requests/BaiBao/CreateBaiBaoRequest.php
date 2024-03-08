@@ -39,20 +39,19 @@ class CreateBaiBaoRequest extends FormRequest
             "sanpham.cothongtindonvikhac" => "bail|nullable|boolean",
             "sanpham.id_thongtinnoikhac" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chuc', 'id')
+                Rule::exists('d_m_to_chucs', 'id')
             ],
             "sanpham.conhantaitro" => "bail|nullable|boolean",
             "sanpham.id_donvitaitro" => [
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
+            "chitietdonvitaitro" => "bail|nullable|string",
             "sanpham.ngaykekhai" => "bail|required|string",
             "sanpham.id_nguoikekhai" => [
                 "bail", "required", "integer",
                 Rule::exists('users', 'id')
             ],
-            "sanpham.trangthairasoat" => "bail|required|string",
-            "sanpham.ngayrasoat" => "bail|required|string",
             "sanpham.diemquydoi" => "bail|required|string",
             "sanpham.gioquydoi" => "bail|required|string",
             "sanpham.thongtinchitiet" => "bail|required|string",
@@ -92,10 +91,14 @@ class CreateBaiBaoRequest extends FormRequest
 
             "sanphamtacgia.thutu" => 'bail|array',
             "sanphamtacgia.thutu.*" => 'bail|nullable|string',
-            
-            "sanphamtacgia.tyledonggop" => 'bail|array',
-            "sanphamtacgia.tyledonggop.*" => 'bail|nullable|string'
 
+            "sanphamtacgia.tyledonggop" => 'bail|array',
+            "sanphamtacgia.tyledonggop.*" => 'bail|nullable|string',
+
+
+            // file minh chung san pham
+            "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
+            "fileminhchungsanpham.url" => "bail|required|string"
         ];
     }
 

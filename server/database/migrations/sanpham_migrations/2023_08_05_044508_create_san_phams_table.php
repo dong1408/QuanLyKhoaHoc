@@ -41,7 +41,7 @@ return new class extends Migration
             $table->foreign('id_nguoikekhai')->references('id')->on('users')->onDelete('cascade');
             //Thông tin trạng thái rà soát (Đang rà soát/Đã xác nhận)
             $table->string('trangthairasoat');
-            $table->string('ngayrasoat');
+            $table->string('ngayrasoat')->nullable();
             $table->unsignedBigInteger('id_nguoirasoat')->nullable();
             $table->foreign('id_nguoirasoat')->references('id')->on('users')->onDelete('cascade');
             $table->string('diemquydoi');

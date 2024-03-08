@@ -27,8 +27,8 @@ class UpdateBaiBaoRequest extends FormRequest
     {
         return [
             'id' => [
-                'required',
-                'exists:san_phams,id',
+                "bail", "required", "integer",
+                Rule::exists('san_phams', 'id')
             ],
             // Thong tin chi tiet bai bao
             "doi" => "bail|nullable|string",
@@ -49,23 +49,23 @@ class UpdateBaiBaoRequest extends FormRequest
 
 
             // san pham _ tac gia
-            "sanphamtacgia.tacgias" => 'bail|array',
-            "sanphamtacgia.tacgias.*" => [
-                "int",
-                Rule::exists("users", 'id')
-            ],
+            // "sanphamtacgia.tacgias" => 'bail|array',
+            // "sanphamtacgia.tacgias.*" => [
+            //     "int",
+            //     Rule::exists("users", 'id')
+            // ],
 
-            "sanphamtacgia.vaitro" => 'bail|array',
-            "sanphamtacgia.vaitros.*" => [
-                "int",
-                Rule::exists("d_m_vai_tro_tac_gias", 'id')
-            ],
+            // "sanphamtacgia.vaitro" => 'bail|array',
+            // "sanphamtacgia.vaitros.*" => [
+            //     "int",
+            //     Rule::exists("d_m_vai_tro_tac_gias", 'id')
+            // ],
 
-            "sanphamtacgia.thutu" => 'bail|array',
-            "sanphamtacgia.thutu.*" => 'bail|nullable|string',
+            // "sanphamtacgia.thutu" => 'bail|array',
+            // "sanphamtacgia.thutu.*" => 'bail|nullable|string',
 
-            "sanphamtacgia.tyledonggop" => 'bail|array',
-            "sanphamtacgia.tyledonggop.*" => 'bail|nullable|string'
+            // "sanphamtacgia.tyledonggop" => 'bail|array',
+            // "sanphamtacgia.tyledonggop.*" => 'bail|nullable|string'
 
         ];
     }
@@ -80,8 +80,8 @@ class UpdateBaiBaoRequest extends FormRequest
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
             'id_tapchi.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
-            'sanphamtacgia.tacgias.*.exists' => 'Tác giả không tồn tại trên hệ thống',
-            'sanphamtacgia.vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
+            // 'sanphamtacgia.tacgias.*.exists' => 'Tác giả không tồn tại trên hệ thống',
+            // 'sanphamtacgia.vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
         ];
     }
 

@@ -49,9 +49,11 @@ Route::group([
     Route::get('baibaochoduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
     Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']);
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao']);
-    Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);
     Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham']);
-    // Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);
+    Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);
+    Route::patch('baibao/{id}/sanphamtacgia', [BaiBaoKhoaHocController::class, 'updateSanPhamTacGia']);
+    Route::patch('baibao/{id}/fileminhchung', [BaiBaoKhoaHocController::class, 'updateFileMinhChung']);
+    Route::patch('baibao/{id}/trangthairasoat', [BaiBaoKhoaHocController::class, 'updateTrangThaiRaSoatBaiBao']);
     Route::patch('baibao/{id}/delete', [BaiBaoKhoaHocController::class, 'deleteBaiBao']);
     Route::patch('baibao/{id}/restore', [BaiBaoKhoaHocController::class, 'restoreBaiBao']);
     Route::delete('baibao/{id}/force', [BaiBaoKhoaHocController::class, 'forceDeleteBaiBao']);

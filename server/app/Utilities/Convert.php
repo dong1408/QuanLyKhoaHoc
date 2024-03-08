@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use App\Models\BaiBao\BaiBaoKhoaHoc;
+use App\Models\FileMinhChungSanPham;
 use App\Models\NhaXuatBan\NhaXuatBan;
 use App\Models\TapChi\DMNganhTheoHSGS;
 use App\Models\TapChi\DMPhanLoaiTapChi;
@@ -27,6 +28,7 @@ use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\SanPham\DMSanPhamVm;
+use App\ViewModel\SanPham\FileMinhChungSanPhamVm;
 use App\ViewModel\SanPham\SanPhamDetailVm;
 use App\ViewModel\SanPham\SanPhamTacGiaVm;
 use App\ViewModel\SanPham\SanPhamVm;
@@ -364,6 +366,11 @@ class Convert
         $a->thongtinchitiet = $sanPham->thongtinchitiet;
         $a->capsanpham = $sanPham->capsanpham;
         $a->thoidiemcongbohoanthanh = $sanPham->thoidiemcongbohoanthanh;
+        if ($sanPham->fileMinhChung == null) {
+            $a->fileMinhChungSanPham = null;
+        } else {
+            $a->fileMinhChungSanPham = $sanPham->fileMinhChung;
+        }
         $a->created_at = $sanPham->created_at;
         $a->updated_at = $sanPham->updated_at;
 
@@ -409,6 +416,19 @@ class Convert
     }
 
 
+    public static function getFileMinhChungSanPhamVm(FileMinhChungSanPham $fileMinhChungSanPham)
+    {
+        $a = new FileMinhChungSanPhamVm();
+        $a->id = $fileMinhChungSanPham->id;
+        $a->loaiminhchung = $fileMinhChungSanPham->loaiminhchung;
+        $a->url = $fileMinhChungSanPham->url;
+        $a->created_at = $fileMinhChungSanPham->created_at;
+        $a->updated_at = $fileMinhChungSanPham->deleted_at;
+        return $a;
+    }
+
+
+
     // ========================= BAI BAO ============================= //
 
     public static function getBaiBaoKhoaHocVm(BaiBaoKhoaHoc $baiBaoKhoaHoc)
@@ -433,7 +453,7 @@ class Convert
         $a->number = $baiBaoKhoaHoc->number;
         $a->pages = $baiBaoKhoaHoc->pages;
         $a->created_at = $baiBaoKhoaHoc->created_at;
-        
+
         $a->updated_at = $baiBaoKhoaHoc->updated_at;
 
         return $a;

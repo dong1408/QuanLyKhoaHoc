@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin\BaiBao;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
+use App\Http\Requests\BaiBao\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\BaiBao\UpdateSanPhamRequest;
+use App\Http\Requests\BaiBao\UpdateSanPhamTacGiaRequest;
+use App\Http\Requests\BaiBao\UpdateTrangThaiRaSoatBaiBao;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
 use App\Models\SanPham\SanPham;
 use App\Models\SanPham\SanPhamTacGia;
@@ -31,10 +34,6 @@ class BaiBaoKhoaHocController extends Controller
     {
         $this->baiBaoService = $baiBaoService;
         $this->middleware('auth:api');
-    }
-
-    public function getDMSanPham()
-    {
     }
 
     public function getBaiBaoPaging(Request $request): Response
@@ -63,6 +62,11 @@ class BaiBaoKhoaHocController extends Controller
         return response()->json($result, 200);
     }
 
+    public function updateSanPham(UpdateSanPhamRequest $request, $id): Response
+    {
+        $result = $this->baiBaoService->updateSanPham($request, $id);
+        return response()->json($result, 200);
+    }
 
     public function updateBaiBao(UpdateBaiBaoRequest $request, $id): Response
     {
@@ -70,12 +74,23 @@ class BaiBaoKhoaHocController extends Controller
         return response()->json($result, 200);
     }
 
-    public function updateSanPham(UpdateSanPhamRequest $request, $id): Response
+    public function updateSanPhamTacGia(UpdateSanPhamTacGiaRequest $request, $id): Response
     {
-        $result = $this->baiBaoService->updateSanPham($request, $id);
+        $result = $this->baiBaoService->updateSanPhamTacGia($request, $id);
         return response()->json($result, 200);
     }
 
+    public function updateFileMinhChung(UpdateFileMinhChungSanPhamRequest $request, $id): Response
+    {
+        $result = $this->baiBaoService->updateFileMinhChung($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function updateTrangThaiRaSoatBaiBao(UpdateTrangThaiRaSoatBaiBao $request, $id): Response
+    {
+        $result = $this->baiBaoService->updateTrangThaiRaSoatBaiBao($request, $id);
+        return response()->json($result, 200);
+    }
 
     public function deleteBaiBao(int $id): Response
     {
