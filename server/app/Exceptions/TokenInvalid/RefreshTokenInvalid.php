@@ -14,8 +14,8 @@ class RefreshTokenInvalid extends Exception
     {
         return response()->json(
             new ResponseError(
-                "BAD_REQUEST",
-                400,
+                "BAD REQUEST",
+                401,
                 "Phiên đăng nhập hết hạn"
             ),
             400

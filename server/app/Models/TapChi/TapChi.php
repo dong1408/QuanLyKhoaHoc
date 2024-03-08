@@ -10,6 +10,7 @@ class TapChi extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    
     protected $table = 'tap_chis';
     protected $fillable = [
         'id',

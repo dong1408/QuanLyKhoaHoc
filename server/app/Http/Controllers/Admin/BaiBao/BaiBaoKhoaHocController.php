@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Admin\BaiBao;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
+use App\Models\SanPham\SanPham;
+use App\Models\SanPham\SanPhamTacGia;
 use App\Models\User;
 use App\Models\UserInfo\DMTinhThanh;
 use App\Models\UserInfo\DMQuocGia;
+use App\Service\BaiBao\BaiBaoService;
 use App\Utilities\ResponseError;
 use App\ViewModel\BaiBao\BaiBaoKhoaHocVm;
 use App\ViewModel\User\UserVm;
@@ -18,62 +22,113 @@ use Illuminate\Support\Facades\Log;
 
 class BaiBaoKhoaHocController extends Controller
 {
+    private BaiBaoService $baiBaoService;
 
-    public function __construct()
+    public function __construct(BaiBaoService $baiBaoService)
     {
-        $this->middleware('auth:api', ['except' => 'getAll']);
+        $this->baiBaoService = $baiBaoService;
+        $this->middleware('auth:api');
     }
 
-    public function getAll()
+    public function getDMSanPham()
     {
-        // $baiBaoVm = new \App\ViewModel\BaiBao\BaiBaoKhoaHocVm();
-        // $baiBaoVm = new BaiBaoKhoaHocVm();
-        // $data = BaiBaoKhoaHoc::all();
+    }
 
-        // $data = User::all();
-        // $userVm = new UserVm();
-        // $userVm->setId("a");
-        // $userVm->setUsername("TranVanDong");
-        // $userVm->setName("Bronze140802");
-        // $userVm->setEmail("dongden14082002@gmail.com");
-        // return response()->json($data[1]);//run coi
+    public function getBaiBaoPaging(Request $request)
+    {
+        $result = $this->baiBaoService->getBaiBaoPaging($request);
+        return response()->json($result, 200);
+    }
 
 
-        // $tinhthanh = DMTinhThanh::find(1);
-        // $quocgia = $tinhthanh->quocGia;
-        // return response()->json($tinhthanh);
+    public function getBaiBaoChoDuyet(Request $request)
+    {
+        $result = $this->baiBaoService->getBaiBaoChoDuyet($request);
+        return response()->json($result, 200);
+    }
 
-        // $tinhThanhVm = new TinhThanhVm();
-        // $quocGiaVm = new QuocGiaVm();
 
-        // $quocGiaVm->setId(1);
-        // $quocGiaVm->setTenQuocGia("VietNam");
+    public function getDetailBaiBao(int $id)
+    {
+        $result = $this->baiBaoService->getDetailBaiBao($id);
+        return response()->json($result, 200);
+    }
 
-        // $tinhThanhVm->setId(1);
-        // $tinhThanhVm->setTenTinhThanh("NamDInh");
-        // $tinhThanhVm->setQuocGiaVm($quocGiaVm);
+    public function createBaiBao(CreateBaiBaoRequest $request)
+    {
+        $result = $this->baiBaoService->createBaiBao($request);
+        return response()->json($result, 200);
+    }
 
-        // return response()->json($tinhThanhVm);
 
-        // chi cho cai nay, mot may cai Vm ay', m tach no ra thanh 1 ham` rieng
+    public function updateBaiBao(CreateBaiBaoRequest $request)
+    {
+    }
+    public function deleteBaiBao(int $id)
+    {
+    }
+    public function restoreBaiBao(int $id)
+    {
+    }
+    public function forceDeleteBaiBao(int $id)
+    {
+    }
 
-        // $quocgia = DMQuocGia::find(1);
-        // $tinhthanhs = $quocgia->tinhThanhs;
-        // return response()->json($tinhthanhs);
+    public function test(Request $request)
+    {
+        $tacGias = [1, 3, 4];
+        $vaiTros = [2, 2, 2];
 
-        $user = new User();
-        $user->name = "Trần Quang Đạo";
-        $user->username = "3119410082";
-        $user->email = "quangdao2601@gmail.com";
-        $user->password = Hash::make("vandong123");
-        $user->save();
+        // insert
+        // $flag = false;
+        // for ($i = 0; $i < count($tacGias) - 1; $i++) {
+        //     for ($z = $i + 1; $z < count($vaiTros); $z++) {
+        //         if (($tacGias[$i] == $tacGias[$z]) && ($vaiTros[$i] == $vaiTros[$z])) {
+        //             $flag = true;
+        //             break;
+        //         }
+        //     }
+        // }
+        // if (!$flag) {
+        //     for ($i = 0; $i < count($tacGias); $i++) {
+        //         $tacGiaId = $tacGias[$i];
+        //         $vaiTroId = $vaiTros[$i];
 
-        // $user = User::create([
-        //     'name' => "Bronze14082002",
-        //     "username" => "Tran Van Dong",
-        //     'email' => "dongden14082002@gmail.com",
-        //     'password' => Hash::make("vandong123")
-        // ]);
+        //         SanPhamTacGia::create([
+        //             'id_sanpham' => 3,
+        //             'id_tacgia' => $tacGiaId,
+        //             'id_vaitrotacgia' => $vaiTroId
+        //         ]);
+        //     }
+        // }
 
+
+
+        // update
+        $flag = false;
+        for ($i = 0; $i < count($tacGias) - 1; $i++) {
+            for ($z = $i + 1; $z < count($vaiTros); $z++) {
+                if (($tacGias[$i] == $tacGias[$z]) && ($vaiTros[$i] == $vaiTros[$z])) {
+                    $flag = true;
+                    break;
+                }
+            }
+        }
+        if (!$flag) {
+            SanPhamTacGia::where('id_sanpham', 3)->forceDelete();
+            for ($i = 0; $i < count($tacGias); $i++) {
+                $tacGiaId = $tacGias[$i];
+                $vaiTroId = $vaiTros[$i];
+
+                SanPhamTacGia::create([
+                    'id_sanpham' => 3,
+                    'id_tacgia' => $tacGiaId,
+                    'id_vaitrotacgia' => $vaiTroId
+                ]);
+            }
+        }
+
+
+        return response()->json("Thành công", 200);
     }
 }

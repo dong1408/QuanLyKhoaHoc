@@ -18,25 +18,23 @@ use Symfony\Component\HttpFoundation\Response;
 class TapChiController extends Controller
 {
     private TapChiService $tapChiService;
-    private PhanLoaiTapChiService $phanLoaiTapChiService;
 
-    public function __construct(TapChiService $tapChiService, PhanLoaiTapChiService $phanLoaiTapChiService)
+    public function __construct(TapChiService $tapChiService)
     {
         $this->tapChiService = $tapChiService;
-        $this->phanLoaiTapChiService = $phanLoaiTapChiService;
         $this->middleware('auth:api', ['except' => ['test']]);
     }
 
 
-    public function getPhanLoaiTapChiByIdTapChi($id): Response
-    {
-        $result = $this->phanLoaiTapChiService->getPhanLoaiByTapChiId($id);
-        return response()->json($result, 200);
-    }
-
     public function getAllTapChi(): Response
     {
         $result =  $this->tapChiService->getAllTapChi();
+        return response()->json($result, 200);
+    }
+
+    public function getAllTapChiChoDuyet(Request $request): Response
+    {
+        $result =  $this->tapChiService->getAllTapChiChoDuyet($request);
         return response()->json($result, 200);
     }
 

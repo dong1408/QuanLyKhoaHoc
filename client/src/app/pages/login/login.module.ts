@@ -16,12 +16,12 @@ import {NzFormModule} from "ng-zorro-antd/form";
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        SharedModule,
         LoginRoutingModule,
         NzInputModule,
         NzButtonModule,
         NzDividerModule,
-        NzFormModule
+        NzFormModule,
+        SharedModule
     ],
     exports:[
         LoginComponent

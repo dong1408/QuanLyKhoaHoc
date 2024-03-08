@@ -3,6 +3,7 @@
 namespace App\Service\TapChi;
 
 use App\Exceptions\TapChi\TapChiNotFoundException;
+use App\Models\TapChi\DMPhanLoaiTapChi;
 use App\Models\TapChi\TapChi;
 use App\Utilities\Convert;
 use App\Utilities\ResponseSuccess;
@@ -22,5 +23,14 @@ class PhanLoaiTapChiServiceImpl implements PhanLoaiTapChiService
             $result[] = Convert::getDMPhanLoaiTapChiVm($phanLoaiTapChi);
         }
         return new ResponseSuccess("Thành công", $result);
+    }
+
+    public function getAllPhanLoaiTapChi():ResponseSuccess{
+        $tapChis = DMPhanLoaiTapChi::all();
+        $result = [];
+        foreach ($tapChis as $tapChi) {
+            $result[] = Convert::getDMPhanLoaiTapChiVm($tapChi);
+        }
+        return new ResponseSuccess("Thành công",$result);
     }
 }

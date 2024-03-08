@@ -6,13 +6,13 @@ import {notAuthGuard} from "./core/guards/not-auth.guards";
 const routes: Routes = [
   {
       path: '',
-      canActivate:[authGuards],
+      // canActivate:[authGuards],
       loadChildren: () => import('./pages/main/main.module').then(m => m.MainModule)
   },
 
   {
       path: 'dang-nhap',
-      canActivate:[notAuthGuard],
+      // canActivate:[notAuthGuard],
       loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)
   }
 ];

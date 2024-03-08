@@ -17,7 +17,7 @@ class NganhTinhDiemController extends Controller
 
     public function getAllNganhTinhDiem(): Response
     {
-        $result[] = $this->nganhTinhDiemService->getAllNganhTinhDiem();
+        $result = $this->nganhTinhDiemService->getAllNganhTinhDiem();
         return response()->json($result, 200);
     }
 }

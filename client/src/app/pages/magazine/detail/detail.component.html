@@ -1,0 +1,163 @@
+<div class="tw-space-y-[16px]">
+    <button nz-button nzType="primary" [routerLink]="['/tap-chi']">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+    <h1 class="text-primary tw-text-5xl">CHI TIẾT TẠP CHÍ</h1>
+    <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+        <app-loading></app-loading>
+    </ng-template>
+    <ng-template #loaded>
+        <div class="tw-mt-[15] tw-flex tw-flex-col tw-gap-[6px]">
+            <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+                <button nz-button nzType="primary">
+                    <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                    Cập Nhật
+                </button>
+                <button nz-button nzType="default" [routerLink]="['/tap-chi',this.id,'lich-su-cong-nhan']">
+                    <span nz-icon nzType="history" nzTheme="outline"></span>
+                    Lịch Sử Công Nhận
+                </button>
+                <button nz-button nzType="default" [routerLink]="['/tap-chi',this.id,'lich-su-tinh-diem']">
+                    <span nz-icon nzType="history" nzTheme="outline"></span>
+                    Lịch Sử Tính Điểm
+                </button>
+                <button nz-button nzType="default" [routerLink]="['/tap-chi',this.id,'lich-su-xep-hang']">
+                    <span nz-icon nzType="history" nzTheme="outline"></span>
+                    Lịch Sử Xếp Hạng
+                </button>
+            </div>
+            <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+                <button
+                        nz-button
+                        nzType="primary"
+                        *ngIf="magazine.deleted_at"
+                        [nzLoading]="isRestore"
+                        nz-popconfirm
+                        nzPopconfirmTitle="Hoàn Tác"
+                        (nzOnConfirm)="onRestoreMagazine(magazine)"
+                >
+                    <span nz-icon nzType="rollback" nzTheme="outline"></span>
+                    Hoàn Tác
+                </button>
+                <button
+                        nz-button
+                        nzType="primary"
+                        nzDanger
+                        *ngIf="magazine.deleted_at"
+                        [nzLoading]="isForceDelete"
+                        nz-popconfirm
+                        nzPopconfirmTitle="Xóa Tạp Chí ?"
+                        (nzOnConfirm)="onForceDeleteMagazine(magazine)"
+                >
+                    <span nz-icon nzType="delete" nzTheme="outline"></span>
+                    Xóa
+                </button>
+                <button
+                        nz-button
+                        nzType="primary"
+                        nzDanger
+                        *ngIf="!magazine.deleted_at"
+                        [nzLoading]="isSoftDelete"
+                        nz-popconfirm
+                        nzPopconfirmTitle="Xóa Mềm ?"
+                        (nzOnConfirm)="onSoftDeleteMagazine(magazine)"
+                >
+                    <span nz-icon nzType="delete" nzTheme="outline"></span>
+                    Xóa Mềm
+                </button>
+                <button
+                        nz-button
+                        nzType="primary"
+                        nzDanger
+                        *ngIf="magazine.trangthai"
+                        [nzLoading]="isChangeStatus"
+                        nz-popconfirm
+                        nzPopconfirmTitle="Hủy Phê Duyệt ?"
+                        (nzOnConfirm)="onChangeStatusTapChi(magazine,false)"
+                >
+                    <span nz-icon nzType="close"  nzTheme="outline"></span>
+                    Hủy Phê Duyệt
+                </button>
+                <button
+                        nz-button
+                        nzType="primary"
+                        *ngIf="!magazine.trangthai"
+                        [nzLoading]="isChangeStatus"
+                        nz-popconfirm
+                        nzPopconfirmTitle="Phê Duyệt Tạp Chí ?"
+                        (nzOnConfirm)="onChangeStatusTapChi(magazine,true)"
+                >
+                    <span nz-icon nzType="check" nzTheme="outline"></span>
+                    Phê Duyệt
+                </button>
+            </div>
+        </div>
+        <div class="tw-space-y-[1rem]">
+            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
+                <h2 class="text-primary tw-text-3xl tw-text-center">Thông Tin Cơ Bản</h2>
+                <p><strong>Mã: </strong> {{magazine.id}}</p>
+                <p><strong>Tên Tạp Chí: </strong> {{magazine.name}}</p>
+                <p><strong>Trạng Thái: </strong>
+                    <span *ngIf="magazine?.trangthai === true" class="success">Đã Phê Duyệt</span>
+                    <span *ngIf="magazine?.trangthai === false" class="error">Chưa Phê Duyệt</span>
+                </p>
+                <p><strong>ISSN:</strong> {{magazine.issn}}</p>
+                <p><strong>PISSN:</strong> {{magazine.pissn}}</p>
+                <p><strong>EISSN:</strong> {{magazine.eissn}}</p>
+                <p><strong>Quốc Tế:</strong> {{magazine.quocte}}</p>
+                <p><strong>Địa Chỉ:</strong> {{magazine.address}}</p>
+                <p><strong>Người Thêm:</strong> <br>
+                    <strong class="tw-ml-[30px]"> + Mã: </strong>{{magazine.nguoithem?.username}} <br>
+                    <strong class="tw-ml-[30px]"> + Tên: </strong>{{magazine.nguoithem?.name}} <br>
+                    <strong class="tw-ml-[30px]"> + Email: </strong>{{magazine.nguoithem?.email}}
+                </p>
+            </div>
+            <div class="tw-my-[14px]">
+                <nz-divider ></nz-divider>
+            </div>
+            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
+                <h2 class="tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Đơn vị Chủ Quản</h2>
+                <ng-container *ngIf="magazine.donvichuquan">
+                    <p><strong>Mã Tổ Chức:</strong> {{magazine.donvichuquan.matochuc}}</p>
+                    <p><strong>Tên Tổ Chức:</strong> {{magazine.donvichuquan.tentochuc}}</p>
+                    <p><strong>Tên Tổ Chức [EN]:</strong> {{magazine.donvichuquan.tentochuc_en}}</p>
+                    <p><strong>Website:</strong> <a href="{{magazine.donvichuquan.website}}">Tại Đây</a></p>
+                    <p><strong>Số Điện Thoại:</strong> {{magazine.donvichuquan.dienthoai}}</p>
+                </ng-container>
+                <ng-container *ngIf="magazine.donvichuquan === null">
+                        <p><strong>Không Có</strong></p>
+                </ng-container>
+            </div>
+            <div class="tw-my-[14px]">
+                <nz-divider ></nz-divider>
+            </div>
+            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
+                <h2 class=" tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Tình Trạng Công Nhận Mới Nhất</h2>
+                <ng-container *ngIf="magazine.khongduoccongnhan">
+                    <app-recognize-card [recognize]="magazine.khongduoccongnhan"></app-recognize-card>
+                </ng-container>
+                <ng-container *ngIf="magazine.khongduoccongnhan === null">
+                    <p><strong>Không Có</strong></p>
+                </ng-container>
+            </div>
+            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
+                <h2 class=" tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Xếp Hạng Mới Nhất</h2>
+                <ng-container *ngIf="magazine.xephangtapchi">
+                    <app-magazine-rankcard [rank]="magazine.xephangtapchi"></app-magazine-rankcard>
+                </ng-container>
+                <ng-container *ngIf="magazine.khongduoccongnhan === null">
+                    <p><strong>Không Có</strong></p>
+                </ng-container>
+            </div>
+            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
+                <h2 class=" tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Xếp Hạng Mới Nhất</h2>
+                <ng-container *ngIf="magazine.tinhdiemtapchi">
+                    <app-score-card [score]="magazine.tinhdiemtapchi"></app-score-card>
+                </ng-container>
+                <ng-container *ngIf="magazine.khongduoccongnhan === null">
+                    <p><strong>Không Có</strong></p>
+                </ng-container>
+            </div>
+        </div>
+    </ng-template>
+</div>

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SanPham extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'san_phams';
 
 

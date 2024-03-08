@@ -16,7 +16,12 @@ class ChuyenNganhTinhDiemController extends Controller
     }
 
     public function getAllChuyenNganhTinhDiem(): Response{
-        $result[] = $this->chuyenNganhTinhDiemService->getAllChuyenNganhTinhDiem();
+        $result = $this->chuyenNganhTinhDiemService->getAllChuyenNganhTinhDiem();
+        return response()->json($result, 200);
+    }
+
+    public function getChuyeNganhTinhDiemByIdNganhTinhDiem(int $id): Response{
+        $result = $this->chuyenNganhTinhDiemService->getChuyeNganhTinhDiemByIdNganhTinhDiem($id);
         return response()->json($result, 200);
     }
 }

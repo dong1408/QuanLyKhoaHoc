@@ -7,5 +7,6 @@ use Illuminate\Http\Request;
 
 interface PhanLoaiTapChiService
 {
-    public function getPhanLoaiByTapChiId(int $id_tapchi): ResponseSuccess;        
+    public function getPhanLoaiByTapChiId(int $id_tapchi): ResponseSuccess;
+    public function getAllPhanLoaiTapChi(): ResponseSuccess;
 }
