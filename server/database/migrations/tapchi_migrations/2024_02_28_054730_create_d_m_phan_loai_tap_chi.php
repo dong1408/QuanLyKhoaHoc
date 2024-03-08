@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('ma')->unique();
             $table->string('ten')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

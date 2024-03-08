@@ -31,7 +31,6 @@ return new class extends Migration
             $table->foreign('id_hoithao')->references('id')->on('hoi_thao_khoa_hocs')->onDelete('cascade');
             $table->string('pages')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class NghiemThu extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $table = 'nghiem_thus';
 

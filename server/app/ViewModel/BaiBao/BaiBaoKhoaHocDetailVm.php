@@ -9,7 +9,7 @@ use App\ViewModel\TapChi\TapChiVm;
 class BaiBaoKhoaHocDetailVm
 {
     public int $id;
-    public SanPhamDetailVm $sanphamdetail;  // $id_sanpham
+    public SanPhamDetailVm $sanpham;  // $id_sanpham
     public ?string $doi;
     public ?string $url;
     public ?string $received;

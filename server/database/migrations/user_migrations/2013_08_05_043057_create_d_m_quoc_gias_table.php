@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('tenquocgia')->nullable();
             $table->string('tenquocgia_en')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

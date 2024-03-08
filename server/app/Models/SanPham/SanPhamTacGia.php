@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SanPhamTacGia extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+
     protected $table = 'san_pham_tac_gias';
 
     protected $fillable = [

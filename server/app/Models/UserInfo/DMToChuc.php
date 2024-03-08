@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DMToChuc extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+
     protected $table = 'd_m_to_chucs';
 
     // relation 1-n to user

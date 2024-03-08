@@ -42,7 +42,7 @@ return new class extends Migration
             //Thông tin trạng thái rà soát (Đang rà soát/Đã xác nhận)
             $table->string('trangthairasoat');
             $table->string('ngayrasoat');
-            $table->unsignedBigInteger('id_nguoirasoat');
+            $table->unsignedBigInteger('id_nguoirasoat')->nullable();
             $table->foreign('id_nguoirasoat')->references('id')->on('users')->onDelete('cascade');
             $table->string('diemquydoi');
             $table->string('gioquydoi');

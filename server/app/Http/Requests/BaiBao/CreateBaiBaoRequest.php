@@ -32,7 +32,7 @@ class CreateBaiBaoRequest extends FormRequest
                 Rule::exists('d_m_san_phams', 'id')
             ],
             "sanpham.tongsotacgia" => "bail|required|integer",
-            "sanpham.solanquydoi" => "bail|required|integer",
+            "sanpham.solandaquydoi" => "bail|required|integer",
             "sanpham.cosudungemailtruong" => "bail|nullable|boolean",
             "sanpham.cosudungemaildonvikhac" => "bail|nullable|boolean",
             "sanpham.cothongtintruong" => "bail|nullable|boolean",
@@ -78,16 +78,23 @@ class CreateBaiBaoRequest extends FormRequest
 
 
             // san pham _ tac gia
+            "sanphamtacgia.tacgias" => 'bail|array',
             "sanphamtacgia.tacgias.*" => [
                 "int",
                 Rule::exists("users", 'id')
             ],
+
+            "sanphamtacgia.vaitro" => 'bail|array',
             "sanphamtacgia.vaitros.*" => [
                 "int",
-                Rule::exists("d_m_vai_tro_tac_gias")
+                Rule::exists("d_m_vai_tro_tac_gias", 'id')
             ],
-            'sanphamtacgia.thutu.*' => 'bail|nullable|string',
-            'sanphamtacgia.tyledonggop.*' => 'bail|nullable|string'
+
+            "sanphamtacgia.thutu" => 'bail|array',
+            "sanphamtacgia.thutu.*" => 'bail|nullable|string',
+            
+            "sanphamtacgia.tyledonggop" => 'bail|array',
+            "sanphamtacgia.tyledonggop.*" => 'bail|nullable|string'
 
         ];
     }
@@ -107,8 +114,8 @@ class CreateBaiBaoRequest extends FormRequest
             'sanpham.id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
             'id_tapchi.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
             'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
-            'tacgias.*.exists' => 'Tác giả không tồn tại trên hệ thống',
-            'vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
+            'sanphamtacgia.tacgias.*.exists' => 'Tác giả không tồn tại trên hệ thống',
+            'sanphamtacgia.vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
         ];
     }
 }

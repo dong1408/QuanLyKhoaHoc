@@ -34,7 +34,6 @@ return new class extends Migration
             $table->string('number')->nullable(); // Số tạp chí
             $table->string('pages')->nullable(); // Các trang của bài viết trong tạp chí
             
-            $table->softDeletes();
             $table->timestamps();
         });
     }

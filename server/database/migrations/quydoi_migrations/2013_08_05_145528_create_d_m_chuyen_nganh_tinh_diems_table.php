@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('tenchuyennganh')->nullable();
             $table->string('tenchuyennganh_en')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

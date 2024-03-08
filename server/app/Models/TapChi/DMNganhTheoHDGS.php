@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DMNganhTheoHDGS extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+
     protected $table = 'd_m_nganh_theo_hdgs';
     protected $fillable = [
         'id',

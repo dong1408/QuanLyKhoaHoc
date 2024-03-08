@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('ketquaxet')->nullable();
             $table->string('thoigiangiahan')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -13,14 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('phan_loai_de_tais', function (Blueprint $table) {
-            $table->id();
-            $table->string('maloai')->nullable();
-            $table->string('tenloai')->unique();
-            $table->string('kinhphi')->nullable();
-            $table->text('mota')->nullable();
-
-            $table->timestamps();
+        Schema::table('d_m_vai_tro_tac_gias', function (Blueprint $table) {
+            $table->string('mavaitro')->unique();
         });
     }
 
@@ -31,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('phan_loai_de_tais');
+        Schema::table('d_m_vai_tro_tac_gias', function (Blueprint $table) {
+            $table->dropColumn('mavaitro');
+        });
     }
 };
