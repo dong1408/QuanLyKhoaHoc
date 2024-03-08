@@ -1,10 +1,10 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {ApiResponse} from "../types/api-response.type";
-import {environment} from "../../../environments/environment";
+import {ApiResponse} from "../../types/api-response.type";
+import {environment} from "../../../../environments/environment";
 import {catchError} from "rxjs";
-import {handleError} from "../../shared/commons/handler-error-http";
-import {TinhThanh} from "../types/tinh-thanh.type";
+import {handleError} from "../../../shared/commons/handler-error-http";
+import {TinhThanh} from "../../types/user-info/tinh-thanh.type";
 
 @Injectable({
     providedIn:"root"

@@ -5,18 +5,18 @@ import {
     UpdateKhongCongNhan,
     UpdateXepHang,
     XepHangTapChi
-} from "../../../core/types/tap-chi.type";
+} from "../../../core/types/tapchi/tap-chi.type";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {combineLatest, debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil, tap} from "rxjs";
 import {NzModalService} from "ng-zorro-antd/modal";
-import {TapChiService} from "../../../core/services/tap-chi.service";
+import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {LoadingService} from "../../../core/services/loading.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PagingService} from "../../../core/services/paging.service";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {PhanLoaiTapChiService} from "../../../core/services/phan-loai-tap-chi.service";
-import {PhanLoaiTapChi} from "../../../core/types/phan-loai-tap-chi.type";
+import {PhanLoaiTapChiService} from "../../../core/services/tapchi/phan-loai-tap-chi.service";
+import {PhanLoaiTapChi} from "../../../core/types/tapchi/phan-loai-tap-chi.type";
 import {validValuesValidator} from "../../../shared/validators/valid-value.validator";
 
 @Component({

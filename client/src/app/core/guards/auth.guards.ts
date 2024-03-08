@@ -2,7 +2,7 @@ import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from
 import {catchError, from, of, switchMap} from "rxjs";
 import {inject} from "@angular/core";
 import {LocalStorageService} from "../services/local-storage.service";
-import {AuthService} from "../services/auth.service";
+import {AuthService} from "../services/user/auth.service";
 import {ACCESS_TOKEN} from "../../shared/commons/constants";
 
 export const authGuards:CanActivateFn = (route:ActivatedRouteSnapshot,state:RouterStateSnapshot) => {

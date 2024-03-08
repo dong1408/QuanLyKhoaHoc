@@ -46,7 +46,7 @@ Route::group([
 
     // BaiBaoKhoaHoc
     Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
-    Route::get('baibaochoduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
+    Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
     Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']);
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao']);
     Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);

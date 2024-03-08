@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {MagazineRecognize, UpdateKhongCongNhan} from "../../../core/types/tap-chi.type";
+import {MagazineRecognize, UpdateKhongCongNhan} from "../../../core/types/tapchi/tap-chi.type";
 import {data} from "autoprefixer";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {TapChiService} from "../../../core/services/tap-chi.service";
+import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {LoadingService} from "../../../core/services/loading.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {combineLatest, debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil, tap} from "rxjs";

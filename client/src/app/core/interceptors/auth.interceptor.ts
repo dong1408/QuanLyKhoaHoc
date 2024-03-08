@@ -3,9 +3,9 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest}
 import {catchError, concatMap, Observable, throwError} from "rxjs";
 import { environment } from "src/environments/environment";
 import {LocalStorageService} from "../services/local-storage.service";
-import {AuthService} from "../services/auth.service";
+import {AuthService} from "../services/user/auth.service";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "../../shared/commons/constants";
-import {Token} from "../types/auth.type";
+import {Token} from "../types/user/auth.type";
 
 @Injectable({
     providedIn:"root"
