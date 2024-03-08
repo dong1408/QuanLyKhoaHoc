@@ -82,7 +82,7 @@
 </div>
 
 <div class="tw-space-y-[16px]">
-    <button nz-button nzType="primary" routerLink="/tap-chi">
+    <button nz-button nzType="primary" [routerLink]="['/tap-chi',this.id]">
         <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
     </button>
     <h1 class="text-primary tw-text-5xl">LỊCH SỬ TÍNH ĐIỂM TẠP CHÍ</h1>
@@ -96,19 +96,28 @@
     </div>
     <div class="tw-space-y-[10px]">
         <h2 class="primary tw-text-3xl tw-text-center">LỊCH SỬ</h2>
-        <ng-container *ngIf="tinhDiemTapChis.length > 0">
-            <div>
-                <app-score-card *ngFor="let card of tinhDiemTapChis" [score]="card"></app-score-card>
-            </div>
-            <div class="tw-text-right">
-                <nz-pagination [nzPageIndex]="this.pagingService.pageIndex$ | async" [nzTotal]="totalPage * 10"></nz-pagination>
-            </div>
-        </ng-container>
-        <ng-container *ngIf="tinhDiemTapChis.length < 1">
-            <div class="tw-text-center tw-mt-[7rem]">
-                <h1 class="text-primary tw-text-5xl">LỊCH SỬ TRỐNG</h1>
-            </div>
-        </ng-container>
+        <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+            <app-loading></app-loading>
+        </ng-template>
+        <ng-template #loaded>
+            <ng-container *ngIf="tinhDiemTapChis.length > 0">
+                <div>
+                    <app-score-card *ngFor="let card of tinhDiemTapChis" [score]="card"></app-score-card>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="tinhDiemTapChis.length < 1">
+                <div class="tw-text-center tw-mt-[7rem]">
+                    <h1 class="text-primary tw-text-5xl">LỊCH SỬ TRỐNG</h1>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="tinhDiemTapChis.length > 0">
+                <div class="tw-text-right">
+                    <nz-pagination [nzPageIndex]="this.pagingService.pageIndex$ | async" [nzTotal]="totalPage * 10"></nz-pagination>
+                </div>
+            </ng-container>
+
+        </ng-template>
+
     </div>
 </div>
 

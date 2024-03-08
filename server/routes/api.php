@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\NhaXuatBan\NhaXuatBanController;
+use App\Http\Controllers\Admin\TapChi\NganhTheoHDGSController;
 use App\Http\Controllers\Admin\TapChi\PhanLoaiTapChiController;
+use App\Http\Controllers\Admin\UserInfo\ToChucController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\BaiBao\BaiBaoKhoaHocController;
 use App\Http\Controllers\Admin\QuyDoi\ChuyenNganhTinhDiemController;
@@ -9,6 +12,7 @@ use App\Http\Controllers\Admin\TapChi\TapChiController;
 use App\Http\Controllers\Admin\UserInfo\QuocGiaController;
 use App\Http\Controllers\Admin\UserInfo\TinhThanhController;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
+use App\Models\NhaXuatBan\NhaXuatBan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -92,4 +96,13 @@ Route::group([
     // ============================== Phan Loai Tap Chi ================================= //
     Route::get('phanloaitapchi/{id}/tapchi', [PhanLoaiTapChiController::class, 'getPhanLoaiTapChiByIdTapChi']);
     Route::get('phanloaitapchi', [PhanLoaiTapChiController::class, 'getAllPhanLoaiTapChi']);
+
+    // ============================== HDGS ================================= //
+    Route::get('hdgs', [NganhTheoHDGSController::class, 'getAllHDGS']);
+
+    // ============================== HDGS ================================= //
+    Route::get('tochuc', [ToChucController::class, 'getAllToChuc']);
+
+    // ============================== Nha Xuat Ban ================================= //
+    Route::get('nhaxuatban', [NhaXuatBanController::class, 'getAllNhaXuatBan']);
 });

@@ -15,7 +15,7 @@ class TinhThanhServiceImpl implements TinhThanhService
         $result = [];
         $tinhThanhs = DMTinhThanh::all();
         foreach ($tinhThanhs as $tinhThanh) {
-            $result = Convert::getTinhThanhVm($tinhThanh);
+            $result[] = Convert::getTinhThanhVm($tinhThanh);
         }
         return new ResponseSuccess("Thành công", $result);
     }
@@ -30,7 +30,7 @@ class TinhThanhServiceImpl implements TinhThanhService
         $tinhThanhs = $quocGia->tinhThanhs;
         $result = [];
         foreach ($tinhThanhs as $tinhThanh) {
-            $result = Convert::getTinhThanhVm($tinhThanh);
+            $result[] = Convert::getTinhThanhVm($tinhThanh);
         }
         return new ResponseSuccess("Thành công", $result);
     }

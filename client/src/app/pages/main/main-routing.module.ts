@@ -13,6 +13,10 @@ const routes: Routes = [
           loadChildren: () => import('../magazine/magazine.module').then(m => m.MagazineModule)
       },
       {
+        path:"tap-chi/tao-moi",
+        loadChildren: () => import('../magazine/create/create.module').then(m => m.MagazineCreateModule)
+      },
+      {
         path:"tap-chi/cho-phe-duyet",
         loadChildren: () => import('../magazine/magazine-waiting/waiting.module').then(m => m.MagazineWaitingModule)
       },

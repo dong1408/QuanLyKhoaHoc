@@ -13,7 +13,7 @@ class QuocGiaServiceImpl implements QuocGiaService
         $result = [];
         $quocGias = DMQuocGia::all();
         foreach ($quocGias as $quocGia) {
-            $result = Convert::getQuocGiaVm($quocGia);
+            $result[] = Convert::getQuocGiaVm($quocGia);
         }
         return new ResponseSuccess("Thành công", $result);
     }

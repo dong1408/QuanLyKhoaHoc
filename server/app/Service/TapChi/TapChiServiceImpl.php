@@ -82,7 +82,7 @@ class TapChiServiceImpl implements TapChiService
                     ->orWhere('pissn', 'LIKE', '%' . $keysearch . '%')
                     ->orWhere('eissn', 'LIKE', '%' . $keysearch . '%');
             })->where(function ($query) {
-                $query->where('trangthai', true);
+                $query->where('trangthai', true)->orWhere('trangthai',null);
             })->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         }
         $result = [];
@@ -197,7 +197,7 @@ class TapChiServiceImpl implements TapChiService
         $result = [];
         $tinhDiemTapChis = TinhDiemTapChi::where('id_tapchi', '=', $id_tapchi)->orderBy('created_at', 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($tinhDiemTapChis as $tinhDiemTapChi) {
-            $result[] = Convert::getTinhDIemTapChiDetailVm($tinhDiemTapChi);
+            $result[] = Convert::getTinhDIemTapChiVm($tinhDiemTapChi);
         }
         $pagingResponse = new PagingResponse($tinhDiemTapChis->lastPage(), $tinhDiemTapChis->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
@@ -224,34 +224,9 @@ class TapChiServiceImpl implements TapChiService
                 'trangthai' => $validated['trangthai'],
                 'id_nguoithem' => auth('api')->user()->id,
             ]);
-            TapChiKhongCongNhan::create([
-                'id_tapchi' => $tapChi->id,
-                'khongduoccongnhan' => $validated['tapchikhongcongnhan']['khongduoccongnhan'],
-                'ghichu' => $validated['tapchikhongcongnhan']['ghichu'],
-                'id_nguoicapnhat' => auth('api')->user()->id,
-            ]);
-            XepHangTapChi::create([
-                'id_tapchi' => $tapChi->id,
-                'wos' => $validated['xephangtapchi']['wos'],
-                'if' => $validated['xephangtapchi']['if'],
-                'quartile' => $validated['xephangtapchi']['quartile'],
-                'abs' => $validated['xephangtapchi']['abs'],
-                'abcd' => $validated['xephangtapchi']['abcd'],
-                'aci' => $validated['xephangtapchi']['aci'],
-                'ghichu' => $validated['xephangtapchi']['ghichu'],
-                'id_user' => auth('api')->user()->id
-            ]);
-            TinhDiemTapChi::create([
-                'id_tapchi' => $tapChi->id,
-                'id_chuyennganhtinhdiem' => $validated['tinhdiemtapchi']['id_chuyennganhtinhdiem'],
-                'id_nganhtinhdiem' => $validated['tinhdiemtapchi']['id_nganhtinhdiem'],
-                'diem' => $validated['tinhdiemtapchi']['diem'],
-                'namtinhdiem' => $validated['tinhdiemtapchi']['namtinhdiem'],
-                'id_nguoicapnhat' => auth('api')->user()->id,
-                'ghichu' => $validated['tinhdiemtapchi']['ghichu']
-            ]);
-            $tapChi->dmPhanLoaiTapChis()->attach($validated['dmphanloaitapchi']);
-            $tapChi->dmNganhTheoHDGS()->attach($validated['dmnganhtheohdgs']);
+//            if($validated['dmnganhtheohdgs'] != null){
+//                $tapChi->dmNganhTheoHDGS()->attach($validated['dmnganhtheohdgs']);
+//            }
         });
         $result = Convert::getTapChiVm($tapChi);
         return new ResponseSuccess("Thành công", $result);
@@ -307,7 +282,6 @@ class TapChiServiceImpl implements TapChiService
             $tapChi->address = $validated['address'];
             $tapChi->id_address_city = $validated['id_address_city'];
             $tapChi->id_address_country = $validated['id_address_country'];
-            $tapChi->id_nguoithem = auth('api')->user()->id;
             $tapChi->save();
             $tapChi->dmPhanLoaiTapChis()->sync($validated['dmphanloaitapchi']);
             $tapChi->dmNganhTheoHDGS()->sync($validated['dmnganhtheohdgs']);
@@ -352,17 +326,24 @@ class TapChiServiceImpl implements TapChiService
 
         $validated = $request->validated();
 
-        $xepHangTapChi = XepHangTapChi::create([
-            'id_tapchi' => $tapChi->id,
-            'wos' => $validated['wos'],
-            'if' => $validated['if'],
-            'quartile' => $validated['quartile'],
-            'abs' => $validated['abs'],
-            'abcd' => $validated['abcd'],
-            'aci' => $validated['aci'],
-            'ghichu' => $validated['ghichu'],
-            'id_user' => auth('api')->user()->id,
-        ]);
+        $xepHangTapChi = null;
+        DB::transaction(function () use ($validated, &$xepHangTapChi,$tapChi) {
+            $xepHangTapChi = XepHangTapChi::create([
+                'id_tapchi' => $tapChi->id,
+                'wos' => $validated['wos'],
+                'if' => $validated['if'],
+                'quartile' => $validated['quartile'],
+                'abs' => $validated['abs'],
+                'abcd' => $validated['abcd'],
+                'aci' => $validated['aci'],
+                'ghichu' => $validated['ghichu'],
+                'id_user' => auth('api')->user()->id,
+            ]);
+            if($validated['dmphanloaitapchi'] != null){
+                $tapChi->dmPhanLoaiTapChis()->sync($validated['dmphanloaitapchi']);
+            }
+        });
+
         $result = Convert::getXepHangTapChiVm($xepHangTapChi);
         return new ResponseSuccess("Thành công", $result);
     }

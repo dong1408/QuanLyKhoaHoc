@@ -24,9 +24,7 @@ use App\Models\UserInfo\DMToChuc;
 use App\ViewModel\BaiBao\BaiBaoKhoaHocDetailVm;
 use App\ViewModel\BaiBao\BaiBaoKhoaHocVm;
 use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
-use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemDetailVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
-use App\ViewModel\QuyDoi\NganhTinhDiemDetailVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\SanPham\DMSanPhamVm;
 use App\ViewModel\SanPham\SanPhamDetailVm;
@@ -62,7 +60,7 @@ class Convert
         $a->name = $tapChi->name;
         $a->address = $tapChi->address;
         $a->trangthai = $tapChi->trangthai;
-        $a->khongduoccongnhan = $tapChi->tapChiKhongCongNhans()->latest()->first()->khongduoccongnhan;
+        $a->khongduoccongnhan = optional($tapChi->tapChiKhongCongNhans()->latest()->first())->khongduoccongnhan ?? null;
         if ($tapChi->nguoiThem == null) {
             $a->nguoithem = null;
         } else {
@@ -98,7 +96,7 @@ class Convert
         } else {
             $a->donvichuquan = Convert::getToChucVm($tapChi->donViChuQuan); // $id_donvichuquan -- ToChucVm
         }
-        $a->address = $tapChi->id;
+        $a->address = $tapChi->address;
         if (!$tapChi->tinhThanh) {
             $a->addresscity = null;
         } else {
@@ -109,7 +107,7 @@ class Convert
         } else {
             $a->addresscountry = Convert::getQuocGiaVm($tapChi->quocGia); // id_address_country -- QuocGiaVm
         }
-        $a->trangthai = $tapChi->id;
+        $a->trangthai = $tapChi->trangthai;
         if (!$tapChi->nguoiThem) {
             $a->nguoithem = null;
         } else {
@@ -118,17 +116,20 @@ class Convert
         $a->created_at = $tapChi->id;
         $a->updated_at = $tapChi->id;
 
-        $a->khongduoccongnhan = Convert::getTapChiKhongCongNhanVm($tapChi->tapChiKhongCongNhans()->latest()->first());
-
+        if ($tapChi->tapChiKhongCongNhans()->latest()->first() == null) {
+            $a->khongduoccongnhan = null;
+        } else {
+            $a->khongduoccongnhan = Convert::getTapChiKhongCongNhanVm($tapChi->tapChiKhongCongNhans()->latest()->first());
+        }
         if ($tapChi->xepHangTapChis()->latest()->first() == null) {
             $a->xephangtapchi = null;
         } else {
-            $a->xephangtapchi = Convert::getXepHangTapChiDetailVm($tapChi->xepHangTapChis()->latest()->first());
+            $a->xephangtapchi = Convert::getXepHangTapChiVm($tapChi->xepHangTapChis()->latest()->first());
         }
         if ($tapChi->tinhDiemTapChis()->latest()->first() == null) {
             $a->tinhdiemtapchi = null;
         } else {
-            $a->tinhdiemtapchi = Convert::getTinhDIemTapChiDetailVm($tapChi->tinhDiemTapChis()->latest()->first());
+            $a->tinhdiemtapchi = Convert::getTinhDIemTapChiVm($tapChi->tinhDiemTapChis()->latest()->first());
         }
 
         return $a;
@@ -163,22 +164,8 @@ class Convert
         $a->khongduoccongnhan = $tapChiKhongCongNhan->khongduoccongnhan;
         $a->created_at = $tapChiKhongCongNhan->created_at;
         $a->updated_at = $tapChiKhongCongNhan->updated_at;
-        return $a;
-    }
-
-    public static function getTapChiKhongCongNhanDetailVm(TapChiKhongCongNhan $tapChiKhongCongNhan): TapChiKhongCongNhanDetailVm
-    {
-        $a = new TapChiKhongCongNhanDetailVm();
-        $a->id = $tapChiKhongCongNhan->id;
-        $a->khongduoccongnhan = $tapChiKhongCongNhan->khongduoccongnhan;
+        $a->nguoicapnhat = Convert::getUserVm($tapChiKhongCongNhan->nguoicapnhat);
         $a->ghichu = $tapChiKhongCongNhan->ghichu;
-        if ($tapChiKhongCongNhan->nguoiCapNhat == null) {
-            $a->nguoicapnhat = null;
-        } else {
-            $a->nguoicapnhat = Convert::getUserVm($tapChiKhongCongNhan->nguoicapnhat); //
-        }
-        $a->created_at = $tapChiKhongCongNhan->created_at;
-        $a->updated_at = $tapChiKhongCongNhan->updated_at;
         return $a;
     }
 
@@ -186,17 +173,12 @@ class Convert
     {
         $a = new TinhDiemTapChiVm();
         $a->id = $tinhDiemTapChi->id;
+        $a->ghichu = $tinhDiemTapChi->ghichu;
         $a->diem = $tinhDiemTapChi->diem;
         $a->namtinhdiem = $tinhDiemTapChi->namtinhdiem;
         $a->created_at = $tinhDiemTapChi->created_at;
         $a->updated_at = $tinhDiemTapChi->updated_at;
-        return $a;
-    }
-
-    public static function getTinhDIemTapChiDetailVm(TinhDiemTapChi $tinhDiemTapChi): TinhDiemTapChiDetailVm
-    {
-        $a = new TinhDiemTapChiDetailVm();
-        $a->id = $tinhDiemTapChi->id;
+        $a->nguoicapnhat = Convert::getUserVm($tinhDiemTapChi->nguoicapnhat);
         if ($tinhDiemTapChi->nganhTinhDiem == null) {
             $a->nganhtinhdiem = null;
         } else {
@@ -207,16 +189,6 @@ class Convert
         } else {
             $a->chuyennganhtinhdiem = Convert::getChuyenNganhTinhDiemVm($tinhDiemTapChi->chuyenNganhTinhDiem);
         }
-        $a->diem = $tinhDiemTapChi->diem;
-        $a->namtinhdiem = $tinhDiemTapChi->namtinhdiem;
-        if ($tinhDiemTapChi->nguoiCapNhat == null) {
-            $a->nguoicapnhat = null;
-        } else {
-            $a->nguoicapnhat = Convert::getUserVm($tinhDiemTapChi->nguoiCapNhat);
-        }
-        $a->ghichu = $tinhDiemTapChi->ghichu;
-        $a->created_at = $tinhDiemTapChi->created_at;
-        $a->updated_at = $tinhDiemTapChi->updated_at;
         return $a;
     }
 
@@ -230,32 +202,16 @@ class Convert
         $a->abs = $xepHangTapChi->abs;
         $a->abcd = $xepHangTapChi->abcd;
         $a->aci = $xepHangTapChi->aci;
-        $a->created_at = $xepHangTapChi->created_at;
-        $a->updated_at = $xepHangTapChi->updated_at;
-        return $a;
-    }
-
-    public static function getXepHangTapChiDetailVm(XepHangTapChi $xepHangTapChi): XepHangTapChiDetailVm
-    {
-        $a = new XepHangTapChiDetailVm();
-        $a->id = $xepHangTapChi->id;
-        $a->wos = $xepHangTapChi->wos;
-        $a->if = $xepHangTapChi->if;
-        $a->quartile = $xepHangTapChi->quartile;
-        $a->abs = $xepHangTapChi->abs;
-        $a->abcd = $xepHangTapChi->abcd;
-        $a->aci = $xepHangTapChi->aci;
         $a->ghichu = $xepHangTapChi->ghichu;
-        if (!$xepHangTapChi->user) {
-            $a->user = null;
-        } else {
-            $a->user = Convert::getUserVm($xepHangTapChi->user);
-        }
         $a->created_at = $xepHangTapChi->created_at;
         $a->updated_at = $xepHangTapChi->updated_at;
+        if (!$xepHangTapChi->user) {
+            $a->nguoicapnhat = null;
+        } else {
+            $a->nguoicapnhat = Convert::getUserVm($xepHangTapChi->user);
+        }
         return $a;
     }
-
 
     // ========================= USER ============================= //
 
@@ -274,6 +230,12 @@ class Convert
         $a = new ToChucVm();
         $a->id = $dMToChuc->id;
         $a->tentochuc = $dMToChuc->tentochuc;
+        $a->created_at = $dMToChuc->created_at;
+        $a->dienthoai = $dMToChuc->dienthoai;
+        $a->matochuc = $dMToChuc->matochuc;
+        $a->tentochuc_en = $dMToChuc->tentochuc_en;
+        $a->updated_at = $dMToChuc->updated_at;
+        $a->website = $dMToChuc->website;
         return $a;
     }
 
@@ -519,18 +481,8 @@ class Convert
         $a->tennganhtinhdiem = $dMNganhTinhDiem->tennganhtinhdiem;
         $a->created_at = $dMNganhTinhDiem->created_at;
         $a->updated_at = $dMNganhTinhDiem->updated_at;
-        return $a;
-    }
-
-    public static function getNganhTinhDiemDetailVm(DMNganhTinhDiem $dMNganhTinhDiem): NganhTinhDiemDetailVm
-    {
-        $a = new NganhTinhDiemDetailVm();
-        $a->id = $dMNganhTinhDiem->id;
         $a->manganhtinhdiem = $dMNganhTinhDiem->manganhtinhdiem;
-        $a->tennganhtinhdiem = $dMNganhTinhDiem->tennganhtinhdiem;
         $a->tennganh_en = $dMNganhTinhDiem->tennganh_en;
-        $a->created_at = $dMNganhTinhDiem->created_at;
-        $a->updated_at = $dMNganhTinhDiem->updated_at;
         return $a;
     }
 
@@ -538,21 +490,6 @@ class Convert
     {
         $a = new ChuyenNganhTinhDiemVm();
         $a->id = $dmChuyenNganhTinhDiem->id;
-        $a->tenchuyennganh = $dmChuyenNganhTinhDiem->tenchuyennganh;
-        $a->created_at = $dmChuyenNganhTinhDiem->created_at;
-        $a->updated_at = $dmChuyenNganhTinhDiem->updated_at;
-        return $a;
-    }
-
-    public static function getChuyenNganhTinhDiemDetailVm(DMChuyenNganhTinhDiem $dmChuyenNganhTinhDiem): ChuyenNganhTinhDiemDetailVm
-    {
-        $a = new ChuyenNganhTinhDiemDetailVm();
-        $a->id = $dmChuyenNganhTinhDiem->id;
-        if ($dmChuyenNganhTinhDiem->nganhTinhDiem == null) {
-            $a->nganhtinhdiem = null;
-        } else {
-            $a->nganhtinhdiem = Convert::getNganhTinhDiemVm($dmChuyenNganhTinhDiem->nganhTinhDiem);
-        }
         $a->machuyennganh = $dmChuyenNganhTinhDiem->machuyennganh;
         $a->tenchuyennganh = $dmChuyenNganhTinhDiem->tenchuyennganh;
         $a->tenchuyennganh_en = $dmChuyenNganhTinhDiem->tenchuyennganh_en;
@@ -567,6 +504,9 @@ class Convert
         $a = new NhaXuatBanVm();
         $a->id = $nhaXuatBan->id;
         $a->name = $nhaXuatBan->name;
+        $a->quocte = $nhaXuatBan->quocte;
+        $a->isbn = $nhaXuatBan->isbn;
+        $a->website = $nhaXuatBan->website;
         return $a;
     }
 }

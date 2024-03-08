@@ -1,4 +1,7 @@
 export interface NhaXuatBan{
     id:number,
-    name:string
+    name:string,
+    isbn?:string,
+    website:string,
+    quocte:boolean
 }

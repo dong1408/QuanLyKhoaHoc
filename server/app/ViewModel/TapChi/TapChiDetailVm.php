@@ -3,6 +3,7 @@
 namespace App\ViewModel\TapChi;
 
 use App\Models\TapChi\TapChi;
+use App\Models\TapChi\XepHangTapChi;
 use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
@@ -34,7 +35,7 @@ class TapChiDetailVm
 
     public ?TapChiKhongCongNhanVm $khongduoccongnhan;
 
-    public ?XepHangTapChiDetailVm $xephangtapchi;
+    public ?XepHangTapChiVm $xephangtapchi;
 
-    public ?TinhDiemTapChiDetailVm $tinhdiemtapchi;
+    public ?TinhDiemTapChiVm $tinhdiemtapchi;
 }

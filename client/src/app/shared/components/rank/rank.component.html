@@ -2,17 +2,18 @@
     <h4>Ngày Cập Nhật : {{rank.created_at}}</h4>
     <p><strong>Mã:</strong> {{rank.id}}</p>
     <p><strong>Xếp Hạng:</strong> <br>
-        <strong class="tw-ml-[30px]"> + WoS: </strong>{{rank.wos ? rank.wos : 'Không có'}} <br>
-        <strong class="tw-ml-[30px]"> + Scopus: </strong>{{rank.quartile ? rank.quartile : 'Không có'}} <br>
-        <strong class="tw-ml-[30px]"> + ABS: </strong>{{rank.abs ? rank.abs : 'Không có'}}<br>
-        <strong class="tw-ml-[30px]"> + ABCD: </strong>{{rank.abcd ? rank.abcd : 'Không có'}}<br>
-        <strong class="tw-ml-[30px]"> + ACI: </strong>{{rank.aci ? rank.aci : 'Không có'}}
+        <strong class="tw-ml-[30px]"> + Chỉ Số IF: </strong> <strong class="primary">{{rank.if ? rank.if : 'Không có'}}</strong> <br>
+        <strong class="tw-ml-[30px]"> + WoS: </strong> <strong class="primary">{{rank.wos ? rank.wos : 'Không có'}}</strong> <br>
+        <strong class="tw-ml-[30px]"> + Scopus: </strong> <strong class="primary">{{rank.quartile ? rank.quartile : 'Không có'}}</strong> <br>
+        <strong class="tw-ml-[30px]"> + ABS: </strong> <strong class="primary">{{rank.abs ? rank.abs : 'Không có'}}</strong><br>
+        <strong class="tw-ml-[30px]"> + ABCD: </strong> <strong class="primary">{{rank.abcd ? rank.abcd : 'Không có'}}</strong><br>
+        <strong class="tw-ml-[30px]"> + ACI: </strong> <strong class="primary">{{rank.aci ? rank.aci : 'Không có'}}</strong>
 
     </p>
     <p><strong>Người cập nhật:</strong> <br>
-        <strong class="tw-ml-[30px]"> + Mã: </strong>{{rank.user?.username}} <br>
-        <strong class="tw-ml-[30px]"> + Tên: </strong>{{rank.user?.name}} <br>
-        <strong class="tw-ml-[30px]"> + Email: </strong>{{rank.user?.email}}
+        <strong class="tw-ml-[30px]"> + Mã: </strong>{{rank.nguoicapnhat.username}} <br>
+        <strong class="tw-ml-[30px]"> + Tên: </strong>{{rank.nguoicapnhat.name}} <br>
+        <strong class="tw-ml-[30px]"> + Email: </strong>{{rank.nguoicapnhat.email}}
     </p>
 
     <p><strong>Ghi chú:</strong> {{rank.ghichu ? rank.ghichu : 'Không có ghi chú nào'}}</p>

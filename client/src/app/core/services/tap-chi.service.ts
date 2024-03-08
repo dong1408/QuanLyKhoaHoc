@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiResponse, PagingResponse} from "../types/api-response.type";
 import {
-    ChiTietTapChi,
+    ChiTietTapChi, CreateTapChi,
     Magazine,
     MagazineRecognize,
     TinhDiemTapChi, UpdateKhongCongNhan,
@@ -119,8 +119,8 @@ export class TapChiService{
     }
 
     softDeleteTapChi(id:number){
-        return this.http.delete<ApiResponse<Boolean>>(
-            `${environment.apiUrl}/tapchi/${id}`
+        return this.http.patch<ApiResponse<Boolean>>(
+            `${environment.apiUrl}/tapchi/${id}/delete`,null
         ).pipe(
             catchError(handleError)
         )
@@ -138,6 +138,15 @@ export class TapChiService{
         return this.http.patch<ApiResponse<Boolean>>(
             `${environment.apiUrl}/tapchi/${id}/restore`,
             null
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    createTapChi(data:CreateTapChi){
+        return this.http.post<ApiResponse<Magazine>>(
+            `${environment.apiUrl}/tapchi`,
+            data
         ).pipe(
             catchError(handleError)
         )
