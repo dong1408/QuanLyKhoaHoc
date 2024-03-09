@@ -1,18 +1,18 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NzModalService} from "ng-zorro-antd/modal";
-import {MagazineRecognize, TinhDiemTapChi, UpdateTinhDiem} from "../../../core/types/tap-chi.type";
+import {MagazineRecognize, TinhDiemTapChi, UpdateTinhDiem} from "../../../core/types/tapchi/tap-chi.type";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
 import {LoadingService} from "../../../core/services/loading.service";
-import {TapChiService} from "../../../core/services/tap-chi.service";
+import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PagingService} from "../../../core/services/paging.service";
-import {NganhTinhDiem} from "../../../core/types/nganh-tinh-diem.type";
-import {ChuyenNganhTinhDiem} from "../../../core/types/chuyen-nganh-tinh-diem.type";
+import {NganhTinhDiem} from "../../../core/types/quydoi/nganh-tinh-diem.type";
+import {ChuyenNganhTinhDiem} from "../../../core/types/quydoi/chuyen-nganh-tinh-diem.type";
 import {ActivatedRoute, Router} from "@angular/router";
 import {combineLatest, debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil, tap} from "rxjs";
-import {NganhTinhDiemService} from "../../../core/services/nganh-tinh-diem.service";
-import {ChuyenNganhTinhDiemService} from "../../../core/services/chuyen-nganh-tinh-diem.service";
+import {NganhTinhDiemService} from "../../../core/services/quydoi/nganh-tinh-diem.service";
+import {ChuyenNganhTinhDiemService} from "../../../core/services/quydoi/chuyen-nganh-tinh-diem.service";
 
 @Component({
     selector:'app-magazine-score',

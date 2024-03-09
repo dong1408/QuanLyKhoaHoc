@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Magazine, UpdateTrangThaiTapChi} from "../../../core/types/tap-chi.type";
+import {Magazine, UpdateTrangThaiTapChi} from "../../../core/types/tapchi/tap-chi.type";
 import {
     combineLatest,
     debounceTime,
@@ -13,7 +13,7 @@ import {
 } from "rxjs";
 import {PagingService} from "../../../core/services/paging.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {TapChiService} from "../../../core/services/tap-chi.service";
+import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({

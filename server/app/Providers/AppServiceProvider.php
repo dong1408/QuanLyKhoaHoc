@@ -13,6 +13,8 @@ use App\Service\QuyDoi\ChuyenNganhTinhDiemService;
 use App\Service\QuyDoi\ChuyenNganhTinhDiemServiceImpl;
 use App\Service\QuyDoi\NganhTinhDiemService;
 use App\Service\QuyDoi\NganhTinhDiemServiceImpl;
+use App\Service\SanPham\DMSanPhamService;
+use App\Service\SanPham\DMSanPhamServiceImpl;
 use App\Service\SanPham\VaiTroTacGiaService;
 use App\Service\SanPham\VaiTroTacGiaServiceImpl;
 use App\Service\TapChi\PhanLoaiTapChiService;
@@ -21,6 +23,8 @@ use App\Service\TapChi\TapChiService;
 use App\Service\TapChi\TapChiServiceImpl;
 use App\Service\TapChi\TheoHDGSService;
 use App\Service\TapChi\TheoHDGSServiceImpl;
+use App\Service\User\UserService;
+use App\Service\User\UserServiceImpl;
 use App\Service\UserInfo\QuocGiaService;
 use App\Service\UserInfo\QuocGiaServiceImpl;
 use App\Service\UserInfo\TinhThanhService;
@@ -48,9 +52,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ChuyenNganhTinhDiemService::class, ChuyenNganhTinhDiemServiceImpl::class);
         $this->app->bind(BaiBaoService::class, BaiBaoServiceImpl::class);
         $this->app->bind(VaiTroTacGiaService::class, VaiTroTacGiaServiceImpl::class);
-        $this->app->bind(TheoHDGSService::class,TheoHDGSServiceImpl::class);
-        $this->app->bind(ToChucService::class,ToChucServiceImpl::class);
-        $this->app->bind(NhaXuatBanService::class,NhaXuatBanServiceImpl::class);
+        $this->app->bind(TheoHDGSService::class, TheoHDGSServiceImpl::class);
+        $this->app->bind(ToChucService::class, ToChucServiceImpl::class);
+        $this->app->bind(NhaXuatBanService::class, NhaXuatBanServiceImpl::class);
+        $this->app->bind(DMSanPhamService::class, DMSanPhamServiceImpl::class);
+        $this->app->bind(UserService::class, UserServiceImpl::class);
     }
     /**
      * Bootstrap any application services.

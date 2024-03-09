@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core";
 import {BehaviorSubject, catchError, Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {User} from "../types/user.type";
-import {ApiResponse} from "../types/api-response.type";
-import {environment} from "../../../environments/environment";
-import {handleError} from "../../shared/commons/handler-error-http";
-import {Login, Token} from "../types/auth.type";
+import {User} from "../../types/user/user.type";
+import {ApiResponse} from "../../types/api-response.type";
+import {environment} from "../../../../environments/environment";
+import {handleError} from "../../../shared/commons/handler-error-http";
+import {Login, Token} from "../../types/user/auth.type";
 
 @Injectable({
     providedIn:"root"

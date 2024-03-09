@@ -24,6 +24,7 @@ class BaiBaoKhoaHocDetailVm
     public ?string $pages;
     public string $created_at;
     public string $updated_at;
+    public ?string $deleted_at;
 
     public $sanpham_tacgias = array();
 

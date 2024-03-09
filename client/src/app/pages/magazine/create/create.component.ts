@@ -4,18 +4,18 @@ import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {forkJoin, Subject, takeUntil} from "rxjs";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {HoiDongGiaoSu} from "../../../core/types/hoi-dong-giao-su.type";
-import {TinhThanh} from "../../../core/types/tinh-thanh.type";
-import {QuocGia} from "../../../core/types/quoc-gia.type";
-import {ToChuc} from "../../../core/types/to-chuc.type";
-import {HoiDongGiaoSuService} from "../../../core/services/hoi-dong-giao-su.service";
-import {ToChucService} from "../../../core/services/to-chuc.service";
-import {TinhThanhService} from "../../../core/services/tinh-thanh.service";
-import {QuocGiaService} from "../../../core/services/quoc-gia.service";
-import {NhaXuatBan} from "../../../core/types/nha-xuat-ban.type";
-import {NhaXuatBanService} from "../../../core/services/nha-xuat-ban.service";
-import {CreateTapChi} from "../../../core/types/tap-chi.type";
-import {TapChiService} from "../../../core/services/tap-chi.service";
+import {HoiDongGiaoSu} from "../../../core/types/tapchi/hoi-dong-giao-su.type";
+import {TinhThanh} from "../../../core/types/user-info/tinh-thanh.type";
+import {QuocGia} from "../../../core/types/user-info/quoc-gia.type";
+import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
+import {HoiDongGiaoSuService} from "../../../core/services/tapchi/hoi-dong-giao-su.service";
+import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
+import {TinhThanhService} from "../../../core/services/user-info/tinh-thanh.service";
+import {QuocGiaService} from "../../../core/services/user-info/quoc-gia.service";
+import {NhaXuatBan} from "../../../core/types/nhaxuatban/nha-xuat-ban.type";
+import {NhaXuatBanService} from "../../../core/services/nhaxuatban/nha-xuat-ban.service";
+import {CreateTapChi} from "../../../core/types/tapchi/tap-chi.type";
+import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 
 @Component({
     selector:"app-magazine-create",

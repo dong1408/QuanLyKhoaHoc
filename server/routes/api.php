@@ -8,8 +8,10 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\BaiBao\BaiBaoKhoaHocController;
 use App\Http\Controllers\Admin\QuyDoi\ChuyenNganhTinhDiemController;
 use App\Http\Controllers\Admin\QuyDoi\NganhTinhDiemController;
+use App\Http\Controllers\Admin\SanPham\DMSanPhamController;
 use App\Http\Controllers\Admin\SanPham\VaiTroTacGiaController;
 use App\Http\Controllers\Admin\TapChi\TapChiController;
+use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Admin\UserInfo\QuocGiaController;
 use App\Http\Controllers\Admin\UserInfo\TinhThanhController;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
@@ -44,23 +46,33 @@ Route::group([
     Route::post('auth/refreshToken', [AuthController::class, 'refreshToken']);
     Route::get('auth/getMe', [AuthController::class, 'getMe']);
 
+    // User
+    Route::get('user', [UserController::class, 'getAllUser']);
+
+
     // BaiBaoKhoaHoc
     Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
-    Route::get('baibaochoduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
+    Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
     Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']);
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao']);
-    Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);
     Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham']);
-    // Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);
+    Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);
+    Route::patch('baibao/{id}/sanphamtacgia', [BaiBaoKhoaHocController::class, 'updateSanPhamTacGia']);
+    Route::patch('baibao/{id}/fileminhchung', [BaiBaoKhoaHocController::class, 'updateFileMinhChung']);
+    Route::patch('baibao/{id}/trangthairasoat', [BaiBaoKhoaHocController::class, 'updateTrangThaiRaSoatBaiBao']);
     Route::patch('baibao/{id}/delete', [BaiBaoKhoaHocController::class, 'deleteBaiBao']);
     Route::patch('baibao/{id}/restore', [BaiBaoKhoaHocController::class, 'restoreBaiBao']);
     Route::delete('baibao/{id}/force', [BaiBaoKhoaHocController::class, 'forceDeleteBaiBao']);
 
-    Route::post('baibao/test', [BaiBaoKhoaHocController::class, 'test']);
+
+    // SanPham
+    Route::get('dmsanpham', [DMSanPhamController::class, 'getDmSanPham']);
+
 
     // VaiTroTacGia
     Route::get('vaitro/baibao', [VaiTroTacGiaController::class, 'getVaiTroOfBaiBao']);
     Route::get('vaitro/detai', [VaiTroTacGiaController::class, 'getVaiTroOfDeTai']);
+
 
     // TapChi
     Route::get('tapchi', [TapChiController::class, 'getAllTapChi']);
@@ -71,29 +83,31 @@ Route::group([
     Route::get('tapchi/{id}/xephang', [TapChiController::class, 'getLichSuXepHangTapChi']);
     Route::get('tapchi/{id}/tinhdiem', [TapChiController::class, 'getLichSuTinhDiemTapChi']);
     Route::get('tapchi/{id}/detail', [TapChiController::class, 'getDetailTapChi']);
-
     Route::post('tapchi', [TapChiController::class, 'createTapChi']);
-
     Route::patch('tapchi/{id}/trangthai', [TapChiController::class, 'updateTrangThaiTapChi']);
     Route::patch('tapchi/{id}', [TapChiController::class, 'updateTapChi']);
     Route::post('tapchi/{id}/khongcongnhan', [TapChiController::class, 'updateKhongCongNhanTapChi']);
     Route::post('tapchi/{id}/xephang', [TapChiController::class, 'updateXepHangTapChi']);
     Route::post('tapchi/{id}/tinhdiem', [TapChiController::class, 'updateTinhDiemTapChi']);
-
     Route::patch('tapchi/{id}/delete', [TapChiController::class, 'deleteTapChi']);
     Route::patch('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
     Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
 
+
+
     // =============================== UserInfo ============================================== //
     // Quoc Gia
     Route::get('quocgia', [QuocGiaController::class, 'getAllQuocGia']);
+
     // Tinh Thanh
     Route::get('tinhthanh', [TinhThanhController::class, 'getAllTinhThanh']);
     Route::get('tinhthanh/{id}/quocgia', [TinhThanhController::class, 'getAllTinhThanhByIdQuocGia']);
 
 
+
     // ============================== Nganh Tinh Diem ======================================== //
     Route::get('nganhtinhdiem', [NganhTinhDiemController::class, 'getAllNganhTinhDiem']);
+
 
 
     // ============================== Chuyen Nganh Tinh Diem ================================= //

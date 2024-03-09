@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from "./core/services/auth.service";
+import {AuthService} from "./core/services/user/auth.service";
 import {LocalStorageService} from "./core/services/local-storage.service";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "./shared/commons/constants";
 import {NzNotificationService} from "ng-zorro-antd/notification";

@@ -1,9 +1,9 @@
-import {User} from "./user.type";
-import {NganhTinhDiem} from "./nganh-tinh-diem.type";
-import {ChuyenNganhTinhDiem} from "./chuyen-nganh-tinh-diem.type";
-import {ToChuc} from "./to-chuc.type";
+import {User} from "../user/user.type";
+import {NganhTinhDiem} from "../quydoi/nganh-tinh-diem.type";
+import {ChuyenNganhTinhDiem} from "../quydoi/chuyen-nganh-tinh-diem.type";
+import {ToChuc} from "../user-info/to-chuc.type";
 import {Validators} from "@angular/forms";
-import {noWhiteSpaceValidator} from "../../shared/validators/no-white-space.validator";
+import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
 
 export interface Magazine{
     id:number,

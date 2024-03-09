@@ -27,14 +27,14 @@ class UpdateSanPhamRequest extends FormRequest
     {
         return [
             'id' => [
-                'required',
-                'exists:san_phams,id',
+                "bail", "required", "integer",
+                Rule::exists('san_phams', 'id')
             ],
-            "tensanpham" => [ // từ từ, m có add cái trường mavaitro chưa , add roi
+            "tensanpham" => [
                 "bail", "required",
                 Rule::unique('san_phams')->ignore(Route::input('id'), 'id')
-            ], 
-           "id_loaisanpham" => [
+            ],
+            "id_loaisanpham" => [
                 "bail", "integer",
                 Rule::exists('d_m_san_phams', 'id')
             ],
@@ -46,21 +46,16 @@ class UpdateSanPhamRequest extends FormRequest
             "cothongtindonvikhac" => "bail|nullable|boolean",
             "id_thongtinnoikhac" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chuc', 'id')
+                Rule::exists('d_m_to_chucs', 'id')
             ],
             "conhantaitro" => "bail|nullable|boolean",
             "id_donvitaitro" => [
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
+            "chitietdonvitaitro" => "bail|nullable|string",
             "ngaykekhai" => "bail|required|string",
             "id_nguoikekhai" => [
-                "bail", "required", "integer",
-                Rule::exists('users', 'id')
-            ],
-            "trangthairasoat" => "bail|required|string",
-            "ngayrasoat" => "bail|required|string",
-            "id_nguoirasoat" => [
                 "bail", "required", "integer",
                 Rule::exists('users', 'id')
             ],

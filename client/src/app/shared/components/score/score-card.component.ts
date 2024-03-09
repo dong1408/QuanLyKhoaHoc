@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {TinhDiemTapChi} from "../../../core/types/tap-chi.type";
+import {TinhDiemTapChi} from "../../../core/types/tapchi/tap-chi.type";
 
 @Component({
     selector:'app-score-card',

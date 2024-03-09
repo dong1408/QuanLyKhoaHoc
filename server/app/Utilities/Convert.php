@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use App\Models\BaiBao\BaiBaoKhoaHoc;
+use App\Models\FileMinhChungSanPham;
 use App\Models\NhaXuatBan\NhaXuatBan;
 use App\Models\TapChi\DMNganhTheoHSGS;
 use App\Models\TapChi\DMPhanLoaiTapChi;
@@ -27,6 +28,7 @@ use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\SanPham\DMSanPhamVm;
+use App\ViewModel\SanPham\FileMinhChungSanPhamVm;
 use App\ViewModel\SanPham\SanPhamDetailVm;
 use App\ViewModel\SanPham\SanPhamTacGiaVm;
 use App\ViewModel\SanPham\SanPhamVm;
@@ -364,6 +366,11 @@ class Convert
         $a->thongtinchitiet = $sanPham->thongtinchitiet;
         $a->capsanpham = $sanPham->capsanpham;
         $a->thoidiemcongbohoanthanh = $sanPham->thoidiemcongbohoanthanh;
+        if ($sanPham->fileMinhChung == null) {
+            $a->fileMinhChungSanPham = null;
+        } else {
+            $a->fileMinhChungSanPham = $sanPham->fileMinhChung;
+        }
         $a->created_at = $sanPham->created_at;
         $a->updated_at = $sanPham->updated_at;
 
@@ -378,6 +385,9 @@ class Convert
         $a = new VaiTroTacGiaVm();
         $a->id = $dMVaiTroTacGia->id;
         $a->tenvaitro = $dMVaiTroTacGia->tenvaitro;
+        $a->tenvaitro_en = $dMVaiTroTacGia->tenvaitro_en ?? null;
+        $a->mavaitro = $dMVaiTroTacGia->mavaitro;
+        $a->role = $dMVaiTroTacGia->role;
         return $a;
     }
 
@@ -385,23 +395,11 @@ class Convert
     {
         $a = new SanPhamTacGiaVm();
         $a->id = $sanPhaMTacGia->id;
-        if ($sanPhaMTacGia->sanPham == null) {
-            $sanPhaMTacGia = null;
-        } else {
-            $a->sanpham = Convert::getSanPhamVm($sanPhaMTacGia->sanPham);
-        }
-        if ($sanPhaMTacGia->tacGia == null) {
-            $a->tacgia = null;
-        } else {
-            $a->tacgia = Convert::getUserVm($sanPhaMTacGia->tacGia);
-        }
-        if ($sanPhaMTacGia->vaiTroTacGia == null) {
-            $a->vaitrotacgia = null;
-        } else {
-            $a->vaitrotacgia = Convert::getVaiTroTacGiaVm($sanPhaMTacGia->vaiTroTacGia);
-        }
-        $a->thutu = $sanPhaMTacGia->thutu;
-        $a->tyledonggop = $sanPhaMTacGia->tyledonggop;
+        $a->tacgia = Convert::getUserVm($sanPhaMTacGia->tacGia);
+        $a->vaitrotacgia = Convert::getVaiTroTacGiaVm($sanPhaMTacGia->vaiTroTacGia);
+
+        $a->thutu = $sanPhaMTacGia->thutu ?? null;
+        $a->tyledonggop = $sanPhaMTacGia->tyledonggop  ?? null;
         $a->created_at = $sanPhaMTacGia->created_at;
         $a->updated_at = $sanPhaMTacGia->updated_at;
 
@@ -409,32 +407,50 @@ class Convert
     }
 
 
+    public static function getFileMinhChungSanPhamVm(FileMinhChungSanPham $fileMinhChungSanPham)
+    {
+        $a = new FileMinhChungSanPhamVm();
+        $a->id = $fileMinhChungSanPham->id;
+        $a->loaiminhchung = $fileMinhChungSanPham->loaiminhchung;
+        $a->url = $fileMinhChungSanPham->url;
+        $a->created_at = $fileMinhChungSanPham->created_at;
+        $a->updated_at = $fileMinhChungSanPham->deleted_at;
+        return $a;
+    }
+
+
+
     // ========================= BAI BAO ============================= //
 
-    public static function getBaiBaoKhoaHocVm(BaiBaoKhoaHoc $baiBaoKhoaHoc)
+    public static function getBaiBaoKhoaHocVm(SanPham $sanPham)
     {
         $a = new BaiBaoKhoaHocVm();
-        $a->id = $baiBaoKhoaHoc->id;
-        if ($baiBaoKhoaHoc->sanPham == null) {
-            $a->tensanpham = null;
-            $a->id_sanpham = null;
-        } else {
-            $a->id_sanpham = $baiBaoKhoaHoc->sanPham->id;
-            $a->tensanpham = $baiBaoKhoaHoc->sanPham->tensanpham;
-        }
-        $a->keywords = $baiBaoKhoaHoc->keyword;
-        if ($baiBaoKhoaHoc->tapChi == null) {
-            $a->tentapchi = null;
-        } else {
-            $a->tentapchi = $baiBaoKhoaHoc->tapChi->name;
-        }
-        $a->volume = $baiBaoKhoaHoc->volume;
-        $a->issue = $baiBaoKhoaHoc->issue;
-        $a->number = $baiBaoKhoaHoc->number;
-        $a->pages = $baiBaoKhoaHoc->pages;
-        $a->created_at = $baiBaoKhoaHoc->created_at;
-        
-        $a->updated_at = $baiBaoKhoaHoc->updated_at;
+        $a->id = $sanPham->baiBao->id;
+        // if ($baiBaoKhoaHoc->sanPham == null) {
+        //     $a->tensanpham = null;
+        //     $a->id_sanpham = null;
+        // } else {
+        //     $a->id_sanpham = $baiBaoKhoaHoc->sanPham->id;
+        //     $a->tensanpham = $baiBaoKhoaHoc->sanPham->tensanpham;
+        // }
+        $a->id_sanpham = $sanPham->id;
+        $a->tensanpham = $sanPham->tensanpham;
+        $a->keywords = $sanPham->baiBao->keyword;
+        // if ($baiBaoKhoaHoc->tapChi == null) {
+        //     $a->tentapchi = null;
+        // } else {
+        //     $a->tentapchi = $baiBaoKhoaHoc->tapChi->name;
+        // }        
+        $a->tentapchi = $sanPham->baiBao->tapChi == null ? $a->tentapchi = null : $sanPham->baiBao->tapChi->name;
+        $a->volume = $sanPham->baiBao->volume;
+        $a->issue = $sanPham->baiBao->issue;
+        $a->number = $sanPham->baiBao->number;
+        $a->pages = $sanPham->baiBao->pages;
+        $a->trangthairasoat = $sanPham->trangthairasoat;
+        $a->deleted_at = $sanPham->deleted_at;
+        $a->created_at = $sanPham->created_at;
+
+        // $a->updated_at = $baiBaoKhoaHoc->updated_at;
 
         return $a;
     }
@@ -448,22 +464,23 @@ class Convert
         } else {
             $a->sanpham = Convert::getSanPhamDetailVm($baiBaoKhoaHoc->sanPham);
         }
-        $a->doi = $baiBaoKhoaHoc->doi;
-        $a->url = $baiBaoKhoaHoc->url;
-        $a->received = $baiBaoKhoaHoc->received;
-        $a->accepted = $baiBaoKhoaHoc->accepted;
-        $a->published = $baiBaoKhoaHoc->published;
-        $a->abstract = $baiBaoKhoaHoc->abstract;
-        $a->keywords = $baiBaoKhoaHoc->keywords;
+        $a->doi = $baiBaoKhoaHoc->doi ?? null;
+        $a->url = $baiBaoKhoaHoc->url ?? null;
+        $a->received = $baiBaoKhoaHoc->received ?? null;
+        $a->accepted = $baiBaoKhoaHoc->accepted ?? null;
+        $a->published = $baiBaoKhoaHoc->published ?? null;
+        $a->abstract = $baiBaoKhoaHoc->abstract ?? null;
+        $a->keywords = $baiBaoKhoaHoc->keywords ?? null;
         if ($baiBaoKhoaHoc->tapChi == null) {
             $a->tapchi = null;
         } else {
             $a->tapchi = Convert::getTapChiVm($baiBaoKhoaHoc->tapChi);
         }
-        $a->volume = $baiBaoKhoaHoc->volume;
-        $a->issue = $baiBaoKhoaHoc->issue;
-        $a->number = $baiBaoKhoaHoc->number;
-        $a->pages = $baiBaoKhoaHoc->pages;
+        $a->volume = $baiBaoKhoaHoc->volume ?? null;
+        $a->issue = $baiBaoKhoaHoc->issue ?? null;
+        $a->number = $baiBaoKhoaHoc->number ?? null;
+        $a->pages = $baiBaoKhoaHoc->pages ?? null;
+        $a->deleted_at = $baiBaoKhoaHoc->sanPham->deleted_at ?? null;
         $a->created_at = $baiBaoKhoaHoc->created_at;
         $a->updated_at = $baiBaoKhoaHoc->updated_at;
 

@@ -2,13 +2,13 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {FormBuilder} from "@angular/forms";
 import {LoadingService} from "../../../core/services/loading.service";
-import {TapChiService} from "../../../core/services/tap-chi.service";
+import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {ActivatedRoute, Router} from "@angular/router";
-import {NganhTinhDiemService} from "../../../core/services/nganh-tinh-diem.service";
-import {ChuyenNganhTinhDiemService} from "../../../core/services/chuyen-nganh-tinh-diem.service";
+import {NganhTinhDiemService} from "../../../core/services/quydoi/nganh-tinh-diem.service";
+import {ChuyenNganhTinhDiemService} from "../../../core/services/quydoi/chuyen-nganh-tinh-diem.service";
 import {Subject, takeUntil} from "rxjs";
-import {ChiTietTapChi, Magazine, UpdateTrangThaiTapChi} from "../../../core/types/tap-chi.type";
+import {ChiTietTapChi, Magazine, UpdateTrangThaiTapChi} from "../../../core/types/tapchi/tap-chi.type";
 
 @Component({
     selector:'app-magazine-detail',

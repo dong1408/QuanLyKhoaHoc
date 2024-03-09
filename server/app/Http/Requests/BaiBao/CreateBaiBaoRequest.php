@@ -39,20 +39,19 @@ class CreateBaiBaoRequest extends FormRequest
             "sanpham.cothongtindonvikhac" => "bail|nullable|boolean",
             "sanpham.id_thongtinnoikhac" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chuc', 'id')
+                Rule::exists('d_m_to_chucs', 'id')
             ],
             "sanpham.conhantaitro" => "bail|nullable|boolean",
             "sanpham.id_donvitaitro" => [
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
+            "chitietdonvitaitro" => "bail|nullable|string",
             "sanpham.ngaykekhai" => "bail|required|string",
             "sanpham.id_nguoikekhai" => [
                 "bail", "required", "integer",
                 Rule::exists('users', 'id')
             ],
-            "sanpham.trangthairasoat" => "bail|required|string",
-            "sanpham.ngayrasoat" => "bail|required|string",
             "sanpham.diemquydoi" => "bail|required|string",
             "sanpham.gioquydoi" => "bail|required|string",
             "sanpham.thongtinchitiet" => "bail|required|string",
@@ -77,25 +76,22 @@ class CreateBaiBaoRequest extends FormRequest
             "pages" => "bail|nullable|string",
 
 
-            // san pham _ tac gia
-            "sanphamtacgia.tacgias" => 'bail|array',
-            "sanphamtacgia.tacgias.*" => [
-                "int",
-                Rule::exists("users", 'id')
+            // // san pham _ tac gia            
+            "sanpham_tacgia" => "bail|array",
+            "sanpham_tacgia.*.id_tacgia" => [
+                "bail", "required", "int",
+                Rule::exists("users", "id")
             ],
-
-            "sanphamtacgia.vaitro" => 'bail|array',
-            "sanphamtacgia.vaitros.*" => [
-                "int",
-                Rule::exists("d_m_vai_tro_tac_gias", 'id')
+            "sanpham_tacgia.*.id_vaitro" => [
+                "bail", "required", "int",
+                Rule::exists("d_m_vai_tro_tac_gias", "id")
             ],
+            "sanpham_tacgia.*.thutu" => "bail|nullable|string",
+            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|string",
 
-            "sanphamtacgia.thutu" => 'bail|array',
-            "sanphamtacgia.thutu.*" => 'bail|nullable|string',
-            
-            "sanphamtacgia.tyledonggop" => 'bail|array',
-            "sanphamtacgia.tyledonggop.*" => 'bail|nullable|string'
-
+            // file minh chung san pham
+            "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
+            "fileminhchungsanpham.url" => "bail|required|string"
         ];
     }
 
@@ -114,8 +110,8 @@ class CreateBaiBaoRequest extends FormRequest
             'sanpham.id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
             'id_tapchi.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
             'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
-            'sanphamtacgia.tacgias.*.exists' => 'Tác giả không tồn tại trên hệ thống',
-            'sanphamtacgia.vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
+            "sanpham_tacgia.*.id_tacgia.exists" => "Tác giả không tồn tại trên hệ thống",
+            "sanpham_tacgia.*.id_vaitro.exists" => "Vai trò tác giả không tồn tại trên hệ thống"
         ];
     }
 }

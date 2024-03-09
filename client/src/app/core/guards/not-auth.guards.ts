@@ -1,6 +1,6 @@
 import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from "@angular/router";
 import {inject} from "@angular/core";
-import {AuthService} from "../services/auth.service";
+import {AuthService} from "../services/user/auth.service";
 import {LocalStorageService} from "../services/local-storage.service";
 import {ACCESS_TOKEN} from "../../shared/commons/constants";
 

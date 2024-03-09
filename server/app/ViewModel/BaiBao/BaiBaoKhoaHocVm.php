@@ -18,6 +18,7 @@ class BaiBaoKhoaHocVm
     public ?string $published;
     public ?string $keywords;
     //public ?TapChiVm $tapchi; // $id_tapchi
+    public ?string $trangthairasoat;
     public ?string $tentapchi;
     public ?string $volume;
     public ?string $issue;
@@ -25,4 +26,5 @@ class BaiBaoKhoaHocVm
     public ?string $pages;
     public string $created_at;
     public string $updated_at;
+    public ?string $deleted_at;
 }
