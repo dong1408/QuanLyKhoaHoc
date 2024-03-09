@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { MainComponent } from './main.component';
 import {MagazineComponent} from "../magazine/magazine.component";
 import {BaiBaoWaitingModule} from "../baibao/baibao-waiting/waiting.module";
+import {CapNhatBaiBaoModule} from "../baibao/update-baibao/capnhat-baibao.module";
 
 const routes: Routes = [
   {
@@ -44,6 +45,14 @@ const routes: Routes = [
       {
         path:"bai-bao/cho-phe-duyet",
         loadChildren:() => import('../baibao/baibao-waiting/waiting.module').then(m => m.BaiBaoWaitingModule)
+      },
+      {
+        path:"bai-bao/:id/thong-tin-bai-bao",
+        loadChildren:() => import('../baibao/update-baibao/capnhat-baibao.module').then(m => m.CapNhatBaiBaoModule)
+      },
+      {
+        path:"bai-bao/:id/thong-tin-san-pham",
+        loadChildren:() => import('../baibao/update-sanpham/capnhat-sanpham.module').then(m => m.CapNhatSanPhamBaiBaoModule)
       }
     ]
   },

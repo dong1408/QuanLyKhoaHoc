@@ -8,4 +8,6 @@ class QuocGiaVm
     public ?string $tenquocgia;
     public string $created_at;
     public string $updated_at;
+    public string $maquocgia;
+    public ?string $tenquocgia_en;
 }

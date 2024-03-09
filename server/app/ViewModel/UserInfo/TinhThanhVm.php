@@ -9,6 +9,8 @@ class TinhThanhVm
 {
     public int $id;
     public ?string $tentinhthanh;
+    public ?string $tentinhthanh_en;
+    public string $matinhthanh;
     public ?string $created_at;
     public ?string $updated_at;
 }

@@ -4,6 +4,7 @@ namespace App\Service\BaiBao;
 
 use App\Exceptions\BaiBao\BaiBaoKhoaHocNotFoundException;
 use App\Exceptions\BaiBao\BaiBaoNotHaveFirstAuthor;
+use App\Exceptions\BaiBao\CreateBaiBaoFailedException;
 use App\Exceptions\BaiBao\FileMinhChungNotFoundException;
 use App\Exceptions\BaiBao\RoleOnlyHeldByOnePersonException;
 use App\Exceptions\BaiBao\TwoRoleSimilarForOnePersonException;
@@ -18,6 +19,7 @@ use App\Http\Requests\BaiBao\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\BaiBao\UpdateTrangThaiRaSoatBaiBao;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
 use App\Models\FileMinhChungSanPham;
+use App\Models\SanPham\DMSanPham;
 use App\Models\SanPham\DMVaiTroTacGia;
 use App\Models\SanPham\SanPham;
 use App\Models\SanPham\SanPhamTacGia;
@@ -87,7 +89,8 @@ class BaiBaoServiceImpl implements BaiBaoService
             ->where(function ($query) use ($keysearch) {
                 $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
                     ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-            })->where('san_phams.trangthairasoat', 'Đang rà soát') // bản nào chụp đây
+            })->where('san_phams.trangthairasoat', 'Đang rà soát')
+            ->groupBy('san_phams.id')
             ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         $result = [];
         foreach ($sanPhams as $sanPham) {
@@ -172,10 +175,16 @@ class BaiBaoServiceImpl implements BaiBaoService
             if ((isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien] >= 2) || (isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe] >= 2)) {
                 throw new RoleOnlyHeldByOnePersonException();
             }
+
+            $sanPhamBaiBao = DMSanPham::where('masanpham','baibaokhoahoc')->first();
+            if($sanPhamBaiBao == null){
+                throw new CreateBaiBaoFailedException();
+            }
+
             // Thực hiên insert khi không còn lỗi
             $sanPham = SanPham::create([
                 'tensanpham' => $validated['sanpham']['tensanpham'],
-                'id_loaisanpham' => $validated['sanpham']['id_loaisanpham'],
+                'id_loaisanpham' => $sanPhamBaiBao->id,
                 'tongsotacgia' => $validated['sanpham']['tongsotacgia'],
                 'solandaquydoi' => $validated['sanpham']['solandaquydoi'],
                 'cosudungemailtruong' => $validated['sanpham']['cosudungemailtruong'],
@@ -265,7 +274,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $validated = $request->validated();
 
         $sanPham->tensanpham = $validated['tensanpham'];
-        $sanPham->id_loaisanpham = $validated['id_loaisanpham'];
+//        $sanPham->id_loaisanpham = $validated['id_loaisanpham'];
         $sanPham->tongsotacgia = $validated['tongsotacgia'];
         $sanPham->solandaquydoi = $validated['solandaquydoi'];
         $sanPham->cosudungemailtruong = $validated['cosudungemailtruong'];
@@ -284,8 +293,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham->capsanpham = $validated['capsanpham'];
         $sanPham->thoidiemcongbohoanthanh = $validated['thoidiemcongbohoanthanh'];
         $sanPham->save();
-        $result = Convert::getSanPhamVm($sanPham);
-        return new ResponseSuccess($result, 200);
+        return new ResponseSuccess("Cập nhật thành công",true);
     }
 
 
@@ -315,7 +323,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $baiBao->number = $validated['number'];
         $baiBao->pages = $validated['pages'];
         $baiBao->save();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Cập nhật thành công", true);
     }
 
     public function updateSanPhamTacGia(UpdateSanPhamTacGiaRequest $request, int $id): ResponseSuccess

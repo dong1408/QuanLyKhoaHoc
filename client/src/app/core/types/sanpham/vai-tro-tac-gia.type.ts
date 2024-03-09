@@ -18,3 +18,14 @@ export interface SanPhamTacGia{
     created_at:string,
     updated_at:string
 }
+
+export interface TaoVaiTroTacGia{
+    id_tacgia:number,
+    id_vaitro:number,
+    thutu:string | null,
+    tyledonggop:string | null,
+}
+
+export interface CapNhatVaiTroTacGia{
+    sanpham_tacgia:TaoVaiTroTacGia[]
+}

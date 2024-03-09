@@ -33,9 +33,10 @@ class SanPhamDetailVm
     public string $thongtinchitiet;
     public string $capsanpham;
     public string $thoidiemcongbohoanthanh;
-    public ?FileMinhChungSanPhamVm $fileMinhChungSanPham; 
+    public ?FileMinhChungSanPhamVm $minhchung;
     public string $created_at;
     public string $updated_at;
+    public ?string $deleted_at;
     // thêm file minh chứngVM.
 
     public $sanpham_tacgia = array();
