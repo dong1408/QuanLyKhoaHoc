@@ -422,32 +422,35 @@ class Convert
 
     // ========================= BAI BAO ============================= //
 
-    public static function getBaiBaoKhoaHocVm(BaiBaoKhoaHoc $baiBaoKhoaHoc)
+    public static function getBaiBaoKhoaHocVm(SanPham $sanPham)
     {
         $a = new BaiBaoKhoaHocVm();
-        $a->id = $baiBaoKhoaHoc->id;
-        if ($baiBaoKhoaHoc->sanPham == null) {
-            $a->tensanpham = null;
-            $a->id_sanpham = null;
-        } else {
-            $a->id_sanpham = $baiBaoKhoaHoc->sanPham->id;
-            $a->tensanpham = $baiBaoKhoaHoc->sanPham->tensanpham;
-        }
-        $a->keywords = $baiBaoKhoaHoc->keyword;
-        if ($baiBaoKhoaHoc->tapChi == null) {
-            $a->tentapchi = null;
-        } else {
-            $a->tentapchi = $baiBaoKhoaHoc->tapChi->name;
-        }
-        $a->volume = $baiBaoKhoaHoc->volume ?? null;
-        $a->issue = $baiBaoKhoaHoc->issue ?? null;
-        $a->number = $baiBaoKhoaHoc->number ?? null;
-        $a->pages = $baiBaoKhoaHoc->pages ?? null;
-        $a->trangthairasoat = $baiBaoKhoaHoc->sanPham->trangthairasoat ?? null;
-        $a->deleted_at = $baiBaoKhoaHoc->sanPham->deleted_at ?? null;
-        $a->created_at = $baiBaoKhoaHoc->created_at;
+        $a->id = $sanPham->baiBao->id;
+        // if ($baiBaoKhoaHoc->sanPham == null) {
+        //     $a->tensanpham = null;
+        //     $a->id_sanpham = null;
+        // } else {
+        //     $a->id_sanpham = $baiBaoKhoaHoc->sanPham->id;
+        //     $a->tensanpham = $baiBaoKhoaHoc->sanPham->tensanpham;
+        // }
+        $a->id_sanpham = $sanPham->id;
+        $a->tensanpham = $sanPham->tensanpham;
+        $a->keywords = $sanPham->baiBao->keyword;
+        // if ($baiBaoKhoaHoc->tapChi == null) {
+        //     $a->tentapchi = null;
+        // } else {
+        //     $a->tentapchi = $baiBaoKhoaHoc->tapChi->name;
+        // }        
+        $a->tentapchi = $sanPham->baiBao->tapChi == null ? $a->tentapchi = null : $sanPham->baiBao->tapChi->name;
+        $a->volume = $sanPham->baiBao->volume;
+        $a->issue = $sanPham->baiBao->issue;
+        $a->number = $sanPham->baiBao->number;
+        $a->pages = $sanPham->baiBao->pages;
+        $a->trangthairasoat = $sanPham->trangthairasoat;
+        $a->deleted_at = $sanPham->deleted_at;
+        $a->created_at = $sanPham->created_at;
 
-        $a->updated_at = $baiBaoKhoaHoc->updated_at;
+        // $a->updated_at = $baiBaoKhoaHoc->updated_at;
 
         return $a;
     }

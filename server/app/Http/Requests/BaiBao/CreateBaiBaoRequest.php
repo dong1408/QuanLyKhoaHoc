@@ -76,25 +76,18 @@ class CreateBaiBaoRequest extends FormRequest
             "pages" => "bail|nullable|string",
 
 
-            // san pham _ tac gia
-            "sanphamtacgia.tacgias" => 'bail|array',
-            "sanphamtacgia.tacgias.*" => [
-                "int",
-                Rule::exists("users", 'id')
+            // // san pham _ tac gia            
+            "sanpham_tacgia" => "bail|array",
+            "sanpham_tacgia.*.id_tacgia" => [
+                "bail", "required", "int",
+                Rule::exists("users", "id")
             ],
-
-            "sanphamtacgia.vaitro" => 'bail|array',
-            "sanphamtacgia.vaitros.*" => [
-                "int",
-                Rule::exists("d_m_vai_tro_tac_gias", 'id')
+            "sanpham_tacgia.*.id_vaitro" => [
+                "bail", "required", "int",
+                Rule::exists("d_m_vai_tro_tac_gias", "id")
             ],
-
-            "sanphamtacgia.thutu" => 'bail|array',
-            "sanphamtacgia.thutu.*" => 'bail|nullable|string',
-
-            "sanphamtacgia.tyledonggop" => 'bail|array',
-            "sanphamtacgia.tyledonggop.*" => 'bail|nullable|string',
-
+            "sanpham_tacgia.*.thutu" => "bail|nullable|string",
+            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|string",
 
             // file minh chung san pham
             "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
@@ -117,8 +110,8 @@ class CreateBaiBaoRequest extends FormRequest
             'sanpham.id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
             'id_tapchi.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
             'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
-            'sanphamtacgia.tacgias.*.exists' => 'Tác giả không tồn tại trên hệ thống',
-            'sanphamtacgia.vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
+            "sanpham_tacgia.*.id_tacgia.exists" => "Tác giả không tồn tại trên hệ thống",
+            "sanpham_tacgia.*.id_vaitro.exists" => "Vai trò tác giả không tồn tại trên hệ thống"
         ];
     }
 }

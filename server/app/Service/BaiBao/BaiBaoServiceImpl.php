@@ -40,6 +40,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPhams = null;
         if ($isLock == 1) {
             $sanPhams = SanPham::onlyTrashed()->select('san_phams.*')
+                ->distinct()
                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
@@ -50,6 +51,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 })->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         } else { // Lấy những bản ghi not softdelete            
             $sanPhams = SanPham::select('san_phams.*')
+                ->distinct()
                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
@@ -62,7 +64,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
         $result = [];
         foreach ($sanPhams as $sanPham) {
-            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham->baiBao);
+            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
@@ -85,19 +87,15 @@ class BaiBaoServiceImpl implements BaiBaoService
             ->where(function ($query) use ($keysearch) {
                 $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
                     ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-            })->where('san_phams.trangthairasoat', 'Đang rà soát')
+            })->where('san_phams.trangthairasoat', 'Đang rà soát') // bản nào chụp đây
             ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         $result = [];
         foreach ($sanPhams as $sanPham) {
-            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham->baiBao);
+            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
     }
-
-
-
-
 
 
 
@@ -119,21 +117,24 @@ class BaiBaoServiceImpl implements BaiBaoService
 
 
 
-
-
-
-
-
-
     public function createBaiBao(CreateBaiBaoRequest $request): ResponseSuccess
     {
         $validated = $request->validated();
+
         $baiBao = new BaiBaoKhoaHoc();
-        DB::transaction(function () use ($validated, &$baiBao) {
-            $listIdTacGia = $validated['sanphamtacgia']['tacgias'];
-            $listIdVaiTro = $validated['sanphamtacgia']['vaitros'];
-            $thuTus = $validated['sanphamtacgia']['thutu'];
-            $tyLeDongGops = $validated['sanphamtacgia']['tyledonggop'];
+        $sanPham = new SanPham();
+        DB::transaction(function () use ($validated, &$baiBao, &$sanPham) {
+            $listIdTacGia = [];
+            $listIdVaiTro = [];
+            $thuTus = [];
+            $tyLeDongGops = [];
+            $listSanPhamTacGia = $validated['sanpham_tacgia'];
+            for ($i = 0; $i < count($listSanPhamTacGia); $i++) {
+                $listIdTacGia[] = $listSanPhamTacGia[$i]['id_tacgia'];
+                $listIdVaiTro[] = $listSanPhamTacGia[$i]['id_vaitro'];
+                $thuTus[] = $listSanPhamTacGia[$i]['thutu'] == null ? null : $listSanPhamTacGia[$i]['thutu'];
+                $tyLeDongGop[] = $listSanPhamTacGia[$i]['tyledonggop'] == null ? null : $listSanPhamTacGia[$i]['tyledonggop'];
+            }
 
             $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
 
@@ -240,7 +241,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 ]);
             }
         });
-        $result = Convert::getBaiBaoKhoaHocVm($baiBao);
+        $result = Convert::getBaiBaoKhoaHocVm($sanPham);
         return new ResponseSuccess("Thành công", $result);
     }
 
@@ -332,10 +333,17 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
         $validated = $request->validated();
 
-        $listIdTacGia = $validated['tacgias'];
-        $listIdVaiTro = $validated['vaitros'];
-        $thuTus = $validated['thutu'];
-        $tyLeDongGops = $validated['tyledonggop'];
+        $listIdTacGia = [];
+        $listIdVaiTro = [];
+        $thuTus = [];
+        $tyLeDongGops = [];
+        $listSanPhamTacGia = $validated['sanpham_tacgia'];
+        for ($i = 0; $i < count($listSanPhamTacGia); $i++) {
+            $listIdTacGia[] = $listSanPhamTacGia[$i]['id_tacgia'];
+            $listIdVaiTro[] = $listSanPhamTacGia[$i]['id_vaitro'];
+            $thuTus[] = $listSanPhamTacGia[$i]['thutu'] == null ? null : $listSanPhamTacGia[$i]['thutu'];
+            $tyLeDongGop[] = $listSanPhamTacGia[$i]['tyledonggop'] == null ? null : $listSanPhamTacGia[$i]['tyledonggop'];
+        }
         $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
         // Kiểm tra bài báo phải có tác giả đầu tiên
         $flag = false;

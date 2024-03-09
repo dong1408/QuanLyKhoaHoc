@@ -25,23 +25,21 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
     public function rules()
     {
         return [
-            "tacgias" => 'bail|array',
-            "tacgias.*" => [
-                "int",
-                Rule::exists("users", 'id')
+            'id' => [
+                "bail", "required", "integer",
+                Rule::exists('san_phams', 'id')
             ],
-
-            "vaitro" => 'bail|array',
-            "vaitros.*" => [
-                "int",
-                Rule::exists("d_m_vai_tro_tac_gias", 'id')
+            "sanpham_tacgia" => "bail|array",
+            "sanpham_tacgia.*.id_tacgia" => [
+                "bail", "required", "int",
+                Rule::exists("users", "id")
             ],
-
-            "thutu" => 'bail|array',
-            "thutu.*" => 'bail|nullable|string',
-
-            "tyledonggop" => 'bail|array',
-            "tyledonggop.*" => 'bail|nullable|string'
+            "sanpham_tacgia.*.id_vaitro" => [
+                "bail", "required", "int",
+                Rule::exists("d_m_vai_tro_tac_gias", "id")
+            ],
+            "sanpham_tacgia.*.thutu" => "bail|nullable|string",
+            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|string",
         ];
     }
 
@@ -53,8 +51,8 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-            'tacgias.*.exists' => 'Tác giả không tồn tại trên hệ thống',
-            'vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
+            "sanpham_tacgia.*.id_tacgia.exists" => "Tác giả không tồn tại trên hệ thống",
+            "sanpham_tacgia.*.id_vaitro.exists" => "Vai trò tác giả không tồn tại trên hệ thống"
         ];
     }
 
