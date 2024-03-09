@@ -1,10 +1,13 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiResponse, PagingResponse} from "../../types/api-response.type";
-import {BaiBao, ChiTietBaiBao} from "../../types/baibao/bai-bao.type";
+import {BaiBao, CapNhatBaiBao, ChiTietBaiBao, TaoBaiTao} from "../../types/baibao/bai-bao.type";
 import {environment} from "../../../../environments/environment";
 import {catchError} from "rxjs";
 import {handleError} from "../../../shared/commons/handler-error-http";
+import {CapNhatSanPham, CapNhatTrangThaiSanPham} from "../../types/sanpham/san-pham.type";
+import {CapNhatVaiTroTacGia} from "../../types/sanpham/vai-tro-tac-gia.type";
+import {CapNhatFileMinhChung} from "../../types/sanpham/file-minh-chung.type";
 
 @Injectable({
     providedIn:"root"
@@ -39,16 +42,29 @@ export class BaiBaoService{
         )
     }
 
-    taoBaiBao(){
-
+    taoBaiBao(data:TaoBaiTao){
+        return this.http.post<ApiResponse<BaiBao>>(
+            `${environment.apiUrl}/baibao`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
     }
 
-    capNhatBaiBao(){
-
+    capNhatBaiBao(id:number,data:CapNhatBaiBao){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/baibao/${id}`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
     }
 
-    capNhatSanPham(){
-
+    capNhatSanPham(id:number,data:CapNhatSanPham){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/baibao/${id}/sanpham`,
+            data
+        )
     }
 
     xoaMemBaiBao(id:number){
@@ -65,6 +81,33 @@ export class BaiBaoService{
 
     hoanTacXoaBaiBao(id:number){
         return this.http.patch<ApiResponse<boolean>>(`${environment.apiUrl}/baibao/${id}/restore`,null).pipe(
+            catchError(handleError)
+        )
+    }
+
+    capNhatVaiTroTacGia(id:number,data:CapNhatVaiTroTacGia){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/baibao/${id}/sanphamtacgia`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    capNhatFileMinhChung(id:number,data:CapNhatFileMinhChung){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/baibao/${id}/fileminhchung`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    capNhatTrangThaiSanPham(id:number,data:CapNhatTrangThaiSanPham){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/baibao/${id}/trangthairasoat`,
+            data
+        ).pipe(
             catchError(handleError)
         )
     }

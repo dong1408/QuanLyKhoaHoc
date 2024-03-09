@@ -29,7 +29,10 @@ class UpdateTrangThaiRaSoatBaiBao extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "trangthairasoat" => "bail|required|string"
+            "trangthairasoat" => [
+                "bail","required","string",
+                Rule::in(["Đang rà soát","Đã xác nhận"])
+            ]
         ];
     }
 
@@ -39,6 +42,7 @@ class UpdateTrangThaiRaSoatBaiBao extends FormRequest
             'required' => 'Trường :attribute là bắt buộc',
             'integer' => 'Trường :attribute phải là một số',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
+            'in' => 'Trường :attribute phải là một trong các giá trị :values'
         ];
     }
 

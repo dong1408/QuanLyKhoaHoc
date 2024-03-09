@@ -47,7 +47,7 @@ Route::group([
     Route::get('auth/getMe', [AuthController::class, 'getMe']);
 
     // User
-    Route::get('user', [UserController::class, 'getAllUser']);
+    Route::get('users', [UserController::class, 'getAllUser']);
 
 
     // BaiBaoKhoaHoc

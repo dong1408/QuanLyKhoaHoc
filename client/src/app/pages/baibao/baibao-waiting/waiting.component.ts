@@ -13,13 +13,13 @@ import {
 } from "rxjs";
 import {PagingService} from "../../../core/services/paging.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {BaiBao} from "../../../core/types/baibao/bai-bao.type";
 import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
+import {CapNhatTrangThaiSanPham, TrangThaiSanPham} from "../../../core/types/sanpham/san-pham.type";
 
 @Component({
-    selector:'app-magazine-waiting',
+    selector:'app-baibao-waiting',
     templateUrl:'./waiting.component.html',
     styleUrls:['./waiting.component.css']
 })
@@ -122,8 +122,35 @@ export class BaiBaoWaitingComponent implements OnInit,OnDestroy{
         })
     }
 
-    onCapNhatTrangThai(baiBao:BaiBao){
+    onCapNhatTrangThai(baiBao:BaiBao,trangthai:TrangThaiSanPham){
+        baiBao.isChangeStatus = true;
 
+        const data:CapNhatTrangThaiSanPham = {
+            trangthairasoat: trangthai
+        }
+
+        this.baiBaoService.capNhatTrangThaiSanPham(baiBao.id,data).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) => {
+                this.baiBaos = this.baiBaos.filter((item) => item.id !== baiBao.id)
+
+                this.notificationService.create(
+                    'success',
+                    'Thành Công',
+                    response.message
+                )
+                baiBao.isChangeStatus = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                baiBao.isChangeStatus = false
+            }
+        })
     }
 
     onChangeIsLock(value:number){

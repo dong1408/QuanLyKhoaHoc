@@ -27,10 +27,10 @@ class CreateBaiBaoRequest extends FormRequest
         return [
             // san pham
             "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",
-            "sanpham.id_loaisanpham" => [
-                "bail", "integer",
-                Rule::exists('d_m_san_phams', 'id')
-            ],
+//            "sanpham.id_loaisanpham" => [
+//                "bail", "integer",
+//                Rule::exists('d_m_san_phams', 'id')
+//            ],
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.solandaquydoi" => "bail|required|integer",
             "sanpham.cosudungemailtruong" => "bail|nullable|boolean",
@@ -46,7 +46,7 @@ class CreateBaiBaoRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
-            "chitietdonvitaitro" => "bail|nullable|string",
+            "sanpham.chitietdonvitaitro" => "bail|nullable|string",
             "sanpham.ngaykekhai" => "bail|required|string",
             "sanpham.id_nguoikekhai" => [
                 "bail", "required", "integer",
@@ -104,7 +104,7 @@ class CreateBaiBaoRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-            'sanpham.id_loaisanpham.exists' => 'Danh mục sản phẩm không tồn tại trên hệ thông',
+//            'sanpham.id_loaisanpham.exists' => 'Danh mục sản phẩm không tồn tại trên hệ thông',
             'sanpham.id_thongtinnoikhac.exists' => 'Thông tin nơi khác không tồn tại trên hệ thống',
             'sanpham.id_donvitaitro.exists' => 'Thông tin đơn vị tài trợ không tồn tại trên hệ thống',
             'sanpham.id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
