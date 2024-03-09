@@ -29,7 +29,16 @@ class UpdateTrangThaiRaSoatBaiBao extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "trangthai" => "bail|required|string"
+            "trangthairasoat" => "bail|required|string"
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'Trường :attribute là bắt buộc',
+            'integer' => 'Trường :attribute phải là một số',
+            'string' => 'Trường :attribute phải là một chuỗi chữ',
         ];
     }
 

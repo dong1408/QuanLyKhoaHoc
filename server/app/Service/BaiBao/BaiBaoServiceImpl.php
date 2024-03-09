@@ -7,6 +7,7 @@ use App\Exceptions\BaiBao\BaiBaoNotHaveFirstAuthor;
 use App\Exceptions\BaiBao\FileMinhChungNotFoundException;
 use App\Exceptions\BaiBao\RoleOnlyHeldByOnePersonException;
 use App\Exceptions\BaiBao\TwoRoleSimilarForOnePersonException;
+use App\Exceptions\BaiBao\UpdateTrangThaiRaSoatException;
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\InvalidValueException;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
@@ -24,9 +25,7 @@ use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
-use SebastianBergmann\Type\TrueType;
 
 class BaiBaoServiceImpl implements BaiBaoService
 {
@@ -40,7 +39,6 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPhams = null;
         if ($isLock == 1) {
             $sanPhams = SanPham::onlyTrashed()->select('san_phams.*')
-                ->distinct()
                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
@@ -48,10 +46,11 @@ class BaiBaoServiceImpl implements BaiBaoService
                 ->where(function ($query) use ($keysearch) {
                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-                })->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+                })
+                ->groupBy('san_phams.id')
+                ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         } else { // Lấy những bản ghi not softdelete            
             $sanPhams = SanPham::select('san_phams.*')
-                ->distinct()
                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
@@ -60,6 +59,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
                 })->where('san_phams.trangthairasoat', 'Đã xác nhận')
+                ->groupBy('san_phams.id')
                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         }
         $result = [];
@@ -278,9 +278,6 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham->chitietdonvitaitro = $validated['conhantaitro'] == true ? $validated['chitietdonvitaitro'] : null;
         $sanPham->ngaykekhai = $validated['ngaykekhai'];
         $sanPham->id_nguoikekhai = $validated['id_nguoikekhai'];
-        $sanPham->trangthairasoat = $validated['trangthairasoat'];
-        $sanPham->ngayrasoat = $validated['ngayrasoat'];
-        $sanPham->id_nguoirasoat = $validated['id_nguoirasoat'];
         $sanPham->diemquydoi = $validated['diemquydoi'];
         $sanPham->gioquydoi = $validated['gioquydoi'];
         $sanPham->thongtinchitiet = $validated['thongtinchitiet'];
@@ -427,11 +424,13 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
-        $validated = $request->validate();
+        $validated = $request->validated();
         if ($sanPham->trangthairasoat == $validated['trangthairasoat']) {
-            throw new UpdateTrangThaiRaSoatBaiBao();
+            throw new UpdateTrangThaiRaSoatException();
         }
         $sanPham->trangthairasoat = $validated['trangthairasoat'];
+        $sanPham->id_nguoirasoat = auth('api')->user()->id;
+        $sanPham->ngayrasoat = date("Y-m-d H:i:s");
         $sanPham->save();
         return new ResponseSuccess("Thành công", true);
     }

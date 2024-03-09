@@ -59,12 +59,6 @@ class UpdateSanPhamRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('users', 'id')
             ],
-            "trangthairasoat" => "bail|required|string",
-            "ngayrasoat" => "bail|required|string",
-            "id_nguoirasoat" => [
-                "bail", "required", "integer",
-                Rule::exists('users', 'id')
-            ],
             "diemquydoi" => "bail|required|string",
             "gioquydoi" => "bail|required|string",
             "thongtinchitiet" => "bail|required|string",

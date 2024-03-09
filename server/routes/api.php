@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\QuyDoi\NganhTinhDiemController;
 use App\Http\Controllers\Admin\SanPham\DMSanPhamController;
 use App\Http\Controllers\Admin\SanPham\VaiTroTacGiaController;
 use App\Http\Controllers\Admin\TapChi\TapChiController;
+use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Admin\UserInfo\QuocGiaController;
 use App\Http\Controllers\Admin\UserInfo\TinhThanhController;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
@@ -44,6 +45,10 @@ Route::group([
     Route::post('auth/logout', [AuthController::class, 'logout']);
     Route::post('auth/refreshToken', [AuthController::class, 'refreshToken']);
     Route::get('auth/getMe', [AuthController::class, 'getMe']);
+
+    // User
+    Route::get('user', [UserController::class, 'getAllUser']);
+
 
     // BaiBaoKhoaHoc
     Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
@@ -103,7 +108,7 @@ Route::group([
     // ============================== Nganh Tinh Diem ======================================== //
     Route::get('nganhtinhdiem', [NganhTinhDiemController::class, 'getAllNganhTinhDiem']);
 
-    
+
 
     // ============================== Chuyen Nganh Tinh Diem ================================= //
     Route::get('chuyennganhtinhdiem', [ChuyenNganhTinhDiemController::class, 'getAllChuyenNganhTinhDiem']);
