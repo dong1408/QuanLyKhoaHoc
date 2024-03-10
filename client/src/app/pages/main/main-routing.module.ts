@@ -53,6 +53,10 @@ const routes: Routes = [
       {
         path:"bai-bao/:id/thong-tin-san-pham",
         loadChildren:() => import('../baibao/update-sanpham/capnhat-sanpham.module').then(m => m.CapNhatSanPhamBaiBaoModule)
+      },
+      {
+        path:"bai-bao/:id",
+        loadChildren:() => import('../baibao/detail/detail.module').then(m => m.ChiTietBaiBaoModule)
       }
     ]
   },

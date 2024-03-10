@@ -55,10 +55,10 @@ class UpdateSanPhamRequest extends FormRequest
             ],
             "chitietdonvitaitro" => "bail|nullable|string",
             "ngaykekhai" => "bail|required|string",
-            "id_nguoikekhai" => [
-                "bail", "required", "integer",
-                Rule::exists('users', 'id')
-            ],
+//            "id_nguoikekhai" => [
+//                "bail", "required", "integer",
+//                Rule::exists('users', 'id')
+//            ],
             "diemquydoi" => "bail|required|string",
             "gioquydoi" => "bail|required|string",
             "thongtinchitiet" => "bail|required|string",
@@ -79,8 +79,8 @@ class UpdateSanPhamRequest extends FormRequest
 //            'id_loaisanpham.exists' => 'Danh mục sản phẩm không tồn tại trên hệ thông',
             'id_thongtinnoikhac.exists' => 'Thông tin nơi khác không tồn tại trên hệ thống',
             'id_donvitaitro.exists' => 'Thông tin đơn vị tài trợ không tồn tại trên hệ thống',
-            'id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
-            'id_nguoirasoat.exists' => 'Thông tin người rà soát không tồn tại trên hệ thống',
+//            'id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
+//            'id_nguoirasoat.exists' => 'Thông tin người rà soát không tồn tại trên hệ thống',
             'tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
         ];
     }

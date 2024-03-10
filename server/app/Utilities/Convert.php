@@ -274,7 +274,7 @@ class Convert
         $a->tendmsanpham = $dmSanPham->tensanpham ?? null;
         $a->created_at = $dmSanPham->created_at;
         $a->updated_at = $dmSanPham->updated_at;
-        $a->madmsanpham = $dmSanPham->madmsanpham ?? null;
+        $a->madmsanpham = $dmSanPham->masanpham ?? null;
         return $a;
     }
 

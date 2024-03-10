@@ -35,7 +35,7 @@ export class BaiBaoService{
     }
 
     getChiTietBaiBao(id:number){
-        return this.http.get<ApiResponse<PagingResponse<ChiTietBaiBao>>>(
+        return this.http.get<ApiResponse<ChiTietBaiBao>>(
             `${environment.apiUrl}/baibao/${id}`
         ).pipe(
             catchError(handleError)

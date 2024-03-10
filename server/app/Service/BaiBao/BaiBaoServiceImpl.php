@@ -286,7 +286,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham->id_donvitaitro = $validated['conhantaitro'] == true ? $validated['id_donvitaitro'] : null;
         $sanPham->chitietdonvitaitro = $validated['conhantaitro'] == true ? $validated['chitietdonvitaitro'] : null;
         $sanPham->ngaykekhai = $validated['ngaykekhai'];
-        $sanPham->id_nguoikekhai = $validated['id_nguoikekhai'];
+//        $sanPham->id_nguoikekhai = $validated['id_nguoikekhai'];
         $sanPham->diemquydoi = $validated['diemquydoi'];
         $sanPham->gioquydoi = $validated['gioquydoi'];
         $sanPham->thongtinchitiet = $validated['thongtinchitiet'];
@@ -405,7 +405,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             ]);
             $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
         }
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Thành công", $result);
     }
 
 

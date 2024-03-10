@@ -1,6 +1,6 @@
 import {SanPham} from "../sanpham/san-pham.type";
 import {Magazine} from "../tapchi/tap-chi.type";
-import {TaoVaiTroTacGia} from "../sanpham/vai-tro-tac-gia.type";
+import {SanPhamTacGia, TaoVaiTroTacGia} from "../sanpham/vai-tro-tac-gia.type";
 
 export interface BaiBao{
     id:number,
@@ -45,6 +45,8 @@ export interface ChiTietBaiBao{
     created_at:string,
     updated_at:string
     deleted_at?:string,
+    abstract?:string,
+    sanpham_tacgias:SanPhamTacGia[]
 }
 
 //create cả sản phẩm trong bài báo luôn, quan hệ 1-1

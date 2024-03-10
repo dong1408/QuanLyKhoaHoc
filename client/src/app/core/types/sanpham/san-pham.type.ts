@@ -8,7 +8,7 @@ export interface SanPham{
     tensanpham:string,
     loaisanpham:DMSanPham,
     tongsotacgia:number,
-    solanquydoi:number,
+    solandaquydoi:number,
     cosudungemailtruong?:boolean,
     cosudungemaildonvikhac?:boolean,
     cothongtintruong?:boolean,
@@ -35,7 +35,6 @@ export interface SanPham{
 
 export interface CapNhatSanPham{
     tensanpham:string,
-    id_loaisanpham:string,
     tongsotacgia:number,
     solandaquydoi:number,
     cosudungemailtruong:boolean | null,
@@ -47,7 +46,6 @@ export interface CapNhatSanPham{
     id_donvitaitro:number | null,
     chitietdonvitaitro:string | null,
     ngaykekhai:string,
-    id_nguoikekhai:number,
     diemquydoi:string,
     gioquydoi:string,
     thongtinchitiet:string,

@@ -13,8 +13,8 @@
                     <h3 class="tw-text-center">Trạng Thái</h3>
                     <nz-form-control>
                         <nz-select formControlName="khongduoccongnhan">
-                            <nz-option nzLabel="Công Nhận" [nzValue]=true></nz-option>
-                            <nz-option nzLabel="Không Công Nhận" [nzValue]=false></nz-option>
+                            <nz-option nzLabel="Công Nhận" [nzValue]=false></nz-option>
+                            <nz-option nzLabel="Không Công Nhận" [nzValue]=true></nz-option>
                         </nz-select>
                         <ng-container *ngIf="formRecognize.controls?.['khongduoccongnhan']?.touched && formRecognize.controls?.['khongduoccongnhan']?.dirty">
                             <small *ngIf="formRecognize.controls?.['khongduoccongnhan']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>

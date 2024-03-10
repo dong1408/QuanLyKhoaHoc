@@ -1,37 +1,33 @@
 import {NgModule} from "@angular/core";
-import {CapNhatBaiBaoComponent} from "./capnhat-baibao.component";
-import {CapNhatBaiBaoRoutingModule} from "./capnhat-baibao-routing.module";
+import {ChiTietBaiBaoComponent} from "./detail.component";
 import {CommonModule} from "@angular/common";
 import {ReactiveFormsModule} from "@angular/forms";
+import {ChiTietBaiBaoRoutingModule} from "./detai-routing.module";
 import {NzButtonModule} from "ng-zorro-antd/button";
-import {NzFormModule} from "ng-zorro-antd/form";
-import {NzGridModule} from "ng-zorro-antd/grid";
+import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzIconModule} from "ng-zorro-antd/icon";
-import {NzInputModule} from "ng-zorro-antd/input";
-import {NzSelectModule} from "ng-zorro-antd/select";
+import {NzPopconfirmModule} from "ng-zorro-antd/popconfirm";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {SharedModule} from "../../../shared/components/shared.module";
 
 @NgModule({
     declarations:[
-        CapNhatBaiBaoComponent
+        ChiTietBaiBaoComponent
     ],
     imports: [
-        CapNhatBaiBaoRoutingModule,
+        ChiTietBaiBaoRoutingModule,
         CommonModule,
         ReactiveFormsModule,
         NzButtonModule,
-        NzFormModule,
-        NzGridModule,
+        NzDividerModule,
         NzIconModule,
-        NzInputModule,
-        NzSelectModule,
+        NzPopconfirmModule,
         NzWaveModule,
-        SharedModule,
+        SharedModule
     ],
     exports:[
 
     ]
 })
 
-export class CapNhatBaiBaoModule{}
+export class ChiTietBaiBaoModule{}

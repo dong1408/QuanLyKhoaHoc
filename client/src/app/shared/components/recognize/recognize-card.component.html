@@ -2,8 +2,8 @@
     <h4>Ngày Cập Nhật : {{recognize.created_at}}</h4>
     <p><strong>Mã:</strong> {{recognize.id}}</p>
     <p><strong>Trạng thái: </strong>
-        <span *ngIf="recognize?.khongduoccongnhan === true" class="success">Được Công Nhận</span>
-        <span *ngIf="recognize?.khongduoccongnhan === false" class="error">Không Được Công Nhận</span>
+        <span *ngIf="recognize?.khongduoccongnhan === true" class="success">Không Được Công Nhận</span>
+        <span *ngIf="recognize?.khongduoccongnhan === false" class="error">Được Công Nhận</span>
         <span *ngIf="recognize.khongduoccongnhan === undefined" class="primary">Không Được Đánh Giá</span>
     </p>
     <p><strong>Người cập nhật:</strong> <br>
