@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('received')->nullable();
             $table->string('accepted')->nullable();
             $table->string('published')->nullable();
-            $table->string('abstract')->nullable();
+            $table->text('abstract')->nullable();
             $table->text('keywords')->nullable(); //dài nên để định dạng text
             //Thuộc tạp chí nào
             $table->unsignedBigInteger('id_tapchi');

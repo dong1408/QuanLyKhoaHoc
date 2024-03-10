@@ -6,7 +6,6 @@ use App\ViewModel\SanPham\SanPhamVm;
 class XetDuyetVm
 {
     public int $id;
-    public SanPhamVm $sanpham; // $id_sanpham
     public ?string $ngayxetduyet;
     public ?string $ketquaxetduyet;
     public ?string $sohopdong;

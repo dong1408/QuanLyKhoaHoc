@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\BaiBao;
+namespace App\Http\Requests\SanPham;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

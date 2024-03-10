@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\BaiBao;
+namespace App\Http\Requests\Detai;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateSanPhamTacGiaRequest extends FormRequest
+class UpdateDeTaiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,17 +29,25 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "sanpham_tacgia" => "bail|array",
-            "sanpham_tacgia.*.id_tacgia" => [
-                "bail", "required", "int",
-                Rule::exists("users", "id")
+            "maso" => "bail|required|string|unique:de_tais,maso",
+            // "ngaydangky" => "bail|nullable|string",
+            "ngoaitruong" => "bail|nullable|boolean",
+            "truongchutri" => "bail|nullable|boolean",
+            "id_tochucchuquan" => [
+                "bail", "nullable", "integer",
+                Rule::exists('d_m_to_chucs', 'id')
             ],
-            "sanpham_tacgia.*.id_vaitro" => [
-                "bail", "required", "int",
-                Rule::exists("d_m_vai_tro_tac_gias", "id")
+            "id_loaidetai" => [
+                "bail", "nullable", "integer",
+                Rule::exists('phan_loai_de_tais', 'id')
             ],
-            "sanpham_tacgia.*.thutu" => "bail|nullable|string",
-            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|string",
+            "detaihoptac" => "bail|nullable|boolean",
+            "id_tochuchoptac" => [
+                "bail", "nullable", "integer",
+                Rule::exists('d_m_to_chucs', 'id')
+            ],
+            "tylekinphidonvihoptac" => "bail|nullable|string",
+            "capdetai" => "bail|nullable|string",
         ];
     }
 
@@ -51,8 +59,8 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-            "sanpham_tacgia.*.id_tacgia.exists" => "Tác giả không tồn tại trên hệ thống",
-            "sanpham_tacgia.*.id_vaitro.exists" => "Vai trò tác giả không tồn tại trên hệ thống"
+            // 'sanphamtacgia.tacgias.*.exists' => 'Tác giả không tồn tại trên hệ thống',
+            // 'sanphamtacgia.vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
         ];
     }
 
