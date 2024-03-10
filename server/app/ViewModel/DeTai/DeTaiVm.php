@@ -10,18 +10,12 @@ use Ramsey\Uuid\Type\Integer;
 class DeTaiVm
 {
     public int $id;
-    public SanPhamVm $sanpham; // $id_sanpham
+    public string $tensannpham;
+    public int $id_sanpham;
+    // public string $trangthai;
     public string $maso;
     public ?string $ngaydangky;
-    public ?bool $ngoaitruong;
-    public ?bool $truongchutri;
-    public ?ToChucVm $tochucchuquan; // $id_tochuchuquan -- tochuc
-    public ?PhanLoaiDeTaiVm $loaidetai; // $id_loaidetai -- phanloaidetai
-    public ?bool $detaihoptac;
-    public ?ToChucVm $tochuchoptac; // $id_tochuchoptac -- tochuc
-    public ?string $tylekinhphidonvihoptac;
     public ?string $capdetai;
     public $created_at;
     public $updated_at;
-
 }

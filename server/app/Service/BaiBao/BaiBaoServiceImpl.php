@@ -2,6 +2,7 @@
 
 namespace App\Service\BaiBao;
 
+use App\Exceptions\BaiBao\BaiBaoCanNotUpdateException;
 use App\Exceptions\BaiBao\BaiBaoKhoaHocNotFoundException;
 use App\Exceptions\BaiBao\BaiBaoNotHaveFirstAuthor;
 use App\Exceptions\BaiBao\CreateBaiBaoFailedException;
@@ -9,14 +10,15 @@ use App\Exceptions\BaiBao\FileMinhChungNotFoundException;
 use App\Exceptions\BaiBao\RoleOnlyHeldByOnePersonException;
 use App\Exceptions\BaiBao\TwoRoleSimilarForOnePersonException;
 use App\Exceptions\BaiBao\UpdateTrangThaiRaSoatException;
+use App\Exceptions\BaiBao\VaiTroOfBaiBaoException;
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\InvalidValueException;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateFileMinhChungSanPhamRequest;
-use App\Http\Requests\BaiBao\UpdateSanPhamRequest;
-use App\Http\Requests\BaiBao\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\BaiBao\UpdateTrangThaiRaSoatBaiBao;
+use App\Http\Requests\SanPham\UpdateSanPhamRequest;
+use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
 use App\Models\FileMinhChungSanPham;
 use App\Models\SanPham\DMSanPham;
@@ -133,6 +135,9 @@ class BaiBaoServiceImpl implements BaiBaoService
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
             for ($i = 0; $i < count($listSanPhamTacGia); $i++) {
+                if (DMVaiTroTacGia::where([['role', '=', 'baibao'], ['id', '=', $listSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
+                    throw new VaiTroOfBaiBaoException();
+                }
                 $listIdTacGia[] = $listSanPhamTacGia[$i]['id_tacgia'];
                 $listIdVaiTro[] = $listSanPhamTacGia[$i]['id_vaitro'];
                 $thuTus[] = $listSanPhamTacGia[$i]['thutu'] == null ? null : $listSanPhamTacGia[$i]['thutu'];
@@ -176,8 +181,8 @@ class BaiBaoServiceImpl implements BaiBaoService
                 throw new RoleOnlyHeldByOnePersonException();
             }
 
-            $sanPhamBaiBao = DMSanPham::where('masanpham','baibaokhoahoc')->first();
-            if($sanPhamBaiBao == null){
+            $sanPhamBaiBao = DMSanPham::where('masanpham', 'baibaokhoahoc')->first();
+            if ($sanPhamBaiBao == null) {
                 throw new CreateBaiBaoFailedException();
             }
 
@@ -271,10 +276,13 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
+        if ($sanPham->trashed()) {
+            throw new BaiBaoCanNotUpdateException();
+        }
         $validated = $request->validated();
 
         $sanPham->tensanpham = $validated['tensanpham'];
-//        $sanPham->id_loaisanpham = $validated['id_loaisanpham'];
+        //        $sanPham->id_loaisanpham = $validated['id_loaisanpham'];
         $sanPham->tongsotacgia = $validated['tongsotacgia'];
         $sanPham->solandaquydoi = $validated['solandaquydoi'];
         $sanPham->cosudungemailtruong = $validated['cosudungemailtruong'];
@@ -293,7 +301,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham->capsanpham = $validated['capsanpham'];
         $sanPham->thoidiemcongbohoanthanh = $validated['thoidiemcongbohoanthanh'];
         $sanPham->save();
-        return new ResponseSuccess("Cập nhật thành công",true);
+        return new ResponseSuccess("Cập nhật thành công", true);
     }
 
 
@@ -305,9 +313,14 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new InvalidValueException();
         }
         $baiBao = BaiBaoKhoaHoc::where('id_sanpham', $id_sanpham)->first();
-        if ($baiBao->sanPham == null || $baiBao == null) {
+        if ($baiBao == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
+        // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
+        if ($baiBao->sanPham == null) {
+            throw new BaiBaoCanNotUpdateException();
+        }
+
         $validated = $request->validated();
 
         $baiBao->doi = $validated['doi'];
@@ -336,6 +349,11 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
+        // Check san pham trong trang thai softDelete thi khong cho chinh sua
+        if ($sanPham->trashed()) {
+            throw new BaiBaoCanNotUpdateException();
+        }
+
         $validated = $request->validated();
 
         $listIdTacGia = [];
@@ -344,6 +362,9 @@ class BaiBaoServiceImpl implements BaiBaoService
         $tyLeDongGops = [];
         $listSanPhamTacGia = $validated['sanpham_tacgia'];
         for ($i = 0; $i < count($listSanPhamTacGia); $i++) {
+            if (DMVaiTroTacGia::where([['role', '=', 'baibao'], ['id', '=', $listSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
+                throw new VaiTroOfBaiBaoException();
+            }
             $listIdTacGia[] = $listSanPhamTacGia[$i]['id_tacgia'];
             $listIdVaiTro[] = $listSanPhamTacGia[$i]['id_vaitro'];
             $thuTus[] = $listSanPhamTacGia[$i]['thutu'] == null ? null : $listSanPhamTacGia[$i]['thutu'];
@@ -416,6 +437,11 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($fileMinhChung == null) {
             throw new FileMinhChungNotFoundException();
         }
+
+        // Check san pham trong trang thai softDelete thi khong cho chinh sua
+        if ($fileMinhChung->sanPham == null) {
+            throw new BaiBaoCanNotUpdateException();
+        }
         $validated = $request->validated();
         $fileMinhChung->loaiminhchung = $validated['loaiminhchung'];
         $fileMinhChung->url = $validated['url'];
@@ -428,9 +454,13 @@ class BaiBaoServiceImpl implements BaiBaoService
     public function updateTrangThaiRaSoatBaiBao(UpdateTrangThaiRaSoatBaiBao $request, int $id): ResponseSuccess
     {
         $id_sanpham = (int) $id;
-        $sanPham = SanPham::find($id_sanpham);
+        $sanPham = SanPham::withTrashed()->find($id_sanpham);
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
+        }
+        // Check san pham trong trang thai softDelete thi khong cho chinh sua
+        if ($sanPham->trashed()) {
+            throw new BaiBaoCanNotUpdateException();
         }
         $validated = $request->validated();
         if ($sanPham->trangthairasoat == $validated['trangthairasoat']) {

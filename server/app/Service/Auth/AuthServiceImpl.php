@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Exceptions\TokenInvalid\RefreshTokenInvalid;
 use App\ViewModel\Auth\AuthenVm;
 use App\ViewModel\User\Me;
+use App\Utilities\Convert;
 
 class AuthServiceImpl implements AuthService 
 {
@@ -63,7 +64,7 @@ class AuthServiceImpl implements AuthService
     {
         $user = auth('api')->user();
         $me = new Me();
-        $me->convert($user);
+        $me = Convert::getUserVm($user);
         return new ResponseSuccess("Thành công", $me);
     }
 

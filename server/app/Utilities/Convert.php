@@ -3,6 +3,11 @@
 namespace App\Utilities;
 
 use App\Models\BaiBao\BaiBaoKhoaHoc;
+use App\Models\DeTai\BaoCaoTienDo;
+use App\Models\DeTai\DeTai;
+use App\Models\DeTai\NghiemThu;
+use App\Models\DeTai\PhanLoaiDeTai;
+use App\Models\DeTai\XetDuyet;
 use App\Models\FileMinhChungSanPham;
 use App\Models\NhaXuatBan\NhaXuatBan;
 use App\Models\TapChi\DMNganhTheoHSGS;
@@ -49,6 +54,12 @@ use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\TinhThanhDetailVm;
 use App\ViewModel\UserInfo\TinhThanhVm;
 use App\ViewModel\UserInfo\ToChucVm;
+use BaoCaoTienDoVm;
+use DeTaiDetailVm;
+use DeTaiVm;
+use NghiemThuVm;
+use PhanLoaiDeTaiVm;
+use XetDuyetVm;
 
 class Convert
 {
@@ -464,6 +475,90 @@ class Convert
 
 
     // ========================= DE TAI ============================= //
+
+    public static function getDeTaiVm(DeTai $deTai)
+    {
+        $a = new DeTaiVm();
+        $a->id = $deTai->id;
+        $a->tensannpham = $deTai->sanPham->tensanpham;
+        $a->id_sanpham = $deTai->sanPham->id;
+        $a->maso = $deTai->maso;
+        $a->ngaydangky = $deTai->ngaydangky;
+        $a->capdetai = $deTai->capdetai;
+        $a->created_at = $deTai->created_at;
+        $a->updated_at = $deTai->updated_at;
+        return $a;
+    }
+    public static function getDeTaiDetailVm(DeTai $deTai)
+    {
+        $a = new DeTaiDetailVm();
+        $a->id = $deTai->id;
+        $a->sanpham = Convert::getSanPhamDetailVm($deTai->sanPham);
+        $a->maso = $deTai->maso;
+        $a->ngaydangky = $deTai->ngaydangky;
+        $a->ngoaitruong = $deTai->ngoaitruong;
+        $a->truongchutri = $deTai->truongchutri;
+        $a->tochucchuquan = Convert::getToChucVm($deTai->toChucChuQuan); // $id_tochuchuquan -- tochuc
+        $a->loaidetai = Convert::getPhanLoaiDeTaiVm($deTai->phanLoaiDeTai); // $id_loaidetai -- phanloaidetai
+        $a->detaihoptac = $deTai->detaihoptac;
+        $a->tochuchoptac = Convert::getToChucVm($deTai->toChucHopTac); // $id_tochuchoptac -- tochuc
+        $a->tylekinhphidonvihoptac = $deTai->tylekinhphidonvihoptac;
+        $a->capdetai = $deTai->capdetai;
+        $a->created_at = $deTai->created_at;
+        $a->updated_at = $deTai->updated_at;
+        return $a;
+    }
+    public static function getBaoCaoTienDoVm(BaoCaoTienDo $baoCaoTienDo)
+    {
+        $a = new BaoCaoTienDoVm();
+        $a->id = $baoCaoTienDo->id;
+        $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao;
+        $a->ketquaxet = $baoCaoTienDo->ketquaxet;
+        $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan;
+        $a->created_at = $baoCaoTienDo->created_at;
+        $a->updated_at = $baoCaoTienDo->updated_at;
+        return $a;
+    }
+    public static function getNghiemThuVm(NghiemThu $nghiemThu)
+    {
+        $a = new NghiemThuVm();
+        $a->id = $nghiemThu->id;
+        $a->hoidongnghiemthu = $nghiemThu->hoidongnghiemthu;
+        $a->ngaynghiemthu = $nghiemThu->ngaynghiemhtu;
+        $a->ketquanghiemthu = $nghiemThu->ketquanghiemthu;
+        $a->ngaycongnhanhoanthanh = $nghiemThu->ngaycongnhanhoanthanh;
+        $a->soqdcongnhanhoanthanh = $nghiemThu->soqdcongnhanhoanthanh;
+        $a->thoigianhoanthanh = $nghiemThu->thoigianhoanthanh;
+        $a->created_at = $nghiemThu->created_at;
+        $a->updated_at = $nghiemThu->updated_at;
+        return $a;
+    }
+    public static function getPhanLoaiDeTaiVm(PhanLoaiDeTai $phanLoaiDeTai)
+    {
+        $a = new PhanLoaiDeTaiVm();
+        $a->id = $phanLoaiDeTai->id;
+        $a->maloai = $phanLoaiDeTai->maloai;
+        $a->tenloai = $phanLoaiDeTai->tenloai;
+        $a->kinhphi = $phanLoaiDeTai->kinhphi;
+        $a->mota = $phanLoaiDeTai->mota;
+        $a->created_at = $phanLoaiDeTai->created_at;
+        $a->updated_at = $phanLoaiDeTai->updated_at;
+        return $a;
+    }
+    public static function getXetDuyetVm(XetDuyet $xetDuyet)
+    {
+        $a = new XetDuyetVm();
+        $a->id = $xetDuyet->id;
+        $a->ngayxetduyet = $xetDuyet->ngayxetduyet;
+        $a->ketquaxetduyet = $xetDuyet->ketquaxetduyet;
+        $a->sohopdong = $xetDuyet->sohopdong;
+        $a->ngaykyhopdong = $xetDuyet->ngaykyhopdong;
+        $a->thoihanhopdong = $xetDuyet->thoihanhopdong;
+        $a->kinhphi = $xetDuyet->kinhphi;
+        $a->created_at = $xetDuyet->created_at;
+        $a->updated_at = $xetDuyet->updated_at;
+        return $a;
+    }
 
 
     // ========================= QUY DOI ============================= //

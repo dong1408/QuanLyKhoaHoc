@@ -25,8 +25,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_vaitrotacgia')->nullable();
             $table->foreign('id_vaitrotacgia')->references('id')->on('d_m_vai_tro_tac_gias')->onDelete('cascade');
             //Thứ tự và tỷ lệ đóng góp (nếu có) của tác giả
-            $table->string('thutu')->nullable();
-            $table->string('tyledonggop')->nullable();
+            $table->integer('thutu')->nullable();
+            $table->integer('tyledonggop')->nullable();
 
             $table->timestamps();
         });
