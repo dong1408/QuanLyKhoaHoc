@@ -15,6 +15,7 @@ export interface Magazine{
     created_at:string,
     updated_at:string,
     deleted_at?:string,
+    khongduoccongnhan?:boolean | null
     issn?:string,
     pissn?:string,
     eissn?:string,

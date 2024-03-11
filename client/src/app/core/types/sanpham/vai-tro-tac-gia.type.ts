@@ -4,7 +4,8 @@ export interface VaiTroTacGia{
     id:number,
     tenvaitro:string,
     tenvaitro_en?:string,
-    mota?:string,
+    mavaitro:string,
+    role:string,
     created_at:string,
     updated_at:string
 }
@@ -24,6 +25,7 @@ export interface TaoVaiTroTacGia{
     id_vaitro:number,
     thutu:string | null,
     tyledonggop:string | null,
+    tentacgia:string
 }
 
 export interface CapNhatVaiTroTacGia{

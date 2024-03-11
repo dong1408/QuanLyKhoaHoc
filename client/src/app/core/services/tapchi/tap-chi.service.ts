@@ -152,4 +152,11 @@ export class TapChiService{
         )
     }
 
+    getAllTapChi(){
+        return this.http.get<ApiResponse<Magazine[]>>(
+            `${environment.apiUrl}/tapchi`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
 }

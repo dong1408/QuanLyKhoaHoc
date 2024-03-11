@@ -285,7 +285,7 @@ class Convert
         $a->tendmsanpham = $dmSanPham->tensanpham ?? null;
         $a->created_at = $dmSanPham->created_at;
         $a->updated_at = $dmSanPham->updated_at;
-        $a->madmsanpham = $dmSanPham->madmsanpham ?? null;
+        $a->madmsanpham = $dmSanPham->masanpham ?? null;
         return $a;
     }
 
@@ -437,38 +437,35 @@ class Convert
         return $a;
     }
 
-    public static function getBaiBaoKhoaHocDetailVm(BaiBaoKhoaHoc $baiBaoKhoaHoc)
+    public static function getBaiBaoKhoaHocDetailVm(SanPham $sanPham)
     {
         $a = new BaiBaoKhoaHocDetailVm();
-        $a->id = $baiBaoKhoaHoc->id;
-        if ($baiBaoKhoaHoc->sanPham == null) {
-            $a->sanpham = null;
-        } else {
-            $a->sanpham = Convert::getSanPhamDetailVm($baiBaoKhoaHoc->sanPham);
-        }
-        $a->doi = $baiBaoKhoaHoc->doi ?? null;
-        $a->url = $baiBaoKhoaHoc->url ?? null;
-        $a->received = $baiBaoKhoaHoc->received ?? null;
-        $a->accepted = $baiBaoKhoaHoc->accepted ?? null;
-        $a->published = $baiBaoKhoaHoc->published ?? null;
-        $a->abstract = $baiBaoKhoaHoc->abstract ?? null;
-        $a->keywords = $baiBaoKhoaHoc->keywords ?? null;
-        if ($baiBaoKhoaHoc->tapChi == null) {
+        $a->id = $sanPham->baiBao->id;
+
+        $a->sanpham = Convert::getSanPhamDetailVm($sanPham);
+
+        $a->doi = $sanPham->baiBao->doi ?? null;
+        $a->url = $sanPham->baiBao->url ?? null;
+        $a->received = $sanPham->baiBao->received ?? null;
+        $a->accepted = $sanPham->baiBao->accepted ?? null;
+        $a->published = $sanPham->baiBao->published ?? null;
+        $a->abstract = $sanPham->baiBao->abstract ?? null;
+        $a->keywords = $sanPham->baiBao->keywords ?? null;
+        if ($sanPham->baiBao->tapChi == null) {
             $a->tapchi = null;
         } else {
-            $a->tapchi = Convert::getTapChiVm($baiBaoKhoaHoc->tapChi);
+            $a->tapchi = Convert::getTapChiVm($sanPham->baiBao->tapChi);
         }
-        $a->volume = $baiBaoKhoaHoc->volume ?? null;
-        $a->issue = $baiBaoKhoaHoc->issue ?? null;
-        $a->number = $baiBaoKhoaHoc->number ?? null;
-        $a->pages = $baiBaoKhoaHoc->pages ?? null;
-        $a->deleted_at = $baiBaoKhoaHoc->sanPham->deleted_at ?? null;
-        $a->created_at = $baiBaoKhoaHoc->created_at;
-        $a->updated_at = $baiBaoKhoaHoc->updated_at;
+        $a->volume = $sanPham->baiBao->volume ?? null;
+        $a->issue = $sanPham->baiBao->issue ?? null;
+        $a->number = $sanPham->baiBao->number ?? null;
+        $a->pages = $sanPham->baiBao->pages ?? null;
+        $a->deleted_at = $sanPham->baiBao->sanPham->deleted_at ?? null;
+        $a->created_at = $sanPham->baiBao->created_at;
+        $a->updated_at = $sanPham->baiBao->updated_at;
 
-        foreach ($baiBaoKhoaHoc->sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
+        foreach ($sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
             $a->sanpham_tacgias[] = Convert::getSanPhamTacGiaVm($sanPhaMTacGia);
-            // $a->sanpham_tacgias[] = $sanPhaMTacGia;
         }
         return $a;
     }
@@ -476,17 +473,17 @@ class Convert
 
     // ========================= DE TAI ============================= //
 
-    public static function getDeTaiVm(DeTai $deTai)
+    public static function getDeTaiVm(SanPham $sanPham)
     {
         $a = new DeTaiVm();
-        $a->id = $deTai->id;
-        $a->tensannpham = $deTai->sanPham->tensanpham;
-        $a->id_sanpham = $deTai->sanPham->id;
-        $a->maso = $deTai->maso;
-        $a->ngaydangky = $deTai->ngaydangky;
-        $a->capdetai = $deTai->capdetai;
-        $a->created_at = $deTai->created_at;
-        $a->updated_at = $deTai->updated_at;
+        $a->id = $sanPham->deTai->id;
+        $a->tensannpham = $sanPham->tensanpham;
+        $a->id_sanpham = $sanPham->id;
+        $a->maso = $sanPham->deTai->maso;
+        $a->ngaydangky = $sanPham->deTai->ngaydangky;
+        $a->capdetai = $sanPham->deTai->capdetai;
+        $a->created_at = $sanPham->deTai->created_at;
+        $a->updated_at = $sanPham->deTai->updated_at;
         return $a;
     }
     public static function getDeTaiDetailVm(DeTai $deTai)

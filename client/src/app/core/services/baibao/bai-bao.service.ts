@@ -6,7 +6,7 @@ import {environment} from "../../../../environments/environment";
 import {catchError} from "rxjs";
 import {handleError} from "../../../shared/commons/handler-error-http";
 import {CapNhatSanPham, CapNhatTrangThaiSanPham} from "../../types/sanpham/san-pham.type";
-import {CapNhatVaiTroTacGia} from "../../types/sanpham/vai-tro-tac-gia.type";
+import {CapNhatVaiTroTacGia, SanPhamTacGia} from "../../types/sanpham/vai-tro-tac-gia.type";
 import {CapNhatFileMinhChung} from "../../types/sanpham/file-minh-chung.type";
 
 @Injectable({
@@ -35,7 +35,7 @@ export class BaiBaoService{
     }
 
     getChiTietBaiBao(id:number){
-        return this.http.get<ApiResponse<PagingResponse<ChiTietBaiBao>>>(
+        return this.http.get<ApiResponse<ChiTietBaiBao>>(
             `${environment.apiUrl}/baibao/${id}`
         ).pipe(
             catchError(handleError)
@@ -86,7 +86,7 @@ export class BaiBaoService{
     }
 
     capNhatVaiTroTacGia(id:number,data:CapNhatVaiTroTacGia){
-        return this.http.patch<ApiResponse<boolean>>(
+        return this.http.patch<ApiResponse<SanPhamTacGia[]>>(
             `${environment.apiUrl}/baibao/${id}/sanphamtacgia`,
             data
         ).pipe(
