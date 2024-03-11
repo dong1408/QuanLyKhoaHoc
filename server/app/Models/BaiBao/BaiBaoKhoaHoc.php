@@ -21,7 +21,7 @@ class BaiBaoKhoaHoc extends Model
         'accepted',
         'published',
         'abstract',
-        'keyword',
+        'keywords',
         'id_tapchi',
         'volume',
         'issue',

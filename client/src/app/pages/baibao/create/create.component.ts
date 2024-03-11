@@ -2,7 +2,17 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {forkJoin, Subject, takeUntil} from "rxjs";
+import {
+    combineLatest,
+    debounceTime,
+    distinctUntilChanged,
+    forkJoin,
+    Observable,
+    Subject,
+    switchMap,
+    takeUntil,
+    tap
+} from "rxjs";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
 import {User} from "../../../core/types/user/user.type";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
@@ -12,6 +22,10 @@ import {UserService} from "../../../core/services/user/user.service";
 import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
 import {TaoBaiTao} from "../../../core/types/baibao/bai-bao.type";
 import {dateConvert} from "../../../shared/commons/utilities";
+import {PagingService} from "../../../core/services/paging.service";
+import {VaiTroTacGia} from "../../../core/types/sanpham/vai-tro-tac-gia.type";
+import {VaiTroService} from "../../../core/services/sanpham/vai-tro.service";
+import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 
 @Component({
     selector:"app-baibao-create",
@@ -23,13 +37,19 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
 
     tochucs:ToChuc[]
     tapChis:Magazine[]
+    vaiTros:VaiTroTacGia[]
+
     users:User[]
 
     createForm:FormGroup
     isCreate:boolean = false
+    isGetUsers:boolean = false
 
     destroy$ = new Subject<void>()
 
+    search$:Observable<[string]>
+
+    private firstSearch:boolean = false
 
     constructor(
         private fb:FormBuilder,
@@ -38,6 +58,9 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         private toChucService:ToChucService,
         private tapChiService:TapChiService,
         private userService:UserService,
+        private pagingService:PagingService,
+        private vaiTroService:VaiTroService,
+        private baiBaoService:BaiBaoService
     ) {
     }
 
@@ -224,7 +247,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             id_tapchi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator()
+                    Validators.required
                 ])
             ],
             loaiminhchung:[
@@ -271,12 +294,12 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         forkJoin([
             this.toChucService.getAllToChuc(),
             this.tapChiService.getAllTapChi(),
-            this.userService.getAllUsers()
-        ],(tcResponse,tacResponse,uResponse) => {
+            this.vaiTroService.getVaiTroBaiBao()
+        ],(tcResponse,tacResponse,vtResponse) => {
             return {
                 listTC: tcResponse.data,
                 listTaC: tacResponse.data,
-                listU:uResponse.data
+                listVT: vtResponse.data
             }
         }).pipe(
             takeUntil(this.destroy$)
@@ -284,37 +307,20 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             next:(response) => {
                 this.tochucs = response.listTC
                 this.tapChis = response.listTaC
-                this.users = response.listU
+                this.vaiTros = response.listVT
                 this.loadingService.stopLoading()
+                console.log(response)
             },
             error:(error) =>{
                 this.loadingService.stopLoading()
             }
         })
     }
-    addUserControls(user:User | any){
-        const control = this.fb.group({
-            id:[user.id],
-            tentacgia:[
-                {
-                    value:user.name,
-                    disabled:true
-                },
-                Validators.compose([
-                    Validators.required,
-                    noWhiteSpaceValidator
-                ])
-            ],
-            thutu:[null],
-            tyledonggop:[null],
-            id_vaitro:[null]
-        })
-        return control
-    }
+
 
     addGuestControls(){
         const control = this.fb.group({
-            id:[null],
+            id_tacgia:[null],
             tentacgia:[
                 null,
                 Validators.compose([
@@ -331,16 +337,71 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
 
     }
 
+    getAllUser(){
+        this.isGetUsers = true
+        this.search$ = combineLatest([
+            this.pagingService.keyword$,
+        ]).pipe(
+            takeUntil(this.destroy$)
+        )
+
+        this.search$.pipe(
+            takeUntil(this.destroy$),
+            tap(() => this.isGetUsers = true),
+            debounceTime(700),
+            distinctUntilChanged(),
+            switchMap(([ keyword]) => {
+                return this.userService.getAllUsers( keyword)
+            })
+        ).subscribe({
+            next:(response) => {
+                this.users = response.data
+                this.isGetUsers = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    "error",
+                    "Lỗi",
+                    error
+                )
+                this.isGetUsers = false
+            }
+        })
+    }
+
+    onSearchUser(event:any){
+        if(!this.firstSearch && event.length >= 3){
+            this.getAllUser()
+        }
+        if(event && event.length >= 3){
+            this.pagingService.updateKeyword(event)
+            this.firstSearch = true
+        }
+        if(event.length <= 0){
+            console.log("reset đi ?")
+            this.createForm.get("users")?.reset()
+        }
+    }
+
     onSubmit(){
         const form = this.createForm
-        // if(form.invalid){
-        //     this.notificationService.create(
-        //         'error',
-        //         'Lỗi',
-        //         'Vui lòng điền đúng yêu cầu của form'
-        //     )
-        //     return;
-        // }
+        const arrayForm = this.createForm.get('sanpham_tacgia') as FormArray
+        if(form.invalid || arrayForm.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
+            )
+            return;
+        }
+        if(arrayForm.length <= 0){
+            this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Vui lòng chọn tác giả'
+                )
+                return;
+        }
         const data:TaoBaiTao = {
             sanpham:{
                 tensanpham: form.get('tensanpham')?.value,
@@ -378,7 +439,31 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             number:form.get('number')?.value,
             pages:form.get('pages')?.value,
         }
-        console.log(data)
+        this.isCreate = true
+        this.baiBaoService.taoBaiBao(data)
+            .pipe(
+                takeUntil(this.destroy$)
+            ).subscribe({
+            next:(response) =>{
+                this.notificationService.create(
+                    'success',
+                    "Thành Công",
+                    response.message
+                )
+                this.isCreate = false
+                const formArray = this.createForm.get('sanpham_tacgia') as FormArray
+                formArray.clear()
+                this.createForm.reset()
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    "Lỗi",
+                    error
+                )
+                this.isCreate = false
+            }
+        })
     }
 
     onSelectUser(event:any){
@@ -389,12 +474,9 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             const data:User = event;
             const formArray = this.createForm.get('sanpham_tacgia') as FormArray
                 const control = this.fb.group({
-                    id:[data.id],
+                    id_tacgia:[data.id],
                     tentacgia:[
-                        {
-                            value:data.name,
-                            disabled:true
-                        },
+                        data.name,
                         Validators.compose([
                             Validators.required,
                             noWhiteSpaceValidator
@@ -405,7 +487,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     id_vaitro:[null]
                 })
                 formArray.push(control);
-                this.createForm.get("users")?.reset()
+                this.createForm.get("users")?.setValue(null)
             }
     }
 
@@ -421,7 +503,6 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
     ngOnDestroy() {
         this.destroy$.next()
         this.destroy$.complete()
+        this.pagingService.resetValues()
     }
-
-    protected readonly FormArray = FormArray;
 }

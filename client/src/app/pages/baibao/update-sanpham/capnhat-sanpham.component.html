@@ -82,7 +82,7 @@
                 <div class="tw-w-full lg:tw-w-[50%]">
                     <h3 class=""><span class="error">*</span> Thời Điểm Công Bố Hoàn Thành</h3>
                     <nz-form-control>
-                        <nz-date-picker nzFormat="dd/MM/yyyy" class="tw-w-full" nzPlaceHolder="Thời Điểm Công Bố Hoàn Thành" formControlName="thoidiemcongbohoanthanh"></nz-date-picker>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Thời Điểm Công Bố Hoàn Thành" formControlName="thoidiemcongbohoanthanh"></nz-date-picker>
                         <ng-container *ngIf="capNhatForm.controls?.['thoidiemcongbohoanthanh']?.touched && capNhatForm.controls?.['thoidiemcongbohoanthanh']?.dirty">
                             <small *ngIf="capNhatForm.controls?.['thoidiemcongbohoanthanh']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
                             <small *ngIf="capNhatForm.controls?.['thoidiemcongbohoanthanh']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
@@ -92,7 +92,7 @@
                 <div class="tw-w-full lg:tw-w-[50%]">
                     <h3 class=""><span class="error">*</span> Ngày Kê Khai</h3>
                     <nz-form-control>
-                        <nz-date-picker nzFormat="dd/MM/yyyy" class="tw-w-full" nzPlaceHolder="Ngày Kê Khai" formControlName="ngaykekhai"></nz-date-picker>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Kê Khai" formControlName="ngaykekhai"></nz-date-picker>
                         <ng-container *ngIf="capNhatForm.controls?.['ngaykekhai']?.touched && capNhatForm.controls?.['ngaykekhai']?.dirty">
                             <small *ngIf="capNhatForm.controls?.['ngaykekhai']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
                             <small *ngIf="capNhatForm.controls?.['ngaykekhai']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>

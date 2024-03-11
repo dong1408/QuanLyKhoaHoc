@@ -9,6 +9,13 @@ import {NzIconModule} from "ng-zorro-antd/icon";
 import {NzPopconfirmModule} from "ng-zorro-antd/popconfirm";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {SharedModule} from "../../../shared/components/shared.module";
+import {NzTagModule} from "ng-zorro-antd/tag";
+import {NzFormModule} from "ng-zorro-antd/form";
+import {NzGridModule} from "ng-zorro-antd/grid";
+import {NzInputModule} from "ng-zorro-antd/input";
+import {NzModalModule} from "ng-zorro-antd/modal";
+import {NzSelectModule} from "ng-zorro-antd/select";
+import {PagingService} from "../../../core/services/paging.service";
 
 @NgModule({
     declarations:[
@@ -23,10 +30,19 @@ import {SharedModule} from "../../../shared/components/shared.module";
         NzIconModule,
         NzPopconfirmModule,
         NzWaveModule,
-        SharedModule
+        SharedModule,
+        NzTagModule,
+        NzFormModule,
+        NzGridModule,
+        NzInputModule,
+        NzModalModule,
+        NzSelectModule
     ],
     exports:[
 
+    ],
+    providers:[
+        PagingService
     ]
 })
 

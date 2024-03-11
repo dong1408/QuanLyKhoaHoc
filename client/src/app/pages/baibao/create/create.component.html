@@ -3,419 +3,429 @@
         <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
     </button>
     <h1 class="text-primary tw-text-5xl">TẠO MỚI BÀI BÁO</h1>
-    <div class="tw-mt-[30px] tw-space-y-[6px]">
-        <form nz-form class="tw-space-y-[16px]" [formGroup]="createForm">
-            <h2 class="text-primary tw-text-4xl">Thông Tin Sản Phẩm</h2>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class=""><span class="error">*</span> Tên Sản Phẩm</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Tên Sản Phẩm"  type="text" formControlName="tensanpham"/>
-                    <ng-container *ngIf="createForm.controls?.['tensanpham']?.touched && createForm.controls?.['tensanpham']?.dirty">
-                        <small *ngIf="createForm.controls?.['tensanpham']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        <small *ngIf="createForm.controls?.['tensanpham']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class=""><span class="error">*</span> Tổng Số Tác Giả</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Tổng Số Tác Giả"  type="number" formControlName="tongsotacgia"/>
-                    <ng-container *ngIf="createForm.controls?.['tongsotacgia']?.touched && createForm.controls?.['tongsotacgia']?.dirty">
-                        <small *ngIf="createForm.controls?.['tongsotacgia']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        <small *ngIf="createForm.controls?.['tensanpham']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class=""><span class="error">*</span> Số Lần Quy Đổi</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Số Lần Quy Đổi"  type="number" formControlName="solandaquydoi"/>
-                    <ng-container *ngIf="createForm.controls?.['solandaquydoi']?.touched && createForm.controls?.['solandaquydoi']?.dirty">
-                        <small *ngIf="createForm.controls?.['solandaquydoi']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        <small *ngIf="createForm.controls?.['solandaquydoi']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class=""><span class="error">*</span> Điểm Quy Đổi</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Điểm Quy Đổi"  type="text" formControlName="diemquydoi"/>
-                    <ng-container *ngIf="createForm.controls?.['diemquydoi']?.touched && createForm.controls?.['diemquydoi']?.dirty">
-                        <small *ngIf="createForm.controls?.['diemquydoi']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        <small *ngIf="createForm.controls?.['diemquydoi']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class=""><span class="error">*</span> Giờ Quy Đổi</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Giờ Quy Đổi"  type="text" formControlName="gioquydoi"/>
-                    <ng-container *ngIf="createForm.controls?.['gioquydoi']?.touched && createForm.controls?.['gioquydoi']?.dirty">
-                        <small *ngIf="createForm.controls?.['gioquydoi']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        <small *ngIf="createForm.controls?.['gioquydoi']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class=""><span class="error">*</span> Thông Tin Chi Tiết</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Thông Tin Chi Tiết"  type="text" formControlName="thongtinchitiet"/>
-                    <ng-container *ngIf="createForm.controls?.['thongtinchitiet']?.touched && createForm.controls?.['thongtinchitiet']?.dirty">
-                        <small *ngIf="createForm.controls?.['thongtinchitiet']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        <small *ngIf="createForm.controls?.['thongtinchitiet']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class=""><span class="error">*</span> Cấp Sản Phẩm</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Cấp Sản Phẩm"  type="text" formControlName="capsanpham"/>
-                    <ng-container *ngIf="createForm.controls?.['capsanpham']?.touched && createForm.controls?.['capsanpham']?.dirty">
-                        <small *ngIf="createForm.controls?.['capsanpham']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        <small *ngIf="createForm.controls?.['capsanpham']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class=""><span class="error">*</span> Thời Điểm Công Bố Hoàn Thành</h3>
-                <nz-form-control>
-                    <nz-date-picker nzFormat="dd/MM/yyyy" class="tw-w-full" nzPlaceHolder="Thời Điểm Công Bố Hoàn Thành" formControlName="thoidiemcongbohoanthanh"></nz-date-picker>
-                    <ng-container *ngIf="createForm.controls?.['thoidiemcongbohoanthanh']?.touched && createForm.controls?.['thoidiemcongbohoanthanh']?.dirty">
-                        <small *ngIf="createForm.controls?.['thoidiemcongbohoanthanh']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        <small *ngIf="createForm.controls?.['thoidiemcongbohoanthanh']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Có Sử Dụng Email Trường ?</h3>
-                <nz-form-control>
-                    <nz-select
-                            formControlName="cosudungemailtruong"
-                            nzShowSearch nzPlaceHolder="Có Sử Dụng Email Trường ?"
-                    >
-                        <nz-option nzLabel="Có" [nzValue]=true></nz-option>
-                        <nz-option nzLabel="Không" [nzValue]=false></nz-option>
-                    </nz-select>
-                    <ng-container *ngIf="createForm.controls?.['cosudungemailtruong']?.touched && createForm.controls?.['cosudungemailtruong']?.dirty">
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Có Sử Dụng Email Đơn Vị Khác ?</h3>
-                <nz-form-control>
-                    <nz-select
-                            formControlName="cosudungemaildonvikhac"
-                            nzShowSearch nzPlaceHolder="Có Sử Dụng Email Đơn Vị Khác ?"
-                    >
-                        <nz-option nzLabel="Có" [nzValue]=true></nz-option>
-                        <nz-option nzLabel="Không" [nzValue]=false></nz-option>
-                    </nz-select>
-                    <ng-container *ngIf="createForm.controls?.['cosudungemaildonvikhac']?.touched && createForm.controls?.['cosudungemaildonvikhac']?.dirty">
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Có Sử Dụng Thông Tin Trường ?</h3>
-                <nz-form-control>
-                    <nz-select
-                            formControlName="cothongtintruong"
-                            nzShowSearch nzPlaceHolder="Có Sử Dụng Email Đơn Vị Khác ?"
-                    >
-                        <nz-option nzLabel="Có" [nzValue]=true></nz-option>
-                        <nz-option nzLabel="Không" [nzValue]=false></nz-option>
-                    </nz-select>
-                    <ng-container *ngIf="createForm.controls?.['cothongtintruong']?.touched && createForm.controls?.['cothongtintruong']?.dirty">
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Có Sử Dụng Thông Tin Đơn Vị Khác ?</h3>
-                <nz-form-control>
-                    <nz-select
-                            formControlName="cothongtindonvikhac"
-                            nzShowSearch nzPlaceHolder="Có Sử Dụng Thông Tin Đơn Vị Khác ?"
-                    >
-                        <nz-option nzLabel="Có" [nzValue]=true></nz-option>
-                        <nz-option nzLabel="Không" [nzValue]=false></nz-option>
-                    </nz-select>
-                    <ng-container *ngIf="createForm.controls?.['cothongtindonvikhac']?.touched && createForm.controls?.['cothongtindonvikhac']?.dirty">
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Đơn Vị Khác</h3>
-                <nz-form-control>
-                    <nz-select
-                            formControlName="id_thongtinnoikhac"
-                            nzShowSearch  nzPlaceHolder="Đơn Vị Khác"
-                    >
-                        <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
-                    </nz-select>
-                    <ng-container *ngIf="createForm.controls?.['id_thongtinnoikhac']?.touched && createForm.controls?.['id_thongtinnoikhac']?.dirty">
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Có Nhận Tài Trợ ?</h3>
-                <nz-form-control>
-                    <nz-select
-                            formControlName="conhantaitro"
-                            nzShowSearch
-                            nzPlaceHolder="Có Nhận Tài Trợ ?"
-                    >
-                        <nz-option nzLabel="Có" [nzValue]=true></nz-option>
-                        <nz-option nzLabel="Không" [nzValue]=false></nz-option>
-                    </nz-select>
-                    <ng-container *ngIf="createForm.controls?.['conhantaitro']?.touched && createForm.controls?.['conhantaitro']?.dirty">
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Đơn Vị Tài Trợ</h3>
-                <nz-form-control>
-                    <nz-select
-                            formControlName="id_donvitaitro"
-                            nzShowSearch  nzPlaceHolder="Đơn Vị Tài Trợ"
-                    >
-                        <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
-                    </nz-select>
-                    <ng-container *ngIf="createForm.controls?.['id_donvitaitro']?.touched && createForm.controls?.['id_donvitaitro']?.dirty">
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Chi Tiết Đơn Vị Tài Trợ</h3>
-                <nz-form-control>
+    <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+        <app-loading></app-loading>
+    </ng-template>
+    <ng-template #loaded>
+        <div class="tw-mt-[30px] tw-space-y-[6px]">
+            <form nz-form class="tw-space-y-[16px]" [formGroup]="createForm">
+                <h2 class="text-primary tw-text-4xl">Thông Tin Sản Phẩm</h2>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Tên Sản Phẩm</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Tên Sản Phẩm"  type="text" formControlName="tensanpham"/>
+                        <ng-container *ngIf="createForm.controls?.['tensanpham']?.touched && createForm.controls?.['tensanpham']?.dirty">
+                            <small *ngIf="createForm.controls?.['tensanpham']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="createForm.controls?.['tensanpham']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Tổng Số Tác Giả</h3>
+                    <nz-form-control>
+                        <input nz-input min="0" placeholder="Tổng Số Tác Giả"  type="number" formControlName="tongsotacgia"/>
+                        <ng-container *ngIf="createForm.controls?.['tongsotacgia']?.touched && createForm.controls?.['tongsotacgia']?.dirty">
+                            <small *ngIf="createForm.controls?.['tongsotacgia']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="createForm.controls?.['tensanpham']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Số Lần Quy Đổi</h3>
+                    <nz-form-control>
+                        <input nz-input min="0" placeholder="Số Lần Quy Đổi"  type="number" formControlName="solandaquydoi"/>
+                        <ng-container *ngIf="createForm.controls?.['solandaquydoi']?.touched && createForm.controls?.['solandaquydoi']?.dirty">
+                            <small *ngIf="createForm.controls?.['solandaquydoi']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="createForm.controls?.['solandaquydoi']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Điểm Quy Đổi</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Điểm Quy Đổi"  type="text" formControlName="diemquydoi"/>
+                        <ng-container *ngIf="createForm.controls?.['diemquydoi']?.touched && createForm.controls?.['diemquydoi']?.dirty">
+                            <small *ngIf="createForm.controls?.['diemquydoi']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="createForm.controls?.['diemquydoi']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Giờ Quy Đổi</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Giờ Quy Đổi"  type="text" formControlName="gioquydoi"/>
+                        <ng-container *ngIf="createForm.controls?.['gioquydoi']?.touched && createForm.controls?.['gioquydoi']?.dirty">
+                            <small *ngIf="createForm.controls?.['gioquydoi']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="createForm.controls?.['gioquydoi']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Thông Tin Chi Tiết</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Thông Tin Chi Tiết"  type="text" formControlName="thongtinchitiet"/>
+                        <ng-container *ngIf="createForm.controls?.['thongtinchitiet']?.touched && createForm.controls?.['thongtinchitiet']?.dirty">
+                            <small *ngIf="createForm.controls?.['thongtinchitiet']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="createForm.controls?.['thongtinchitiet']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Cấp Sản Phẩm</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Cấp Sản Phẩm"  type="text" formControlName="capsanpham"/>
+                        <ng-container *ngIf="createForm.controls?.['capsanpham']?.touched && createForm.controls?.['capsanpham']?.dirty">
+                            <small *ngIf="createForm.controls?.['capsanpham']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="createForm.controls?.['capsanpham']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Thời Điểm Công Bố Hoàn Thành</h3>
+                    <nz-form-control>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Thời Điểm Công Bố Hoàn Thành" formControlName="thoidiemcongbohoanthanh"></nz-date-picker>
+                        <ng-container *ngIf="createForm.controls?.['thoidiemcongbohoanthanh']?.touched && createForm.controls?.['thoidiemcongbohoanthanh']?.dirty">
+                            <small *ngIf="createForm.controls?.['thoidiemcongbohoanthanh']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="createForm.controls?.['thoidiemcongbohoanthanh']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Có Sử Dụng Email Trường ?</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="cosudungemailtruong"
+                                nzShowSearch nzPlaceHolder="Có Sử Dụng Email Trường ?"
+                        >
+                            <nz-option nzLabel="Có" [nzValue]=true></nz-option>
+                            <nz-option nzLabel="Không" [nzValue]=false></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="createForm.controls?.['cosudungemailtruong']?.touched && createForm.controls?.['cosudungemailtruong']?.dirty">
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Có Sử Dụng Email Đơn Vị Khác ?</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="cosudungemaildonvikhac"
+                                nzShowSearch nzPlaceHolder="Có Sử Dụng Email Đơn Vị Khác ?"
+                        >
+                            <nz-option nzLabel="Có" [nzValue]=true></nz-option>
+                            <nz-option nzLabel="Không" [nzValue]=false></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="createForm.controls?.['cosudungemaildonvikhac']?.touched && createForm.controls?.['cosudungemaildonvikhac']?.dirty">
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Có Sử Dụng Thông Tin Trường ?</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="cothongtintruong"
+                                nzShowSearch nzPlaceHolder="Có Sử Dụng Email Đơn Vị Khác ?"
+                        >
+                            <nz-option nzLabel="Có" [nzValue]=true></nz-option>
+                            <nz-option nzLabel="Không" [nzValue]=false></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="createForm.controls?.['cothongtintruong']?.touched && createForm.controls?.['cothongtintruong']?.dirty">
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Có Sử Dụng Thông Tin Đơn Vị Khác ?</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="cothongtindonvikhac"
+                                nzShowSearch nzPlaceHolder="Có Sử Dụng Thông Tin Đơn Vị Khác ?"
+                        >
+                            <nz-option nzLabel="Có" [nzValue]=true></nz-option>
+                            <nz-option nzLabel="Không" [nzValue]=false></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="createForm.controls?.['cothongtindonvikhac']?.touched && createForm.controls?.['cothongtindonvikhac']?.dirty">
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Đơn Vị Khác</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="id_thongtinnoikhac"
+                                nzShowSearch  nzPlaceHolder="Đơn Vị Khác"
+                        >
+                            <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="createForm.controls?.['id_thongtinnoikhac']?.touched && createForm.controls?.['id_thongtinnoikhac']?.dirty">
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Có Nhận Tài Trợ ?</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="conhantaitro"
+                                nzShowSearch
+                                nzPlaceHolder="Có Nhận Tài Trợ ?"
+                        >
+                            <nz-option nzLabel="Có" [nzValue]=true></nz-option>
+                            <nz-option nzLabel="Không" [nzValue]=false></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="createForm.controls?.['conhantaitro']?.touched && createForm.controls?.['conhantaitro']?.dirty">
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Đơn Vị Tài Trợ</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="id_donvitaitro"
+                                nzShowSearch  nzPlaceHolder="Đơn Vị Tài Trợ"
+                        >
+                            <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="createForm.controls?.['id_donvitaitro']?.touched && createForm.controls?.['id_donvitaitro']?.dirty">
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Chi Tiết Đơn Vị Tài Trợ</h3>
+                    <nz-form-control>
                     <textarea
                             nz-input
                             placeholder="Chi Tiết Đơn Vị Tài Trợ"
                             formControlName="chitietdonvitaitro"
                             [nzAutosize]="{ minRows: 3, maxRows: 10 }"
                     ></textarea>
-                    <ng-container *ngIf="createForm.controls?.['chitietdonvitaitro']?.touched && createForm.controls?.['chitietdonvitaitro']?.dirty">
-                        <small *ngIf="createForm.controls?.['chitietdonvitaitro']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Đường Dẫn File Minh Chứng</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Đường Dẫn File Minh Chứng"  type="text" formControlName="url_minhchung"/>
-                    <ng-container *ngIf="createForm.controls?.['url_minhchung']?.touched && createForm.controls?.['url_minhchung']?.dirty">
-                        <small *ngIf="createForm.controls?.['url_minhchung']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        <small *ngIf="createForm.controls?.['url_minhchung']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Loại Minh Chứng</h3>
-                <nz-form-control>
+                        <ng-container *ngIf="createForm.controls?.['chitietdonvitaitro']?.touched && createForm.controls?.['chitietdonvitaitro']?.dirty">
+                            <small *ngIf="createForm.controls?.['chitietdonvitaitro']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Đường Dẫn File Minh Chứng</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Đường Dẫn File Minh Chứng"  type="text" formControlName="url_minhchung"/>
+                        <ng-container *ngIf="createForm.controls?.['url_minhchung']?.touched && createForm.controls?.['url_minhchung']?.dirty">
+                            <small *ngIf="createForm.controls?.['url_minhchung']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="createForm.controls?.['url_minhchung']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Loại Minh Chứng</h3>
+                    <nz-form-control>
                     <textarea
                             nz-input
                             placeholder="Loại Minh Chứng"
                             formControlName="loaiminhchung"
                             [nzAutosize]="{ minRows: 3, maxRows: 10 }"
                     ></textarea>
-                    <ng-container *ngIf="createForm.controls?.['loaiminhchung']?.touched && createForm.controls?.['loaiminhchung']?.dirty">
-                        <small *ngIf="createForm.controls?.['loaiminhchung']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Tác Giả <span (click)="addGuestControls()" class="primary tw-cursor-pointer"> +Thêm Tác Giả Ngoài</span></h3>
-                <nz-form-control>
-                    <nz-select
-                            nzShowSearch
-                            nzPlaceHolder="Tác Giả"
-                            formControlName="users"
-                            (ngModelChange)="onSelectUser($event)"
-                    >
-                        <nz-option *ngFor="let data of this.users" nzLabel="{{data.username}} - {{data.name}}" [nzValue]=data></nz-option>
-                    </nz-select>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]" formArrayName="sanpham_tacgia">
-                <div *ngFor="let control of sanphamTacgiaControls;let i = index">
-                    <div [formGroupName]="i" class="tw-space-y-[0.5rem] tw-mb-[1.5rem]">
-                        <div class="tw-flex tw-items-center tw-gap-[0.5rem]">
-                            <h2>Tác giả {{i + 1}}</h2>
-                            <button
-                                nz-button
-                                nzType="primary"
-                                nzDanger
-                                (click)="removeUser(i)"
-                                nzSize="small"
-                            >
-                                <span nz-icon nzType="close" nzTheme="outline"></span>
-                            </button>
+                        <ng-container *ngIf="createForm.controls?.['loaiminhchung']?.touched && createForm.controls?.['loaiminhchung']?.dirty">
+                            <small *ngIf="createForm.controls?.['loaiminhchung']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Tác Giả <span (click)="addGuestControls()" class="primary tw-cursor-pointer"> +Thêm Tác Giả Ngoài</span></h3>
+                    <nz-form-control>
+                        <nz-select
+                                nzShowSearch
+                                nzPlaceHolder="Tác Giả"
+                                formControlName="users"
+                                (nzOnSearch)="onSearchUser($event)"
+                                (ngModelChange)="onSelectUser($event)"
+                                [nzLoading]="isGetUsers"
+                        >
+                            <nz-option *ngFor="let data of this.users" nzLabel="{{data.username}} - {{data.name}}" [nzValue]=data></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]" formArrayName="sanpham_tacgia">
+                    <div *ngFor="let control of sanphamTacgiaControls;let i = index">
+                        <div [formGroupName]="i" class="tw-space-y-[0.5rem] tw-mb-[1.5rem]">
+                            <div class="tw-flex tw-items-center tw-gap-[0.5rem]">
+                                <h2>Tác giả {{i + 1}}</h2>
+                                <button
+                                        nz-button
+                                        nzType="primary"
+                                        nzDanger
+                                        (click)="removeUser(i)"
+                                        nzSize="small"
+                                >
+                                    <span nz-icon nzType="close" nzTheme="outline"></span>
+                                </button>
+                            </div>
+                            <nz-form-control>
+                                <h4 class=""><span class="error">*</span> Tên Tác Giả</h4>
+                                <input nz-input placeholder="Tên Tác Giả"  type="text" formControlName="tentacgia"/>
+                                <ng-container *ngIf="control.get('tentacgia')?.touched && control.get('tentacgia')?.dirty">
+                                    <small *ngIf="control.get('tentacgia')?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                                    <small *ngIf="control.get('tentacgia')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                                </ng-container>
+                            </nz-form-control>
+                            <nz-form-control>
+                                <h4 class=""><span class="error">*</span> Vai Trò</h4>
+                                <nz-select
+                                        formControlName="id_vaitro"
+                                        nzShowSearch  nzPlaceHolder="Vai Trò"
+                                >
+                                    <!--                                <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>-->
+                                    <nz-option *ngFor="let data of vaiTros" nzLabel="{{data.tenvaitro}}" [nzValue]="data.id"></nz-option>
+                                </nz-select>
+                                <ng-container *ngIf="control.get('id_vaitro')?.touched && control.get('id_vaitro')?.dirty">
+                                    <small *ngIf="control.get('id_vaitro')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                                </ng-container>
+                            </nz-form-control>
+                            <nz-form-control>
+                                <h4 class="">Thứ Tự</h4>
+                                <input nz-input placeholder="Thứ Tự"  type="number" formControlName="thutu"/>
+                                <ng-container *ngIf="control.get('thutu')?.touched && control.get('thutu')?.dirty">
+                                </ng-container>
+                            </nz-form-control>
+                            <nz-form-control>
+                                <h4 class="">Tỷ Lệ Đóng Góp</h4>
+                                <input nz-input placeholder="Tỷ Lệ Đóng Góp"  type="number" formControlName="tyledonggop"/>
+                                <ng-container *ngIf="control.get('tyledonggop')?.touched && control.get('tyledonggop')?.dirty">
+                                </ng-container>
+                            </nz-form-control>
                         </div>
-                        <nz-form-control>
-                            <input nz-input placeholder="Tên Tác Giả"  type="text" formControlName="tentacgia"/>
-                            <ng-container *ngIf="control.get('tentacgia')?.touched && control.get('tentacgia')?.dirty">
-                                <small *ngIf="control.get('tentacgia')?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                                <small *ngIf="control.get('tentacgia')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                            </ng-container>
-                        </nz-form-control>
-                        <nz-form-control>
-                            <nz-select
-                                    formControlName="id_vaitro"
-                                    nzShowSearch  nzPlaceHolder="Vai Trò"
-                            >
-                                <!--                                <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>-->
-                                <nz-option nzLabel="Tác Giả Đầu Tiên" nzValue=1></nz-option>
-                                <nz-option nzLabel="Tác Giả Liên Hệ" nzValue=2></nz-option>
-                            </nz-select>
-                            <ng-container *ngIf="control.get('id_vaitro')?.touched && control.get('id_vaitro')?.dirty">
-                                <small *ngIf="control.get('id_vaitro')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                            </ng-container>
-                        </nz-form-control>
-                        <nz-form-control>
-                            <input nz-input placeholder="Thứ Tự"  type="number" formControlName="thutu"/>
-                            <ng-container *ngIf="control.get('thutu')?.touched && control.get('thutu')?.dirty">
-                            </ng-container>
-                        </nz-form-control>
-                        <nz-form-control>
-                            <input nz-input placeholder="Tỷ Lệ Đóng Góp"  type="number" formControlName="tyledonggop"/>
-                            <ng-container *ngIf="control.get('tyledonggop')?.touched && control.get('tyledonggop')?.dirty">
-                            </ng-container>
-                        </nz-form-control>
                     </div>
                 </div>
-            </div>
-            <div class="tw-mt-[1rem]">
-                <nz-divider></nz-divider>
-            </div>
-            <h2 class="text-primary tw-text-4xl">Thông Tin Bài Báo</h2>
+                <div class="tw-mt-[1rem]">
+                    <nz-divider></nz-divider>
+                </div>
+                <h2 class="text-primary tw-text-4xl">Thông Tin Bài Báo</h2>
 
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class=""><span class="error">*</span> Tạp Chí</h3>
-                <nz-form-control>
-                    <nz-select
-                            formControlName="id_tapchi"
-                            nzShowSearch
-                            nzPlaceHolder="Tạp Chí"
-                    >
-                        <nz-option *ngFor="let data of this.tapChis" [nzLabel]="data.name ? data.name : 'Không Có Tên'" [nzValue]=data.id></nz-option>
-                    </nz-select>
-                    <ng-container *ngIf="createForm.controls?.['id_nhaxuatban']?.touched && createForm.controls?.['id_nhaxuatban']?.dirty">
-                        <small *ngIf="createForm.controls?.['id_nhaxuatban']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Đường Dẫn</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Đường Dẫn (URL)"  type="text" formControlName="url"/>
-                    <ng-container *ngIf="createForm.controls?.['url']?.touched && createForm.controls?.['url']?.dirty">
-                        <small *ngIf="createForm.controls?.['url']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">DOI</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="DOI"  type="text" formControlName="doi"/>
-                    <ng-container *ngIf="createForm.controls?.['doi']?.touched && createForm.controls?.['doi']?.dirty">
-                        <small *ngIf="createForm.controls?.['doi']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Received</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Received"  type="text" formControlName="received"/>
-                    <ng-container *ngIf="createForm.controls?.['received']?.touched && createForm.controls?.['received']?.dirty">
-                        <small *ngIf="createForm.controls?.['received']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Accepted</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Accepted"  type="text" formControlName="accepted"/>
-                    <ng-container *ngIf="createForm.controls?.['accepted']?.touched && createForm.controls?.['accepted']?.dirty">
-                        <small *ngIf="createForm.controls?.['accepted']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Published</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Published"  type="text" formControlName="published"/>
-                    <ng-container *ngIf="createForm.controls?.['published']?.touched && createForm.controls?.['published']?.dirty">
-                        <small *ngIf="createForm.controls?.['published']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Keywords</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Từ Khóa"  type="text" formControlName="keywords"/>
-                    <ng-container *ngIf="createForm.controls?.['keywords']?.touched && createForm.controls?.['keywords']?.dirty">
-                        <small *ngIf="createForm.controls?.['keywords']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Volume</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Volume"  type="text" formControlName="volume"/>
-                    <ng-container *ngIf="createForm.controls?.['volume']?.touched && createForm.controls?.['volume']?.dirty">
-                        <small *ngIf="createForm.controls?.['volume']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Issue</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Issue"  type="text" formControlName="issue"/>
-                    <ng-container *ngIf="createForm.controls?.['issue']?.touched && createForm.controls?.['issue']?.dirty">
-                        <small *ngIf="createForm.controls?.['issue']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Number</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Number"  type="text" formControlName="number"/>
-                    <ng-container *ngIf="createForm.controls?.['number']?.touched && createForm.controls?.['number']?.dirty">
-                        <small *ngIf="createForm.controls?.['number']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full lg:tw-w-[50%]">
-                <h3 class="">Pages</h3>
-                <nz-form-control>
-                    <input nz-input placeholder="Pages"  type="text" formControlName="pages"/>
-                    <ng-container *ngIf="createForm.controls?.['pages']?.touched && createForm.controls?.['pages']?.dirty">
-                        <small *ngIf="createForm.controls?.['pages']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <div class="tw-w-full">
-                <h3 class="">Abstract</h3>
-                <nz-form-control>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Tạp Chí</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="id_tapchi"
+                                nzShowSearch
+                                nzPlaceHolder="Tạp Chí"
+                        >
+                            <nz-option *ngFor="let data of this.tapChis" [nzLabel]="data.name ? data.name : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="createForm.controls?.['id_nhaxuatban']?.touched && createForm.controls?.['id_nhaxuatban']?.dirty">
+                            <small *ngIf="createForm.controls?.['id_nhaxuatban']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Đường Dẫn</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Đường Dẫn (URL)"  type="text" formControlName="url"/>
+                        <ng-container *ngIf="createForm.controls?.['url']?.touched && createForm.controls?.['url']?.dirty">
+                            <small *ngIf="createForm.controls?.['url']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">DOI</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="DOI"  type="text" formControlName="doi"/>
+                        <ng-container *ngIf="createForm.controls?.['doi']?.touched && createForm.controls?.['doi']?.dirty">
+                            <small *ngIf="createForm.controls?.['doi']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Received</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Received"  type="text" formControlName="received"/>
+                        <ng-container *ngIf="createForm.controls?.['received']?.touched && createForm.controls?.['received']?.dirty">
+                            <small *ngIf="createForm.controls?.['received']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Accepted</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Accepted"  type="text" formControlName="accepted"/>
+                        <ng-container *ngIf="createForm.controls?.['accepted']?.touched && createForm.controls?.['accepted']?.dirty">
+                            <small *ngIf="createForm.controls?.['accepted']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Published</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Published"  type="text" formControlName="published"/>
+                        <ng-container *ngIf="createForm.controls?.['published']?.touched && createForm.controls?.['published']?.dirty">
+                            <small *ngIf="createForm.controls?.['published']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Keywords</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Keywords"  type="text" formControlName="keywords"/>
+                        <ng-container *ngIf="createForm.controls?.['keywords']?.touched && createForm.controls?.['keywords']?.dirty">
+                            <small *ngIf="createForm.controls?.['keywords']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Volume</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Volume"  type="text" formControlName="volume"/>
+                        <ng-container *ngIf="createForm.controls?.['volume']?.touched && createForm.controls?.['volume']?.dirty">
+                            <small *ngIf="createForm.controls?.['volume']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Issue</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Issue"  type="text" formControlName="issue"/>
+                        <ng-container *ngIf="createForm.controls?.['issue']?.touched && createForm.controls?.['issue']?.dirty">
+                            <small *ngIf="createForm.controls?.['issue']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Number</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Number"  type="text" formControlName="number"/>
+                        <ng-container *ngIf="createForm.controls?.['number']?.touched && createForm.controls?.['number']?.dirty">
+                            <small *ngIf="createForm.controls?.['number']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Pages</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Pages"  type="text" formControlName="pages"/>
+                        <ng-container *ngIf="createForm.controls?.['pages']?.touched && createForm.controls?.['pages']?.dirty">
+                            <small *ngIf="createForm.controls?.['pages']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full">
+                    <h3 class="">Abstract</h3>
+                    <nz-form-control>
                           <textarea
                                   nz-input
                                   placeholder="Abstract"
                                   formControlName="abstract"
                                   [nzAutosize]="{ minRows: 10, maxRows: 10 }"
                           ></textarea>
-                    <ng-container *ngIf="createForm.controls?.['abstract']?.touched && createForm.controls?.['abstract']?.dirty">
-                        <small *ngIf="createForm.controls?.['abstract']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                    </ng-container>
-                </nz-form-control>
-            </div>
-            <button
-                    nz-button
-                    nzType="primary"
-                    (click)="onSubmit()"
-                    nzSize="large"
-                    [nzLoading]="isCreate"
-            >
-                <span nz-icon nzType="plus" nzTheme="outline"></span>
-                Tạo Bài Báo
-            </button>
-        </form>
-    </div>
+                        <ng-container *ngIf="createForm.controls?.['abstract']?.touched && createForm.controls?.['abstract']?.dirty">
+                            <small *ngIf="createForm.controls?.['abstract']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <button
+                        nz-button
+                        nzType="primary"
+                        (click)="onSubmit()"
+                        nzSize="large"
+                        [nzLoading]="isCreate"
+                >
+                    <span nz-icon nzType="plus" nzTheme="outline"></span>
+                    Tạo Bài Báo
+                </button>
+            </form>
+        </div>
+    </ng-template>
 </div>
