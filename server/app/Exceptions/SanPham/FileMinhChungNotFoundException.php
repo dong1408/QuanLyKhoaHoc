@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\BaiBao;
+namespace App\Exceptions\SanPham;
 
 use App\Utilities\ResponseError;
 use Exception;

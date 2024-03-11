@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\BaiBao;
+namespace App\Http\Requests\SanPham;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateTrangThaiRaSoatBaiBao extends FormRequest
+class UpdateFileMinhChungSanPhamRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,10 +29,8 @@ class UpdateTrangThaiRaSoatBaiBao extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "trangthairasoat" => [
-                "bail","required","string",
-                Rule::in(["Đang rà soát","Đã xác nhận"])
-            ]
+            "loaiminhchung" => "bail|nullable|string",
+            "url" => "bail|required|string",
         ];
     }
 
@@ -42,7 +40,7 @@ class UpdateTrangThaiRaSoatBaiBao extends FormRequest
             'required' => 'Trường :attribute là bắt buộc',
             'integer' => 'Trường :attribute phải là một số',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
-            'in' => 'Trường :attribute phải là một trong các giá trị :values'
+            'boolean' => 'Trường :attribute phải là true/false',
         ];
     }
 
