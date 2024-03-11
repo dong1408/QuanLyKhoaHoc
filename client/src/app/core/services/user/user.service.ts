@@ -15,9 +15,9 @@ export class UserService{
 
     }
 
-    getAllUsers(){
+    getAllUsers(keyword:string){
         return this.http.get<ApiResponse<User[]>>(
-            `${environment.apiUrl}/users`
+            `${environment.apiUrl}/users?search=${keyword}`
         ).pipe(
             catchError(handleError)
         )

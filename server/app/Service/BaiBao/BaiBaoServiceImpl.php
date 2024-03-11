@@ -196,7 +196,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 $listIdTacGia[] = $newListSanPhamTacGia[$i]['id_tacgia'];
                 $listIdVaiTro[] = $newListSanPhamTacGia[$i]['id_vaitro'];
                 $thuTus[] = $newListSanPhamTacGia[$i]['thutu'] == null ? null : $newListSanPhamTacGia[$i]['thutu'];
-                $tyLeDongGop[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
+                $tyLeDongGops[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
             }
 
             $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
@@ -255,7 +255,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 'conhantaitro' => $validated['sanpham']['conhantaitro'],
                 'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['id_donvitaitro'] : null,
                 'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null,
-                'ngaykekhai' => date("d-m-Y"),
+                'ngaykekhai' => date("Y-m-d"),
                 'id_nguoikekhai' => auth('api')->user()->id,
                 'trangthairasoat' => "Đang rà soát",
                 'ngayrasoat' => null,
@@ -445,16 +445,15 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
 
         $validated = $request->validated();
+        $result = [];
 
 
-
-        DB::transaction(function () use ($validated, &$sanPham) {
+        DB::transaction(function () use ($validated, &$sanPham,&$result) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
-
 
 
             $newListSanPhamTacGia = [];
@@ -502,7 +501,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 $listIdTacGia[] = $newListSanPhamTacGia[$i]['id_tacgia'];
                 $listIdVaiTro[] = $newListSanPhamTacGia[$i]['id_vaitro'];
                 $thuTus[] = $newListSanPhamTacGia[$i]['thutu'] == null ? null : $newListSanPhamTacGia[$i]['thutu'];
-                $tyLeDongGop[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
+                $tyLeDongGops[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
             }
             $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
             // Kiểm tra bài báo phải có tác giả đầu tiên
@@ -544,7 +543,6 @@ class BaiBaoServiceImpl implements BaiBaoService
                 $listIdVaiTro[] = $idVaiTroTacGiaLienHe;
                 $listIdTacGia[] = $listIdTacGia[$key];
             }
-            $result = [];
             SanPhamTacGia::where('id_sanpham', $sanPham->id)->forceDelete();
             for ($i = 0; $i < count($listIdTacGia); $i++) {
                 $tacGiaId = $listIdTacGia[$i];
@@ -561,7 +559,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
             }
         });
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Thành công", $result);
     }
 
 
@@ -615,7 +613,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
         $sanPham->trangthairasoat = $validated['trangthairasoat'];
         $sanPham->id_nguoirasoat = auth('api')->user()->id;
-        $sanPham->ngayrasoat = date("Y-m-d H:i:s");
+        $sanPham->ngayrasoat = date("Y-m-d");
         $sanPham->save();
         return new ResponseSuccess("Thành công", true);
     }

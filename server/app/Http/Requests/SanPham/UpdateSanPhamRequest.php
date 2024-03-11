@@ -34,10 +34,10 @@ class UpdateSanPhamRequest extends FormRequest
                 "bail", "required",
                 Rule::unique('san_phams')->ignore(Route::input('id'), 'id')
             ],
-//            "id_loaisanpham" => [
-//                "bail", "integer",
-//                Rule::exists('d_m_san_phams', 'id')
-//            ],
+            //            "id_loaisanpham" => [
+            //                "bail", "integer",
+            //                Rule::exists('d_m_san_phams', 'id')
+            //            ],
             "tongsotacgia" => "bail|required|integer",
             "solandaquydoi" => "bail|required|integer",
             "cosudungemailtruong" => "bail|nullable|boolean",
@@ -72,11 +72,11 @@ class UpdateSanPhamRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-//            'id_loaisanpham.exists' => 'Danh mục sản phẩm không tồn tại trên hệ thông',
+            //            'id_loaisanpham.exists' => 'Danh mục sản phẩm không tồn tại trên hệ thông',
             'id_thongtinnoikhac.exists' => 'Thông tin nơi khác không tồn tại trên hệ thống',
             'id_donvitaitro.exists' => 'Thông tin đơn vị tài trợ không tồn tại trên hệ thống',
-            'id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
-            'id_nguoirasoat.exists' => 'Thông tin người rà soát không tồn tại trên hệ thống',
+            //            'id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
+            //            'id_nguoirasoat.exists' => 'Thông tin người rà soát không tồn tại trên hệ thống',
             'tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
         ];
     }

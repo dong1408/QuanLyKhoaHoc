@@ -10,7 +10,7 @@ class VaiTroTacGiaServiceImpl implements VaiTroTacGiaService
 {
     public function getVaiTroOfBaiBao(): ResponseSuccess
     {
-        $vaiTros = DMVaiTroTacGia::withTrasuhed()->where('role', 'baibao'); // sản phẩm
+        $vaiTros = DMVaiTroTacGia::where('role', 'baibao')->get(); // sản phẩm
         $result = [];
         foreach ($vaiTros as $vaiTro) {
             $result[] = Convert::getVaiTroTacGiaVm($vaiTro);
@@ -20,7 +20,7 @@ class VaiTroTacGiaServiceImpl implements VaiTroTacGiaService
 
     public function getVaiTroOfDeTai(): ResponseSuccess
     {
-        $vaiTros = DMVaiTroTacGia::withTrashed()->where('role', 'detai');
+        $vaiTros = DMVaiTroTacGia::where('role', 'detai')->get();
         $result = [];
         foreach ($vaiTros as $vaiTro) {
             $result[] = Convert::getVaiTroTacGiaVm($vaiTro);

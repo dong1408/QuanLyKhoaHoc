@@ -39,7 +39,6 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
                 "bail", "required", "int",
                 Rule::exists("d_m_vai_tro_tac_gias", "id")
             ],
-            "sanpham_tacgia.*.tentacgia" => "bail|required|string",
             "sanpham_tacgia.*.thutu" => "bail|nullable|integer",
             "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
         ];
