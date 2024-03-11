@@ -29,8 +29,11 @@ class XetDuyetDeTaiRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "ketquatuyenchon" => "bail|required|string",
-            "lydo" => "bail|nullable|string"
+            "ketquaxetduyet" => "bail|required|string",
+            "sohopdong" => "bail|nullable|string",
+            "ngaykyhopdong" => "bail|nullable|string",
+            "thoihanhopdong" => "bail|nullable|string",
+            "kinhphi" => "bail|nullable|string",
         ];
     }
 

@@ -13,6 +13,7 @@ use App\Exceptions\BaiBao\UpdateTrangThaiRaSoatException;
 use App\Exceptions\BaiBao\VaiTroOfBaiBaoException;
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\InvalidValueException;
+use App\Exceptions\SanPham\LoaiSanPhamWrongException;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateFileMinhChungSanPhamRequest;
@@ -116,7 +117,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
-        $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham->baiBao);
+        $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
         return new ResponseSuccess("Thành công", $result);
     }
 
@@ -254,7 +255,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 'conhantaitro' => $validated['sanpham']['conhantaitro'],
                 'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['id_donvitaitro'] : null,
                 'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null,
-                'ngaykekhai' => date("Y-m-d H:i:s"),
+                'ngaykekhai' => date("d-m-Y"),
                 'id_nguoikekhai' => auth('api')->user()->id,
                 'trangthairasoat' => "Đang rà soát",
                 'ngayrasoat' => null,
@@ -349,9 +350,16 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
+        // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
         if ($sanPham->trashed()) {
             throw new BaiBaoCanNotUpdateException();
         }
+
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
+        }
+
         $validated = $request->validated();
 
         $sanPham->tensanpham = $validated['tensanpham'];
@@ -367,7 +375,6 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham->id_donvitaitro = $validated['conhantaitro'] == true ? $validated['id_donvitaitro'] : null;
         $sanPham->chitietdonvitaitro = $validated['conhantaitro'] == true ? $validated['chitietdonvitaitro'] : null;
         $sanPham->ngaykekhai = $validated['ngaykekhai'];
-        $sanPham->id_nguoikekhai = $validated['id_nguoikekhai'];
         $sanPham->diemquydoi = $validated['diemquydoi'];
         $sanPham->gioquydoi = $validated['gioquydoi'];
         $sanPham->thongtinchitiet = $validated['thongtinchitiet'];
@@ -392,6 +399,11 @@ class BaiBaoServiceImpl implements BaiBaoService
         // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
         if ($baiBao->sanPham == null) {
             throw new BaiBaoCanNotUpdateException();
+        }
+
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($baiBao->sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
         }
 
         $validated = $request->validated();
@@ -425,6 +437,11 @@ class BaiBaoServiceImpl implements BaiBaoService
         // Check san pham trong trang thai softDelete thi khong cho chinh sua
         if ($sanPham->trashed()) {
             throw new BaiBaoCanNotUpdateException();
+        }
+
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
         }
 
         $validated = $request->validated();
@@ -561,6 +578,12 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($fileMinhChung->sanPham == null) {
             throw new BaiBaoCanNotUpdateException();
         }
+
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($fileMinhChung->sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
+        }
+
         $validated = $request->validated();
         $fileMinhChung->loaiminhchung = $validated['loaiminhchung'];
         $fileMinhChung->url = $validated['url'];
@@ -581,6 +604,12 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham->trashed()) {
             throw new BaiBaoCanNotUpdateException();
         }
+
+        // check đúng loại sản phẩm là bài báo khoa học
+        if($sanPham->dmSanPham->masanpham != 'baibaokhoahoc'){
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
+        }
+
         $validated = $request->validated();
         if ($sanPham->trangthairasoat == $validated['trangthairasoat']) {
             throw new UpdateTrangThaiRaSoatException();

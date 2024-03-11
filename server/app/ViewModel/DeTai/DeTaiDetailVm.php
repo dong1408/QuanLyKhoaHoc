@@ -10,8 +10,9 @@ use Ramsey\Uuid\Type\Integer;
 class DeTaiDetailVm
 {
     public int $id;
-    public ?SanPhamDetailVm $sanpham; // $id_sanpham
+    public ?SanPhamDetailVm $sanpham; // $id_sanpham    
     public string $maso;
+    public string $trangthai;
     public ?string $ngaydangky;
     public ?bool $ngoaitruong;
     public ?bool $truongchutri;

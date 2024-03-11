@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Detai;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
 
 class BaoCaoTienDoDeTaiRequest extends FormRequest
 {
@@ -24,7 +26,30 @@ class BaoCaoTienDoDeTaiRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "id" => [
+                "bail", "required", "integer",
+                Rule::exists('san_phams', 'id')
+            ],
+            "ngaynopbaocao" => "bail|required|string",
+            "ketquaxet" => "bail|nullable|string",
+            "thoigiangiahan" => "bail|nullable|string",
         ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'Trường :attribute là bắt buộc',
+            'integer' => 'Trường :attribute phải là một số',
+            'string' => 'Trường :attribute phải là một chuỗi chữ',
+            'id.exists' => 'Sản phẩm không tồn tại trên hệ thống'
+        ];
+    }
+
+    public function validationData()
+    {
+        return array_merge($this->all(), [
+            'id' => $this->route('id'),
+        ]);
     }
 }
