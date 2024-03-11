@@ -25,10 +25,12 @@ use App\Models\SanPham\DMSanPham;
 use App\Models\SanPham\DMVaiTroTacGia;
 use App\Models\SanPham\SanPham;
 use App\Models\SanPham\SanPhamTacGia;
+use App\Models\User;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 class BaiBaoServiceImpl implements BaiBaoService
@@ -82,7 +84,6 @@ class BaiBaoServiceImpl implements BaiBaoService
         $page = $request->query('page', 1);
         $keysearch = $request->query('search', "");
         $sortby = $request->query('sortby', "created_at");
-        $page = $request->query('page', 1);
         $sanPhams = SanPham::select('san_phams.*')
             ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
             ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
@@ -120,7 +121,19 @@ class BaiBaoServiceImpl implements BaiBaoService
     }
 
 
+    private function randomUnique()
+    {
+        $microtime = microtime(true);
 
+        list($integerPart, $decimalPart) = explode('.', $microtime);
+
+        // Take the last 5 digits of the decimal part
+        $lastFiveDigits = substr($decimalPart, -5);
+
+        // Combine integer part and the last 5 digits
+        $result = $lastFiveDigits;
+        return $result;
+    }
 
     public function createBaiBao(CreateBaiBaoRequest $request): ResponseSuccess
     {
@@ -128,20 +141,56 @@ class BaiBaoServiceImpl implements BaiBaoService
 
         $baiBao = new BaiBaoKhoaHoc();
         $sanPham = new SanPham();
+
+
         DB::transaction(function () use ($validated, &$baiBao, &$sanPham) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
-            for ($i = 0; $i < count($listSanPhamTacGia); $i++) {
-                if (DMVaiTroTacGia::where([['role', '=', 'baibao'], ['id', '=', $listSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
+
+            $newListSanPhamTacGia = [];
+
+            $filteredWithId = array_filter($listSanPhamTacGia, function ($object) {
+                return !is_null($object['id_tacgia']);
+            });
+            $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
+                return is_null($object['id_tacgia']);
+            });
+            $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+            foreach ($listObjectUnique as  $item) {
+                $randomId = $this->randomUnique();
+                $user = User::create([
+                    'username' => "sgu2024" . $randomId,
+                    'password' => "sgu2024",
+                    'name' => $item['tentacgia'],
+                    'email' => "sgu2024" . $randomId . "@gmail.com"
+                ]);
+                $newData[] = [
+                    'id_tacgia' => $user->id,
+                    'id_vaitro' => $item['id_vaitro'],
+                    'thutu' => $item['thutu'],
+                    'tyledonggop' => $item['tyledonggop'],
+                    'duplicates' => $item['duplicates'],
+                ];
+            }
+            foreach ($newData as $item) {
+                foreach ($item["duplicates"] as $duplicate) {
+                    $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+                }
+            }
+            $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+
+
+            for ($i = 0; $i < count($newListSanPhamTacGia); $i++) {
+                if (DMVaiTroTacGia::where([['role', '=', 'baibao'], ['id', '=', $newListSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
                     throw new VaiTroOfBaiBaoException();
                 }
-                $listIdTacGia[] = $listSanPhamTacGia[$i]['id_tacgia'];
-                $listIdVaiTro[] = $listSanPhamTacGia[$i]['id_vaitro'];
-                $thuTus[] = $listSanPhamTacGia[$i]['thutu'] == null ? null : $listSanPhamTacGia[$i]['thutu'];
-                $tyLeDongGop[] = $listSanPhamTacGia[$i]['tyledonggop'] == null ? null : $listSanPhamTacGia[$i]['tyledonggop'];
+                $listIdTacGia[] = $newListSanPhamTacGia[$i]['id_tacgia'];
+                $listIdVaiTro[] = $newListSanPhamTacGia[$i]['id_vaitro'];
+                $thuTus[] = $newListSanPhamTacGia[$i]['thutu'] == null ? null : $newListSanPhamTacGia[$i]['thutu'];
+                $tyLeDongGop[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
             }
 
             $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
@@ -181,15 +230,15 @@ class BaiBaoServiceImpl implements BaiBaoService
                 throw new RoleOnlyHeldByOnePersonException();
             }
 
-            $sanPhamBaiBao = DMSanPham::where('masanpham', 'baibaokhoahoc')->first();
-            if ($sanPhamBaiBao == null) {
+            $dmSanPhamBaiBao = DMSanPham::where('masanpham', 'baibaokhoahoc')->first();
+            if ($dmSanPhamBaiBao == null) {
                 throw new CreateBaiBaoFailedException();
             }
 
             // Thực hiên insert khi không còn lỗi
             $sanPham = SanPham::create([
                 'tensanpham' => $validated['sanpham']['tensanpham'],
-                'id_loaisanpham' => $sanPhamBaiBao->id,
+                'id_loaisanpham' => $dmSanPhamBaiBao->id,
                 'tongsotacgia' => $validated['sanpham']['tongsotacgia'],
                 'solandaquydoi' => $validated['sanpham']['solandaquydoi'],
                 'cosudungemailtruong' => $validated['sanpham']['cosudungemailtruong'],
@@ -200,8 +249,8 @@ class BaiBaoServiceImpl implements BaiBaoService
                 'conhantaitro' => $validated['sanpham']['conhantaitro'],
                 'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['id_donvitaitro'] : null,
                 'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null,
-                'ngaykekhai' => $validated['sanpham']['ngaykekhai'],
-                'id_nguoikekhai' => $validated['sanpham']['id_nguoikekhai'],
+                'ngaykekhai' => date("Y-m-d H:i:s"),
+                'id_nguoikekhai' => auth('api')->user()->id,
                 'trangthairasoat' => "Đang rà soát",
                 'ngayrasoat' => null,
                 'id_nguoirasoat' => null,
@@ -259,9 +308,28 @@ class BaiBaoServiceImpl implements BaiBaoService
         return new ResponseSuccess("Thành công", $result);
     }
 
-
-
-
+    private function filterUniqueAndDuplicates($array, $field)
+    {
+        $resultArray = [];
+        $values = [];
+        foreach ($array as $index => $item) {
+            $value = $item[$field];
+            if (!array_key_exists($value, $values)) {
+                $values[$value] = ['object' => $item, 'duplicates' => [$index]];
+            } else {
+                $values[$value]['duplicates'][] = $index;
+            }
+        }
+        // Lưu các đối tượng duy nhất và index của các đối tượng trùng lặp vào mảng kết quả
+        foreach ($values as $value) {
+            // Nếu có các đối tượng trùng lặp, thêm trường duplicates vào object
+            if (!empty($value['duplicates'])) {
+                $value['object']['duplicates'] = $value['duplicates'];
+            }
+            $resultArray[] = $value['object'];
+        }
+        return $resultArray;
+    }
 
 
     public function updateSanPham(UpdateSanPhamRequest $request, int $id): ResponseSuccess
@@ -294,7 +362,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham->id_donvitaitro = $validated['conhantaitro'] == true ? $validated['id_donvitaitro'] : null;
         $sanPham->chitietdonvitaitro = $validated['conhantaitro'] == true ? $validated['chitietdonvitaitro'] : null;
         $sanPham->ngaykekhai = $validated['ngaykekhai'];
-//        $sanPham->id_nguoikekhai = $validated['id_nguoikekhai'];
+        //        $sanPham->id_nguoikekhai = $validated['id_nguoikekhai'];
         $sanPham->diemquydoi = $validated['diemquydoi'];
         $sanPham->gioquydoi = $validated['gioquydoi'];
         $sanPham->thongtinchitiet = $validated['thongtinchitiet'];
@@ -356,77 +424,118 @@ class BaiBaoServiceImpl implements BaiBaoService
 
         $validated = $request->validated();
 
-        $listIdTacGia = [];
-        $listIdVaiTro = [];
-        $thuTus = [];
-        $tyLeDongGops = [];
-        $listSanPhamTacGia = $validated['sanpham_tacgia'];
-        for ($i = 0; $i < count($listSanPhamTacGia); $i++) {
-            if (DMVaiTroTacGia::where([['role', '=', 'baibao'], ['id', '=', $listSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
-                throw new VaiTroOfBaiBaoException();
+
+
+        DB::transaction(function () use ($validated, &$sanPham) {
+            $listIdTacGia = [];
+            $listIdVaiTro = [];
+            $thuTus = [];
+            $tyLeDongGops = [];
+            $listSanPhamTacGia = $validated['sanpham_tacgia'];
+
+
+
+            $newListSanPhamTacGia = [];
+
+            $filteredWithId = array_filter($listSanPhamTacGia, function ($object) {
+                return !is_null($object['id_tacgia']);
+            });
+            $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
+                return is_null($object['id_tacgia']);
+            });
+            $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+            foreach ($listObjectUnique as  $item) {
+                $randomId = $this->randomUnique();
+                $user = User::create([
+                    'username' => "sgu2024" . $randomId,
+                    'password' => "sgu2024",
+                    'name' => $item['tentacgia'],
+                    'email' => "sgu2024" . $randomId . "@gmail.com"
+                ]);
+                $newData[] = [
+                    'id_tacgia' => $user->id,
+                    'id_vaitro' => $item['id_vaitro'],
+                    'thutu' => $item['thutu'],
+                    'tyledonggop' => $item['tyledonggop'],
+                    'duplicates' => $item['duplicates'],
+                ];
             }
-            $listIdTacGia[] = $listSanPhamTacGia[$i]['id_tacgia'];
-            $listIdVaiTro[] = $listSanPhamTacGia[$i]['id_vaitro'];
-            $thuTus[] = $listSanPhamTacGia[$i]['thutu'] == null ? null : $listSanPhamTacGia[$i]['thutu'];
-            $tyLeDongGop[] = $listSanPhamTacGia[$i]['tyledonggop'] == null ? null : $listSanPhamTacGia[$i]['tyledonggop'];
-        }
-        $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
-        // Kiểm tra bài báo phải có tác giả đầu tiên
-        $flag = false;
-        foreach ($vaiTros as $vaiTro) {
-            if ($vaiTro->mavaitro == 'tacgiadautien') {
-                $flag = true;
-                break;
-            }
-        }
-        if (!$flag) {
-            throw new BaiBaoNotHaveFirstAuthor();
-        }
-        // kiểm tra 1 người có 2 vai trò giống nhau trong bài báo
-        for ($i = 0; $i < count($listIdTacGia) - 1; $i++) {
-            for ($z = $i + 1; $z < count($listIdVaiTro); $z++) {
-                if (($listIdTacGia[$i] == $listIdTacGia[$z]) && ($listIdVaiTro[$i] == $listIdVaiTro[$z])) {
-                    throw new TwoRoleSimilarForOnePersonException();
+            foreach ($newData as $item) {
+                foreach ($item["duplicates"] as $duplicate) {
+                    $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
                 }
             }
-        }
-        // Kiểm tra những vai trò quy ước chỉ đc có 1 người đảm nhiểm
-        $allVaiTroDB = DMVaiTroTacGia::all();
-        foreach ($allVaiTroDB as $vaitro) {
-            if ($vaitro->mavaitro == 'tacgiadautien') {
-                $idVaiTroTacGiaDauTien = $vaitro->id;
+            $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+
+
+
+            for ($i = 0; $i < count($newListSanPhamTacGia); $i++) {
+                if (DMVaiTroTacGia::where([['role', '=', 'baibao'], ['id', '=', $newListSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
+                    throw new VaiTroOfBaiBaoException();
+                }
+                $listIdTacGia[] = $newListSanPhamTacGia[$i]['id_tacgia'];
+                $listIdVaiTro[] = $newListSanPhamTacGia[$i]['id_vaitro'];
+                $thuTus[] = $newListSanPhamTacGia[$i]['thutu'] == null ? null : $newListSanPhamTacGia[$i]['thutu'];
+                $tyLeDongGop[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
             }
-            if ($vaitro->mavaitro == 'tacgialienhe') {
-                $idVaiTroTacGiaLienHe = $vaitro->id;
+            $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
+            // Kiểm tra bài báo phải có tác giả đầu tiên
+            $flag = false;
+            foreach ($vaiTros as $vaiTro) {
+                if ($vaiTro->mavaitro == 'tacgiadautien') {
+                    $flag = true;
+                    break;
+                }
             }
-        }
-        if ((isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien] >= 2) || (isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe] >= 2)) {
-            throw new RoleOnlyHeldByOnePersonException();
-        }
-        // Kiểm tra nếu bài báo này kh có tác giả nào đảm nhiệm vai trò tác giả liên hệ
-        // (có id =2) thì set vai trò đó cho người có vai trò tác giả đứng đầu (có id =1)            
-        if (!in_array($idVaiTroTacGiaLienHe, $listIdVaiTro)) {
-            $key = array_search($idVaiTroTacGiaDauTien, $listIdVaiTro);
-            $listIdVaiTro[] = $idVaiTroTacGiaLienHe;
-            $listIdTacGia[] = $listIdTacGia[$key];
-        }
-        $result = [];
-        SanPhamTacGia::where('id_sanpham', $sanPham->id)->forceDelete();
-        for ($i = 0; $i < count($listIdTacGia); $i++) {
-            $tacGiaId = $listIdTacGia[$i];
-            $vaiTroId = $listIdVaiTro[$i];
-            $thuTu = isset($thuTus[$i]) ? $thuTus[$i] : null;
-            $tyLeDongGop = isset($tyLeDongGops[$i]) ? $tyLeDongGops[$i] : null;
-            $sanPhamTacGia = SanPhamTacGia::create([
-                'id_sanpham' => $sanPham->id,
-                'id_tacgia' => $tacGiaId,
-                'id_vaitrotacgia' => $vaiTroId,
-                'thutu' => $thuTu,
-                'tyledonggop' => $tyLeDongGop
-            ]);
-            $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
-        }
-        return new ResponseSuccess("Thành công", $result);
+            if (!$flag) {
+                throw new BaiBaoNotHaveFirstAuthor();
+            }
+            // kiểm tra 1 người có 2 vai trò giống nhau trong bài báo
+            for ($i = 0; $i < count($listIdTacGia) - 1; $i++) {
+                for ($z = $i + 1; $z < count($listIdVaiTro); $z++) {
+                    if (($listIdTacGia[$i] == $listIdTacGia[$z]) && ($listIdVaiTro[$i] == $listIdVaiTro[$z])) {
+                        throw new TwoRoleSimilarForOnePersonException();
+                    }
+                }
+            }
+            // Kiểm tra những vai trò quy ước chỉ đc có 1 người đảm nhiểm
+            $allVaiTroDB = DMVaiTroTacGia::all();
+            foreach ($allVaiTroDB as $vaitro) {
+                if ($vaitro->mavaitro == 'tacgiadautien') {
+                    $idVaiTroTacGiaDauTien = $vaitro->id;
+                }
+                if ($vaitro->mavaitro == 'tacgialienhe') {
+                    $idVaiTroTacGiaLienHe = $vaitro->id;
+                }
+            }
+            if ((isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien] >= 2) || (isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe] >= 2)) {
+                throw new RoleOnlyHeldByOnePersonException();
+            }
+            // Kiểm tra nếu bài báo này kh có tác giả nào đảm nhiệm vai trò tác giả liên hệ
+            // (có id =2) thì set vai trò đó cho người có vai trò tác giả đứng đầu (có id =1)            
+            if (!in_array($idVaiTroTacGiaLienHe, $listIdVaiTro)) {
+                $key = array_search($idVaiTroTacGiaDauTien, $listIdVaiTro);
+                $listIdVaiTro[] = $idVaiTroTacGiaLienHe;
+                $listIdTacGia[] = $listIdTacGia[$key];
+            }
+            $result = [];
+            SanPhamTacGia::where('id_sanpham', $sanPham->id)->forceDelete();
+            for ($i = 0; $i < count($listIdTacGia); $i++) {
+                $tacGiaId = $listIdTacGia[$i];
+                $vaiTroId = $listIdVaiTro[$i];
+                $thuTu = isset($thuTus[$i]) ? $thuTus[$i] : null;
+                $tyLeDongGop = isset($tyLeDongGops[$i]) ? $tyLeDongGops[$i] : null;
+                $sanPhamTacGia = SanPhamTacGia::create([
+                    'id_sanpham' => $sanPham->id,
+                    'id_tacgia' => $tacGiaId,
+                    'id_vaitrotacgia' => $vaiTroId,
+                    'thutu' => $thuTu,
+                    'tyledonggop' => $tyLeDongGop
+                ]);
+                $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
+            }
+        });
+        return new ResponseSuccess("Thành công", true);
     }
 
 
@@ -516,5 +625,48 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
         SanPham::onlyTrashed()->where('id', $id_sanpham)->forceDelete();
         return new ResponseSuccess("Thành công", true);
+    }
+
+
+    public function getBaiBaoKeKhai(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::select('san_phams.*')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->where('d_m_san_phams.masanpham', '=', 'baibaokhoahoc')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_phams.id_nguoikekhai', auth('api')->user()->id)
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        $result = [];
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+    public function getBaiBaoThamGia(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::select('san_phams.*')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+            ->where('d_m_san_phams.masanpham', '=', 'baibaokhoahoc')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_pham_tac_gias.id_tacgia', auth('api')->user()->id)
+            ->groupBy('san_phams.id')
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        $result = [];
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
     }
 }

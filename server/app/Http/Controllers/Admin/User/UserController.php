@@ -17,9 +17,9 @@ class UserController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function getAllUser(): Response
+    public function getAllUser(Request $request): Response
     {
-        $result = $this->userService->getAllUser();
+        $result = $this->userService->getAllUser($request);
         return response()->json($result, 200);
     }
 }

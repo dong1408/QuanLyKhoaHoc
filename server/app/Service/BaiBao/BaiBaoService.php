@@ -25,4 +25,6 @@ interface BaiBaoService
     public function deleteBaiBao(int $id): ResponseSuccess;
     public function restoreBaiBao(int $id): ResponseSuccess;
     public function forceDeleteBaiBao(int $id): ResponseSuccess;
+    public function getBaiBaoKeKhai(Request $request): ResponseSuccess;
+    public function getBaiBaoThamGia(Request $request): ResponseSuccess;
 }

@@ -31,15 +31,17 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
             ],
             "sanpham_tacgia" => "bail|array",
             "sanpham_tacgia.*.id_tacgia" => [
-                "bail", "required", "int",
+                "bail", "nullable", "int",
                 Rule::exists("users", "id")
             ],
+            "sanpham_tacgia.*.tentacgia" => "bail|required|string",
             "sanpham_tacgia.*.id_vaitro" => [
                 "bail", "required", "int",
                 Rule::exists("d_m_vai_tro_tac_gias", "id")
             ],
-            "sanpham_tacgia.*.thutu" => "bail|nullable|string",
-            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|string",
+            "sanpham_tacgia.*.tentacgia" => "bail|required|string",
+            "sanpham_tacgia.*.thutu" => "bail|nullable|integer",
+            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
         ];
     }
 
