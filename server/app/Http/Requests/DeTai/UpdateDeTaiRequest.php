@@ -30,7 +30,7 @@ class UpdateDeTaiRequest extends FormRequest
                 Rule::exists('san_phams', 'id')
             ],
             "maso" => "bail|required|string|unique:de_tais,maso",
-            // "ngaydangky" => "bail|nullable|string",
+            "ngaydangky" => "bail|nullable|string",
             "ngoaitruong" => "bail|nullable|boolean",
             "truongchutri" => "bail|nullable|boolean",
             "id_tochucchuquan" => [
@@ -63,6 +63,7 @@ class UpdateDeTaiRequest extends FormRequest
             // 'sanphamtacgia.vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
         ];
     }
+
 
 
     public function validationData()

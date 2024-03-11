@@ -158,29 +158,34 @@ class BaiBaoServiceImpl implements BaiBaoService
             $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
             });
-            $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
-            foreach ($listObjectUnique as  $item) {
-                $randomId = $this->randomUnique();
-                $user = User::create([
-                    'username' => "sgu2024" . $randomId,
-                    'password' => "sgu2024",
-                    'name' => $item['tentacgia'],
-                    'email' => "sgu2024" . $randomId . "@gmail.com"
-                ]);
-                $newData[] = [
-                    'id_tacgia' => $user->id,
-                    'id_vaitro' => $item['id_vaitro'],
-                    'thutu' => $item['thutu'],
-                    'tyledonggop' => $item['tyledonggop'],
-                    'duplicates' => $item['duplicates'],
-                ];
-            }
-            foreach ($newData as $item) {
-                foreach ($item["duplicates"] as $duplicate) {
-                    $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+            if (count($filteredWithoutId) > 0) {
+                $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                foreach ($listObjectUnique as  $item) {
+                    $randomId = $this->randomUnique();
+                    $user = User::create([
+                        'username' => "sgu2024" . $randomId,
+                        'password' => "sgu2024",
+                        'name' => $item['tentacgia'],
+                        'email' => "sgu2024" . $randomId . "@gmail.com"
+                    ]);
+                    $newData[] = [
+                        'id_tacgia' => $user->id,
+                        'id_vaitro' => $item['id_vaitro'],
+                        'thutu' => $item['thutu'],
+                        'tyledonggop' => $item['tyledonggop'],
+                        'duplicates' => $item['duplicates'],
+                    ];
                 }
+                foreach ($newData as $item) {
+                    foreach ($item["duplicates"] as $duplicate) {
+                        $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+                    }
+                }
+                $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+            } else {
+                $newListSanPhamTacGia = $filteredWithId;
             }
-            $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+
 
 
             for ($i = 0; $i < count($newListSanPhamTacGia); $i++) {
@@ -443,29 +448,34 @@ class BaiBaoServiceImpl implements BaiBaoService
             $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
             });
-            $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
-            foreach ($listObjectUnique as  $item) {
-                $randomId = $this->randomUnique();
-                $user = User::create([
-                    'username' => "sgu2024" . $randomId,
-                    'password' => "sgu2024",
-                    'name' => $item['tentacgia'],
-                    'email' => "sgu2024" . $randomId . "@gmail.com"
-                ]);
-                $newData[] = [
-                    'id_tacgia' => $user->id,
-                    'id_vaitro' => $item['id_vaitro'],
-                    'thutu' => $item['thutu'],
-                    'tyledonggop' => $item['tyledonggop'],
-                    'duplicates' => $item['duplicates'],
-                ];
-            }
-            foreach ($newData as $item) {
-                foreach ($item["duplicates"] as $duplicate) {
-                    $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+            if (count($filteredWithoutId) > 0) {
+                $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                foreach ($listObjectUnique as  $item) {
+                    $randomId = $this->randomUnique();
+                    $user = User::create([
+                        'username' => "sgu2024" . $randomId,
+                        'password' => "sgu2024",
+                        'name' => $item['tentacgia'],
+                        'email' => "sgu2024" . $randomId . "@gmail.com"
+                    ]);
+                    $newData[] = [
+                        'id_tacgia' => $user->id,
+                        'id_vaitro' => $item['id_vaitro'],
+                        'thutu' => $item['thutu'],
+                        'tyledonggop' => $item['tyledonggop'],
+                        'duplicates' => $item['duplicates'],
+                    ];
                 }
+                foreach ($newData as $item) {
+                    foreach ($item["duplicates"] as $duplicate) {
+                        $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+                    }
+                }
+                $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+            } else {
+                $newListSanPhamTacGia = $filteredWithId;
             }
-            $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+
 
 
 
