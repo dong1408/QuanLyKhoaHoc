@@ -53,7 +53,6 @@ export interface ChiTietBaiBao{
 
 export interface TaoSanPham{
     tensanpham:string,
-    id_loaisanpham:number,
     tongsotacgia:number,
     solandaquydoi:number,
     cosudungemailtruong:boolean | null,
@@ -64,8 +63,6 @@ export interface TaoSanPham{
     conhantaitro:boolean | null,
     id_donvitaitro:number | null,
     chitietdonvitaitro:string | null,
-    ngaykekhai:string,
-    id_nguoikekhai:number,
     diemquydoi:string,
     gioquydoi:string,
     thongtinchitiet:string,

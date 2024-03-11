@@ -10,6 +10,8 @@ import {NzFormModule} from "ng-zorro-antd/form";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzSelectModule} from "ng-zorro-antd/select";
+import {NzDividerModule} from "ng-zorro-antd/divider";
+import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 
 @NgModule({
     declarations:[
@@ -26,7 +28,9 @@ import {NzSelectModule} from "ng-zorro-antd/select";
         NzGridModule,
         NzInputModule,
         NzSelectModule,
-        FormsModule
+        FormsModule,
+        NzDividerModule,
+        NzDatePickerModule
     ],
     exports:[
 

@@ -12,6 +12,7 @@ import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.v
 import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
 import {CapNhatSanPham} from "../../../core/types/sanpham/san-pham.type";
+import {dateConvert} from "../../../shared/commons/utilities";
 
 @Component({
     selector:"app-baibao-sanpham-capnhat",
@@ -261,7 +262,11 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
             return;
         }
 
-        const data:CapNhatSanPham = form.value
+        const data:CapNhatSanPham = {
+            ...form.value,
+            thoidiemcongbohoanthanh: dateConvert(form.get('thoidiemcongbohoanthanh')?.value),
+            ngaykekhai: dateConvert(form.get('ngaykekhai')?.value)
+        }
 
         this.isCapNhatLoading = true
         this.baiBaoService.capNhatSanPham(this.id,data)

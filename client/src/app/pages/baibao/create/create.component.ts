@@ -1,139 +1,290 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {forkJoin, Subject, takeUntil} from "rxjs";
-import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {HoiDongGiaoSu} from "../../../core/types/tapchi/hoi-dong-giao-su.type";
-import {TinhThanh} from "../../../core/types/user-info/tinh-thanh.type";
-import {QuocGia} from "../../../core/types/user-info/quoc-gia.type";
-import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
-import {HoiDongGiaoSuService} from "../../../core/services/tapchi/hoi-dong-giao-su.service";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
-import {TinhThanhService} from "../../../core/services/user-info/tinh-thanh.service";
-import {QuocGiaService} from "../../../core/services/user-info/quoc-gia.service";
-import {NhaXuatBan} from "../../../core/types/nhaxuatban/nha-xuat-ban.type";
-import {NhaXuatBanService} from "../../../core/services/nhaxuatban/nha-xuat-ban.service";
-import {CreateTapChi} from "../../../core/types/tapchi/tap-chi.type";
+import {User} from "../../../core/types/user/user.type";
+import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
+import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
 import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
+import {UserService} from "../../../core/services/user/user.service";
+import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
+import {TaoBaiTao} from "../../../core/types/baibao/bai-bao.type";
+import {dateConvert} from "../../../shared/commons/utilities";
 
 @Component({
-    selector:"app-magazine-create",
+    selector:"app-baibao-create",
     templateUrl:'./create.component.html',
     styleUrls:['./create.component.css']
 })
 
 export class BaiBaoCreateComponent implements OnInit,OnDestroy{
 
-    iscreateLoading:boolean = false
-    isTinhThanhLoading:boolean = false
+    tochucs:ToChuc[]
+    tapChis:Magazine[]
+    users:User[]
 
     createForm:FormGroup
+    isCreate:boolean = false
 
     destroy$ = new Subject<void>()
 
-    hoiDongGiaoSus:HoiDongGiaoSu[] = []
-    tinhThanhs:TinhThanh[] = []
-    quocGias:QuocGia[] = []
-    toChucs:ToChuc[] = []
-    nhaXuatBans:NhaXuatBan[] = []
 
     constructor(
         private fb:FormBuilder,
         public loadingService:LoadingService,
         private notificationService:NzNotificationService,
-        private hoiDongGiaoSuService:HoiDongGiaoSuService,
         private toChucService:ToChucService,
-        private tinhThanhService:TinhThanhService,
-        private quocGiaService:QuocGiaService,
-        private nhaXuatBanService:NhaXuatBanService,
-        private tapChiService:TapChiService
+        private tapChiService:TapChiService,
+        private userService:UserService,
     ) {
     }
 
     ngOnInit() {
         this.createForm = this.fb.group({
-            name:[
+            tensanpham:[
                 null,
                 Validators.compose([
-                    Validators.required,
-                    Validators.maxLength(255),
+                    noWhiteSpaceValidator,
+                    Validators.required
+                ])
+            ],
+            tongsotacgia:[
+                0,
+                Validators.compose([
+                    noWhiteSpaceValidator,
+                    Validators.required
+                ])
+            ],
+            solandaquydoi:[
+                0,
+                Validators.compose([
+                    noWhiteSpaceValidator,
+                    Validators.required
+                ])
+            ],
+            cosudungemailtruong:[
+                false,
+                Validators.compose([
+                    noWhiteSpaceValidator
+                ])
+            ],
+            cosudungemaildonvikhac:[
+                false,
+                Validators.compose([
+                    noWhiteSpaceValidator
+                ])
+            ],
+            cothongtintruong:[
+                false,
+                Validators.compose([
+                    noWhiteSpaceValidator
+                ])
+            ],
+            cothongtindonvikhac:[
+                false,
+                Validators.compose([
+                    noWhiteSpaceValidator
+                ])
+            ],
+            conhantaitro:[
+                false,
+                Validators.compose([
+                    noWhiteSpaceValidator
+                ])
+            ],
+            chitietdonvitaitro:[
+                {
+                    value:null,
+                    disabled:true
+                },
+                Validators.compose([
+                    noWhiteSpaceValidator
+                ]),
+            ],
+            diemquydoi:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator,
+                    Validators.required
+                ])
+            ],
+            gioquydoi:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator,
+                    Validators.required
+                ])
+            ],
+            thongtinchitiet:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator,
+                    Validators.required
+                ])
+            ],
+            capsanpham:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator,
+                    Validators.required
+                ])
+            ],
+            thoidiemcongbohoanthanh:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator,
+                    Validators.required
+                ])
+            ],
+            id_thongtinnoikhac:[
+                {
+                    value:null,
+                    disabled:true
+                }
+            ],
+            id_donvitaitro:[
+                {
+                    value:null,
+                    disabled:true
+                }
+            ],
+            sanpham_tacgia:this.fb.array([]),
+
+            users:[
+                null
+            ],
+            doi:[
+                null,
+                Validators.compose([
                     noWhiteSpaceValidator()
                 ])
             ],
-            issn:[
+            url:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator()
                 ])
             ],
-            pissn:[
+            received:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator()
                 ])
             ],
-            eissn:[
+            accepted:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator()
                 ])
             ],
-            website:[
+            published:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator()
                 ])
             ],
-            quocte:[
+            abstract:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator()
                 ])
             ],
-            id_nhaxuatban:[
-                null,
-            ],
-            id_donvichuquan:[
-                null,
-            ],
-            address:[
+            keywords:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator()
                 ])
             ],
-            id_address_city:[
+            volume:[
                 null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
             ],
-            id_address_country:[
+            issue:[
                 null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
             ],
+            number:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            pages:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            id_tapchi:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            loaiminhchung:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            url_minhchung:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    Validators.required
+                ])
+            ]
         })
+
+        this.createForm.get("conhantaitro")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select === true){
+                this.createForm.get("id_donvitaitro")?.enable()
+                this.createForm.get("chitietdonvitaitro")?.enable()
+            }else{
+                this.createForm.get("chitietdonvitaitro")?.disable()
+                this.createForm.get("id_donvitaitro")?.disable()
+                this.createForm.get("chitietdonvitaitro")?.reset()
+                this.createForm.get("id_donvitaitro")?.reset()
+            }
+        })
+
+        this.createForm.get("cothongtindonvikhac")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select === true){
+                this.createForm.get("id_thongtinnoikhac")?.enable()
+            }else{
+                this.createForm.get("id_thongtinnoikhac")?.disable()
+                this.createForm.get("id_thongtinnoikhac")?.reset()
+            }
+        })
+
         this.loadingService.startLoading()
         forkJoin([
-            this.hoiDongGiaoSuService.getAllHDGS(),
-            this.tinhThanhService.getAllTinhThanh(),
-            this.quocGiaService.getAllQuocGia(),
             this.toChucService.getAllToChuc(),
-            this.nhaXuatBanService.getAllNhaXuatBan()
-        ],(gsResponse,ttResponse,qgResponse,tcResponse,nxbResponse) => {
+            this.tapChiService.getAllTapChi(),
+            this.userService.getAllUsers()
+        ],(tcResponse,tacResponse,uResponse) => {
             return {
-                listGS: gsResponse.data,
-                listTT: ttResponse.data,
-                listQG: qgResponse.data,
                 listTC: tcResponse.data,
-                listNXB: nxbResponse.data
+                listTaC: tacResponse.data,
+                listU:uResponse.data
             }
         }).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.hoiDongGiaoSus = response.listGS
-                this.quocGias = response.listQG
-                this.tinhThanhs = response.listTT
-                this.toChucs = response.listTC
-                this.nhaXuatBans = response.listNXB
+                this.tochucs = response.listTC
+                this.tapChis = response.listTaC
+                this.users = response.listU
                 this.loadingService.stopLoading()
             },
             error:(error) =>{
@@ -141,75 +292,136 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             }
         })
     }
-
-    onCreateTapChi(){
-        if(this.createForm.invalid){
-            this.notificationService.create(
-                'error',
-                'Lỗi',
-                'Vui lòng điền đúng yêu cầu của form'
-            )
-            return;
-        }
-
-        const data:CreateTapChi = {
-            ...this.createForm.value,
-            id_address_city: this.createForm.controls['id_address_country'].value ?? null,
-            trangthai:false
-        }
-        this.iscreateLoading = true
-        this.tapChiService.createTapChi(data).pipe(
-            takeUntil(this.destroy$)
-        ).subscribe({
-            next:(response) =>{
-                this.notificationService.create(
-                    'success',
-                    'Thành Công',
-                    response.message
-                )
-                this.iscreateLoading = false
-                this.createForm.reset()
-            },
-            error:(error) =>{
-                this.notificationService.create(
-                    'error',
-                    'Lỗi',
-                    error
-                )
-                this.iscreateLoading = false
-            }
+    addUserControls(user:User | any){
+        const control = this.fb.group({
+            id:[user.id],
+            tentacgia:[
+                {
+                    value:user.name,
+                    disabled:true
+                },
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator
+                ])
+            ],
+            thutu:[null],
+            tyledonggop:[null],
+            id_vaitro:[null]
         })
+        return control
+    }
+
+    addGuestControls(){
+        const control = this.fb.group({
+            id:[null],
+            tentacgia:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            thutu:[null],
+            tyledonggop:[null],
+            id_vaitro:[null]
+        })
+        const formArray = this.createForm.get('sanpham_tacgia') as FormArray
+        formArray.push(control)
 
     }
 
+    onSubmit(){
+        const form = this.createForm
+        // if(form.invalid){
+        //     this.notificationService.create(
+        //         'error',
+        //         'Lỗi',
+        //         'Vui lòng điền đúng yêu cầu của form'
+        //     )
+        //     return;
+        // }
+        const data:TaoBaiTao = {
+            sanpham:{
+                tensanpham: form.get('tensanpham')?.value,
+                tongsotacgia: form.get('tongsotacgia')?.value,
+                solandaquydoi : form.get('solandaquydoi')?.value,
+                diemquydoi: form.get('diemquydoi')?.value,
+                gioquydoi : form.get('gioquydoi')?.value,
+                thongtinchitiet: form.get('thongtinchitiet')?.value,
+                capsanpham: form.get('capsanpham')?.value,
+                thoidiemcongbohoanthanh: dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString()),
+                cosudungemailtruong:form.get('cosudungemailtruong')?.value ?? false,
+                cosudungemaildonvikhac: form.get('cosudungemaildonvikhac')?.value ?? false,
+                cothongtintruong : form.get('cothongtintruong')?.value ?? false,
+                cothongtindonvikhac : form.get('cothongtindonvikhac')?.value ?? false,
+                id_thongtinnoikhac : form.get('cothongtindonvikhac')?.value === true ? form.get('id_thongtinnoikhac')?.value : null,
+                conhantaitro : form.get('conhantaitro')?.value ?? false,
+                id_donvitaitro :form.get('conhantaitro')?.value === true ? form.get('id_donvitaitro')?.value : null,
+                chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
+            },
+            sanpham_tacgia: form.get('sanpham_tacgia')?.value,
+            fileminhchungsanpham:{
+                url:form.get('url_minhchung')?.value,
+                loaiminhchung: form.get('loaiminhchung')?.value ?? null
+            },
+            doi:form.get('doi')?.value,
+            url:form.get('url')?.value,
+            received:form.get('received')?.value,
+            accepted:form.get('accepted')?.value,
+            published:form.get('published')?.value,
+            abstract:form.get('abstract')?.value,
+            keywords:form.get('keywords')?.value,
+            id_tapchi:form.get('id_tapchi')?.value,
+            volume:form.get('volume')?.value,
+            issue:form.get('issue')?.value,
+            number:form.get('number')?.value,
+            pages:form.get('pages')?.value,
+        }
+        console.log(data)
+    }
 
-    onSelectChange(event:any){
-        if(typeof(event) !== "number"){
+    onSelectUser(event:any){
+        if(!event){
             return;
         }
-        this.tinhThanhs = []
-        this.isTinhThanhLoading = true
-        this.tinhThanhService.getAllTinhThanhByQuocGia(event).pipe(
-            takeUntil(this.destroy$)
-        ).subscribe({
-            next:(response) => {
-                this.tinhThanhs = response.data
-                this.isTinhThanhLoading = false
-            },
-            error:(error) => {
-                this.notificationService.create(
-                    'error',
-                    'Lỗi',
-                    error
-                )
-                this.isTinhThanhLoading = false
+        else{
+            const data:User = event;
+            const formArray = this.createForm.get('sanpham_tacgia') as FormArray
+                const control = this.fb.group({
+                    id:[data.id],
+                    tentacgia:[
+                        {
+                            value:data.name,
+                            disabled:true
+                        },
+                        Validators.compose([
+                            Validators.required,
+                            noWhiteSpaceValidator
+                        ])
+                    ],
+                    thutu:[null],
+                    tyledonggop:[null],
+                    id_vaitro:[null]
+                })
+                formArray.push(control);
+                this.createForm.get("users")?.reset()
             }
-        })
     }
+
+    removeUser(index:number){
+        (this.createForm.get('sanpham_tacgia') as FormArray).removeAt(index);
+    }
+
+    get sanphamTacgiaControls() {
+        return (this.createForm.get('sanpham_tacgia') as FormArray).controls;
+    }
+
 
     ngOnDestroy() {
         this.destroy$.next()
         this.destroy$.complete()
     }
 
+    protected readonly FormArray = FormArray;
 }

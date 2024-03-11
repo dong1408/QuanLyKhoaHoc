@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 import {ChiTietTapChi, UpdateTrangThaiTapChi} from "../../../core/types/tapchi/tap-chi.type";
 import {Subject, takeUntil} from "rxjs";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoadingService} from "../../../core/services/loading.service";
 import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -9,6 +9,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {BaiBao, ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
 import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 import {CapNhatTrangThaiSanPham, TrangThaiSanPham} from "../../../core/types/sanpham/san-pham.type";
+import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
+import {CapNhatFileMinhChung} from "../../../core/types/sanpham/file-minh-chung.type";
 
 @Component({
     selector:"app-baibao-chitiet",
@@ -18,6 +20,10 @@ import {CapNhatTrangThaiSanPham, TrangThaiSanPham} from "../../../core/types/san
 
 export class ChiTietBaiBaoComponent{
     id:number
+
+    formCapNhatFileMinhChung:FormGroup
+
+    isCapNhatFileMinhChung:boolean = false
 
     isRestore:boolean = false
     isForceDelete:boolean = false
@@ -48,6 +54,22 @@ export class ChiTietBaiBaoComponent{
             }
         })
 
+        this.formCapNhatFileMinhChung = this.fb.group({
+            url:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            loaiminhchung:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ]
+        })
+
         this.getChiTietBaiBao()
     }
 
@@ -59,8 +81,11 @@ export class ChiTietBaiBaoComponent{
         ).subscribe({
             next:(response) => {
                 this.baibao = response.data
+                this.formCapNhatFileMinhChung.patchValue({
+                    url: this.baibao.sanpham.minhchung?.url,
+                    loaiminhchung:this.baibao.sanpham.minhchung?.loaiminhchung ?? null
+                })
                 this.loadingService.stopLoading()
-                console.log(response.data)
             },
             error:(error) => {
                 this.notificationService.create(
@@ -124,6 +149,34 @@ export class ChiTietBaiBaoComponent{
                 this.isDelete = false
             }
         })
+    }
+
+    onCapNhatFileMinhChung(){
+       const data:CapNhatFileMinhChung = this.formCapNhatFileMinhChung.value;
+       this.isCapNhatFileMinhChung = true;
+       this.baiBaoService.capNhatFileMinhChung(this.id,data)
+           .pipe(
+               takeUntil(this.destroy$)
+           ).subscribe({
+           next:(response) => {
+               this.notificationService.create(
+                   'success',
+                   'Thành Công',
+                   response.message
+
+               )
+               this.isCapNhatFileMinhChung = false
+           },
+           error:(error) =>{
+               this.notificationService.create(
+                   'success',
+                   'Lỗi',
+                   error
+               )
+               this.isCapNhatFileMinhChung = false
+           }
+       })
+
     }
 
     onCapNhatTrangThai(baiBao:ChiTietBaiBao,trangthai:TrangThaiSanPham){
