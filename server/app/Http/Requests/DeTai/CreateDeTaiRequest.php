@@ -26,11 +26,7 @@ class CreateDeTaiRequest extends FormRequest
     {
         return [
             // ======================== san pham ====================== //
-            "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",
-            //            "sanpham.id_loaisanpham" => [
-            //                "bail", "integer",
-            //                Rule::exists('d_m_san_phams', 'id')
-            //            ],
+            "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",            
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.solandaquydoi" => "bail|required|integer",
             "sanpham.cosudungemailtruong" => "bail|nullable|boolean",
@@ -47,11 +43,6 @@ class CreateDeTaiRequest extends FormRequest
                 Rule::exists('d_m_to_chucs', 'id')
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
-            "sanpham.ngaykekhai" => "bail|required|string",
-            "sanpham.id_nguoikekhai" => [
-                "bail", "required", "integer",
-                Rule::exists('users', 'id')
-            ],
             "sanpham.diemquydoi" => "bail|required|string",
             "sanpham.gioquydoi" => "bail|required|string",
             "sanpham.thongtinchitiet" => "bail|required|string",
@@ -84,15 +75,16 @@ class CreateDeTaiRequest extends FormRequest
             // ================= san pham _ tac gia ================ //            
             "sanpham_tacgia" => "bail|array",
             "sanpham_tacgia.*.id_tacgia" => [
-                "bail", "required", "int",
+                "bail", "nullable", "int",
                 Rule::exists("users", "id")
             ],
+            "sanpham_tacgia.*.tentacgia" => "bail|required|string",
             "sanpham_tacgia.*.id_vaitro" => [
                 "bail", "required", "int",
                 Rule::exists("d_m_vai_tro_tac_gias", "id")
             ],
-            "sanpham_tacgia.*.thutu" => "bail|nullable|string",
-            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|string",
+            "sanpham_tacgia.*.thutu" => "bail|nullable|integer",
+            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
 
             // file minh chung san pham
             // "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",

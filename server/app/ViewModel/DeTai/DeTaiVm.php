@@ -12,7 +12,7 @@ class DeTaiVm
     public int $id;
     public string $tensannpham;
     public int $id_sanpham;
-    // public string $trangthai;
+    public string $trangthai;
     public string $maso;
     public ?string $ngaydangky;
     public ?string $capdetai;

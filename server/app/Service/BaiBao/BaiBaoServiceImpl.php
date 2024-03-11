@@ -13,6 +13,7 @@ use App\Exceptions\BaiBao\UpdateTrangThaiRaSoatException;
 use App\Exceptions\BaiBao\VaiTroOfBaiBaoException;
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\InvalidValueException;
+use App\Exceptions\SanPham\LoaiSanPhamWrongException;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateFileMinhChungSanPhamRequest;
@@ -116,7 +117,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
-        $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham->baiBao);
+        $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
         return new ResponseSuccess("Thành công", $result);
     }
 
@@ -158,29 +159,34 @@ class BaiBaoServiceImpl implements BaiBaoService
             $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
             });
-            $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
-            foreach ($listObjectUnique as  $item) {
-                $randomId = $this->randomUnique();
-                $user = User::create([
-                    'username' => "sgu2024" . $randomId,
-                    'password' => "sgu2024",
-                    'name' => $item['tentacgia'],
-                    'email' => "sgu2024" . $randomId . "@gmail.com"
-                ]);
-                $newData[] = [
-                    'id_tacgia' => $user->id,
-                    'id_vaitro' => $item['id_vaitro'],
-                    'thutu' => $item['thutu'],
-                    'tyledonggop' => $item['tyledonggop'],
-                    'duplicates' => $item['duplicates'],
-                ];
-            }
-            foreach ($newData as $item) {
-                foreach ($item["duplicates"] as $duplicate) {
-                    $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+            if (count($filteredWithoutId) > 0) {
+                $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                foreach ($listObjectUnique as  $item) {
+                    $randomId = $this->randomUnique();
+                    $user = User::create([
+                        'username' => "sgu2024" . $randomId,
+                        'password' => "sgu2024",
+                        'name' => $item['tentacgia'],
+                        'email' => "sgu2024" . $randomId . "@gmail.com"
+                    ]);
+                    $newData[] = [
+                        'id_tacgia' => $user->id,
+                        'id_vaitro' => $item['id_vaitro'],
+                        'thutu' => $item['thutu'],
+                        'tyledonggop' => $item['tyledonggop'],
+                        'duplicates' => $item['duplicates'],
+                    ];
                 }
+                foreach ($newData as $item) {
+                    foreach ($item["duplicates"] as $duplicate) {
+                        $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+                    }
+                }
+                $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+            } else {
+                $newListSanPhamTacGia = $filteredWithId;
             }
-            $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+
 
 
             for ($i = 0; $i < count($newListSanPhamTacGia); $i++) {
@@ -249,7 +255,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 'conhantaitro' => $validated['sanpham']['conhantaitro'],
                 'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['id_donvitaitro'] : null,
                 'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null,
-                'ngaykekhai' => date("Y-m-d H:i:s"),
+                'ngaykekhai' => date("d-m-Y"),
                 'id_nguoikekhai' => auth('api')->user()->id,
                 'trangthairasoat' => "Đang rà soát",
                 'ngayrasoat' => null,
@@ -344,9 +350,16 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
+        // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
         if ($sanPham->trashed()) {
             throw new BaiBaoCanNotUpdateException();
         }
+
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
+        }
+
         $validated = $request->validated();
 
         $sanPham->tensanpham = $validated['tensanpham'];
@@ -362,7 +375,6 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham->id_donvitaitro = $validated['conhantaitro'] == true ? $validated['id_donvitaitro'] : null;
         $sanPham->chitietdonvitaitro = $validated['conhantaitro'] == true ? $validated['chitietdonvitaitro'] : null;
         $sanPham->ngaykekhai = $validated['ngaykekhai'];
-        //        $sanPham->id_nguoikekhai = $validated['id_nguoikekhai'];
         $sanPham->diemquydoi = $validated['diemquydoi'];
         $sanPham->gioquydoi = $validated['gioquydoi'];
         $sanPham->thongtinchitiet = $validated['thongtinchitiet'];
@@ -387,6 +399,11 @@ class BaiBaoServiceImpl implements BaiBaoService
         // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
         if ($baiBao->sanPham == null) {
             throw new BaiBaoCanNotUpdateException();
+        }
+
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($baiBao->sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
         }
 
         $validated = $request->validated();
@@ -422,6 +439,11 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new BaiBaoCanNotUpdateException();
         }
 
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
+        }
+
         $validated = $request->validated();
 
 
@@ -443,29 +465,34 @@ class BaiBaoServiceImpl implements BaiBaoService
             $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
             });
-            $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
-            foreach ($listObjectUnique as  $item) {
-                $randomId = $this->randomUnique();
-                $user = User::create([
-                    'username' => "sgu2024" . $randomId,
-                    'password' => "sgu2024",
-                    'name' => $item['tentacgia'],
-                    'email' => "sgu2024" . $randomId . "@gmail.com"
-                ]);
-                $newData[] = [
-                    'id_tacgia' => $user->id,
-                    'id_vaitro' => $item['id_vaitro'],
-                    'thutu' => $item['thutu'],
-                    'tyledonggop' => $item['tyledonggop'],
-                    'duplicates' => $item['duplicates'],
-                ];
-            }
-            foreach ($newData as $item) {
-                foreach ($item["duplicates"] as $duplicate) {
-                    $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+            if (count($filteredWithoutId) > 0) {
+                $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                foreach ($listObjectUnique as  $item) {
+                    $randomId = $this->randomUnique();
+                    $user = User::create([
+                        'username' => "sgu2024" . $randomId,
+                        'password' => "sgu2024",
+                        'name' => $item['tentacgia'],
+                        'email' => "sgu2024" . $randomId . "@gmail.com"
+                    ]);
+                    $newData[] = [
+                        'id_tacgia' => $user->id,
+                        'id_vaitro' => $item['id_vaitro'],
+                        'thutu' => $item['thutu'],
+                        'tyledonggop' => $item['tyledonggop'],
+                        'duplicates' => $item['duplicates'],
+                    ];
                 }
+                foreach ($newData as $item) {
+                    foreach ($item["duplicates"] as $duplicate) {
+                        $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+                    }
+                }
+                $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+            } else {
+                $newListSanPhamTacGia = $filteredWithId;
             }
-            $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
+
 
 
 
@@ -551,6 +578,12 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($fileMinhChung->sanPham == null) {
             throw new BaiBaoCanNotUpdateException();
         }
+
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($fileMinhChung->sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
+        }
+
         $validated = $request->validated();
         $fileMinhChung->loaiminhchung = $validated['loaiminhchung'];
         $fileMinhChung->url = $validated['url'];
@@ -571,6 +604,12 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham->trashed()) {
             throw new BaiBaoCanNotUpdateException();
         }
+
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
+        }
+
         $validated = $request->validated();
         if ($sanPham->trangthairasoat == $validated['trangthairasoat']) {
             throw new UpdateTrangThaiRaSoatException();
