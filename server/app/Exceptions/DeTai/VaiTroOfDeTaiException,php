@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Exceptions\BaiBao;
+namespace App\Exceptions\DeTai;
 
 use App\Utilities\ResponseError;
 use Exception;
 
 
-class UpdateTrangThaiRaSoatException extends Exception
+class VaiTroOfDeTaiException extends Exception
 {
     public function render($request)
     {
@@ -14,7 +14,7 @@ class UpdateTrangThaiRaSoatException extends Exception
             new ResponseError(
                 "BAD REQUEST",
                 400,
-                "Trạng thái trước khi cập nhật và sau khi cập nhật giống nhau"
+                "Các vai trò tác giả phải thuộc vai trò tác giả của đề tài"
             ),
             404
         );

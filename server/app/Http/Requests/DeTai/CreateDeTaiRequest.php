@@ -87,8 +87,8 @@ class CreateDeTaiRequest extends FormRequest
             "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
 
             // file minh chung san pham
-            // "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
-            // "fileminhchungsanpham.url" => "bail|required|string"
+            "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
+            "fileminhchungsanpham.url" => "bail|required|string"
         ];
     }
 
