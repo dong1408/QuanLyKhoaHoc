@@ -5,8 +5,7 @@ use App\ViewModel\SanPham\SanPhamVm;
 
 class NghiemThuVm
 {
-    public $id;
-    public SanPhamVm $sanpham; // $id_sanpham;
+    public int $id;
     public ?string $hoidongnghiemthu;
     public ?string $ngaynghiemthu;
     public ?string $ketquanghiemthu;

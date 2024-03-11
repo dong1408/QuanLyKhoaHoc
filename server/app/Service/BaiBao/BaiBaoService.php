@@ -5,9 +5,9 @@ namespace App\Service\BaiBao;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateFileMinhChungSanPhamRequest;
-use App\Http\Requests\BaiBao\UpdateSanPhamRequest;
-use App\Http\Requests\BaiBao\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\BaiBao\UpdateTrangThaiRaSoatBaiBao;
+use App\Http\Requests\SanPham\UpdateSanPhamRequest;
+use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Utilities\ResponseSuccess;
 use Illuminate\Http\Request;
 
@@ -25,4 +25,6 @@ interface BaiBaoService
     public function deleteBaiBao(int $id): ResponseSuccess;
     public function restoreBaiBao(int $id): ResponseSuccess;
     public function forceDeleteBaiBao(int $id): ResponseSuccess;
+    public function getBaiBaoKeKhai(Request $request): ResponseSuccess;
+    public function getBaiBaoThamGia(Request $request): ResponseSuccess;
 }

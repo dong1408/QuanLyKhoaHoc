@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\BaiBao;
+namespace App\Http\Requests\Detai;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreateBaiBaoRequest extends FormRequest
+class CreateDeTaiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class CreateBaiBaoRequest extends FormRequest
     public function rules()
     {
         return [
-            // san pham
+            // ======================== san pham ====================== //
             "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",
             //            "sanpham.id_loaisanpham" => [
             //                "bail", "integer",
@@ -47,55 +47,58 @@ class CreateBaiBaoRequest extends FormRequest
                 Rule::exists('d_m_to_chucs', 'id')
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
-            // "sanpham.ngaykekhai" => "bail|required|string",
-            // "sanpham.id_nguoikekhai" => [
-            //     "bail", "required", "integer",
-            //     Rule::exists('users', 'id')
-            // ],
+            "sanpham.ngaykekhai" => "bail|required|string",
+            "sanpham.id_nguoikekhai" => [
+                "bail", "required", "integer",
+                Rule::exists('users', 'id')
+            ],
             "sanpham.diemquydoi" => "bail|required|string",
             "sanpham.gioquydoi" => "bail|required|string",
             "sanpham.thongtinchitiet" => "bail|required|string",
             "sanpham.capsanpham" => "bail|required|string",
             "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
 
-            // Thong tin chi tiet bai bao
-            "doi" => "bail|nullable|string",
-            "url" => "bail|nullable|string",
-            "received" => "bail|nullable|string",
-            "accepted" => "bail|nullable|string",
-            "published" => "bail|nullable|string",
-            "abstract" => "bail|nullable|string",
-            "keywords" => "bail|nullable|string",
-            "id_tapchi" => [
-                "bail", "required", "integer",
-                Rule::exists('tap_chis', 'id')
+            // =========== Thong tin chi tiet de tai ================ //            
+            "maso" => "bail|required|string|unique:de_tais,maso",
+            // "ngaydangky" => "bail|nullable|string",
+            "ngoaitruong" => "bail|nullable|boolean",
+            "truongchutri" => "bail|nullable|boolean",
+            "id_tochucchuquan" => [
+                "bail", "nullable", "integer",
+                Rule::exists('d_m_to_chucs', 'id')
             ],
-            "volume" => "bail|nullable|string",
-            "issue" => "bail|nullable|string",
-            "number" => "bail|nullable|string",
-            "pages" => "bail|nullable|string",
+            "id_loaidetai" => [
+                "bail", "nullable", "integer",
+                Rule::exists('phan_loai_de_tais', 'id')
+            ],
+            "detaihoptac" => "bail|nullable|boolean",
+            "id_tochuchoptac" => [
+                "bail", "nullable", "integer",
+                Rule::exists('d_m_to_chucs', 'id')
+            ],
+            "tylekinphidonvihoptac" => "bail|nullable|string",
+            "capdetai" => "bail|nullable|string",
 
 
-            // // san pham _ tac gia            
+
+            // ================= san pham _ tac gia ================ //            
             "sanpham_tacgia" => "bail|array",
             "sanpham_tacgia.*.id_tacgia" => [
-                "bail", "nullable", "int",
+                "bail", "required", "int",
                 Rule::exists("users", "id")
             ],
-            "sanpham_tacgia.*.tentacgia" => "bail|required|string",
             "sanpham_tacgia.*.id_vaitro" => [
                 "bail", "required", "int",
                 Rule::exists("d_m_vai_tro_tac_gias", "id")
             ],
-            "sanpham_tacgia.*.thutu" => "bail|nullable|integer",
-            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
+            "sanpham_tacgia.*.thutu" => "bail|nullable|string",
+            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|string",
 
             // file minh chung san pham
-            "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
-            "fileminhchungsanpham.url" => "bail|required|string"
+            // "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
+            // "fileminhchungsanpham.url" => "bail|required|string"
         ];
     }
-
 
     public function messages()
     {
@@ -105,11 +108,12 @@ class CreateBaiBaoRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-            //            'sanpham.id_loaisanpham.exists' => 'Danh mục sản phẩm không tồn tại trên hệ thông',
             'sanpham.id_thongtinnoikhac.exists' => 'Thông tin nơi khác không tồn tại trên hệ thống',
             'sanpham.id_donvitaitro.exists' => 'Thông tin đơn vị tài trợ không tồn tại trên hệ thống',
             'sanpham.id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
-            'id_tapchi.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
+            'id_tochucchuquan.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
+            'id_loaidetai.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
+            'id_tochuchoptac.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
             'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
             "sanpham_tacgia.*.id_tacgia.exists" => "Tác giả không tồn tại trên hệ thống",
             "sanpham_tacgia.*.id_vaitro.exists" => "Vai trò tác giả không tồn tại trên hệ thống"

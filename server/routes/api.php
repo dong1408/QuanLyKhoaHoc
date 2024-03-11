@@ -53,7 +53,6 @@ Route::group([
     // BaiBaoKhoaHoc
     Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
     Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
-    Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']);
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao']);
     Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham']);
     Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);
@@ -63,6 +62,9 @@ Route::group([
     Route::patch('baibao/{id}/delete', [BaiBaoKhoaHocController::class, 'deleteBaiBao']);
     Route::patch('baibao/{id}/restore', [BaiBaoKhoaHocController::class, 'restoreBaiBao']);
     Route::delete('baibao/{id}/force', [BaiBaoKhoaHocController::class, 'forceDeleteBaiBao']);
+    Route::get('baibao/kekhai', [BaiBaoKhoaHocController::class, 'getBaiBaoKeKhai']);
+    Route::get('baibao/thamgia', [BaiBaoKhoaHocController::class, 'getBaiBaoThamGia']);
+    Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']);
 
 
     // SanPham

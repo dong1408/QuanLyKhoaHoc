@@ -7,6 +7,8 @@ use App\Service\Auth\AuthService;
 use App\Service\Auth\AuthServiceImpl;
 use App\Service\BaiBao\BaiBaoService;
 use App\Service\BaiBao\BaiBaoServiceImpl;
+use App\Service\DeTai\DeTaiService;
+use App\Service\DeTai\DeTaiServiceImple;
 use App\Service\NhaXuatBan\NhaXuatBanService;
 use App\Service\NhaXuatBan\NhaXuatBanServiceImpl;
 use App\Service\QuyDoi\ChuyenNganhTinhDiemService;
@@ -57,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(NhaXuatBanService::class, NhaXuatBanServiceImpl::class);
         $this->app->bind(DMSanPhamService::class, DMSanPhamServiceImpl::class);
         $this->app->bind(UserService::class, UserServiceImpl::class);
+        $this->app->bind(DeTaiService::class, DeTaiServiceImple::class);
     }
     /**
      * Bootstrap any application services.

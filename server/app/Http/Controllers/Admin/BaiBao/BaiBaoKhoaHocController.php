@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateFileMinhChungSanPhamRequest;
-use App\Http\Requests\BaiBao\UpdateSanPhamRequest;
-use App\Http\Requests\BaiBao\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\BaiBao\UpdateTrangThaiRaSoatBaiBao;
+use App\Http\Requests\SanPham\UpdateSanPhamRequest;
+use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Service\BaiBao\BaiBaoService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,6 +92,18 @@ class BaiBaoKhoaHocController extends Controller
     public function forceDeleteBaiBao(int $id): Response
     {
         $result = $this->baiBaoService->forceDeleteBaiBao($id);
+        return response()->json($result, 200);
+    }
+
+    public function getBaiBaoKeKhai(Request $request): Response
+    {
+        $result = $this->baiBaoService->getBaiBaoKeKhai($request);
+        return response()->json($result, 200);
+    }
+
+    public function getBaiBaoThamGia(Request $request): Response
+    {
+        $result = $this->baiBaoService->getBaiBaoThamGia($request);
         return response()->json($result, 200);
     }
 }

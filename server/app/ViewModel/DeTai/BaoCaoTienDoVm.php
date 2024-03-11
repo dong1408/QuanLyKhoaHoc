@@ -7,7 +7,6 @@ use Ramsey\Uuid\Type\Integer;
 class BaoCaoTienDoVm
 {
     public int $id;
-    public SanPhamVm $sanpham; // $id_sanpham
     public ?string $ngaynopbaocao;
     public ?string $ketquaxet;
     public ?string $thoigiangiahan;
