@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('tentinhthanh')->nullable();
             $table->string('tentinhthanh_en')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

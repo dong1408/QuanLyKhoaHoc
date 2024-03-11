@@ -22,7 +22,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_nguoicapnhat')->nullable();
             $table->foreign('id_nguoicapnhat')->references('id')->on('users')->onDelete('cascade');
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

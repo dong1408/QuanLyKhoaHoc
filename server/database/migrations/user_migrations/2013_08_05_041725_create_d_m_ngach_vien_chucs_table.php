@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('tenngach')->nullable();
             $table->string('tenngach_en')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -3,6 +3,7 @@
 namespace App\ViewModel\TapChi;
 
 use App\Models\TapChi\TapChi;
+use App\Models\TapChi\XepHangTapChi;
 use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
@@ -30,22 +31,11 @@ class TapChiDetailVm
     public ?UserVm $nguoithem; // $di_nguoithem -- UserVm
     public string $created_at;
     public string $updated_at;
+    public ?string $deleted_at;
 
-    public ?bool $khongduoccongnhan;
+    public ?TapChiKhongCongNhanVm $khongduoccongnhan;
 
     public ?XepHangTapChiVm $xephangtapchi;
 
-    // public ?string $wos;
-    // public ?string $if;
-    // public ?string $quartile;
-    // public ?string $abs;
-    // public ?string $abcd;
-    // public ?string $aci;
-
     public ?TinhDiemTapChiVm $tinhdiemtapchi;
-
-    // public ?NganhTinhDiemVm $nganhtinhdiem;
-    // public ?ChuyenNganhTinhDiemVm $chuyennganhtinhdiem;
-    // public ?string $diem;
-    // public ?string $namtinhdiem;
 }

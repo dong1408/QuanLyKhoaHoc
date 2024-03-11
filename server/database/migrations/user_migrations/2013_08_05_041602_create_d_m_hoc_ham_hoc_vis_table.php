@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('tenhochamhocvi')->nullable();
             $table->string('tenhochamhocvi_en')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

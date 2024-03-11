@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DMQuocGia extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+
     protected $table = 'd_m_quoc_gias';
 
     // relation 1-n to user

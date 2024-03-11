@@ -2,12 +2,22 @@
 
 namespace App\Utilities;
 
+use App\Models\BaiBao\BaiBaoKhoaHoc;
+use App\Models\DeTai\BaoCaoTienDo;
+use App\Models\DeTai\DeTai;
+use App\Models\DeTai\NghiemThu;
+use App\Models\DeTai\PhanLoaiDeTai;
+use App\Models\DeTai\XetDuyet;
+use App\Models\FileMinhChungSanPham;
 use App\Models\NhaXuatBan\NhaXuatBan;
 use App\Models\TapChi\DMNganhTheoHSGS;
 use App\Models\TapChi\DMPhanLoaiTapChi;
 use App\Models\QuyDoi\DMChuyenNganhTinhDiem;
 use App\Models\QuyDoi\DMNganhTinhDiem;
 use App\Models\SanPham\DMSanPham;
+use App\Models\SanPham\DMVaiTroTacGia;
+use App\Models\SanPham\SanPham;
+use App\Models\SanPham\SanPhamTacGia;
 use App\Models\TapChi\DMNganhTheoHDGS;
 use App\Models\TapChi\TapChi;
 use App\Models\TapChi\TapChiKhongCongNhan;
@@ -17,21 +27,39 @@ use App\Models\User;
 use App\Models\UserInfo\DMQuocGia;
 use App\Models\UserInfo\DMTinhThanh;
 use App\Models\UserInfo\DMToChuc;
+use App\ViewModel\BaiBao\BaiBaoKhoaHocDetailVm;
+use App\ViewModel\BaiBao\BaiBaoKhoaHocVm;
 use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\SanPham\DMSanPhamVm;
+use App\ViewModel\SanPham\FileMinhChungSanPhamVm;
+use App\ViewModel\SanPham\SanPhamDetailVm;
+use App\ViewModel\SanPham\SanPhamTacGiaVm;
+use App\ViewModel\SanPham\SanPhamVm;
+use App\ViewModel\SanPham\VaiTroTacGiaVm;
 use App\ViewModel\TapChi\NganhTheoHDGSVm;
 use App\ViewModel\TapChi\PhanLoaiTapChiVm;
 use App\ViewModel\TapChi\TapChiDetailVm;
+use App\ViewModel\TapChi\TapChiKhongCongNhanDetailVm;
 use App\ViewModel\TapChi\TapChiKhongCongNhanVm;
 use App\ViewModel\TapChi\TapChiVm;
+use App\ViewModel\TapChi\TinhDiemTapChiDetailVm;
 use App\ViewModel\TapChi\TinhDiemTapChiVm;
+use App\ViewModel\TapChi\XepHangTapChiDetailVm;
 use App\ViewModel\TapChi\XepHangTapChiVm;
 use App\ViewModel\User\UserVm;
+use App\ViewModel\UserInfo\QuocGiaDetailVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
+use App\ViewModel\UserInfo\TinhThanhDetailVm;
 use App\ViewModel\UserInfo\TinhThanhVm;
 use App\ViewModel\UserInfo\ToChucVm;
+use BaoCaoTienDoVm;
+use DeTaiDetailVm;
+use DeTaiVm;
+use NghiemThuVm;
+use PhanLoaiDeTaiVm;
+use XetDuyetVm;
 
 class Convert
 {
@@ -45,9 +73,19 @@ class Convert
         $a->name = $tapChi->name;
         $a->address = $tapChi->address;
         $a->trangthai = $tapChi->trangthai;
-        $a->nguoithem = Convert::getUserVm($tapChi->nguoiThem);
+        $a->khongduoccongnhan = optional($tapChi->tapChiKhongCongNhans()->latest()->first())->khongduoccongnhan ?? null;
+        if ($tapChi->nguoiThem == null) {
+            $a->nguoithem = null;
+        } else {
+            $a->nguoithem = Convert::getUserVm($tapChi->nguoiThem);
+        }
         $a->created_at = $tapChi->created_at;
         $a->updated_at = $tapChi->updated_at;
+        $a->deleted_at = $tapChi->deleted_at;
+        $a->issn = $tapChi->issn;
+        $a->pissn = $tapChi->pissn;
+        $a->eissn = $tapChi->eissn;
+        $a->quocte = $tapChi->quocte;
         return $a;
     }
 
@@ -71,7 +109,7 @@ class Convert
         } else {
             $a->donvichuquan = Convert::getToChucVm($tapChi->donViChuQuan); // $id_donvichuquan -- ToChucVm
         }
-        $a->address = $tapChi->id;
+        $a->address = $tapChi->address;
         if (!$tapChi->tinhThanh) {
             $a->addresscity = null;
         } else {
@@ -82,7 +120,7 @@ class Convert
         } else {
             $a->addresscountry = Convert::getQuocGiaVm($tapChi->quocGia); // id_address_country -- QuocGiaVm
         }
-        $a->trangthai = $tapChi->id;
+        $a->trangthai = $tapChi->trangthai;
         if (!$tapChi->nguoiThem) {
             $a->nguoithem = null;
         } else {
@@ -90,24 +128,24 @@ class Convert
         }
         $a->created_at = $tapChi->id;
         $a->updated_at = $tapChi->id;
+        $a->deleted_at = $tapChi->deleted_at ?? null;
 
-        $a->khongduoccongnhan = $tapChi->tapChiKhongCongNhans()->latest()->first()->khongduoccongnhan;
+        if ($tapChi->tapChiKhongCongNhans()->latest()->first() == null) {
+            $a->khongduoccongnhan = null;
+        } else {
+            $a->khongduoccongnhan = Convert::getTapChiKhongCongNhanVm($tapChi->tapChiKhongCongNhans()->latest()->first());
+        }
+        if ($tapChi->xepHangTapChis()->latest()->first() == null) {
+            $a->xephangtapchi = null;
+        } else {
+            $a->xephangtapchi = Convert::getXepHangTapChiVm($tapChi->xepHangTapChis()->latest()->first());
+        }
+        if ($tapChi->tinhDiemTapChis()->latest()->first() == null) {
+            $a->tinhdiemtapchi = null;
+        } else {
+            $a->tinhdiemtapchi = Convert::getTinhDIemTapChiVm($tapChi->tinhDiemTapChis()->latest()->first());
+        }
 
-        $a->xephangtapchi = Convert::getXepHangTapChiVm($tapChi->xepHangTapChis()->latest()->first());
-        $a->tinhdiemtapchi = Convert::getTinhDIemTapChiVm($tapChi->tinhDiemTapChis()->latest()->first());
-
-        return $a;
-    }
-
-    public static function getTapChiKhongCongNhanVm(TapChiKhongCongNhan $tapChiKhongCongNhan): TapChiKhongCongNhanVm
-    {
-        $a = new TapChiKhongCongNhanVm();
-        $a->id = $tapChiKhongCongNhan->id;
-        $a->khongduoccongnhan = $tapChiKhongCongNhan->khongduoccongnhan;
-        $a->ghichu = $tapChiKhongCongNhan->ghichu;
-        $a->nguoicapnhat = Convert::getUserVm($tapChiKhongCongNhan->nguoicapnhat); //
-        $a->created_at = $tapChiKhongCongNhan->created_at;
-        $a->updated_at = $tapChiKhongCongNhan->updated_at;
         return $a;
     }
 
@@ -133,19 +171,38 @@ class Convert
         return $a;
     }
 
+    public static function getTapChiKhongCongNhanVm(TapChiKhongCongNhan $tapChiKhongCongNhan): TapChiKhongCongNhanVm
+    {
+        $a = new TapChiKhongCongNhanVm();
+        $a->id = $tapChiKhongCongNhan->id;
+        $a->khongduoccongnhan = $tapChiKhongCongNhan->khongduoccongnhan;
+        $a->created_at = $tapChiKhongCongNhan->created_at;
+        $a->updated_at = $tapChiKhongCongNhan->updated_at;
+        $a->nguoicapnhat = Convert::getUserVm($tapChiKhongCongNhan->nguoicapnhat);
+        $a->ghichu = $tapChiKhongCongNhan->ghichu;
+        return $a;
+    }
+
     public static function getTinhDIemTapChiVm(TinhDiemTapChi $tinhDiemTapChi): TinhDiemTapChiVm
     {
         $a = new TinhDiemTapChiVm();
         $a->id = $tinhDiemTapChi->id;
-        // $a->tapchi = Convert::getTapChiVm($tinhDiemTapChi->tapChi);
-        $a->nganhtinhdiem = Convert::getNganhTinhDiemVm($tinhDiemTapChi->nganhTinhDiem);
-        $a->chuyennganhtinhdiem = Convert::getChuyenNganhTinhDiemVm($tinhDiemTapChi->chuyenNganhTinhDiem);
+        $a->ghichu = $tinhDiemTapChi->ghichu;
         $a->diem = $tinhDiemTapChi->diem;
         $a->namtinhdiem = $tinhDiemTapChi->namtinhdiem;
-        $a->nguoicapnhat = Convert::getUserVm($tinhDiemTapChi->nguoiCapNhat);
-        $a->ghichu = $tinhDiemTapChi->ghichu;
         $a->created_at = $tinhDiemTapChi->created_at;
         $a->updated_at = $tinhDiemTapChi->updated_at;
+        $a->nguoicapnhat = Convert::getUserVm($tinhDiemTapChi->nguoicapnhat);
+        if ($tinhDiemTapChi->nganhTinhDiem == null) {
+            $a->nganhtinhdiem = null;
+        } else {
+            $a->nganhtinhdiem = Convert::getNganhTinhDiemVm($tinhDiemTapChi->nganhTinhDiem);
+        }
+        if ($tinhDiemTapChi->chuyenNganhTinhDiem == null) {
+            $a->nganhtinhdiem = null;
+        } else {
+            $a->chuyennganhtinhdiem = Convert::getChuyenNganhTinhDiemVm($tinhDiemTapChi->chuyenNganhTinhDiem);
+        }
         return $a;
     }
 
@@ -160,16 +217,15 @@ class Convert
         $a->abcd = $xepHangTapChi->abcd;
         $a->aci = $xepHangTapChi->aci;
         $a->ghichu = $xepHangTapChi->ghichu;
-        if (!$xepHangTapChi->user) {
-            $a->user = null;
-        } else {
-            $a->user = Convert::getUserVm($xepHangTapChi->user);
-        }
         $a->created_at = $xepHangTapChi->created_at;
         $a->updated_at = $xepHangTapChi->updated_at;
+        if (!$xepHangTapChi->user) {
+            $a->nguoicapnhat = null;
+        } else {
+            $a->nguoicapnhat = Convert::getUserVm($xepHangTapChi->user);
+        }
         return $a;
     }
-
 
     // ========================= USER ============================= //
 
@@ -187,9 +243,13 @@ class Convert
     {
         $a = new ToChucVm();
         $a->id = $dMToChuc->id;
-        $a->matochuc = $dMToChuc->matochuc;
-        $a->tentochuc = $dMToChuc->tentochuc;
-        $a->tentochuc_en = $dMToChuc->tentochuc_en;
+        $a->tentochuc = $dMToChuc->tentochuc ?? null;
+        $a->created_at = $dMToChuc->created_at;
+        $a->dienthoai = $dMToChuc->dienthoai ?? null;
+        $a->matochuc = $dMToChuc->matochuc ?? null;
+        $a->tentochuc_en = $dMToChuc->tentochuc_en ?? null;
+        $a->updated_at = $dMToChuc->updated_at;
+        $a->website = $dMToChuc->website ?? null;
         return $a;
     }
 
@@ -197,30 +257,22 @@ class Convert
     {
         $a = new TinhThanhVm();
         $a->id = $dmTinhThanh->id;
-        $a->matinhthanh = $dmTinhThanh->matinhthanh;
-        $a->tentinhthanh = $dmTinhThanh->tentinhthanh;
-        $a->tentinhthanh_en = $dmTinhThanh->tentinhthanh_en;
+        $a->tentinhthanh = $dmTinhThanh->tentinhthanh ?? null;
+        $a->matinhthanh = $dmTinhThanh->matinhthanh ?? null;
+        $a->tentinhthanh_en = $dmTinhThanh->tentinhthanh_en ?? null;
         return $a;
     }
 
-    public static function getTinhThanhDetailVm(DMTinhThanh $dmTinhThanh)
-    {
-        $a = new TinhThanhVm();
-        $a->id = $dmTinhThanh->id;
-        $a->quocgia = Convert::getQuocGiaVm($dmTinhThanh->quocGia);
-        $a->matinhthanh = $dmTinhThanh->matinhthanh;
-        $a->tentinhthanh = $dmTinhThanh->tentinhthanh;
-        $a->tentinhthanh_en = $dmTinhThanh->tentinhthanh_en;
-        return $a;
-    }
 
     public static function getQuocGiaVm(DMQuocGia $dMQuocGia)
     {
         $a = new QuocGiaVm();
         $a->id = $dMQuocGia->id;
-        $a->maquocgia = $dMQuocGia->maquocgia;
-        $a->tenquocgia = $dMQuocGia->tenquocgia;
-        $a->tenquocgia_en = $dMQuocGia->tenquocgia_en;
+        $a->tenquocgia = $dMQuocGia->tenquocgia ?? null;
+        $a->maquocgia = $dMQuocGia->maquocgia ?? null;
+        $a->tenquocgia_en = $dMQuocGia->tenquocgia_en ?? null;
+        $a->created_at = $dMQuocGia->created_at;
+        $a->updated_at = $dMQuocGia->updated_at;
         return $a;
     }
 
@@ -230,18 +282,280 @@ class Convert
     {
         $a = new DMSanPhamVm();
         $a->id = $dmSanPham->id;
-        $a->madmsanpham = $dmSanPham->madmsanpham;
-        $a->tendmsanpham = $dmSanPham->tensanpham;
-        $a->mota = $dmSanPham->mota;
+        $a->tendmsanpham = $dmSanPham->tensanpham ?? null;
         $a->created_at = $dmSanPham->created_at;
         $a->updated_at = $dmSanPham->updated_at;
+        $a->madmsanpham = $dmSanPham->masanpham ?? null;
         return $a;
     }
 
+    public static function getSanPhamVm(SanPham $sanPham)
+    {
+        $a = new SanPhamVm();
+        $a->id = $sanPham->id;
+        $a->tensanpham = $sanPham->tensanpham;
+        $a->loaisanpham = Convert::getDMSanPhamVm($sanPham->dmSanPham);
+        $a->tongsotacgia = $sanPham->tongsotacgia;
+        $a->solandaquydoi = $sanPham->solanquydoi;
+        if ($sanPham->nguoiKeKhai == null) {
+            $a->nguoikekhai = null;
+        } else {
+            $a->nguoikekhai = Convert::getUserVm($sanPham->nguoiKeKhai);
+        }
+        $a->diemquydoi = $sanPham->diemquydoi;
+        $a->gioquydoi = $sanPham->gioquydoi;
+        $a->capsanpham = $sanPham->capsanpham;
+        $a->thoidiemcongbohoanthanh = $sanPham->thoidiemhoanthanh;
+        $a->created_at = $sanPham->created_at;
+        $a->updated_at = $sanPham->updated_at;
+
+        return $a;
+    }
+
+    public static function getSanPhamDetailVm(SanPham $sanPham)
+    {
+        $a = new SanPhamDetailVm();
+        $a->id = $sanPham->id;
+        $a->tensanpham = $sanPham->tensanpham;
+        if ($sanPham->dmSanPham == null) {
+            $a->loaisanpham = null;
+        } else {
+            $a->loaisanpham = Convert::getDMSanPhamVm($sanPham->dmSanPham);
+        }
+        $a->tongsotacgia = $sanPham->tongsotacgia;
+        $a->solandaquydoi = $sanPham->solandaquydoi;
+        $a->cosudungemailtruong = $sanPham->cosudungemailtruong;
+        $a->cosudungemaildonvikhac = $sanPham->cosudungemaildonvikhac;
+        $a->cothongtintruong = $sanPham->cothongtintruong;
+        $a->cothongtindonvikhac = $sanPham->cothongtindonvikhac;
+        if ($sanPham->thongTinNoiKhac == null) {
+            $a->thongtinnoikhac = null;
+        } else {
+            $a->thongtinnoikhac = Convert::getToChucVm($sanPham->thongTinNoiKhac);
+        }
+
+        $a->conhantaitro = $sanPham->conhantaitro;
+        if ($sanPham->donViTaiTro == null) {
+            $a->donvitaitro = null;
+        } else {
+            $a->donvitaitro = Convert::getToChucVm($sanPham->donViTaiTro);
+        }
+        $a->chitietdonvitaitro = $sanPham->chitietdonvitaitro ?? null;
+        $a->ngaykekhai = $sanPham->ngaykekhai;
+        if ($sanPham->nguoiKeKhai == null) {
+            $a->nguoikekhai = null;
+        } else {
+            $a->nguoikekhai = Convert::getUserVm($sanPham->nguoiKeKhai);
+        }
+
+        $a->trangthairasoat = $sanPham->trangthairasoat;
+        $a->ngayrasoat = $sanPham->ngayrasoat ?? null;
+        if ($sanPham->nguoiRaSoat == null) {
+            $a->nguoirasoat = null;
+        } else {
+            $a->nguoirasoat = Convert::getUserVm($sanPham->nguoiRaSoat);
+        }
+
+        $a->diemquydoi = $sanPham->diemquydoi;
+        $a->gioquydoi = $sanPham->gioquydoi;
+        $a->thongtinchitiet = $sanPham->thongtinchitiet;
+        $a->capsanpham = $sanPham->capsanpham;
+        $a->thoidiemcongbohoanthanh = $sanPham->thoidiemcongbohoanthanh;
+        if ($sanPham->fileMinhChung == null) {
+            $a->minhchung = null;
+        } else {
+            $a->minhchung = Convert::getFileMinhChungSanPhamVm($sanPham->fileMinhChung);
+        }
+        $a->created_at = $sanPham->created_at;
+        $a->updated_at = $sanPham->updated_at;
+        $a->deleted_at = $sanPham->deleted_at ?? null;
+        foreach ($sanPham->sanPhamsTacGias() as $sanPhaMTacGia) {
+            $a->sanpham_tacgia[] = $sanPhaMTacGia;
+        }
+        return $a;
+    }
+
+    public static function getVaiTroTacGiaVm(DMVaiTroTacGia $dMVaiTroTacGia)
+    {
+        $a = new VaiTroTacGiaVm();
+        $a->id = $dMVaiTroTacGia->id;
+        $a->tenvaitro = $dMVaiTroTacGia->tenvaitro;
+        $a->tenvaitro_en = $dMVaiTroTacGia->tenvaitro_en ?? null;
+        $a->mavaitro = $dMVaiTroTacGia->mavaitro;
+        $a->role = $dMVaiTroTacGia->role;
+        return $a;
+    }
+
+    public static function getSanPhamTacGiaVm(SanPhamTacGia $sanPhaMTacGia)
+    {
+        $a = new SanPhamTacGiaVm();
+        $a->id = $sanPhaMTacGia->id;
+        $a->tacgia = Convert::getUserVm($sanPhaMTacGia->tacGia);
+        $a->vaitrotacgia = Convert::getVaiTroTacGiaVm($sanPhaMTacGia->vaiTroTacGia);
+
+        $a->thutu = $sanPhaMTacGia->thutu ?? null;
+        $a->tyledonggop = $sanPhaMTacGia->tyledonggop  ?? null;
+        $a->created_at = $sanPhaMTacGia->created_at;
+        $a->updated_at = $sanPhaMTacGia->updated_at;
+
+        return $a;
+    }
+
+
+    public static function getFileMinhChungSanPhamVm(FileMinhChungSanPham $fileMinhChungSanPham)
+    {
+        $a = new FileMinhChungSanPhamVm();
+        $a->id = $fileMinhChungSanPham->id;
+        $a->loaiminhchung = $fileMinhChungSanPham->loaiminhchung ?? null;
+        $a->url = $fileMinhChungSanPham->url ?? null;
+        $a->created_at = $fileMinhChungSanPham->created_at ?? null;
+        $a->updated_at = $fileMinhChungSanPham->deleted_at ?? null;
+        return $a;
+    }
+
+
+
     // ========================= BAI BAO ============================= //
+
+    public static function getBaiBaoKhoaHocVm(SanPham $sanPham)
+    {
+        $a = new BaiBaoKhoaHocVm();
+        $a->id = $sanPham->baiBao->id;
+        $a->id_sanpham = $sanPham->id;
+        $a->tensanpham = $sanPham->tensanpham;
+        $a->keywords = $sanPham->baiBao->keyword ?? null;
+        $a->tentapchi = $sanPham->baiBao->tapChi == null ? $a->tentapchi = null : $sanPham->baiBao->tapChi->name;
+        $a->volume = $sanPham->baiBao->volume ?? null;
+        $a->issue = $sanPham->baiBao->issue ?? null;
+        $a->number = $sanPham->baiBao->number ?? null;
+        $a->pages = $sanPham->baiBao->pages ?? null;
+        $a->trangthairasoat = $sanPham->trangthairasoat;
+        $a->deleted_at = $sanPham->deleted_at ?? null;
+        $a->created_at = $sanPham->created_at;
+        $a->updated_at = $sanPham->updated_at;
+
+        return $a;
+    }
+
+    public static function getBaiBaoKhoaHocDetailVm(SanPham $sanPham)
+    {
+        $a = new BaiBaoKhoaHocDetailVm();
+        $a->id = $sanPham->baiBao->id;
+
+        $a->sanpham = Convert::getSanPhamDetailVm($sanPham);
+
+        $a->doi = $sanPham->baiBao->doi ?? null;
+        $a->url = $sanPham->baiBao->url ?? null;
+        $a->received = $sanPham->baiBao->received ?? null;
+        $a->accepted = $sanPham->baiBao->accepted ?? null;
+        $a->published = $sanPham->baiBao->published ?? null;
+        $a->abstract = $sanPham->baiBao->abstract ?? null;
+        $a->keywords = $sanPham->baiBao->keywords ?? null;
+        if ($sanPham->baiBao->tapChi == null) {
+            $a->tapchi = null;
+        } else {
+            $a->tapchi = Convert::getTapChiVm($sanPham->baiBao->tapChi);
+        }
+        $a->volume = $sanPham->baiBao->volume ?? null;
+        $a->issue = $sanPham->baiBao->issue ?? null;
+        $a->number = $sanPham->baiBao->number ?? null;
+        $a->pages = $sanPham->baiBao->pages ?? null;
+        $a->deleted_at = $sanPham->baiBao->sanPham->deleted_at ?? null;
+        $a->created_at = $sanPham->baiBao->created_at;
+        $a->updated_at = $sanPham->baiBao->updated_at;
+
+        foreach ($sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
+            $a->sanpham_tacgias[] = Convert::getSanPhamTacGiaVm($sanPhaMTacGia);
+        }
+        return $a;
+    }
 
 
     // ========================= DE TAI ============================= //
+
+    public static function getDeTaiVm(SanPham $sanPham)
+    {
+        $a = new DeTaiVm();
+        $a->id = $sanPham->deTai->id;
+        $a->tensannpham = $sanPham->tensanpham;
+        $a->id_sanpham = $sanPham->id;
+        $a->maso = $sanPham->deTai->maso;
+        $a->ngaydangky = $sanPham->deTai->ngaydangky;
+        $a->capdetai = $sanPham->deTai->capdetai;
+        $a->created_at = $sanPham->deTai->created_at;
+        $a->updated_at = $sanPham->deTai->updated_at;
+        return $a;
+    }
+    public static function getDeTaiDetailVm(DeTai $deTai)
+    {
+        $a = new DeTaiDetailVm();
+        $a->id = $deTai->id;
+        $a->sanpham = Convert::getSanPhamDetailVm($deTai->sanPham);
+        $a->maso = $deTai->maso;
+        $a->ngaydangky = $deTai->ngaydangky;
+        $a->ngoaitruong = $deTai->ngoaitruong;
+        $a->truongchutri = $deTai->truongchutri;
+        $a->tochucchuquan = Convert::getToChucVm($deTai->toChucChuQuan); // $id_tochuchuquan -- tochuc
+        $a->loaidetai = Convert::getPhanLoaiDeTaiVm($deTai->phanLoaiDeTai); // $id_loaidetai -- phanloaidetai
+        $a->detaihoptac = $deTai->detaihoptac;
+        $a->tochuchoptac = Convert::getToChucVm($deTai->toChucHopTac); // $id_tochuchoptac -- tochuc
+        $a->tylekinhphidonvihoptac = $deTai->tylekinhphidonvihoptac;
+        $a->capdetai = $deTai->capdetai;
+        $a->created_at = $deTai->created_at;
+        $a->updated_at = $deTai->updated_at;
+        return $a;
+    }
+    public static function getBaoCaoTienDoVm(BaoCaoTienDo $baoCaoTienDo)
+    {
+        $a = new BaoCaoTienDoVm();
+        $a->id = $baoCaoTienDo->id;
+        $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao;
+        $a->ketquaxet = $baoCaoTienDo->ketquaxet;
+        $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan;
+        $a->created_at = $baoCaoTienDo->created_at;
+        $a->updated_at = $baoCaoTienDo->updated_at;
+        return $a;
+    }
+    public static function getNghiemThuVm(NghiemThu $nghiemThu)
+    {
+        $a = new NghiemThuVm();
+        $a->id = $nghiemThu->id;
+        $a->hoidongnghiemthu = $nghiemThu->hoidongnghiemthu;
+        $a->ngaynghiemthu = $nghiemThu->ngaynghiemhtu;
+        $a->ketquanghiemthu = $nghiemThu->ketquanghiemthu;
+        $a->ngaycongnhanhoanthanh = $nghiemThu->ngaycongnhanhoanthanh;
+        $a->soqdcongnhanhoanthanh = $nghiemThu->soqdcongnhanhoanthanh;
+        $a->thoigianhoanthanh = $nghiemThu->thoigianhoanthanh;
+        $a->created_at = $nghiemThu->created_at;
+        $a->updated_at = $nghiemThu->updated_at;
+        return $a;
+    }
+    public static function getPhanLoaiDeTaiVm(PhanLoaiDeTai $phanLoaiDeTai)
+    {
+        $a = new PhanLoaiDeTaiVm();
+        $a->id = $phanLoaiDeTai->id;
+        $a->maloai = $phanLoaiDeTai->maloai;
+        $a->tenloai = $phanLoaiDeTai->tenloai;
+        $a->kinhphi = $phanLoaiDeTai->kinhphi;
+        $a->mota = $phanLoaiDeTai->mota;
+        $a->created_at = $phanLoaiDeTai->created_at;
+        $a->updated_at = $phanLoaiDeTai->updated_at;
+        return $a;
+    }
+    public static function getXetDuyetVm(XetDuyet $xetDuyet)
+    {
+        $a = new XetDuyetVm();
+        $a->id = $xetDuyet->id;
+        $a->ngayxetduyet = $xetDuyet->ngayxetduyet;
+        $a->ketquaxetduyet = $xetDuyet->ketquaxetduyet;
+        $a->sohopdong = $xetDuyet->sohopdong;
+        $a->ngaykyhopdong = $xetDuyet->ngaykyhopdong;
+        $a->thoihanhopdong = $xetDuyet->thoihanhopdong;
+        $a->kinhphi = $xetDuyet->kinhphi;
+        $a->created_at = $xetDuyet->created_at;
+        $a->updated_at = $xetDuyet->updated_at;
+        return $a;
+    }
 
 
     // ========================= QUY DOI ============================= //
@@ -250,11 +564,11 @@ class Convert
     {
         $a = new NganhTinhDiemVm();
         $a->id = $dMNganhTinhDiem->id;
-        $a->manganhtinhdiem = $dMNganhTinhDiem->manganhtinhdiem;
         $a->tennganhtinhdiem = $dMNganhTinhDiem->tennganhtinhdiem;
-        $a->tennganh_en = $dMNganhTinhDiem->tennganh_en;
         $a->created_at = $dMNganhTinhDiem->created_at;
         $a->updated_at = $dMNganhTinhDiem->updated_at;
+        $a->manganhtinhdiem = $dMNganhTinhDiem->manganhtinhdiem;
+        $a->tennganh_en = $dMNganhTinhDiem->tennganh_en;
         return $a;
     }
 
@@ -262,7 +576,6 @@ class Convert
     {
         $a = new ChuyenNganhTinhDiemVm();
         $a->id = $dmChuyenNganhTinhDiem->id;
-        $a->nganhtinhdiem = Convert::getNganhTinhDiemVm($dmChuyenNganhTinhDiem->nganhTinhDiem);
         $a->machuyennganh = $dmChuyenNganhTinhDiem->machuyennganh;
         $a->tenchuyennganh = $dmChuyenNganhTinhDiem->tenchuyennganh;
         $a->tenchuyennganh_en = $dmChuyenNganhTinhDiem->tenchuyennganh_en;
@@ -277,6 +590,9 @@ class Convert
         $a = new NhaXuatBanVm();
         $a->id = $nhaXuatBan->id;
         $a->name = $nhaXuatBan->name;
+        $a->quocte = $nhaXuatBan->quocte;
+        $a->isbn = $nhaXuatBan->isbn;
+        $a->website = $nhaXuatBan->website;
         return $a;
     }
 }

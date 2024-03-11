@@ -12,6 +12,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
 import {AuthInterceptor} from "./core/interceptors/auth.interceptor";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 registerLocaleData(vi);
 
@@ -28,6 +29,9 @@ registerLocaleData(vi);
     IconsProviderModule,
   ],
   providers: [
+    {
+      provide: NzModalService
+    },
     { provide: NZ_I18N, useValue: vi_VN },
     {
       provide: HTTP_INTERCEPTORS,

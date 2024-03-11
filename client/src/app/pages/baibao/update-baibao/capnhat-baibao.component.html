@@ -1,0 +1,145 @@
+<div class="tw-space-y-[16px]">
+    <button nz-button nzType="primary" [routerLink]="['/bai-bao',this.id]">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+    <h1 class="text-primary tw-text-5xl">CẬP NHẬT THÔNG TIN BÀI BÁO</h1>
+    <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+        <app-loading></app-loading>
+    </ng-template>
+    <ng-template #loaded>
+        <div class="tw-mt-[30px] tw-space-y-[6px]">
+            <form nz-form class="tw-space-y-[16px]" [formGroup]="capNhatForm">
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Tạp Chí</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="id_tapchi"
+                                nzShowSearch
+                                nzPlaceHolder="Tạp Chí"
+                        >
+                            <nz-option *ngFor="let data of this.tapchis" [nzLabel]="data.name ? data.name : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                        <ng-container *ngIf="capNhatForm.controls?.['id_nhaxuatban']?.touched && capNhatForm.controls?.['id_nhaxuatban']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['id_nhaxuatban']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Đường Dẫn</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Đường Dẫn (URL)"  type="text" formControlName="url"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['url']?.touched && capNhatForm.controls?.['url']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['url']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">DOI</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="DOI"  type="text" formControlName="doi"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['doi']?.touched && capNhatForm.controls?.['doi']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['doi']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Received</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Received"  type="text" formControlName="received"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['received']?.touched && capNhatForm.controls?.['received']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['received']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Accepted</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Accepted"  type="text" formControlName="accepted"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['accepted']?.touched && capNhatForm.controls?.['accepted']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['accepted']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Published</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Published"  type="text" formControlName="published"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['published']?.touched && capNhatForm.controls?.['published']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['published']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Keywords</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Từ Khóa"  type="text" formControlName="keywords"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['keywords']?.touched && capNhatForm.controls?.['keywords']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['keywords']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Volume</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Volume"  type="text" formControlName="volume"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['volume']?.touched && capNhatForm.controls?.['volume']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['volume']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Issue</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Issue"  type="text" formControlName="issue"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['issue']?.touched && capNhatForm.controls?.['issue']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['issue']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Number</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Number"  type="text" formControlName="number"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['number']?.touched && capNhatForm.controls?.['number']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['number']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Pages</h3>
+                    <nz-form-control>
+                        <input nz-input placeholder="Pages"  type="text" formControlName="pages"/>
+                        <ng-container *ngIf="capNhatForm.controls?.['pages']?.touched && capNhatForm.controls?.['pages']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['pages']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <div class="tw-w-full">
+                    <h3 class="">Abstract</h3>
+                    <nz-form-control>
+                          <textarea
+                                  nz-input
+                                  placeholder="Abstract"
+                                  formControlName="abstract"
+                                  [nzAutosize]="{ minRows: 10, maxRows: 10 }"
+                          ></textarea>
+                        <ng-container *ngIf="capNhatForm.controls?.['abstract']?.touched && capNhatForm.controls?.['abstract']?.dirty">
+                            <small *ngIf="capNhatForm.controls?.['abstract']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-container>
+                    </nz-form-control>
+                </div>
+                <button
+                        nz-button
+                        nzType="primary"
+                        [nzLoading]="isCapNhatLoading"
+                        (click)="onCapNhatBaiBao()"
+                        nzSize="large"
+                        [disabled]="this.capNhatForm.invalid"
+                >
+                    <span nz-icon nzType="edit" nzTheme="outline"></span>
+                    Cập Nhật
+                </button>
+            </form>
+        </div>
+    </ng-template>
+</div>

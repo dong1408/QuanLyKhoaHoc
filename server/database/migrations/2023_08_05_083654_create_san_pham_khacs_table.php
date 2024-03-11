@@ -27,7 +27,6 @@ return new class extends Migration
             $table->string('ngaycongnhan');
             $table->string('ghichu');
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

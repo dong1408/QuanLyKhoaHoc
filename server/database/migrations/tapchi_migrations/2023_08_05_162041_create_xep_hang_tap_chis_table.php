@@ -34,7 +34,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_user')->nullable();
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

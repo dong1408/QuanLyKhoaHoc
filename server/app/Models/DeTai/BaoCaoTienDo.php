@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class BaoCaoTienDo extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $table = 'ba0_cao_tien_dos';
 

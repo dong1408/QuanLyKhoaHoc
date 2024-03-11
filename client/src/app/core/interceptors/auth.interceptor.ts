@@ -3,9 +3,9 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest}
 import {catchError, concatMap, Observable, throwError} from "rxjs";
 import { environment } from "src/environments/environment";
 import {LocalStorageService} from "../services/local-storage.service";
-import {AuthService} from "../services/auth.service";
+import {AuthService} from "../services/user/auth.service";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "../../shared/commons/constants";
-import {Token} from "../types/auth.type";
+import {Token} from "../types/user/auth.type";
 
 @Injectable({
     providedIn:"root"
@@ -79,6 +79,8 @@ export class AuthInterceptor implements HttpInterceptor{
 
     private addTokenToHeader(request: HttpRequest<any>, token?: string) {
         let headers = request.headers;
+        headers = headers.set("Accept","application/json")
+        headers = headers.set("Content-Type","application/json")
         if (token) {
             headers = headers.set("Authorization", `Bearer ${token}`)
         }

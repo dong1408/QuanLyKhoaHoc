@@ -17,4 +17,23 @@ html{
     --primary: #76c5f0;
     --text-primary:#105481;
     --color-border:#f0f0f0;
+    --error:#b91c1c;
+    --success:#22c55e;
+}
+
+
+.primary{
+    color: var(--primary)
+}
+
+.text-primary{
+    color: var(--text-primary)
+}
+
+.error{
+    color: var(--error)
+}
+
+.success{
+    color:var(--success)
 }

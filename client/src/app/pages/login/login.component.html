@@ -8,7 +8,7 @@
                         <nz-form-control>
                             <input nz-input placeholder="Mã cán bộ" type="text" formControlName="username"/>
                             <ng-container *ngIf="formLogin.controls?.['username']?.touched && formLogin.controls?.['username']?.dirty">
-                                <small *ngIf="formLogin.controls?.['username']?.errors?.['required']" class="tw-ml-2 tw-text-red-600">Mã cán bộ không được để trống</small>
+                                <small *ngIf="formLogin.controls?.['username']?.errors?.['required']" class="tw-ml-2 error">Mã cán bộ không được để trống</small>
                             </ng-container>
                         </nz-form-control>
                     </div>
@@ -17,7 +17,7 @@
                         <nz-form-control>
                             <input nz-input placeholder="Mật khẩu" type="password" formControlName="password"/>
                             <ng-container *ngIf="formLogin.controls?.['password']?.touched && formLogin.controls?.['password']?.dirty">
-                                <small *ngIf="formLogin.controls?.['password']?.errors?.['required']" class="tw-ml-2 tw-text-red-600">Mật khẩu không được để trống</small>
+                                <small *ngIf="formLogin.controls?.['password']?.errors?.['required']" class="tw-ml-2 error">Mật khẩu không được để trống</small>
                             </ng-container>
                         </nz-form-control>
                     </div>

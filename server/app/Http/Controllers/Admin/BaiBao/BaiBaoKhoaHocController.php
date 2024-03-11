@@ -3,77 +3,107 @@
 namespace App\Http\Controllers\Admin\BaiBao;
 
 use App\Http\Controllers\Controller;
-use App\Models\BaiBao\BaiBaoKhoaHoc;
-use App\Models\User;
-use App\Models\UserInfo\DMTinhThanh;
-use App\Models\UserInfo\DMQuocGia;
-use App\Utilities\ResponseError;
-use App\ViewModel\BaiBao\BaiBaoKhoaHocVm;
-use App\ViewModel\User\UserVm;
-use App\ViewModel\UserInfo\QuocGiaVm;
-use App\ViewModel\UserInfo\TinhThanhVm;
+use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
+use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
+use App\Http\Requests\BaiBao\UpdateFileMinhChungSanPhamRequest;
+use App\Http\Requests\BaiBao\UpdateTrangThaiRaSoatBaiBao;
+use App\Http\Requests\SanPham\UpdateSanPhamRequest;
+use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
+use App\Service\BaiBao\BaiBaoService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class BaiBaoKhoaHocController extends Controller
 {
+    private BaiBaoService $baiBaoService;
 
-    public function __construct()
+    public function __construct(BaiBaoService $baiBaoService)
     {
-        $this->middleware('auth:api', ['except' => 'getAll']);
+        $this->baiBaoService = $baiBaoService;
+        $this->middleware('auth:api');
     }
 
-    public function getAll()
+    public function getBaiBaoPaging(Request $request): Response
     {
-        // $baiBaoVm = new \App\ViewModel\BaiBao\BaiBaoKhoaHocVm();
-        // $baiBaoVm = new BaiBaoKhoaHocVm();
-        // $data = BaiBaoKhoaHoc::all();
-
-        // $data = User::all();
-        // $userVm = new UserVm();
-        // $userVm->setId("a");
-        // $userVm->setUsername("TranVanDong");
-        // $userVm->setName("Bronze140802");
-        // $userVm->setEmail("dongden14082002@gmail.com");
-        // return response()->json($data[1]);//run coi
+        $result = $this->baiBaoService->getBaiBaoPaging($request);
+        return response()->json($result, 200);
+    }
 
 
-        // $tinhthanh = DMTinhThanh::find(1);
-        // $quocgia = $tinhthanh->quocGia;
-        // return response()->json($tinhthanh);
+    public function getBaiBaoChoDuyet(Request $request): Response
+    {
+        $result = $this->baiBaoService->getBaiBaoChoDuyet($request);
+        return response()->json($result, 200);
+    }
 
-        // $tinhThanhVm = new TinhThanhVm();
-        // $quocGiaVm = new QuocGiaVm();
 
-        // $quocGiaVm->setId(1);
-        // $quocGiaVm->setTenQuocGia("VietNam");
+    public function getDetailBaiBao(int $id): Response
+    {
+        $result = $this->baiBaoService->getDetailBaiBao($id);
+        return response()->json($result, 200);
+    }
 
-        // $tinhThanhVm->setId(1);
-        // $tinhThanhVm->setTenTinhThanh("NamDInh");
-        // $tinhThanhVm->setQuocGiaVm($quocGiaVm);
+    public function createBaiBao(CreateBaiBaoRequest $request): Response
+    {
+        $result = $this->baiBaoService->createBaiBao($request);
+        return response()->json($result, 200);
+    }
 
-        // return response()->json($tinhThanhVm);
+    public function updateSanPham(UpdateSanPhamRequest $request, $id): Response
+    {
+        $result = $this->baiBaoService->updateSanPham($request, $id);
+        return response()->json($result, 200);
+    }
 
-        // chi cho cai nay, mot may cai Vm ay', m tach no ra thanh 1 ham` rieng
+    public function updateBaiBao(UpdateBaiBaoRequest $request, $id): Response
+    {
+        $result = $this->baiBaoService->updateBaiBao($request, $id);
+        return response()->json($result, 200);
+    }
 
-        // $quocgia = DMQuocGia::find(1);
-        // $tinhthanhs = $quocgia->tinhThanhs;
-        // return response()->json($tinhthanhs);
+    public function updateSanPhamTacGia(UpdateSanPhamTacGiaRequest $request, $id): Response
+    {
+        $result = $this->baiBaoService->updateSanPhamTacGia($request, $id);
+        return response()->json($result, 200);
+    }
 
-        $user = new User();
-        $user->name = "Trần Quang Đạo";
-        $user->username = "3119410082";
-        $user->email = "quangdao2601@gmail.com";
-        $user->password = Hash::make("vandong123");
-        $user->save();
+    public function updateFileMinhChung(UpdateFileMinhChungSanPhamRequest $request, $id): Response
+    {
+        $result = $this->baiBaoService->updateFileMinhChung($request, $id);
+        return response()->json($result, 200);
+    }
 
-        // $user = User::create([
-        //     'name' => "Bronze14082002",
-        //     "username" => "Tran Van Dong",
-        //     'email' => "dongden14082002@gmail.com",
-        //     'password' => Hash::make("vandong123")
-        // ]);
+    public function updateTrangThaiRaSoatBaiBao(UpdateTrangThaiRaSoatBaiBao $request, $id): Response
+    {
+        $result = $this->baiBaoService->updateTrangThaiRaSoatBaiBao($request, $id);
+        return response()->json($result, 200);
+    }
 
+    public function deleteBaiBao(int $id): Response
+    {
+        $result = $this->baiBaoService->deleteBaiBao($id);
+        return response()->json($result, 200);
+    }
+    public function restoreBaiBao(int $id): Response
+    {
+        $result = $this->baiBaoService->restoreBaiBao($id);
+        return response()->json($result, 200);
+    }
+    public function forceDeleteBaiBao(int $id): Response
+    {
+        $result = $this->baiBaoService->forceDeleteBaiBao($id);
+        return response()->json($result, 200);
+    }
+
+    public function getBaiBaoKeKhai(Request $request): Response
+    {
+        $result = $this->baiBaoService->getBaiBaoKeKhai($request);
+        return response()->json($result, 200);
+    }
+
+    public function getBaiBaoThamGia(Request $request): Response
+    {
+        $result = $this->baiBaoService->getBaiBaoThamGia($request);
+        return response()->json($result, 200);
     }
 }

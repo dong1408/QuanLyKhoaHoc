@@ -48,8 +48,6 @@ return new class extends Migration
             $table->foreign('id_nguoithem')->references('id')->on('users')->onDelete('cascade');
 
             $table->string('ghichu')->nullable();
-
-            $table->softDeletes();
             $table->timestamps();
         });
     }

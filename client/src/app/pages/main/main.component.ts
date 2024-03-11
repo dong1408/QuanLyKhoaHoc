@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {User} from "../../core/types/user.type";
-import {AuthService} from "../../core/services/auth.service";
+import {User} from "../../core/types/user/user.type";
+import {AuthService} from "../../core/services/user/auth.service";
 import {Subject, takeUntil} from "rxjs";
 import {LocalStorageService} from "../../core/services/local-storage.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
