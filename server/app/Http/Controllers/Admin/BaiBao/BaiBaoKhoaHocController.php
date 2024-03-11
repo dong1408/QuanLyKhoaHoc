@@ -94,4 +94,16 @@ class BaiBaoKhoaHocController extends Controller
         $result = $this->baiBaoService->forceDeleteBaiBao($id);
         return response()->json($result, 200);
     }
+
+    public function getBaiBaoKeKhai(Request $request): Response
+    {
+        $result = $this->baiBaoService->getBaiBaoKeKhai($request);
+        return response()->json($result, 200);
+    }
+
+    public function getBaiBaoThamGia(Request $request): Response
+    {
+        $result = $this->baiBaoService->getBaiBaoThamGia($request);
+        return response()->json($result, 200);
+    }
 }

@@ -27,10 +27,10 @@ class CreateBaiBaoRequest extends FormRequest
         return [
             // san pham
             "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",
-//            "sanpham.id_loaisanpham" => [
-//                "bail", "integer",
-//                Rule::exists('d_m_san_phams', 'id')
-//            ],
+            //            "sanpham.id_loaisanpham" => [
+            //                "bail", "integer",
+            //                Rule::exists('d_m_san_phams', 'id')
+            //            ],
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.solandaquydoi" => "bail|required|integer",
             "sanpham.cosudungemailtruong" => "bail|nullable|boolean",
@@ -47,11 +47,11 @@ class CreateBaiBaoRequest extends FormRequest
                 Rule::exists('d_m_to_chucs', 'id')
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
-            "sanpham.ngaykekhai" => "bail|required|string",
-            "sanpham.id_nguoikekhai" => [
-                "bail", "required", "integer",
-                Rule::exists('users', 'id')
-            ],
+            // "sanpham.ngaykekhai" => "bail|required|string",
+            // "sanpham.id_nguoikekhai" => [
+            //     "bail", "required", "integer",
+            //     Rule::exists('users', 'id')
+            // ],
             "sanpham.diemquydoi" => "bail|required|string",
             "sanpham.gioquydoi" => "bail|required|string",
             "sanpham.thongtinchitiet" => "bail|required|string",
@@ -79,15 +79,16 @@ class CreateBaiBaoRequest extends FormRequest
             // // san pham _ tac gia            
             "sanpham_tacgia" => "bail|array",
             "sanpham_tacgia.*.id_tacgia" => [
-                "bail", "required", "int",
+                "bail", "nullable", "int",
                 Rule::exists("users", "id")
             ],
+            "sanpham_tacgia.*.tentacgia" => "bail|required|string",
             "sanpham_tacgia.*.id_vaitro" => [
                 "bail", "required", "int",
                 Rule::exists("d_m_vai_tro_tac_gias", "id")
             ],
-            "sanpham_tacgia.*.thutu" => "bail|nullable|string",
-            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|string",
+            "sanpham_tacgia.*.thutu" => "bail|nullable|integer",
+            "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
 
             // file minh chung san pham
             "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
@@ -104,7 +105,7 @@ class CreateBaiBaoRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-//            'sanpham.id_loaisanpham.exists' => 'Danh mục sản phẩm không tồn tại trên hệ thông',
+            //            'sanpham.id_loaisanpham.exists' => 'Danh mục sản phẩm không tồn tại trên hệ thông',
             'sanpham.id_thongtinnoikhac.exists' => 'Thông tin nơi khác không tồn tại trên hệ thống',
             'sanpham.id_donvitaitro.exists' => 'Thông tin đơn vị tài trợ không tồn tại trên hệ thống',
             'sanpham.id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
