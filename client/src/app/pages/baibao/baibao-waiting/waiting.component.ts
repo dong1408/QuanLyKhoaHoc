@@ -17,6 +17,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {BaiBao} from "../../../core/types/baibao/bai-bao.type";
 import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 import {CapNhatTrangThaiSanPham, TrangThaiSanPham} from "../../../core/types/sanpham/san-pham.type";
+import {ConstantsService} from "../../../core/services/constants.service";
 
 @Component({
     selector:'app-baibao-waiting',
@@ -39,7 +40,8 @@ export class BaiBaoWaitingComponent implements OnInit,OnDestroy{
         private pagingService:PagingService,
         private notificationService:NzNotificationService,
         private baiBaoService:BaiBaoService,
-        private fb:FormBuilder
+        private fb:FormBuilder,
+        public AppConstant:ConstantsService
     ) {
     }
 

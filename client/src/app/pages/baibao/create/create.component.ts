@@ -69,8 +69,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             tensanpham:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
+                    Validators.required,
+                    noWhiteSpaceValidator()
                 ])
             ],
             tongsotacgia:[
@@ -123,34 +123,34 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     disabled:true
                 },
                 Validators.compose([
-                    noWhiteSpaceValidator
+                    noWhiteSpaceValidator()
                 ]),
             ],
             diemquydoi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
             gioquydoi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
             thongtinchitiet:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
             capsanpham:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
@@ -165,13 +165,19 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 {
                     value:null,
                     disabled:true
-                }
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             id_donvitaitro:[
                 {
                     value:null,
                     disabled:true
-                }
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             sanpham_tacgia:this.fb.array([]),
 
@@ -392,6 +398,12 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 'Lỗi',
                 'Vui lòng điền đúng yêu cầu của form'
             )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
             return;
         }
         if(arrayForm.length <= 0){
@@ -402,6 +414,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 )
                 return;
         }
+
         const data:TaoBaiTao = {
             sanpham:{
                 tensanpham: form.get('tensanpham')?.value,

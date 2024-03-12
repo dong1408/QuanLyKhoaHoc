@@ -53,7 +53,7 @@
                 <td nzEllipsis>{{data.volume ?? ''}}</td>
                 <td nzEllipsis>{{data.number ?? ''}}</td>
                 <td nzEllipsis>{{ data.pages ?? '' }}</td>
-                <td nzEllipsis class="{{data.trangthairasoat === 'Đã xác nhận' ? 'success' : 'error'}}">{{data.trangthairasoat}}</td>
+                <td nzEllipsis class="{{data.trangthairasoat === AppConstant.TT_DA_XAC_NHAN ? 'success' : 'error'}}">{{data.trangthairasoat}}</td>
                 <td nzEllipsis>{{ data.updated_at }}</td>
                 <ng-container *ngIf="columnDelete">
                     <td>{{ data?.deleted_at }}</td>
@@ -64,7 +64,7 @@
                                 [nzLoading]="data.isChangeStatus"
                                 nz-popconfirm
                                 nzPopconfirmTitle="Phê Duyệt Bài Báo ?"
-                                (nzOnConfirm)="onCapNhatTrangThai(data,'Đã xác nhận')"
+                                (nzOnConfirm)="onCapNhatTrangThai(data,AppConstant.TT_DA_XAC_NHAN)"
                                 nz-button
                                 nzType="primary"
                         >

@@ -178,9 +178,15 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
         if(form.invalid){
             this.notificationService.create(
                 'error',
-                "Lỗi",
-                "Vui lòng điền đúng yêu cầu của form"
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
             )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
             return;
         }
 

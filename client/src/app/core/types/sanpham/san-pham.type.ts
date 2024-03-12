@@ -58,3 +58,27 @@ export type TrangThaiSanPham = "Đang rà soát" | "Đã xác nhận"
 export interface CapNhatTrangThaiSanPham{
     trangthairasoat:TrangThaiSanPham
 }
+
+export interface TaoSanPham{
+    tensanpham:string,
+    tongsotacgia:number,
+    solandaquydoi:number,
+    cosudungemailtruong:boolean | null,
+    cosudungemaildonvikhac:boolean | null,
+    cothongtintruong:boolean | null,
+    cothongtindonvikhac:boolean | null,
+    id_thongtinnoikhac:number  | null,
+    conhantaitro:boolean | null,
+    id_donvitaitro:number | null,
+    chitietdonvitaitro:string | null,
+    diemquydoi:string,
+    gioquydoi:string,
+    thongtinchitiet:string,
+    capsanpham:string,
+    thoidiemcongbohoanthanh:string
+}
+
+export interface TaoFileMinhChung{
+    loaiminhchung:string | null,
+    url:string
+}

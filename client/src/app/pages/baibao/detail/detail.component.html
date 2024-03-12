@@ -8,26 +8,32 @@
             [nzOkLoading]="isCapNhatFileMinhChung"
     >
         <ng-container *nzModalContent>
-            <form nz-form class="tw-space-y-[16px]" [formGroup]="formCapNhatFileMinhChung">
-                <div>
-                    <h3 class="tw-text-center">Đường Dẫn (URL)</h3>
-                    <nz-form-control>
-                        <input nz-input placeholder="Đường Dẫn (URL)"  type="text" formControlName="url"/>
-                        <ng-container *ngIf="formCapNhatFileMinhChung.controls?.['url']?.touched && formCapNhatFileMinhChung.controls?.['url']?.dirty">
-                            <small *ngIf="formCapNhatFileMinhChung.controls?.['url']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                            <small *ngIf="formCapNhatFileMinhChung.controls?.['url']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                        </ng-container>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formCapNhatFileMinhChung">
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Đường Dẫn File Minh Chứng</h3>
+                    <nz-form-control [nzErrorTip]="url_minhchung" nzHasFeedback>
+                        <input nz-input placeholder="Đường Dẫn File Minh Chứng"  type="text" formControlName="url"/>
+
+                        <ng-template #url_minhchung let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
                     </nz-form-control>
-                </div>
-                <div>
-                    <h3 class="tw-text-center">Loại Minh Chứng</h3>
-                    <nz-form-control>
-                        <input nz-input placeholder="Loại Minh Chứng"  type="text" formControlName="loaiminhchung"/>
-                        <ng-container *ngIf="formCapNhatFileMinhChung.controls?.['loaiminhchung']?.touched && formCapNhatFileMinhChung.controls?.['loaiminhchung']?.dirty">
-                            <small *ngIf="formCapNhatFileMinhChung.controls?.['loaiminhchung']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        </ng-container>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Loại Minh Chứng</h3>
+                    <nz-form-control [nzErrorTip]="loaiminhchung" nzHasFeedback>
+                    <textarea
+                            nz-input
+                            placeholder="Loại Minh Chứng"
+                            formControlName="loaiminhchung"
+                            [nzAutosize]="{ minRows: 3, maxRows: 10 }"
+                    ></textarea>
+                        <ng-template #loaiminhchung let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
                     </nz-form-control>
-                </div>
+                </nz-form-item>
             </form>
         </ng-container>
     </nz-modal>
@@ -43,7 +49,7 @@
             [nzOkLoading]="isCapNhatTacGia"
     >
         <ng-container *nzModalContent>
-            <form nz-form class="tw-space-y-[5px]" [formGroup]="formCapNhatTacGia">
+            <form nzLayout="vertical" nz-form class="tw-space-y-[5px]" [formGroup]="formCapNhatTacGia">
                 <div >
                     <h3 class=""><span class="error">*</span> Tác Giả <span (click)="addGuestControls()" class="primary tw-cursor-pointer"> +Thêm Tác Giả Ngoài</span></h3>
                     <nz-form-control>
@@ -74,41 +80,43 @@
                                     <span nz-icon nzType="close" nzTheme="outline"></span>
                                 </button>
                             </div>
-                            <nz-form-control>
-                                <h4 class=""><span class="error">*</span> Tên Tác Giả</h4>
-                                <input nz-input placeholder="Tên Tác Giả"  type="text" formControlName="tentacgia"/>
-                                <ng-container *ngIf="control.get('tentacgia')?.touched && control.get('tentacgia')?.dirty">
-                                    <small *ngIf="control.get('tentacgia')?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                                    <small *ngIf="control.get('tentacgia')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                                </ng-container>
-                            </nz-form-control>
-                            <nz-form-control>
+                            <nz-form-item>
+                                <nz-form-control [nzErrorTip]="tentacgia" nzHasFeedback>
+                                    <h4 class=""><span class="error">*</span> Tên Tác Giả</h4>
+                                    <input nz-input placeholder="Tên Tác Giả"  type="text" formControlName="tentacgia"/>
+                                    <ng-template #tentacgia>
+                                        <small *ngIf="control.get('tentacgia')?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                                        <small *ngIf="control.get('tentacgia')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                                    </ng-template>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
                                 <h4 class=""><span class="error">*</span> Vai Trò</h4>
-                                <nz-select
-                                        formControlName="id_vaitro"
-                                        nzShowSearch  nzPlaceHolder="Vai Trò"
-                                        [nzLoading]="isGetVaiTro"
-                                        [nzDisabled]="isGetVaiTro"
-                                >
-                                    <!--                                <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>-->
-                                    <nz-option *ngFor="let data of vaiTros" nzLabel="{{data.tenvaitro}}" [nzValue]="data.id"></nz-option>
-                                </nz-select>
-                                <ng-container *ngIf="control.get('id_vaitro')?.touched && control.get('id_vaitro')?.dirty">
-                                    <small *ngIf="control.get('id_vaitro')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                                </ng-container>
-                            </nz-form-control>
-                            <nz-form-control>
+                                <nz-form-control [nzErrorTip]="id_vaitro" nzHasFeedback>
+                                    <nz-select
+                                            formControlName="id_vaitro"
+                                            nzShowSearch  nzPlaceHolder="Vai Trò"
+                                    >
+                                        <!--                                <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>-->
+                                        <nz-option *ngFor="let data of vaiTros" nzLabel="{{data.tenvaitro}}" [nzValue]="data.id"></nz-option>
+                                    </nz-select>
+                                    <ng-template #id_vaitro>
+                                        <small *ngIf="control.get('id_vaitro')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                                    </ng-template>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
                                 <h4 class="">Thứ Tự</h4>
-                                <input nz-input placeholder="Thứ Tự"  type="number" formControlName="thutu"/>
-                                <ng-container *ngIf="control.get('thutu')?.touched && control.get('thutu')?.dirty">
-                                </ng-container>
-                            </nz-form-control>
-                            <nz-form-control>
+                                <nz-form-control>
+                                    <input nz-input placeholder="Thứ Tự"  type="number" formControlName="thutu"/>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
                                 <h4 class="">Tỷ Lệ Đóng Góp</h4>
-                                <input nz-input placeholder="Tỷ Lệ Đóng Góp"  type="number" formControlName="tyledonggop"/>
-                                <ng-container *ngIf="control.get('tyledonggop')?.touched && control.get('tyledonggop')?.dirty">
-                                </ng-container>
-                            </nz-form-control>
+                                <nz-form-control>
+                                    <input nz-input placeholder="Tỷ Lệ Đóng Góp"  type="number" formControlName="tyledonggop"/>
+                                </nz-form-control>
+                            </nz-form-item>
                         </div>
                     </div>
                 </div>
@@ -144,15 +152,15 @@
                     Xóa Mềm
                 </button>
                 <button nz-button nzType="primary" nzDanger
-                    *ngIf="baibao.sanpham.trangthairasoat === 'Đã xác nhận' && baibao.deleted_at === null"
+                    *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN && baibao.deleted_at === null"
                     [nzLoading]="isChangeStatus" nz-popconfirm nzPopconfirmTitle="Hủy Phê Duyệt ?"
-                    (nzOnConfirm)="onCapNhatTrangThai(baibao,'Đang rà soát')">
+                    (nzOnConfirm)="onCapNhatTrangThai(baibao,AppConstant.TT_DANG_RA_SOAT)">
                     <span nz-icon nzType="close" nzTheme="outline"></span>
                     Hủy Phê Duyệt
                 </button>
-                <button nz-button nzType="primary" *ngIf="baibao.sanpham.trangthairasoat === 'Đang rà soát'"
+                <button nz-button nzType="primary" *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DANG_RA_SOAT"
                     [nzLoading]="isChangeStatus" nz-popconfirm nzPopconfirmTitle="Phê Duyệt Bài Báo ?"
-                    (nzOnConfirm)="onCapNhatTrangThai(baibao,'Đã xác nhận')">
+                    (nzOnConfirm)="onCapNhatTrangThai(baibao,AppConstant.TT_DA_XAC_NHAN)">
                     <span nz-icon nzType="check" nzTheme="outline"></span>
                     Phê Duyệt
                 </button>
@@ -183,12 +191,12 @@
                         {{baibao.sanpham.loaisanpham.tendmsanpham}}
                     </p>
                     <p><strong class="tw-mr-[0.5rem]">Trạng Thái Rà Soát: </strong>
-                        <span *ngIf="baibao.sanpham.trangthairasoat === 'Đang rà soát'"
+                        <span *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DANG_RA_SOAT"
                             class="error">{{baibao.sanpham.trangthairasoat}}</span>
-                        <span *ngIf="baibao.sanpham.trangthairasoat === 'Đã xác nhận'"
+                        <span *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN"
                             class="success">{{baibao.sanpham.trangthairasoat}}</span>
                     </p>
-                    <ng-container *ngIf="baibao.sanpham.trangthairasoat === 'Đã xác nhận'">
+                    <ng-container *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN">
                         <p><strong class="tw-mr-[0.5rem]">Người Rà Soát:</strong> <br>
                             <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
                             </strong>{{baibao.sanpham.nguoirasoat?.username ?? 'Không Có'}} <br>

@@ -16,6 +16,7 @@ import {UserService} from "../../../core/services/user/user.service";
 import {PagingService} from "../../../core/services/paging.service";
 import {User} from "../../../core/types/user/user.type";
 import {VaiTroService} from "../../../core/services/sanpham/vai-tro.service";
+import {ConstantsService} from "../../../core/services/constants.service";
 
 @Component({
     selector:"app-baibao-chitiet",
@@ -60,7 +61,8 @@ export class ChiTietBaiBaoComponent{
         private router:Router,
         private userService:UserService,
         private pagingService:PagingService,
-        private vaiTroService:VaiTroService
+        private vaiTroService:VaiTroService,
+        public AppConstant:ConstantsService
     ) {
     }
 
@@ -102,7 +104,6 @@ export class ChiTietBaiBaoComponent{
     }
 
     onSelectUser(event:any){
-        console.log(event)
         if(!event){
             return;
         }
@@ -314,11 +315,12 @@ export class ChiTietBaiBaoComponent{
                    this.baibao.sanpham.minhchung.url = data.url;
                    this.baibao.sanpham.minhchung.loaiminhchung = data.loaiminhchung ?? undefined
                }
+               this.isOpenFormMinhChung = false
                this.isCapNhatFileMinhChung = false
            },
            error:(error) =>{
                this.notificationService.create(
-                   'success',
+                   'error',
                    'Lỗi',
                    error
                )
@@ -363,6 +365,7 @@ export class ChiTietBaiBaoComponent{
                 if (this.baibao && this.baibao.sanpham_tacgias) {
                     this.baibao.sanpham_tacgias = response.data
                 }
+                this.isOpenFormTacGia = false
                 this.isCapNhatTacGia = false
             },
             error:(error) =>{
