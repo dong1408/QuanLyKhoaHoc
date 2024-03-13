@@ -114,7 +114,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new InvalidValueException();
         }
         $sanPham = SanPham::withTrashed()->find($id_sanpham);
-        if ($sanPham == null) {
+        if ($sanPham == null || $sanPham->dmSanPham->masanpham != "baibaokhoahoc") {
             throw new BaiBaoKhoaHocNotFoundException();
         }
         $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
@@ -164,10 +164,10 @@ class BaiBaoServiceImpl implements BaiBaoService
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
-                        'username' => "sgu2024" . $randomId,
-                        'password' => "sgu2024",
+                        'username' => env('SGU_2024') . $randomId,
+                        'password' => Hash::make(env('SGU_2024')),
                         'name' => $item['tentacgia'],
-                        'email' => "sgu2024" . $randomId . "@gmail.com"
+                        'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
                     $newData[] = [
                         'id_tacgia' => $user->id,
@@ -448,7 +448,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $result = [];
 
 
-        DB::transaction(function () use ($validated, &$sanPham,&$result) {
+        DB::transaction(function () use ($validated, &$sanPham, &$result) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
@@ -469,10 +469,10 @@ class BaiBaoServiceImpl implements BaiBaoService
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
-                        'username' => "sgu2024" . $randomId,
-                        'password' => "sgu2024",
+                        'username' => env('SGU_2024') . $randomId,
+                        'password' => Hash::make(env('SGU_2024')),
                         'name' => $item['tentacgia'],
-                        'email' => "sgu2024" . $randomId . "@gmail.com"
+                        'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
                     $newData[] = [
                         'id_tacgia' => $user->id,

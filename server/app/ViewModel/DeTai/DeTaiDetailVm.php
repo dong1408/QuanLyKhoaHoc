@@ -1,5 +1,7 @@
 <?php
 
+namespace App\ViewModel\DeTai;
+
 use App\Models\DeTai\DeTai;
 use App\ViewModel\SanPham\SanPhamDetailVm;
 use App\ViewModel\SanPham\SanPhamVm;

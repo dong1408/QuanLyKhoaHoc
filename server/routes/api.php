@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\TapChi\PhanLoaiTapChiController;
 use App\Http\Controllers\Admin\UserInfo\ToChucController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\BaiBao\BaiBaoKhoaHocController;
+use App\Http\Controllers\Admin\DeTai\DeTaiController;
+use App\Http\Controllers\Admin\DeTai\PhanLoaiDeTaiController;
 use App\Http\Controllers\Admin\QuyDoi\ChuyenNganhTinhDiemController;
 use App\Http\Controllers\Admin\QuyDoi\NganhTinhDiemController;
 use App\Http\Controllers\Admin\SanPham\DMSanPhamController;
@@ -67,6 +69,29 @@ Route::group([
     Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']);
 
 
+
+    // DeTai
+    Route::get('detai', [DeTaiController::class, 'getDeTaiPaging']);
+    Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet']);
+    Route::post('detai', [DeTaiController::class, 'createDetai']);
+    Route::patch('detai/{id}/sanpham', [DeTaiController::class, 'updateSanPham']);
+    Route::patch('detai/{id}', [DeTaiController::class, 'updateDeTai']);
+    Route::patch('detai/{id}/sanphamtacgia', [DeTaiController::class, 'updateSanPhamTacGia']);
+    Route::patch('detai/{id}/fileminhchung', [DeTaiController::class, 'updateFileMinhChung']);
+    Route::patch('detai/{id}/trangthairasoat', [DeTaiController::class, 'updateTrangThaiRaSoatDeTai']);
+    Route::post('detai/{id}/tuyenchon', [DeTaiController::class, 'tuyenChonDeTai']);
+    Route::post('detai/{id}/xetduyet', [DeTaiController::class, 'xetDuyetDeTai']);
+    Route::post('detai/{id}/baocao', [DeTaiController::class, 'baoCaoTienDoDeTai']);
+    Route::post('detai/{id}/nghiemthu', [DeTaiController::class, 'nghiemThuDeTai']);
+    Route::patch('detai/{id}/delete', [DeTaiController::class, 'deleteDeTai']);
+    Route::patch('detai/{id}/restore', [DeTaiController::class, 'restoreDeTai']);
+    Route::delete('detai/{id}/forceDelete', [DeTaiController::class, 'forceDeleteDeTai']);
+    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai']);
+
+    // PhanLoaiDeTai
+    Route::get('phanloaidetai', [PhanLoaiDeTaiController::class, 'getPhanLoaiDeTai']);
+
+
     // SanPham
     Route::get('dmsanpham', [DMSanPhamController::class, 'getDmSanPham']);
 
@@ -94,6 +119,9 @@ Route::group([
     Route::patch('tapchi/{id}/delete', [TapChiController::class, 'deleteTapChi']);
     Route::patch('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
     Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
+
+
+
 
 
 

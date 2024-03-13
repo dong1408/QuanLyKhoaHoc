@@ -2,13 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\NhaXuatBan\NhaXuatBan;
 use App\Service\Auth\AuthService;
 use App\Service\Auth\AuthServiceImpl;
 use App\Service\BaiBao\BaiBaoService;
 use App\Service\BaiBao\BaiBaoServiceImpl;
 use App\Service\DeTai\DeTaiService;
-use App\Service\DeTai\DeTaiServiceImple;
+use App\Service\DeTai\DeTaiServiceImpl;
+use App\Service\DeTai\PhanLoaiDeTaiService;
+use App\Service\DeTai\PhanLoaiDeTaiServiceImpl;
 use App\Service\NhaXuatBan\NhaXuatBanService;
 use App\Service\NhaXuatBan\NhaXuatBanServiceImpl;
 use App\Service\QuyDoi\ChuyenNganhTinhDiemService;
@@ -59,7 +60,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(NhaXuatBanService::class, NhaXuatBanServiceImpl::class);
         $this->app->bind(DMSanPhamService::class, DMSanPhamServiceImpl::class);
         $this->app->bind(UserService::class, UserServiceImpl::class);
-        $this->app->bind(DeTaiService::class, DeTaiServiceImple::class);
+        $this->app->bind(DeTaiService::class, DeTaiServiceImpl::class);
+        $this->app->bind(PhanLoaiDeTaiService::class, PhanLoaiDeTaiServiceImpl::class);
     }
     /**
      * Bootstrap any application services.
