@@ -84,6 +84,12 @@ class SanPham extends Model
         return $this->hasOne('App\Models\BaiBao\BaiBaoKhoaHoc', 'id_sanpham');
     }
 
+    // relation 1-1 with tuyen con
+    public function tuyenChon()
+    {
+        return $this->hasOne('App\Models\DeTai\TuyenChon', 'id_sanpham');
+    }
+
     // relation 1-1 with xet_duyet
     public function xetDuyet()
     {
@@ -108,7 +114,8 @@ class SanPham extends Model
         return $this->hasMany('App\Models\SanPham\SanPhamTacGia', 'id_sanpham');
     }
 
-    public function fileMinhChung(){
+    public function fileMinhChung()
+    {
         return $this->hasOne('App\Models\FileMinhChungSanPham', 'id_sanpham');
     }
 }

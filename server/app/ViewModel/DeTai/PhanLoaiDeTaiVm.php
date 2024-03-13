@@ -1,5 +1,7 @@
 <?php
 
+namespace App\ViewModel\DeTai;
+
 use App\Models\DeTai\PhanLoaiDeTai;
 use Ramsey\Uuid\Type\Integer;
 

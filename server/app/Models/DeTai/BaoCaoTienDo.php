@@ -10,7 +10,14 @@ class BaoCaoTienDo extends Model
 {
     use HasFactory;
 
-    protected $table = 'ba0_cao_tien_dos';
+    protected $table = 'bao_cao_tien_dos';
+    protected $fillable = [
+        'id',
+        'id_sanpham',
+        'ngaynopbaocao',
+        'ketquaxet',
+        'thoigiangiahan',
+    ];
 
     // relation 1-1,  inverse to san_pham
     public function sanPham(){

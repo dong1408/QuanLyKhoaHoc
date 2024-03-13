@@ -6,8 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Detai\BaoCaoTienDoDeTaiRequest;
 use App\Http\Requests\Detai\CreateDeTaiRequest;
 use App\Http\Requests\Detai\NghiemThuDeTaiRequest;
+use App\Http\Requests\Detai\TuyenChonDeTaiRequest;
 use App\Http\Requests\Detai\UpdateDeTaiRequest;
 use App\Http\Requests\Detai\XetDuyetDeTaiRequest;
+use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
+use App\Http\Requests\SanPham\UpdateSanPhamRequest;
+use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
+use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
 use App\Service\DeTai\DeTaiService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,65 +26,99 @@ class DeTaiController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function getDeTaiPaging(): Response
+    public function getDeTaiPaging(Request $request): response
     {
-        $result = [];
+        $result = $this->deTaiService->getDeTaiPaging($request);
         return response()->json($result, 200);
     }
 
+    public function getDeTaiChoDuyet(Request $request): response
+    {
+        $result = $this->deTaiService->getDeTaiChoDuyet($request);
+        return response()->json($result, 200);
+    }
 
-    public function createDeTai(CreateDeTaiRequest $request): Response
+    public function getDetailDeTai(int $id): response
+    {
+        $result = $this->deTaiService->getDetailDeTai($id);
+        return response()->json($result, 200);
+    }
+
+    public function createDeTai(CreateDeTaiRequest $request): response
     {
         $result = $this->deTaiService->createDeTai($request);
         return response()->json($result, 200);
     }
 
-
-    public function updateDeTai(UpdateDeTaiRequest $request): Response
+    public function updateSanPham(UpdateSanPhamRequest $request, int $id): response
     {
-        $result = [];
+        $result = $this->deTaiService->updateSanPham($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function updateDeTai(UpdateDeTaiRequest $request, int $id): response
+    {
+        $result = $this->deTaiService->updateDeTai($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function updateSanPhamTacGia(UpdateSanPhamTacGiaRequest $request, int $id): response
+    {
+        $result = $this->deTaiService->updateSanPhamTacGia($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function updateFileMinhChung(UpdateFileMinhChungSanPhamRequest $request, int $id): response
+    {
+        $result = $this->deTaiService->updateFileMinhChung($request, $id);
+        return response()->json($result, 200);
+    }
+    public function updateTrangThaiRaSoatDeTai(UpdateTrangThaiRaSoatRequest $request, int $id): response
+    {
+        $result = $this->deTaiService->updateTrangThaiRaSoatDeTai($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function tuyenChonDeTai(TuyenChonDeTaiRequest $request, int $id): response
+    {
+        $result = $this->deTaiService->tuyenChonDeTai($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function xetDuyetDeTai(XetDuyetDeTaiRequest $request, int $id): response
+    {
+        $result = $this->deTaiService->xetDuyetDeTai($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function baoCaoTienDoDeTai(BaoCaoTienDoDeTaiRequest $request, int $id): response
+    {
+        $result = $this->deTaiService->baoCaoTienDoDeTai($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function nghiemThuDeTai(NghiemThuDeTaiRequest $request, int $id): response
+    {
+        $result = $this->deTaiService->nghiemThuDeTai($request, $id);
         return response()->json($result, 200);
     }
 
 
-    public function updateSanPham(): Response
+    public function deleteDeTai(int $id): response
     {
-        $result = [];
+        $result = $this->deTaiService->deleteDeTai($id);
         return response()->json($result, 200);
     }
 
-
-    public function updateVaiTroTacGia(): Response
+    public function restoreDeTai(int $id): response
     {
-        $result = [];
+        $result = $this->deTaiService->restoreDeTai($id);
         return response()->json($result, 200);
     }
 
-
-    public function xetDuyetDeTai(XetDuyetDeTaiRequest $request): Response
+    public function forceDeleteDeTai(int $id): response
     {
-        $result = [];
-        return response()->json($result, 200);
-    }
-
-
-    public function baoCaoTienDoDeTai(BaoCaoTienDoDeTaiRequest $request): Response
-    {
-        $result = [];
-        return response()->json($result, 200);
-    }
-
-
-    public function nghiemThuDeTai(NghiemThuDeTaiRequest $request): Response
-    {
-        $result = [];
-        return response()->json($result, 200);
-    }
-
-
-    public function getPhanLoaiDeTai(): Response
-    {
-        $result = [];
+        $result = $this->deTaiService->forceDeleteDeTai($id);
         return response()->json($result, 200);
     }
 }
