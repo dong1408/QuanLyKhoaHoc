@@ -29,7 +29,11 @@ class XetDuyetDeTaiRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "ketquaxetduyet" => "bail|required|string",
+            "ngayxetduyet" => "bail|required|string",
+            "ketquaxetduyet" => [
+                "bail", "required", "string",
+                Rule::in(["Đủ điều kiện", "Không đủ điều kiện"])
+            ],
             "sohopdong" => "bail|nullable|string",
             "ngaykyhopdong" => "bail|nullable|string",
             "thoihanhopdong" => "bail|nullable|string",
@@ -43,7 +47,8 @@ class XetDuyetDeTaiRequest extends FormRequest
             'required' => 'Trường :attribute là bắt buộc',
             'integer' => 'Trường :attribute phải là một số',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
-            'id.exists' => 'Sản phẩm không tồn tại trên hệ thống'
+            'id.exists' => 'Sản phẩm không tồn tại trên hệ thống',
+            'in' => 'Trường :attribute phải là một trong các giá trị :values',
         ];
     }
 

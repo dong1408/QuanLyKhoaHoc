@@ -11,6 +11,7 @@ class PhanLoaiDeTai extends Model
     use HasFactory;
 
     protected $table = 'phan_loai_de_tais';
+    protected $fillable = [];
 
     // relation 1-n to de_tai
     public function deTais()

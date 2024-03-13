@@ -7,6 +7,7 @@ use App\Models\DeTai\BaoCaoTienDo;
 use App\Models\DeTai\DeTai;
 use App\Models\DeTai\NghiemThu;
 use App\Models\DeTai\PhanLoaiDeTai;
+use App\Models\DeTai\TuyenChon;
 use App\Models\DeTai\XetDuyet;
 use App\Models\FileMinhChungSanPham;
 use App\Models\NhaXuatBan\NhaXuatBan;
@@ -29,6 +30,13 @@ use App\Models\UserInfo\DMTinhThanh;
 use App\Models\UserInfo\DMToChuc;
 use App\ViewModel\BaiBao\BaiBaoKhoaHocDetailVm;
 use App\ViewModel\BaiBao\BaiBaoKhoaHocVm;
+use App\ViewModel\DeTai\BaoCaoTienDoVm;
+use App\ViewModel\DeTai\DeTaiDetailVm;
+use App\ViewModel\DeTai\DeTaiVm;
+use App\ViewModel\DeTai\NghiemThuVm;
+use App\ViewModel\DeTai\PhanLoaiDeTaiVm;
+use App\ViewModel\DeTai\TuyenChonVm;
+use App\ViewModel\DeTai\XetDuyetVm;
 use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
@@ -54,12 +62,7 @@ use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\TinhThanhDetailVm;
 use App\ViewModel\UserInfo\TinhThanhVm;
 use App\ViewModel\UserInfo\ToChucVm;
-use BaoCaoTienDoVm;
-use DeTaiDetailVm;
-use DeTaiVm;
-use NghiemThuVm;
-use PhanLoaiDeTaiVm;
-use XetDuyetVm;
+
 
 class Convert
 {
@@ -244,7 +247,7 @@ class Convert
         $a = new ToChucVm();
         $a->id = $dMToChuc->id;
         $a->tentochuc = $dMToChuc->tentochuc ?? null;
-        $a->created_at = $dMToChuc->created_at;
+        $a->created_at = $dMToChuc->created_at ?? null;
         $a->dienthoai = $dMToChuc->dienthoai ?? null;
         $a->matochuc = $dMToChuc->matochuc ?? null;
         $a->tentochuc_en = $dMToChuc->tentochuc_en ?? null;
@@ -477,41 +480,57 @@ class Convert
     {
         $a = new DeTaiVm();
         $a->id = $sanPham->deTai->id;
-        $a->tensannpham = $sanPham->tensanpham;
+        $a->tensannpham = $sanPham->tensanpham ?? null;
         $a->id_sanpham = $sanPham->id;
         $a->maso = $sanPham->deTai->maso;
-        $a->ngaydangky = $sanPham->deTai->ngaydangky;
-        $a->capdetai = $sanPham->deTai->capdetai;
+        $a->ngaydangky = $sanPham->deTai->ngaydangky ?? null;
+        $a->capdetai = $sanPham->deTai->capdetai ?? null;
         $a->created_at = $sanPham->deTai->created_at;
         $a->updated_at = $sanPham->deTai->updated_at;
         return $a;
     }
-    public static function getDeTaiDetailVm(DeTai $deTai)
+    public static function getDeTaiDetailVm(SanPham $sanPham)
     {
         $a = new DeTaiDetailVm();
-        $a->id = $deTai->id;
-        $a->sanpham = Convert::getSanPhamDetailVm($deTai->sanPham);
-        $a->maso = $deTai->maso;
-        $a->ngaydangky = $deTai->ngaydangky;
-        $a->ngoaitruong = $deTai->ngoaitruong;
-        $a->truongchutri = $deTai->truongchutri;
-        $a->tochucchuquan = Convert::getToChucVm($deTai->toChucChuQuan); // $id_tochuchuquan -- tochuc
-        $a->loaidetai = Convert::getPhanLoaiDeTaiVm($deTai->phanLoaiDeTai); // $id_loaidetai -- phanloaidetai
-        $a->detaihoptac = $deTai->detaihoptac;
-        $a->tochuchoptac = Convert::getToChucVm($deTai->toChucHopTac); // $id_tochuchoptac -- tochuc
-        $a->tylekinhphidonvihoptac = $deTai->tylekinhphidonvihoptac;
-        $a->capdetai = $deTai->capdetai;
-        $a->created_at = $deTai->created_at;
-        $a->updated_at = $deTai->updated_at;
+        $a->id = $sanPham->deTai->id;
+        $a->trangthai = "Chờ tuyển chọn";
+        if ($sanPham->tuyenChon()->exists() && $sanPham->tuyenChon->ketquatuyenchon == "Không đủ điều kiện") {
+            $a->trangthai = "Tuyển chọn thât bại";
+        }
+        if ($sanPham->tuyenChon()->exists() && $sanPham->tuyenChon->ketquatuyenchon == "Đủ điều kiện") {
+            $a->trangthai = "Chờ xét duyệt";
+        }
+        if ($sanPham->xetDuyet()->exists() && $sanPham->xetDuyet->ketquaxetduyet == "Không đủ điều kiện") {
+            $a->trangthai = "Xét duyệt thất bại";
+        }
+        if ($sanPham->xetDuyet()->exists()  && $sanPham->xetDuyet->ketquaxetduyet == "Đủ điều kiện") {
+            $a->trangthai = "Chờ nghiệm thu";
+        }
+        if ($sanPham->nghiemThu()->exists()) {
+            $a->trangthai = "Nghiệm thu";
+        }
+        $a->sanpham = Convert::getSanPhamDetailVm($sanPham);
+        $a->maso = $sanPham->deTai->maso;
+        $a->ngaydangky = $sanPham->deTai->ngaydangky ?? null;
+        $a->ngoaitruong = $sanPham->deTai->ngoaitruong ?? null;
+        $a->truongchutri = $sanPham->deTai->truongchutri ?? null;
+        $a->tochucchuquan = $sanPham->deTai->toChucChuQuan == null ? null : Convert::getToChucVm($sanPham->deTai->toChucChuQuan); // $id_tochuchuquan -- tochuc
+        $a->loaidetai = $sanPham->deTai->phanLoaiDeTai == null ? null : Convert::getPhanLoaiDeTaiVm($sanPham->deTai->phanLoaiDeTai); // $id_loaidetai -- phanloaidetai
+        $a->detaihoptac = $sanPham->deTai->detaihoptac ?? null;
+        $a->tochuchoptac = $sanPham->deTai->toChucHopTac == null ? null : Convert::getToChucVm($sanPham->deTai->toChucHopTac); // $id_tochuchoptac -- tochuc
+        $a->tylekinhphidonvihoptac = $sanPham->deTai->tylekinhphidonvihoptac ?? null;
+        $a->capdetai = $sanPham->deTai->capdetai ?? null;
+        $a->created_at = $sanPham->deTai->created_at;
+        $a->updated_at = $sanPham->deTai->updated_at;
         return $a;
     }
     public static function getBaoCaoTienDoVm(BaoCaoTienDo $baoCaoTienDo)
     {
         $a = new BaoCaoTienDoVm();
         $a->id = $baoCaoTienDo->id;
-        $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao;
-        $a->ketquaxet = $baoCaoTienDo->ketquaxet;
-        $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan;
+        $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao ?? null;
+        $a->ketquaxet = $baoCaoTienDo->ketquaxet ?? null;
+        $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan ?? null;
         $a->created_at = $baoCaoTienDo->created_at;
         $a->updated_at = $baoCaoTienDo->updated_at;
         return $a;
@@ -520,12 +539,12 @@ class Convert
     {
         $a = new NghiemThuVm();
         $a->id = $nghiemThu->id;
-        $a->hoidongnghiemthu = $nghiemThu->hoidongnghiemthu;
-        $a->ngaynghiemthu = $nghiemThu->ngaynghiemhtu;
-        $a->ketquanghiemthu = $nghiemThu->ketquanghiemthu;
-        $a->ngaycongnhanhoanthanh = $nghiemThu->ngaycongnhanhoanthanh;
-        $a->soqdcongnhanhoanthanh = $nghiemThu->soqdcongnhanhoanthanh;
-        $a->thoigianhoanthanh = $nghiemThu->thoigianhoanthanh;
+        $a->hoidongnghiemthu = $nghiemThu->hoidongnghiemthu ?? null;
+        $a->ngaynghiemthu = $nghiemThu->ngaynghiemhtu ?? null;
+        $a->ketquanghiemthu = $nghiemThu->ketquanghiemthu ?? null;
+        $a->ngaycongnhanhoanthanh = $nghiemThu->ngaycongnhanhoanthanh ?? null;
+        $a->soqdcongnhanhoanthanh = $nghiemThu->soqdcongnhanhoanthanh ?? null;
+        $a->thoigianhoanthanh = $nghiemThu->thoigianhoanthanh ?? null;
         $a->created_at = $nghiemThu->created_at;
         $a->updated_at = $nghiemThu->updated_at;
         return $a;
@@ -534,10 +553,10 @@ class Convert
     {
         $a = new PhanLoaiDeTaiVm();
         $a->id = $phanLoaiDeTai->id;
-        $a->maloai = $phanLoaiDeTai->maloai;
+        $a->maloai = $phanLoaiDeTai->maloai ?? null;
         $a->tenloai = $phanLoaiDeTai->tenloai;
-        $a->kinhphi = $phanLoaiDeTai->kinhphi;
-        $a->mota = $phanLoaiDeTai->mota;
+        $a->kinhphi = $phanLoaiDeTai->kinhphi ?? null;
+        $a->mota = $phanLoaiDeTai->mota ?? null;
         $a->created_at = $phanLoaiDeTai->created_at;
         $a->updated_at = $phanLoaiDeTai->updated_at;
         return $a;
@@ -546,16 +565,30 @@ class Convert
     {
         $a = new XetDuyetVm();
         $a->id = $xetDuyet->id;
-        $a->ngayxetduyet = $xetDuyet->ngayxetduyet;
-        $a->ketquaxetduyet = $xetDuyet->ketquaxetduyet;
-        $a->sohopdong = $xetDuyet->sohopdong;
-        $a->ngaykyhopdong = $xetDuyet->ngaykyhopdong;
-        $a->thoihanhopdong = $xetDuyet->thoihanhopdong;
-        $a->kinhphi = $xetDuyet->kinhphi;
+        $a->ngayxetduyet = $xetDuyet->ngayxetduyet ?? null;
+        $a->ketquaxetduyet = $xetDuyet->ketquaxetduyet ?? null;
+        $a->sohopdong = $xetDuyet->sohopdong ?? null;
+        $a->ngaykyhopdong = $xetDuyet->ngaykyhopdong ?? null;
+        $a->thoihanhopdong = $xetDuyet->thoihanhopdong ?? null;
+        $a->kinhphi = $xetDuyet->kinhphi ?? null;
         $a->created_at = $xetDuyet->created_at;
         $a->updated_at = $xetDuyet->updated_at;
         return $a;
     }
+
+    public static function getTuyenChonVm(TuyenChon $tuyenChon)
+    {
+        $a = new TuyenChonVm();
+        $a->id = $tuyenChon->id;
+        $a->ketquatuyenchon = $tuyenChon->ketquatuyenchon;
+        $a->lydo = $tuyenChon->lydo ?? null;
+        $a->created_at = $tuyenChon->created_at;
+        $a->updated_at = $tuyenChon->updated_at;
+
+        return $a;
+    }
+
+
 
 
     // ========================= QUY DOI ============================= //
