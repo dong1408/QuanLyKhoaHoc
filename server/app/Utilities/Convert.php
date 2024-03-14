@@ -31,6 +31,7 @@ use App\Models\UserInfo\DMChuyenMon;
 use App\Models\UserInfo\DMDonVi;
 use App\Models\UserInfo\DMHocHamHocVi;
 use App\Models\UserInfo\DMNgachVienChuc;
+use App\Models\UserInfo\DMPhanLoaiToChuc;
 use App\Models\UserInfo\DMQuocGia;
 use App\Models\UserInfo\DMTinhThanh;
 use App\Models\UserInfo\DMToChuc;
@@ -71,6 +72,7 @@ use App\ViewModel\UserInfo\ChuyenMonVm;
 use App\ViewModel\UserInfo\DonViVm;
 use App\ViewModel\UserInfo\HocHamHocViVm;
 use App\ViewModel\UserInfo\NgachVienChucVm;
+use App\ViewModel\UserInfo\PhanLoaiToChucVm;
 use App\ViewModel\UserInfo\QuocGiaDetailVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\TinhThanhDetailVm;
@@ -365,6 +367,16 @@ class Convert
         $a->tenchuyenmon = $dMChuyenMon->tenchuyenmon ?? null;
         $a->created_at = $dMChuyenMon->created_at ?? null;
         $a->updated_at = $dMChuyenMon->updated_at ?? null;
+        return $a;
+    }
+
+    public static function getPhanLoaiToChucVm(DMPhanLoaiToChuc $dmPhanLoaiToChuc)
+    {
+        $a = new PhanLoaiToChucVm();
+        $a->id = $dmPhanLoaiToChuc->id;
+        $a->tenloai = $dmPhanLoaiToChuc->tenloai ?? null;
+        $a->created_at = $dmPhanLoaiToChuc->created_at ?? null;
+        $a->updated_at = $dmPhanLoaiToChuc->updated_at ?? null;
         return $a;
     }
 

@@ -16,6 +16,11 @@ use App\Http\Controllers\Admin\SanPham\DMSanPhamController;
 use App\Http\Controllers\Admin\SanPham\VaiTroTacGiaController;
 use App\Http\Controllers\Admin\TapChi\TapChiController;
 use App\Http\Controllers\Admin\User\UserController;
+use App\Http\Controllers\Admin\UserInfo\ChuyenMonController;
+use App\Http\Controllers\Admin\UserInfo\DonViController;
+use App\Http\Controllers\Admin\UserInfo\HocHamHocViController;
+use App\Http\Controllers\Admin\UserInfo\NgachVienChucController;
+use App\Http\Controllers\Admin\UserInfo\PhanLoaiToChucController;
 use App\Http\Controllers\Admin\UserInfo\QuocGiaController;
 use App\Http\Controllers\Admin\UserInfo\TinhThanhController;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
@@ -168,6 +173,24 @@ Route::group([
     // Tinh Thanh
     Route::get('tinhthanh', [TinhThanhController::class, 'getAllTinhThanh']);
     Route::get('tinhthanh/{id}/quocgia', [TinhThanhController::class, 'getAllTinhThanhByIdQuocGia']);
+
+    // To Chuc
+    Route::get('tochuc', [ToChucController::class, 'getAllToChuc']);
+
+    // Chuyen Mon
+    Route::get('chuyenmon', [ChuyenMonController::class, 'getAllChuyenMon']);
+
+    // Don Vi
+    Route::get('donvi', [DonViController::class, 'getAllDonVi']);
+
+    // Hoc Ham Hoc Vi
+    Route::get('hochamhocvi', [HocHamHocViController::class, 'getAllHocHamHocVi']);
+
+    // Ngach Vien Chuc
+    Route::get('ngachvienchuc', [NgachVienChucController::class, 'getAllNgachVienChuc']);
+
+    // Phan Loai To Chuc
+    Route::get('phanloaitochuc', [PhanLoaiToChucController::class, 'getAllPhanLoaiToChuc']);
 
 
 

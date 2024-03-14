@@ -3,23 +3,24 @@
 namespace App\Http\Controllers\Admin\UserInfo;
 
 use App\Http\Controllers\Controller;
+use App\Service\UserInfo\HocHamHocViService;
 use App\Service\UserInfo\QuocGiaService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class HocHamHocViCOntroller extends Controller
+class HocHamHocViController extends Controller
 {
-    private QuocGiaService $quocGiaService;
+    private HocHamHocViService $hocHamHocViService;
 
-    public function __construct(QuocGiaService $quocGiaService)
+    public function __construct(HocHamHocViService $hocHamHocViService)
     {
-        $this->quocGiaService = $quocGiaService;
+        $this->hocHamHocViService = $hocHamHocViService;
         $this->middleware('auth:api');
     }
 
-    public function getAllQuocGia(): Response
+    public function getAllHocHamHocVi(): Response
     {
-        $result = $this->quocGiaService->getAllQuocGia();
+        $result = $this->hocHamHocViService->getAllHocHamHocVi();
         return response()->json($result, 200);
     }
 }
