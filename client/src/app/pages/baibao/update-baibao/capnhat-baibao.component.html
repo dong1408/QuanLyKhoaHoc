@@ -46,7 +46,7 @@
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">
                     <h3 class="">Received</h3>
                     <nz-form-control [nzErrorTip]="received" nzHasFeedback>
-                        <input nz-input placeholder="Received"  type="text" formControlName="received"/>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Received" formControlName="received"></nz-date-picker>
                         <ng-template #received let-control>
                             <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
                         </ng-template>
@@ -55,7 +55,7 @@
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">
                     <h3 class="">Accepted</h3>
                     <nz-form-control [nzErrorTip]="accepted" nzHasFeedback>
-                        <input nz-input placeholder="Accepted"  type="text" formControlName="accepted"/>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Accepted" formControlName="accepted"></nz-date-picker>
                         <ng-template #accepted let-control>
                             <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
                         </ng-template>
@@ -64,7 +64,7 @@
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">
                     <h3 class="">Published</h3>
                     <nz-form-control [nzErrorTip]="published" nzHasFeedback>
-                        <input nz-input placeholder="Published"  type="text" formControlName="published"/>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Published" formControlName="published"></nz-date-picker>
                         <ng-template #published let-control>
                             <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
                         </ng-template>

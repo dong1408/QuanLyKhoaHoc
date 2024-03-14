@@ -248,7 +248,7 @@ export class ChiTietBaiBaoComponent{
 
     onXoaMemBaiBao(baiBao:ChiTietBaiBao){
         this.isSoftDelete = true;
-        this.baiBaoService.xoaMemBaiBao(baiBao.id).pipe(
+        this.baiBaoService.xoaMemBaiBao(baiBao.sanpham.id).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
@@ -273,7 +273,7 @@ export class ChiTietBaiBaoComponent{
 
     onXoaBaiBao(baiBao:ChiTietBaiBao){
         this.isDelete = true;
-        this.baiBaoService.xoaBaiBao(baiBao.id).pipe(
+        this.baiBaoService.xoaBaiBao(baiBao.sanpham.id).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
@@ -298,6 +298,14 @@ export class ChiTietBaiBaoComponent{
     }
 
     onCapNhatFileMinhChung(){
+        if(this.formCapNhatFileMinhChung.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
+            )
+            return;
+        }
        const data:CapNhatFileMinhChung = this.formCapNhatFileMinhChung.value;
        this.isCapNhatFileMinhChung = true;
        this.baiBaoService.capNhatFileMinhChung(this.id,data)
@@ -386,7 +394,7 @@ export class ChiTietBaiBaoComponent{
             trangthairasoat: trangthai
         }
 
-        this.baiBaoService.capNhatTrangThaiSanPham(baiBao.id,data).pipe(
+        this.baiBaoService.capNhatTrangThaiSanPham(baiBao.sanpham.id,data).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
@@ -412,7 +420,7 @@ export class ChiTietBaiBaoComponent{
 
     onHoanTacXoaBaiBao(baiBao:ChiTietBaiBao){
         this.isRestore = true;
-        this.baiBaoService.hoanTacXoaBaiBao(baiBao.id).pipe(
+        this.baiBaoService.hoanTacXoaBaiBao(baiBao.sanpham.id).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {

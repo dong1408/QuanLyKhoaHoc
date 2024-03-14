@@ -165,169 +165,45 @@
                     Phê Duyệt
                 </button>
             </div>
+            <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+                <button
+                        nz-button
+                        nzType="primary"
+                        (click)="onOpenFormCapNhatMinhChung()"
+                >
+                    <span nz-icon nzType="edit" nzTheme="outline"></span>
+                    Cập Nhật File Minh Chứng
+                </button>
+                <button nz-button nzType="primary"
+                        (click)="onOpenFormTacGia(true)"
+                >
+                    <span nz-icon nzType="edit" nzTheme="outline"></span>
+                    Cập Nhật Tác Giả
+                </button>
+            </div>
         </div>
         <div class="tw-space-y-[1rem]">
             <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
                 <h2 class="text-primary tw-text-3xl tw-text-center">Thông Tin Sản Phẩm</h2>
-                <div class="tw-space-x-[0.5rem]">
+                <div class="tw-space-x-[0.5rem] tw-text-right">
                     <button nz-button nzType="primary" [routerLink]="['thong-tin-san-pham']">
                         <span nz-icon nzType="edit" nzTheme="outline"></span>
                         Cập Nhật
                     </button>
-                    <button
-                            nz-button
-                            nzType="primary"
-                            (click)="onOpenFormCapNhatMinhChung()"
-                    >
-                        <span nz-icon nzType="edit" nzTheme="outline"></span>
-                        Cập Nhật File Minh Chứng
-                    </button>
-
                 </div>
-                <div class="tw-space-y-[0.8rem]">
-                    <p><strong class="tw-mr-[0.5rem]">Mã: </strong> {{baibao.sanpham.id}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Tên Sản Phẩm: </strong> {{baibao.sanpham.tensanpham}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Loại Sản Phẩm: </strong>
-                        {{baibao.sanpham.loaisanpham.tendmsanpham}}
-                    </p>
-                    <p><strong class="tw-mr-[0.5rem]">Trạng Thái Rà Soát: </strong>
-                        <span *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DANG_RA_SOAT"
-                            class="error">{{baibao.sanpham.trangthairasoat}}</span>
-                        <span *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN"
-                            class="success">{{baibao.sanpham.trangthairasoat}}</span>
-                    </p>
-                    <ng-container *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN">
-                        <p><strong class="tw-mr-[0.5rem]">Người Rà Soát:</strong> <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
-                            </strong>{{baibao.sanpham.nguoirasoat?.username ?? 'Không Có'}} <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
-                            </strong>{{baibao.sanpham.nguoirasoat?.name ?? 'Không Có'}} <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Email:
-                            </strong>{{baibao.sanpham.nguoirasoat?.email ?? 'Không Có'}}
-                        </p>
-                    </ng-container>
-                    <p><strong class="tw-mr-[0.5rem]">Tổng Số Tác Giả: </strong> {{baibao.sanpham.tongsotacgia}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Số Lần Đã Quy Đổi: </strong> {{baibao.sanpham.solandaquydoi}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Điểm Quy Đổi: </strong> {{baibao.sanpham.diemquydoi}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Giờ Quy Đổi: </strong> {{baibao.sanpham.gioquydoi}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Thông Tin Chi Tiết: </strong> {{baibao.sanpham.thongtinchitiet}}
-                    </p>
-                    <p><strong class="tw-mr-[0.5rem]">Cấp Sản Phẩm: </strong> {{baibao.sanpham.capsanpham}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Có Thông Tin Trường ?: </strong> {{baibao.sanpham.cothongtintruong
-                        === true ? 'Có' : 'Không'}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Có Sử Dụng Email Trường ?: </strong>
-                        {{baibao.sanpham.cosudungemailtruong === true ? 'Có' : 'Không'}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Có Sử Dụng Email Đơn Vị Khác ?: </strong>
-                        {{baibao.sanpham.cosudungemaildonvikhac === true ? 'Có' : 'Không'}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Có Thông Tin Đơn Vị Khác ?: </strong>
-                        {{baibao.sanpham.cothongtindonvikhac === true ? 'Có' : 'Không'}}</p>
-                    <ng-container *ngIf="baibao.sanpham.cothongtindonvikhac === true">
-                        <p><strong class="tw-mr-[0.5rem]">Thông Tin Đơn Vị Khác:</strong> <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
-                            </strong>{{baibao.sanpham.thongtinnoikhac?.matochuc ?? 'Không Có'}} <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
-                            </strong>{{baibao.sanpham.thongtinnoikhac?.tentochuc ?? 'Không Có'}} <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Điện Thoại:
-                            </strong>{{baibao.sanpham.thongtinnoikhac?.dienthoai ?? 'Không Có'}}<br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Website:
-                            </strong>{{baibao.sanpham.thongtinnoikhac?.website ?? 'Không Có'}}
-                        </p>
-                    </ng-container>
-                    <p><strong class="tw-mr-[0.5rem]">Có Nhận Tài Trợ ?: </strong> {{baibao.sanpham.conhantaitro ===
-                        true
-                        ? 'Có' : 'Không'}}</p>
-                    <ng-container *ngIf="baibao.sanpham.conhantaitro === true">
-                        <p><strong class="tw-mr-[0.5rem]">Đơn Vị Tài Trợ:</strong> <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
-                            </strong>{{baibao.sanpham.thongtinnoikhac?.matochuc ?? 'Không Có'}} <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
-                            </strong>{{baibao.sanpham.thongtinnoikhac?.tentochuc ?? 'Không Có'}} <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Điện Thoại:
-                            </strong>{{baibao.sanpham.thongtinnoikhac?.dienthoai ?? 'Không Có'}}<br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Website:
-                            </strong>{{baibao.sanpham.thongtinnoikhac?.website ?? 'Không Có'}}
-                        </p>
-                        <p><strong class="tw-mr-[0.5rem]">Chi Tiết Đơn Vị Tài Trợ: </strong>
-                            {{baibao.sanpham.chitietdonvitaitro ?? 'Không Có'}}</p>
-                    </ng-container>
-                    <p><strong class="tw-mr-[0.5rem]">Ngày Kê Khai: </strong> {{baibao.sanpham.ngaykekhai}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Người Kê Khai:</strong> <br>
-                        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
-                        </strong>{{baibao.sanpham.nguoikekhai?.username ?? 'Không Có'}} <br>
-                        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
-                        </strong>{{baibao.sanpham.nguoikekhai?.name ?? 'Không Có'}} <br>
-                        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Email:
-                        </strong>{{baibao.sanpham.nguoikekhai?.email ?? 'Không Có'}}
-                    </p>
-                    <p><strong class="tw-mr-[0.5rem]">File Minh Chứng: </strong>
-                        <ng-container *ngIf="baibao.sanpham.minhchung?.url"><nz-tag [nzColor]="'#76c5f0'"><a target="_blank" href="{{baibao.sanpham.minhchung?.url}}">Tại Đây</a></nz-tag></ng-container>
-                        <ng-container *ngIf="!baibao.sanpham.minhchung?.url">Không Có</ng-container>
-                    </p>
-                    <p><strong class="tw-mr-[0.5rem]">Loại Minh Chứng: </strong> {{baibao.sanpham.minhchung?.loaiminhchung ?? 'Không Có'}}</p>
-                    <p><strong class="tw-mr-[0.5rem]">Danh Sách Tác Giả:</strong>
-                        <span>
-                            <button nz-button nzType="primary"
-                                (click)="onOpenFormTacGia(true)"
-                            >
-                                <span nz-icon nzType="edit" nzTheme="outline"></span>
-                            </button></span> <br>
-                    <div *ngFor="let tacgia of this.baibao.sanpham_tacgias">
-                        <p><strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên Tác Giả:
-                            </strong>{{tacgia.tacgia.name}}</p>
-                        <p><strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Vai Trò:
-                            </strong>{{tacgia.vaitrotacgia.tenvaitro}} </p>
-                        <p><strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tỷ Lệ Đóng Góp:
-                            </strong>{{tacgia.tyledonggop ?? 'Không Có'}} </p>
-                        <p><strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Thứ Tự: </strong>{{tacgia.thutu ??
-                            'Không Có'}} </p>
-                        <br>
-                    </div>
-                </div>
+                <app-sanpham-component [sanpham]="baibao.sanpham" [sanpham_tacgias]="baibao.sanpham_tacgias"></app-sanpham-component>
                 <div class="tw-my-[14px]">
                     <nz-divider></nz-divider>
                 </div>
                 <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
                     <h2 class="tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Thông Tin Bài Báo</h2>
-                    <button nz-button nzType="primary" [routerLink]="['thong-tin-bai-bao']">
-                        <span nz-icon nzType="edit" nzTheme="outline"></span>
-                        Cập Nhật
-                    </button>
-                    <div class="tw-space-y-[0.8rem]">
-                        <p><strong class="tw-mr-[0.5rem]">DOI: </strong> {{baibao.doi ?? 'Không Có'}}</p>
-                        <p><strong class="tw-mr-[0.5rem]">Đường Dẫn (URL): </strong>
-                            <ng-container *ngIf="baibao.url"><nz-tag [nzColor]="'#76c5f0'"><a target="_blank" href="{{baibao.url}}">Tại Đây</a></nz-tag></ng-container>
-                            <ng-container *ngIf="!baibao.url">Không Có</ng-container>
-                        </p>
-                        <p><strong class="tw-mr-[0.5rem]">Received: </strong>
-                            {{baibao.received  ?? 'Không Có'}}
-                        </p>
-                        <p><strong class="tw-mr-[0.5rem]">Accepted: </strong> {{baibao.accepted  ?? 'Không Có'}}</p>
-                        <p><strong class="tw-mr-[0.5rem]">Published: </strong> {{baibao.published  ?? 'Không Có'}}</p>
-                        <p><strong class="tw-mr-[0.5rem]">Keywords: </strong> {{baibao.keywords  ?? 'Không Có'}}</p>
-                        <p><strong class="tw-mr-[0.5rem]">Volume: </strong> {{baibao.volume  ?? 'Không Có'}}</p>
-                        <p><strong class="tw-mr-[0.5rem]">Issue: </strong> {{baibao.issue  ?? 'Không Có'}}
-                        </p>
-                        <p><strong class="tw-mr-[0.5rem]">Number: </strong> {{baibao.number  ?? 'Không Có'}}</p>
-                        <p><strong class="tw-mr-[0.5rem]">Pages: </strong> {{baibao.pages  ?? 'Không Có'}}
-                        </p>
-                        <p><strong class="tw-mr-[0.5rem]">Tạp Chí:</strong> <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã: </strong>{{baibao.tapchi.id}}
-                            <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên: </strong>{{baibao.tapchi.name ??
-                            'Không Có'}} <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Trạng Thái: </strong>
-                            <span *ngIf="baibao.tapchi.trangthai" class="success">Đã Phê Duyệt</span>
-                            <span *ngIf="!baibao.tapchi.trangthai" class="error">Chưa Phê Duyệt</span> <br>
-                            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Được Công Nhận ?: </strong>
-                            <span *ngIf="baibao.tapchi.khongduoccongnhan === true" class="error">Không Được Công
-                                Nhận</span>
-                            <span *ngIf="baibao.tapchi.khongduoccongnhan === false" class="success">Được Công
-                                Nhận</span>
-                            <span *ngIf="baibao.tapchi.khongduoccongnhan === null" class="primary">Không Được Đánh
-                                Giá</span>
-                        </p>
-                        <p><strong class="tw-mr-[0.5rem]">Abstract: </strong> {{baibao.abstract ?? 'Không Có'}}</p>
+                    <div class="tw-space-x-[0.5rem] tw-text-right">
+                        <button nz-button nzType="primary" [routerLink]="['thong-tin-bai-bao']">
+                            <span nz-icon nzType="edit" nzTheme="outline"></span>
+                            Cập Nhật
+                        </button>
                     </div>
+                    <app-baibao-component [baibao]="baibao"></app-baibao-component>
                 </div>
             </div>
         </div>

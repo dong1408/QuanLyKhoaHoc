@@ -1,0 +1,94 @@
+<div class="tw-space-y-[0.8rem]">
+    <p><strong class="tw-mr-[0.5rem]">Mã: </strong> {{sanpham.id}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Tên Sản Phẩm: </strong> {{sanpham.tensanpham}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Loại Sản Phẩm: </strong>
+        {{sanpham.loaisanpham.tendmsanpham}}
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">Trạng Thái Rà Soát: </strong>
+        <span *ngIf="sanpham.trangthairasoat === AppConstant.TT_DANG_RA_SOAT"
+            class="error">{{sanpham.trangthairasoat}}</span>
+        <span *ngIf="sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN"
+            class="success">{{sanpham.trangthairasoat}}</span>
+    </p>
+    <ng-container *ngIf="sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN">
+        <p><strong class="tw-mr-[0.5rem]">Người Rà Soát:</strong> <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+            </strong>{{sanpham.nguoirasoat?.username ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+            </strong>{{sanpham.nguoirasoat?.name ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Email:
+            </strong>{{sanpham.nguoirasoat?.email ?? 'Không Có'}}
+        </p>
+    </ng-container>
+    <p><strong class="tw-mr-[0.5rem]">Tổng Số Tác Giả: </strong> {{sanpham.tongsotacgia}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Số Lần Đã Quy Đổi: </strong> {{sanpham.solandaquydoi}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Điểm Quy Đổi: </strong> {{sanpham.diemquydoi}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Giờ Quy Đổi: </strong> {{sanpham.gioquydoi}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Thông Tin Chi Tiết: </strong> {{sanpham.thongtinchitiet}}
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">Cấp Sản Phẩm: </strong> {{sanpham.capsanpham}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Có Thông Tin Trường ?: </strong> {{sanpham.cothongtintruong
+        === true ? 'Có' : 'Không'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Có Sử Dụng Email Trường ?: </strong>
+        {{sanpham.cosudungemailtruong === true ? 'Có' : 'Không'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Có Sử Dụng Email Đơn Vị Khác ?: </strong>
+        {{sanpham.cosudungemaildonvikhac === true ? 'Có' : 'Không'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Có Thông Tin Đơn Vị Khác ?: </strong>
+        {{sanpham.cothongtindonvikhac === true ? 'Có' : 'Không'}}</p>
+    <ng-container *ngIf="sanpham.cothongtindonvikhac === true">
+        <p><strong class="tw-mr-[0.5rem]">Thông Tin Đơn Vị Khác:</strong> <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+            </strong>{{sanpham.thongtinnoikhac?.matochuc ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+            </strong>{{sanpham.thongtinnoikhac?.tentochuc ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Điện Thoại:
+            </strong>{{sanpham.thongtinnoikhac?.dienthoai ?? 'Không Có'}}<br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Website:
+            </strong>{{sanpham.thongtinnoikhac?.website ?? 'Không Có'}}
+        </p>
+    </ng-container>
+    <p><strong class="tw-mr-[0.5rem]">Có Nhận Tài Trợ ?: </strong> {{sanpham.conhantaitro ===
+        true
+        ? 'Có' : 'Không'}}</p>
+    <ng-container *ngIf="sanpham.conhantaitro === true">
+        <p><strong class="tw-mr-[0.5rem]">Đơn Vị Tài Trợ:</strong> <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+            </strong>{{sanpham.thongtinnoikhac?.matochuc ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+            </strong>{{sanpham.thongtinnoikhac?.tentochuc ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Điện Thoại:
+            </strong>{{sanpham.thongtinnoikhac?.dienthoai ?? 'Không Có'}}<br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Website:
+            </strong>{{sanpham.thongtinnoikhac?.website ?? 'Không Có'}}
+        </p>
+        <p><strong class="tw-mr-[0.5rem]">Chi Tiết Đơn Vị Tài Trợ: </strong>
+            {{sanpham.chitietdonvitaitro ?? 'Không Có'}}</p>
+    </ng-container>
+    <p><strong class="tw-mr-[0.5rem]">Ngày Kê Khai: </strong> {{sanpham.ngaykekhai}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Người Kê Khai:</strong> <br>
+        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+        </strong>{{sanpham.nguoikekhai?.username ?? 'Không Có'}} <br>
+        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+        </strong>{{sanpham.nguoikekhai?.name ?? 'Không Có'}} <br>
+        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Email:
+        </strong>{{sanpham.nguoikekhai?.email ?? 'Không Có'}}
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">File Minh Chứng: </strong>
+        <ng-container *ngIf="sanpham.minhchung?.url"><nz-tag [nzColor]="'#76c5f0'"><a target="_blank"
+                    href="{{sanpham.minhchung?.url}}">Tại Đây</a></nz-tag></ng-container>
+        <ng-container *ngIf="!sanpham.minhchung?.url">Không Có</ng-container>
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">Loại Minh Chứng: </strong> {{sanpham.minhchung?.loaiminhchung ?? 'Không Có'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Danh Sách Tác Giả:</strong>
+    <div *ngFor="let tacgia of this.sanpham_tacgias">
+        <p><strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên Tác Giả:
+            </strong>{{tacgia.tacgia.name}}</p>
+        <p><strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Vai Trò:
+            </strong>{{tacgia.vaitrotacgia.tenvaitro}} </p>
+        <p><strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tỷ Lệ Đóng Góp:
+            </strong>{{tacgia.tyledonggop ?? 'Không Có'}} </p>
+        <p><strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Thứ Tự: </strong>{{tacgia.thutu ??
+            'Không Có'}} </p>
+        <br>
+    </div>
+</div>

@@ -25,6 +25,11 @@ import {VaiTroService} from "../../../core/services/sanpham/vai-tro.service";
 import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
 import {validValuesValidator} from "../../../shared/validators/valid-value.validator";
+import {TaoDeTai} from "../../../core/types/detai/de-tai.type";
+import {dateConvert} from "../../../shared/commons/utilities";
+import {DeTaiService} from "../../../core/services/detai/de-tai.service";
+import {PhanLoaiDeTaiService} from "../../../core/services/detai/phan-loai-de-tai.service";
+import {PhanLoaiDeTai} from "../../../core/types/detai/phan-loai-de-tai.type";
 
 @Component({
     selector:'app-detai-create',
@@ -35,6 +40,7 @@ import {validValuesValidator} from "../../../shared/validators/valid-value.valid
 export class TaoDeTaiComponent implements OnInit,OnDestroy{
     tochucs:ToChuc[]
     vaiTros:VaiTroTacGia[]
+    phanLoais:PhanLoaiDeTai[]
 
     users:User[]
 
@@ -56,119 +62,127 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
         private userService:UserService,
         private pagingService:PagingService,
         private vaiTroService:VaiTroService,
+        private deTaiService:DeTaiService,
+        private phanLoaiDeTaiService:PhanLoaiDeTaiService
     ) {
     }
 
     ngOnInit() {
         this.createForm = this.fb.group({
-            tensanpham: [
+            tensanpham:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
+                    Validators.required,
+                    noWhiteSpaceValidator()
                 ])
             ],
-            tongsotacgia: [
+            tongsotacgia:[
                 0,
                 Validators.compose([
                     noWhiteSpaceValidator,
                     Validators.required
                 ])
             ],
-            solandaquydoi: [
+            solandaquydoi:[
                 0,
                 Validators.compose([
                     noWhiteSpaceValidator,
                     Validators.required
                 ])
             ],
-            cosudungemailtruong: [
+            cosudungemailtruong:[
                 false,
                 Validators.compose([
                     noWhiteSpaceValidator
                 ])
             ],
-            cosudungemaildonvikhac: [
+            cosudungemaildonvikhac:[
                 false,
                 Validators.compose([
                     noWhiteSpaceValidator
                 ])
             ],
-            cothongtintruong: [
+            cothongtintruong:[
                 false,
                 Validators.compose([
                     noWhiteSpaceValidator
                 ])
             ],
-            cothongtindonvikhac: [
+            cothongtindonvikhac:[
                 false,
                 Validators.compose([
                     noWhiteSpaceValidator
                 ])
             ],
-            conhantaitro: [
+            conhantaitro:[
                 false,
                 Validators.compose([
                     noWhiteSpaceValidator
                 ])
             ],
-            chitietdonvitaitro: [
+            chitietdonvitaitro:[
                 {
-                    value: null,
-                    disabled: true
+                    value:null,
+                    disabled:true
                 },
                 Validators.compose([
-                    noWhiteSpaceValidator
+                    noWhiteSpaceValidator()
                 ]),
             ],
-            diemquydoi: [
+            diemquydoi:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    Validators.required
+                ])
+            ],
+            gioquydoi:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    Validators.required
+                ])
+            ],
+            thongtinchitiet:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    Validators.required
+                ])
+            ],
+            capsanpham:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    Validators.required
+                ])
+            ],
+            thoidiemcongbohoanthanh:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator,
                     Validators.required
                 ])
             ],
-            gioquydoi: [
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            thongtinchitiet: [
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            capsanpham: [
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            thoidiemcongbohoanthanh: [
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            id_thongtinnoikhac: [
+            id_thongtinnoikhac:[
                 {
-                    value: null,
-                    disabled: true
-                }
+                    value:null,
+                    disabled:true
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
-            id_donvitaitro: [
+            id_donvitaitro:[
                 {
-                    value: null,
-                    disabled: true
-                }
+                    value:null,
+                    disabled:true
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
-            sanpham_tacgia: this.fb.array([]),
+            sanpham_tacgia:this.fb.array([]),
 
             users: [
                 null
@@ -188,25 +202,53 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
 
             // nếu ngoài trường === true
             truongchutri:[
-                false,
+                {
+                    value:false,
+                    disabled:true
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             id_tochucchuquan:[
-                null
+                {
+                    value:null,
+                    disabled:true
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             // nếu ngoaitruong === false
             id_loaidetai:[
-                null
+                {
+                    value:null,
+                    disabled:false
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             detaihoptac:[
                 false
             ],
             //nếu detaihoptac === true
             id_tochuchoptac:[
-                null
+                {
+                    value:null,
+                    disabled:true
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             tylekinhphidonvihoptac:[
-                null,
+                {
+                    value:null,
+                    disabled:true
+                },
                 Validators.compose([
+                    Validators.required,
                     noWhiteSpaceValidator()
                 ])
             ],
@@ -215,8 +257,22 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
             capdetai:[
                 null,
                 Validators.compose([
-                    validValuesValidator(['Khoa','Cơ Sở','Tỉnh','Bộ','Ngành','Nhà nước','Nước ngoài']),
+                    validValuesValidator(['Khoa','Cơ sở','Tỉnh','Bộ','Ngành','Nhà nước','Nước ngoài']),
                     noWhiteSpaceValidator()
+                ])
+            ],
+
+            loaiminhchung:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            url_minhchung:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    Validators.required
                 ])
             ]
 
@@ -255,8 +311,8 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 this.createForm.get("id_tochuchoptac")?.enable()
                 this.createForm.get("tylekinhphidonvihoptac")?.enable()
             }else{
-                this.createForm.get("id_tochuchoptac")?.enable()
-                this.createForm.get("tylekinhphidonvihoptac")?.enable()
+                this.createForm.get("id_tochuchoptac")?.disable()
+                this.createForm.get("tylekinhphidonvihoptac")?.disable()
                 this.createForm.get("id_tochuchoptac")?.reset()
                 this.createForm.get("tylekinhphidonvihoptac")?.reset()
             }
@@ -276,17 +332,21 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 this.createForm.get("id_tochucchuquan")?.disable()
                 this.createForm.get("id_tochucchuquan")?.reset()
                 this.createForm.get("truongchutri")?.reset()
+
+                this.createForm.get("id_loaidetai")?.enable()
             }
         })
 
         this.loadingService.startLoading()
         forkJoin([
             this.toChucService.getAllToChuc(),
-            this.vaiTroService.getVaiTroBaiBao()
-        ],(tcResponse,vtResponse) => {
+            this.vaiTroService.getVaiTroDeTai(),
+            this.phanLoaiDeTaiService.getPhanLoaiDeTai()
+        ],(tcResponse,vtResponse,plResponse) => {
             return {
                 listTC: tcResponse.data,
-                listVT: vtResponse.data
+                listVT: vtResponse.data,
+                listPL: plResponse.data
             }
         }).pipe(
             takeUntil(this.destroy$)
@@ -294,9 +354,17 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
             next:(response) => {
                 this.tochucs = response.listTC
                 this.vaiTros = response.listVT
+                this.phanLoais = response.listPL
                 this.loadingService.stopLoading()
             },
             error:(error) =>{
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Có lỗi xảy ra, vui lòng thử lại sau'
+                )
+
+                console.log(error)
                 this.loadingService.stopLoading()
             }
         })
@@ -368,7 +436,91 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
     }
 
     onSubmit(){
+        const form = this.createForm
+        const arrayForm = this.createForm.get('sanpham_tacgia') as FormArray
+        if(form.invalid || arrayForm.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
+            )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
+            return;
+        }
+        if(arrayForm.length <= 0){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng chọn tác giả'
+            )
+            return;
+        }
 
+        const data:TaoDeTai = {
+            sanpham:{
+                tensanpham: form.get('tensanpham')?.value,
+                tongsotacgia: form.get('tongsotacgia')?.value,
+                solandaquydoi : form.get('solandaquydoi')?.value,
+                diemquydoi: form.get('diemquydoi')?.value,
+                gioquydoi : form.get('gioquydoi')?.value,
+                thongtinchitiet: form.get('thongtinchitiet')?.value,
+                capsanpham: form.get('capsanpham')?.value,
+                thoidiemcongbohoanthanh: dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString())!!,
+                cosudungemailtruong:form.get('cosudungemailtruong')?.value ?? false,
+                cosudungemaildonvikhac: form.get('cosudungemaildonvikhac')?.value ?? false,
+                cothongtintruong : form.get('cothongtintruong')?.value ?? false,
+                cothongtindonvikhac : form.get('cothongtindonvikhac')?.value ?? false,
+                id_thongtinnoikhac : form.get('cothongtindonvikhac')?.value === true ? form.get('id_thongtinnoikhac')?.value : null,
+                conhantaitro : form.get('conhantaitro')?.value ?? false,
+                id_donvitaitro :form.get('conhantaitro')?.value === true ? form.get('id_donvitaitro')?.value : null,
+                chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
+            },
+            sanpham_tacgia: form.get('sanpham_tacgia')?.value,
+            fileminhchungsanpham:{
+                url:form.get('url_minhchung')?.value,
+                loaiminhchung: form.get('loaiminhchung')?.value ?? null
+            },
+            maso:form.get('maso')?.value,
+            ngoaitruong:form.get('ngoaitruong')?.value ?? false,
+            truongchutri: form.get('ngoaitruong')?.value === true ? form.get('truongchutri')?.value : null,
+            id_tochucchuquan : form.get('ngoaitruong')?.value === true ? form.get('id_tochucchuquan')?.value : null,
+            id_loaidetai: form.get('ngoaitruong')?.value === false ? form.get('id_loaidetai')?.value : null,
+            detaihoptac: form.get('detaihoptac')?.value ?? false,
+            id_tochuchoptac: form.get('detaihoptac')?.value === true ? form.get('id_tochuchoptac')?.value : null,
+            tylekinhphidonvihoptac: form.get('detaihoptac')?.value === true ? form.get('tylekinhphidonvihoptac')?.value : null,
+            capdetai: form.get('capdetai')?.value ?? null
+        }
+
+        this.isCreate = true
+        this.deTaiService.taoDeTai(data)
+            .pipe(
+                takeUntil(this.destroy$)
+            ).subscribe({
+            next:(response) =>{
+                this.notificationService.create(
+                    'success',
+                    "Thành Công",
+                    response.message
+                )
+                this.isCreate = false
+                const formArray = this.createForm.get('sanpham_tacgia') as FormArray
+                formArray.clear()
+                this.createForm.reset()
+            },
+            error:(error) =>{
+                this.notificationService.create(
+                    'error',
+                    "Lỗi",
+                    error
+                )
+                this.isCreate = false
+            }
+        })
     }
 
     onSelectUser(event:any){

@@ -51,7 +51,8 @@ export class DeTaiComponent{
     ngOnInit() {
         this.formAction = this.fb.group({
             search:null,
-            select:"created_at"
+            select:"created_at",
+            filter:"all"
         })
         this.getBaiBao()
     }
@@ -105,11 +106,11 @@ export class DeTaiComponent{
 
     onXoaMemDeTai(deTai:DeTai){
         deTai.isSoftDelete = true;
-        this.deTaiService.xoaMemDeTai(deTai.id).pipe(
+        this.deTaiService.xoaMemDeTai(deTai.id_sanpham).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.deTais = this.deTais.filter((item) => item.id !== deTai.id)
+                this.deTais = this.deTais.filter((item) => item.id_sanpham !== deTai.id_sanpham)
 
                 this.notificationService.create(
                     'success',
@@ -131,11 +132,11 @@ export class DeTaiComponent{
 
     onXoaDeTai(deTai:DeTai){
         deTai.isDelete = true;
-        this.deTaiService.xoaDeTai(deTai.id).pipe(
+        this.deTaiService.xoaDeTai(deTai.id_sanpham).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.deTais = this.deTais.filter((item) => item.id !== deTai.id)
+                this.deTais = this.deTais.filter((item) => item.id_sanpham !== deTai.id_sanpham)
 
                 this.notificationService.create(
                     'success',
@@ -162,11 +163,11 @@ export class DeTaiComponent{
             trangthairasoat: trangthai
         }
 
-        this.deTaiService.capNhatTrangThaiSanPham(deTai.id,data).pipe(
+        this.deTaiService.capNhatTrangThaiSanPham(deTai.id_sanpham,data).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.deTais = this.deTais.filter((item) => item.id !== deTai.id)
+                this.deTais = this.deTais.filter((item) => item.id_sanpham !== deTai.id_sanpham)
 
                 this.notificationService.create(
                     'success',
@@ -188,11 +189,11 @@ export class DeTaiComponent{
 
     onHoanTacXoaDeTai(deTai:DeTai){
         deTai.isReStore = true;
-        this.deTaiService.hoanTacXoaDeTai(deTai.id).pipe(
+        this.deTaiService.hoanTacXoaDeTai(deTai.id_sanpham).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.deTais = this.deTais.filter((item) => item.id !== deTai.id)
+                this.deTais = this.deTais.filter((item) => item.id_sanpham !== deTai.id_sanpham)
                 this.notificationService.create(
                     'success',
                     'Thành Công',

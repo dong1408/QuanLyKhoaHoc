@@ -1,5 +1,5 @@
 <div class="tw-space-y-[16px]">
-    <h1 class="text-primary tw-text-5xl">BÀI BÁO KHOA HỌC</h1>
+    <h1 class="text-primary tw-text-5xl">ĐỀ TÀI</h1>
     <div class="tw-mt-[15] tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
         <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
             <button nz-button nzType="primary" routerLink="/de-tai/tao-moi">
@@ -35,10 +35,10 @@
                 <nz-option nzValue="updated_at" nzLabel="Mới Cập Nhật"></nz-option>
             </nz-select>
             <nz-select
-                    (ngModelChange)="onChangeSortBy($event)"
+                    (ngModelChange)="onChangeFilter($event)"
                     nzSize='large'
                     nzPlaceHolder="Lọc"
-                    formControlName="select"
+                    formControlName="filter"
                     class="tw-w-full"
             >
                 <nz-option *ngFor="let item of AppConstant.DE_TAI_FILTER"  [nzLabel]="item.name" [nzValue]="item.value"></nz-option>
@@ -60,12 +60,11 @@
             <tr>
                 <th>ID</th>
                 <th>Tên Sản Phẩm</th>
-                <th>Tên Tạp Chí Đăng</th>
-                <th>Volume</th>
-                <th>Số</th>
-                <th>Trang</th>
+                <th>Mã Số</th>
+                <th>Cấp Đề Tài</th>
+                <th>Trạng Thái</th>
                 <th>Trạng Thái Rà Soát</th>
-                <th>Ngày Khởi Tạo</th>
+                <th>Ngày Đăng Ký</th>
                 <ng-container *ngIf="columnDelete">
                     <th>Ngày Xóa</th>
                 </ng-container>
@@ -74,19 +73,19 @@
             </thead>
             <tbody>
             <tr *ngFor="let data of baiBao.data">
-                <td>{{ data.id }}</td>
+                <td>{{ data.id_sanpham }}</td>
                 <td nzEllipsis>{{ data.tensanpham }}</td>
                 <td nzEllipsis>{{data.maso}}</td>
-                <td nzEllipsis>{{data.trangthai ?? ''}}</td>
                 <td nzEllipsis>{{data.capdetai ?? ''}}</td>
+                <td nzEllipsis>{{data.trangthai}}</td>
+                <td nzEllipsis class="{{data.trangthairasoat === AppConstant.TT_DA_XAC_NHAN ? 'success' : 'error'}}">{{data.trangthairasoat}}</td>
                 <td nzEllipsis>{{ data.ngaydangky ?? '' }}</td>
-                <td nzEllipsis>{{ data.updated_at }}</td>
                 <ng-container *ngIf="columnDelete">
                     <td nzEllipsis>{{ data?.deleted_at }}</td>
                 </ng-container>
                 <ng-container *ngIf="data.deleted_at === null">
                     <td  class="tw-flex tw-items-center tw-space-x-[4px]">
-                        <button nz-button nzType="primary" [routerLink]="['/de-tai',data.id]">
+                        <button nz-button nzType="primary" [routerLink]="['/de-tai',data.id_sanpham]">
                             <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
                             Chi Tiết
                         </button>

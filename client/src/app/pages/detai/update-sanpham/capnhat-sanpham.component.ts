@@ -13,6 +13,8 @@ import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
 import {CapNhatSanPham} from "../../../core/types/sanpham/san-pham.type";
 import {dateConvert} from "../../../shared/commons/utilities";
+import {DeTaiService} from "../../../core/services/detai/de-tai.service";
+import {ChiTietDeTai} from "../../../core/types/detai/de-tai.type";
 
 @Component({
     selector:"app-detai-sanpham-capnhat",
@@ -20,9 +22,9 @@ import {dateConvert} from "../../../shared/commons/utilities";
     styleUrls:["./capnhat-sanpham.component.css"]
 })
 
-export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
+export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
     id:number
-    baibao:ChiTietBaiBao
+    detai:ChiTietDeTai
     tochucs:ToChuc[]
 
     isCapNhatLoading:boolean = false
@@ -32,10 +34,9 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
     destroy$ = new Subject<void>()
 
     constructor(
-        private baiBaoService:BaiBaoService,
         public loadingService:LoadingService,
         private notificationService:NzNotificationService,
-        private tapChiService:TapChiService,
+        private deTaiService:DeTaiService,
         private _router: ActivatedRoute,
         private router:Router,
         private fb:FormBuilder,
@@ -48,17 +49,24 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/bai-bao"])
+                this.router.navigate(["/de-tai"])
                 return;
             }
         })
 
         this.capNhatForm = this.fb.group({
-            tensanpham:[
+            ngaykekhai:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator,
                     Validators.required
+                ])
+            ],
+            tensanpham:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
                 ])
             ],
             tongsotacgia:[
@@ -111,41 +119,34 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
                     disabled:true
                 },
                 Validators.compose([
-                    noWhiteSpaceValidator
+                    noWhiteSpaceValidator()
                 ]),
-            ],
-            ngaykekhai:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
             ],
             diemquydoi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
             gioquydoi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
             thongtinchitiet:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
             capsanpham:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
@@ -160,20 +161,25 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
                 {
                     value:null,
                     disabled:true
-                }
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             id_donvitaitro:[
                 {
                     value:null,
                     disabled:true
-                }
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
 
         })
         this.capNhatForm.get("conhantaitro")?.valueChanges.pipe(
             takeUntil(this.destroy$)
         ).subscribe(select => {
-            console.log("conhantaitro")
             if(select === true){
                 this.capNhatForm.get("id_donvitaitro")?.enable()
                 this.capNhatForm.get("chitietdonvitaitro")?.enable()
@@ -188,7 +194,6 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
         this.capNhatForm.get("cothongtindonvikhac")?.valueChanges.pipe(
             takeUntil(this.destroy$)
         ).subscribe(select => {
-            console.log("cothongtindonvikhac")
             if(select === true){
                 this.capNhatForm.get("id_thongtinnoikhac")?.enable()
             }else{
@@ -200,12 +205,12 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
         this.loadingService.startLoading()
 
         forkJoin([
-                this.baiBaoService.getChiTietBaiBao(this.id),
+                this.deTaiService.getChiTietDeTai(this.id),
                 this.toChucService.getAllToChuc()
             ],
-            (bbResponse,tcResponse) => {
+            (dtResponse,tcResponse) => {
                 return {
-                    baibao:bbResponse.data,
+                    detai:dtResponse.data,
                     tochucs:tcResponse.data
                 }
             }
@@ -213,29 +218,29 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.baibao = response.baibao
+                this.detai = response.detai
                 this.tochucs = response.tochucs
 
                 this.capNhatForm.patchValue({
-                    tensanpham:this.baibao.sanpham.tensanpham,
-                    tongsotacgia:this.baibao.sanpham.tongsotacgia,
-                    solandaquydoi:this.baibao.sanpham.solandaquydoi,
-                    cosudungemailtruong:this.baibao.sanpham.cosudungemailtruong ?? false,
-                    cosudungemaildonvikhac:this.baibao.sanpham.cosudungemaildonvikhac ?? false,
-                    cothongtintruong:this.baibao.sanpham.cothongtintruong ?? false,
-                    cothongtindonvikhac:this.baibao.sanpham.cothongtindonvikhac ?? false,
-                    id_thongtinnoikhac:this.baibao.sanpham.thongtinnoikhac?.id ?? null,
-                    conhantaitro:this.baibao.sanpham.conhantaitro ?? false,
-                    id_donvitaitro:this.baibao.sanpham.donvitaitro?.id ?? null,
-                    chitietdonvitaitro:this.baibao.sanpham.chitietdonvitaitro ?? null,
-                    ngaykekhai:this.baibao.sanpham.ngaykekhai,
-                    diemquydoi:this.baibao.sanpham.diemquydoi,
-                    gioquydoi:this.baibao.sanpham.gioquydoi,
-                    thongtinchitiet:this.baibao.sanpham.thongtinchitiet,
-                    capsanpham:this.baibao.sanpham.capsanpham,
-                    thoidiemcongbohoanthanh:this.baibao.sanpham.thoidiemcongbohoanthanh
+                    tensanpham:this.detai.sanpham.tensanpham,
+                    tongsotacgia:this.detai.sanpham.tongsotacgia,
+                    solandaquydoi:this.detai.sanpham.solandaquydoi,
+                    cosudungemailtruong:this.detai.sanpham.cosudungemailtruong ?? false,
+                    cosudungemaildonvikhac:this.detai.sanpham.cosudungemaildonvikhac ?? false,
+                    cothongtintruong:this.detai.sanpham.cothongtintruong ?? false,
+                    cothongtindonvikhac:this.detai.sanpham.cothongtindonvikhac ?? false,
+                    id_thongtinnoikhac:this.detai.sanpham.thongtinnoikhac?.id ?? null,
+                    conhantaitro:this.detai.sanpham.conhantaitro ?? false,
+                    id_donvitaitro:this.detai.sanpham.donvitaitro?.id ?? null,
+                    chitietdonvitaitro:this.detai.sanpham.chitietdonvitaitro ?? null,
+                    ngaykekhai:this.detai.sanpham.ngaykekhai,
+                    diemquydoi:this.detai.sanpham.diemquydoi,
+                    gioquydoi:this.detai.sanpham.gioquydoi,
+                    thongtinchitiet:this.detai.sanpham.thongtinchitiet,
+                    capsanpham:this.detai.sanpham.capsanpham,
+                    thoidiemcongbohoanthanh:this.detai.sanpham.thoidiemcongbohoanthanh
                 })
-                console.log(response.baibao)
+                // console.log(response.detai)
                 this.loadingService.stopLoading()
             },
             error:(error) => {
@@ -245,13 +250,13 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(['/bai-bao'])
+                this.router.navigate(['/de-tai'])
                 return;
             }
         })
     }
 
-    onCapNhatBaiBaoSanPham(){
+    onCapNhatDeTaiSanPham(){
         const form = this.capNhatForm
         if(form.invalid){
             this.notificationService.create(
@@ -269,7 +274,7 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
         }
 
         this.isCapNhatLoading = true
-        this.baiBaoService.capNhatSanPham(this.id,data)
+        this.deTaiService.capNhatSanPham(this.id,data)
             .pipe(
                 takeUntil(this.destroy$)
             ).subscribe({

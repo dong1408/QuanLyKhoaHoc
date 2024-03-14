@@ -1,7 +1,17 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiResponse, PagingResponse} from "../../types/api-response.type";
-import {CapNhatDeTai, DeTai, TaoDeTai} from "../../types/detai/de-tai.type";
+import {
+    BaoBaoTienDo,
+    BaoCaoTienDoDeTai,
+    CapNhatDeTai,
+    ChiTietDeTai,
+    DeTai, NghiemThu, NghiemThuDeTai,
+    TaoDeTai,
+    TuyenChon,
+    TuyenChonDeTai,
+    XetDuyetDeTai
+} from "../../types/detai/de-tai.type";
 import {environment} from "../../../../environments/environment";
 import {catchError} from "rxjs";
 import {handleError} from "../../../shared/commons/handler-error-http";
@@ -28,7 +38,7 @@ export class DeTaiService{
     }
 
     getDeTaiChoDuyet(page:number,keyword:string,sortby:string){
-        return this.http.get<ApiResponse<PagingResponse<BaiBao[]>>>(
+        return this.http.get<ApiResponse<PagingResponse<DeTai[]>>>(
             `${environment.apiUrl}/detai/choduyet?page=${page}&search=${keyword}&sortby=${sortby}`
         ).pipe(
             catchError(handleError)
@@ -36,7 +46,7 @@ export class DeTaiService{
     }
 
     getChiTietDeTai(id:number){
-        return this.http.get<ApiResponse<ChiTietBaiBao>>(
+        return this.http.get<ApiResponse<ChiTietDeTai>>(
             `${environment.apiUrl}/detai/${id}`
         ).pipe(
             catchError(handleError)
@@ -44,7 +54,7 @@ export class DeTaiService{
     }
 
     taoDeTai(data:TaoDeTai){
-        return this.http.post<ApiResponse<BaiBao>>(
+        return this.http.post<ApiResponse<DeTai>>(
             `${environment.apiUrl}/detai`,
             data
         ).pipe(
@@ -107,6 +117,42 @@ export class DeTaiService{
     capNhatTrangThaiSanPham(id:number,data:CapNhatTrangThaiSanPham){
         return this.http.patch<ApiResponse<boolean>>(
             `${environment.apiUrl}/detai/${id}/trangthairasoat`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    tuyenChonDeTai(id:number,data:TuyenChonDeTai){
+        return this.http.post<ApiResponse<TuyenChon>>(
+            `${environment.apiUrl}/detai/${id}/tuyenchon`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    xetDuyetDeTai(id:number,data:XetDuyetDeTai){
+        return this.http.post<ApiResponse<XetDuyetDeTai>>(
+            `${environment.apiUrl}/detai/${id}/xetduyet`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    baoCaoTienDoDeTai(id:number,data:BaoCaoTienDoDeTai){
+        return this.http.post<ApiResponse<BaoBaoTienDo>>(
+            `${environment.apiUrl}/detai/${id}/baocao`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    nghiemThuDeTai(id:number,data:NghiemThuDeTai){
+        return this.http.post<ApiResponse<NghiemThu>>(
+            `${environment.apiUrl}/detai/${id}/nghiemthu`,
             data
         ).pipe(
             catchError(handleError)

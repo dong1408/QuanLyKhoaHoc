@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
-import {CapNhatSanPhamBaiBaoComponent} from "./capnhat-sanpham.component";
-import {CapNhatSanPhamBaiBaoRoutingModule} from "./capnhat-sanpham-routing.module";
+import {CapNhatSanPhamDeTaiComponent} from "./capnhat-sanpham.component";
+import {CapNhatSanPhamDeTaiRoutingModule} from "./capnhat-sanpham-routing.module";
 import {CommonModule} from "@angular/common";
 import {ReactiveFormsModule} from "@angular/forms";
 import {NzButtonModule} from "ng-zorro-antd/button";
@@ -15,10 +15,10 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 
 @NgModule({
     declarations:[
-        CapNhatSanPhamBaiBaoComponent
+        CapNhatSanPhamDeTaiComponent
     ],
     imports: [
-        CapNhatSanPhamBaiBaoRoutingModule,
+        CapNhatSanPhamDeTaiRoutingModule,
         CommonModule,
         ReactiveFormsModule,
         NzButtonModule,
@@ -36,4 +36,4 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
     ]
 })
 
-export class CapNhatSanPhamBaiBaoModule {}
+export class CapNhatSanPhamDeTaiModule {}

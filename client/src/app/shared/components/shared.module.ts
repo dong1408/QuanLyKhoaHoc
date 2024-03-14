@@ -7,6 +7,11 @@ import {ScoreCardComponent} from "./score/score-card.component";
 import {LoadingComponent} from "./loading/loading.component";
 import {NzSpinModule} from "ng-zorro-antd/spin";
 import {RankCardComponent} from "./rank/rank.component";
+import {SanPhamComponent} from "./san-pham/san-pham.component";
+import {NzTagModule} from "ng-zorro-antd/tag";
+import {BaiBaoComponent} from "./bai-bao/bai-bao.component";
+import {DeTaiComponent} from "./de-tai/de-tai.component";
+import {BaoCaoComponent} from "./bao-cao/bao-cao.component";
 
 @NgModule({
     declarations:[ //declare cac component
@@ -14,19 +19,28 @@ import {RankCardComponent} from "./rank/rank.component";
         RecognizeCardComponent,
         ScoreCardComponent,
         LoadingComponent,
-        RankCardComponent
+        RankCardComponent,
+        SanPhamComponent,
+        BaiBaoComponent,
+        DeTaiComponent,
+        BaoCaoComponent
     ],
     imports: [ // import module
         CommonModule,
         NzDividerModule,
-        NzSpinModule
+        NzSpinModule,
+        NzTagModule
     ],
     exports:[ //export cac component
         HeaderComponent,
         RecognizeCardComponent,
         ScoreCardComponent,
         LoadingComponent,
-        RankCardComponent
+        RankCardComponent,
+        SanPhamComponent,
+        BaiBaoComponent,
+        DeTaiComponent,
+        BaoCaoComponent
     ]
 })
 

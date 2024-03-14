@@ -26,4 +26,9 @@ class DeTaiDetailVm
     public ?string $capdetai;
     public $created_at;
     public $updated_at;
+    public ?string $deleted_at;
+    public string $trangthairasoat;
+    public string $tensanpham;
+
+    public $sanpham_tacgias = array();
 }

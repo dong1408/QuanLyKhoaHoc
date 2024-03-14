@@ -480,18 +480,38 @@ class Convert
     {
         $a = new DeTaiVm();
         $a->id = $sanPham->deTai->id;
-        $a->tensannpham = $sanPham->tensanpham ?? null;
+        $a->tensanpham = $sanPham->tensanpham;
         $a->id_sanpham = $sanPham->id;
         $a->maso = $sanPham->deTai->maso;
         $a->ngaydangky = $sanPham->deTai->ngaydangky ?? null;
         $a->capdetai = $sanPham->deTai->capdetai ?? null;
         $a->created_at = $sanPham->deTai->created_at;
         $a->updated_at = $sanPham->deTai->updated_at;
+        $a->trangthairasoat = $sanPham->trangthairasoat;
+        $a->deleted_at = $sanPham->deleted_at ?? null;
+        $a->trangthai = "Chờ tuyển chọn";
+        if ($sanPham->tuyenChon()->exists() && $sanPham->tuyenChon->ketquatuyenchon == "Không đủ điều kiện") {
+            $a->trangthai = "Tuyển chọn thât bại";
+        }
+        if ($sanPham->tuyenChon()->exists() && $sanPham->tuyenChon->ketquatuyenchon == "Đủ điều kiện") {
+            $a->trangthai = "Chờ xét duyệt";
+        }
+        if ($sanPham->xetDuyet()->exists() && $sanPham->xetDuyet->ketquaxetduyet == "Không đủ điều kiện") {
+            $a->trangthai = "Xét duyệt thất bại";
+        }
+        if ($sanPham->xetDuyet()->exists()  && $sanPham->xetDuyet->ketquaxetduyet == "Đủ điều kiện") {
+            $a->trangthai = "Chờ nghiệm thu";
+        }
+        if ($sanPham->nghiemThu()->exists()) {
+            $a->trangthai = "Nghiệm thu";
+        }
         return $a;
     }
     public static function getDeTaiDetailVm(SanPham $sanPham)
     {
         $a = new DeTaiDetailVm();
+        $a->deleted_at = $sanPham->deleted_at ?? null;
+        $a->tensanpham = $sanPham->tensanpham;
         $a->id = $sanPham->deTai->id;
         $a->trangthai = "Chờ tuyển chọn";
         if ($sanPham->tuyenChon()->exists() && $sanPham->tuyenChon->ketquatuyenchon == "Không đủ điều kiện") {
@@ -522,6 +542,12 @@ class Convert
         $a->capdetai = $sanPham->deTai->capdetai ?? null;
         $a->created_at = $sanPham->deTai->created_at;
         $a->updated_at = $sanPham->deTai->updated_at;
+        $a->trangthairasoat = $sanPham->trangthairasoat;
+
+        foreach ($sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
+            $a->sanpham_tacgias[] = Convert::getSanPhamTacGiaVm($sanPhaMTacGia);
+        }
+
         return $a;
     }
     public static function getBaoCaoTienDoVm(BaoCaoTienDo $baoCaoTienDo)

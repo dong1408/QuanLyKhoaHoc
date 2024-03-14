@@ -1,4 +1,7 @@
-export const dateConvert = (date:string): string =>{
+export const dateConvert = (date:string| null | undefined): string | null =>{
+    if(date === null || date === undefined){
+        return null;
+    }
 
     const originalDate = new Date(date);
 
