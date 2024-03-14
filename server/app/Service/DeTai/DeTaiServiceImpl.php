@@ -57,150 +57,6 @@ use Illuminate\Support\Facades\Hash;
 
 class DeTaiServiceImpl implements DeTaiService
 {
-    // public function getDeTaiPaging(Request $request): ResponseSuccess
-    // {
-    //     $page = $request->query('page', 1);
-    //     $keysearch = $request->query('search', "");
-    //     $sortby = $request->query('sortby', "created_at");
-    //     $isLock = $request->query('isLock', 0);
-    //     $filter = $request->query('filter', "all");
-    //     $sanPhams = null;
-    //     if ($isLock == 1) {  // Lấy những đề tài bị xóa mềm
-    //         if ($filter == "Tuyển chọn") {
-    //             $sanPhams = SanPham::onlyTrashed()->select('san_phams.*')
-    //                 ->join('tuyen_chons', 'san_phams.id', '=', 'tuyen_chons.id_sanpham')
-    //                 ->leftJoin('xet_duyets', 'san_phams.id', '=', 'xet_duyets.id_sanpham')
-    //                 ->leftJoin('bao_caos', 'san_phams.id', '=', 'bao_caos.id_sanpham')
-    //                 ->leftJoin('nghiem_thus', 'san_phams.id', '=', 'nghiem_thus.id_sanpham')
-    //                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
-    //                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
-    //                 ->whereNull('xet_duyets.id_sanpham')
-    //                 ->whereNull('bao_caos.id_sanpham')
-    //                 ->whereNull('nghiem_thus.id_sanpham')
-    //                 ->where('d_m_san_phams.masanpham', '=', 'detai')
-    //                 ->where(function ($query) use ($keysearch) {
-    //                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
-    //                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-    //                 })
-    //                 ->groupBy('san_phams.id')
-    //                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-    //         } elseif ($filter == "Xét duyệt") {
-    //             $sanPhams = SanPham::onlyTrashed()->select('san_phams.*')
-    //                 ->join('xet_duyets', 'san_phams.id', '=', 'xet_duyets.id_sanpham')
-    //                 ->leftJoin('bao_caos', 'san_phams.id', '=', 'bao_caos.id_sanpham')
-    //                 ->leftJoin('nghiem_thus', 'san_phams.id', '=', 'nghiem_thus.id_sanpham')
-    //                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
-    //                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
-    //                 ->whereNull('bao_caos.id_sanpham')
-    //                 ->whereNull('nghiem_thus.id_sanpham')
-    //                 ->where('d_m_san_phams.masanpham', '=', 'detai')
-    //                 ->where(function ($query) use ($keysearch) {
-    //                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
-    //                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-    //                 })
-    //                 ->groupBy('san_phams.id')
-    //                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-    //         } elseif ($filter == "Nghiệm thu") {
-    //             $sanPhams = SanPham::onlyTrashed()->select('san_phams.*')
-    //                 ->join('nghiem_thus', 'nghiem_thus.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
-    //                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
-    //                 ->where('d_m_san_phams.masanpham', '=', 'detai')
-    //                 ->where(function ($query) use ($keysearch) {
-    //                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
-    //                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-    //                 })
-    //                 ->groupBy('san_phams.id')
-    //                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-    //         } else {
-    //             $sanPhams = SanPham::onlyTrashed()->select('san_phams.*')
-    //                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
-    //                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
-    //                 ->where('d_m_san_phams.masanpham', '=', 'detai')
-    //                 ->where(function ($query) use ($keysearch) {
-    //                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
-    //                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-    //                 })
-    //                 ->groupBy('san_phams.id')
-    //                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-    //         }
-    //     } else { // Lấy những bản ghi not softdelete 
-    //         if ($filter == "Tuyển chọn") {
-    //             $sanPhams = SanPham::select('san_phams.*')
-    //                 ->join('tuyen_chons', 'san_phams.id', '=', 'tuyen_chons.id_sanpham')
-    //                 ->leftJoin('xet_duyets', 'san_phams.id', '=', 'xet_duyets.id_sanpham')
-    //                 ->leftJoin('bao_caos', 'san_phams.id', '=', 'bao_caos.id_sanpham')
-    //                 ->leftJoin('nghiem_thus', 'san_phams.id', '=', 'nghiem_thus.id_sanpham')
-    //                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
-    //                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
-    //                 ->whereNull('xet_duyets.id_sanpham')
-    //                 ->whereNull('bao_caos.id_sanpham')
-    //                 ->whereNull('nghiem_thus.id_sanpham')
-    //                 ->where('d_m_san_phams.masanpham', '=', 'detai')
-    //                 ->where(function ($query) use ($keysearch) {
-    //                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
-    //                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-    //                 })->where('san_phams.trangthairasoat', 'Đã xác nhận')
-    //                 ->groupBy('san_phams.id')
-    //                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-    //         } elseif ($filter == "Xét duyệt") {
-    //             $sanPhams = SanPham::select('san_phams.*')
-    //                 ->join('xet_duyets', 'san_phams.id', '=', 'xet_duyets.id_sanpham')
-    //                 ->leftJoin('bao_caos', 'san_phams.id', '=', 'bao_caos.id_sanpham')
-    //                 ->leftJoin('nghiem_thus', 'san_phams.id', '=', 'nghiem_thus.id_sanpham')
-    //                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
-    //                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
-    //                 ->whereNull('bao_caos.id_sanpham')
-    //                 ->whereNull('nghiem_thus.id_sanpham')
-    //                 ->where('d_m_san_phams.masanpham', '=', 'detai')
-    //                 ->where(function ($query) use ($keysearch) {
-    //                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
-    //                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-    //                 })->where('san_phams.trangthairasoat', 'Đã xác nhận')
-    //                 ->groupBy('san_phams.id')
-    //                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-    //         } elseif ($filter == "Nghiệm thu") {
-    //             $sanPhams = SanPham::select('san_phams.*')
-    //                 ->join('nghiem_thus', 'nghiem_thus.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
-    //                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
-    //                 ->where('d_m_san_phams.masanpham', '=', 'detai')
-    //                 ->where(function ($query) use ($keysearch) {
-    //                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
-    //                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-    //                 })->where('san_phams.trangthairasoat', 'Đã xác nhận')
-    //                 ->groupBy('san_phams.id')
-    //                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-    //         } else {
-    //             $sanPhams = SanPham::select('san_phams.*')
-    //                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
-    //                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
-    //                 ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
-    //                 ->where('d_m_san_phams.masanpham', '=', 'detai')
-    //                 ->where(function ($query) use ($keysearch) {
-    //                     $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
-    //                         ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-    //                 })->where('san_phams.trangthairasoat', 'Đã xác nhận')
-    //                 ->groupBy('san_phams.id')
-    //                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-    //         }
-    //     }
-    //     $result = [];
-    //     foreach ($sanPhams as $sanPham) {
-    //         $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
-    //     }
-    //     $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
-    //     return new ResponseSuccess("Thành công", $pagingResponse);
-    // }
-
-
     public function getDeTaiPaging(Request $request): ResponseSuccess
     {
         $page = $request->query('page', 1);
@@ -312,7 +168,7 @@ class DeTaiServiceImpl implements DeTaiService
                     ->where(function ($query) use ($keysearch) {
                         $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
                             ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
-                    })->where('san_phams.trangthairasoat', 'Đã xác nhận')
+                    })
                     ->groupBy('san_phams.id')
                     ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
             }
@@ -420,7 +276,7 @@ class DeTaiServiceImpl implements DeTaiService
         }
         $result = [];
         foreach ($sanPhams as $sanPham) {
-            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
+            $result[] = Convert::getDeTaiVm($sanPham);
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
@@ -444,7 +300,7 @@ class DeTaiServiceImpl implements DeTaiService
             ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         $result = [];
         foreach ($sanPhams as $sanPham) {
-            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
+            $result[] = Convert::getDeTaiVm($sanPham);
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
@@ -593,6 +449,7 @@ class DeTaiServiceImpl implements DeTaiService
 
             $deTai = DeTai::create([
                 'id_sanpham' => $sanPham->id,
+                "ngaydangky" => date("Y-m-d"),
                 'maso' => $validated['maso'],
                 'ngoaitruong' => $validated['ngoaitruong'],
                 'truongchutri' => $validated['ngoaitruong'] == true ?  $validated['truongchutri'] : null,
@@ -738,10 +595,10 @@ class DeTaiServiceImpl implements DeTaiService
         }
 
         $validated = $request->validated();
+        $result = [];
 
 
-
-        DB::transaction(function () use ($validated, &$sanPham) {
+        DB::transaction(function () use ($validated, &$sanPham,&$result) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
@@ -835,7 +692,6 @@ class DeTaiServiceImpl implements DeTaiService
                 throw new CreateDeTaiFailedException();
             }
 
-            $result = [];
             SanPhamTacGia::where('id_sanpham', $sanPham->id)->forceDelete();
             for ($i = 0; $i < count($listIdTacGia); $i++) {
                 $tacGiaId = $listIdTacGia[$i];
@@ -852,7 +708,7 @@ class DeTaiServiceImpl implements DeTaiService
                 $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
             }
         });
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Thành công", $result);
     }
 
 

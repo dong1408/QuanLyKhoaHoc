@@ -19,6 +19,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {BaiBao} from "../../core/types/baibao/bai-bao.type";
 import {BaiBaoService} from "../../core/services/baibao/bai-bao.service";
 import {CapNhatTrangThaiSanPham, TrangThaiSanPham} from "../../core/types/sanpham/san-pham.type";
+import {ConstantsService} from "../../core/services/constants.service";
 
 @Component({
     selector:'app-baibao',
@@ -43,7 +44,8 @@ export class BaiBaoComponent implements OnInit,OnDestroy{
         private pagingService:PagingService,
         private notificationService:NzNotificationService,
         private baiBaoService:BaiBaoService,
-        private fb:FormBuilder
+        private fb:FormBuilder,
+        public AppConstant:ConstantsService
     ) {
     }
 
@@ -103,11 +105,11 @@ export class BaiBaoComponent implements OnInit,OnDestroy{
 
      onXoaMemBaiBao(baiBao:BaiBao){
          baiBao.isSoftDelete = true;
-        this.baiBaoService.xoaMemBaiBao(baiBao.id).pipe(
+        this.baiBaoService.xoaMemBaiBao(baiBao.id_sanpham).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.baiBaos = this.baiBaos.filter((item) => item.id !== baiBao.id)
+                this.baiBaos = this.baiBaos.filter((item) => item.id_sanpham !== baiBao.id_sanpham)
 
                 this.notificationService.create(
                     'success',
@@ -129,11 +131,11 @@ export class BaiBaoComponent implements OnInit,OnDestroy{
 
     onXoaBaiBao(baiBao:BaiBao){
         baiBao.isDelete = true;
-        this.baiBaoService.xoaBaiBao(baiBao.id).pipe(
+        this.baiBaoService.xoaBaiBao(baiBao.id_sanpham).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.baiBaos = this.baiBaos.filter((item) => item.id !== baiBao.id)
+                this.baiBaos = this.baiBaos.filter((item) => item.id_sanpham !== baiBao.id_sanpham)
 
                 this.notificationService.create(
                     'success',
@@ -160,11 +162,11 @@ export class BaiBaoComponent implements OnInit,OnDestroy{
                 trangthairasoat: trangthai
             }
 
-            this.baiBaoService.capNhatTrangThaiSanPham(baiBao.id,data).pipe(
+            this.baiBaoService.capNhatTrangThaiSanPham(baiBao.id_sanpham,data).pipe(
                 takeUntil(this.destroy$)
             ).subscribe({
                 next:(response) => {
-                    this.baiBaos = this.baiBaos.filter((item) => item.id !== baiBao.id)
+                    this.baiBaos = this.baiBaos.filter((item) => item.id_sanpham !== baiBao.id_sanpham)
 
                     this.notificationService.create(
                         'success',
@@ -186,11 +188,11 @@ export class BaiBaoComponent implements OnInit,OnDestroy{
 
      onHoanTacXoaBaiBao(baiBao:BaiBao){
          baiBao.isReStore = true;
-         this.baiBaoService.hoanTacXoaBaiBao(baiBao.id).pipe(
+         this.baiBaoService.hoanTacXoaBaiBao(baiBao.id_sanpham).pipe(
              takeUntil(this.destroy$)
          ).subscribe({
              next:(response) => {
-                 this.baiBaos = this.baiBaos.filter((item) => item.id !== baiBao.id)
+                 this.baiBaos = this.baiBaos.filter((item) => item.id_sanpham !== baiBao.id_sanpham)
                  this.notificationService.create(
                      'success',
                      'Thành Công',

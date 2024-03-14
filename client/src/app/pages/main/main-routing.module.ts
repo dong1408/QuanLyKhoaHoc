@@ -61,6 +61,30 @@ const routes: Routes = [
       {
         path:"bai-bao/:id",
         loadChildren:() => import('../baibao/detail/detail.module').then(m => m.ChiTietBaiBaoModule)
+      },
+      {
+        path:"de-tai",
+        loadChildren:() => import('../detai/detai.module').then(m => m.DeTaiModule)
+      },
+      {
+        path:"de-tai/cho-phe-duyet",
+        loadChildren:() => import('../detai/detai-waiting/waiting.module').then(m => m.DeTaiWaitingModule)
+      },
+      {
+        path:"de-tai/:id/thong-tin-san-pham",
+        loadChildren:() => import('../detai/update-sanpham/capnhat-sanpham.module').then(m => m.CapNhatSanPhamDeTaiModule)
+      },
+      {
+        path:"de-tai/:id/thong-tin-de-tai",
+        loadChildren:() => import('../detai/update-detai/capnhat-detai.module').then(m => m.CapNhatDeTaiModule)
+      },
+      {
+        path:"de-tai/tao-moi",
+        loadChildren:() => import('../detai/create/create.module').then(m => m.TaoDeTaiModule)
+      },
+      {
+        path:"de-tai/:id",
+        loadChildren:() => import('../detai/detail/detail.module').then(m => m.ChiTietDeTaiModule)
       }
     ]
   },

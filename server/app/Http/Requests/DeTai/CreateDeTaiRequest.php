@@ -67,7 +67,7 @@ class CreateDeTaiRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
-            "tylekinphidonvihoptac" => "bail|nullable|string",
+            "tylekinhphidonvihoptac" => "bail|nullable|string",
             "capdetai" => "bail|nullable|string",
 
 

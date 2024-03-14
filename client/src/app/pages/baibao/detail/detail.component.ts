@@ -16,6 +16,7 @@ import {UserService} from "../../../core/services/user/user.service";
 import {PagingService} from "../../../core/services/paging.service";
 import {User} from "../../../core/types/user/user.type";
 import {VaiTroService} from "../../../core/services/sanpham/vai-tro.service";
+import {ConstantsService} from "../../../core/services/constants.service";
 
 @Component({
     selector:"app-baibao-chitiet",
@@ -60,7 +61,8 @@ export class ChiTietBaiBaoComponent{
         private router:Router,
         private userService:UserService,
         private pagingService:PagingService,
-        private vaiTroService:VaiTroService
+        private vaiTroService:VaiTroService,
+        public AppConstant:ConstantsService
     ) {
     }
 
@@ -102,7 +104,6 @@ export class ChiTietBaiBaoComponent{
     }
 
     onSelectUser(event:any){
-        console.log(event)
         if(!event){
             return;
         }
@@ -247,7 +248,7 @@ export class ChiTietBaiBaoComponent{
 
     onXoaMemBaiBao(baiBao:ChiTietBaiBao){
         this.isSoftDelete = true;
-        this.baiBaoService.xoaMemBaiBao(baiBao.id).pipe(
+        this.baiBaoService.xoaMemBaiBao(baiBao.sanpham.id).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
@@ -272,7 +273,7 @@ export class ChiTietBaiBaoComponent{
 
     onXoaBaiBao(baiBao:ChiTietBaiBao){
         this.isDelete = true;
-        this.baiBaoService.xoaBaiBao(baiBao.id).pipe(
+        this.baiBaoService.xoaBaiBao(baiBao.sanpham.id).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
@@ -297,6 +298,14 @@ export class ChiTietBaiBaoComponent{
     }
 
     onCapNhatFileMinhChung(){
+        if(this.formCapNhatFileMinhChung.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
+            )
+            return;
+        }
        const data:CapNhatFileMinhChung = this.formCapNhatFileMinhChung.value;
        this.isCapNhatFileMinhChung = true;
        this.baiBaoService.capNhatFileMinhChung(this.id,data)
@@ -314,11 +323,12 @@ export class ChiTietBaiBaoComponent{
                    this.baibao.sanpham.minhchung.url = data.url;
                    this.baibao.sanpham.minhchung.loaiminhchung = data.loaiminhchung ?? undefined
                }
+               this.isOpenFormMinhChung = false
                this.isCapNhatFileMinhChung = false
            },
            error:(error) =>{
                this.notificationService.create(
-                   'success',
+                   'error',
                    'Lỗi',
                    error
                )
@@ -363,6 +373,7 @@ export class ChiTietBaiBaoComponent{
                 if (this.baibao && this.baibao.sanpham_tacgias) {
                     this.baibao.sanpham_tacgias = response.data
                 }
+                this.isOpenFormTacGia = false
                 this.isCapNhatTacGia = false
             },
             error:(error) =>{
@@ -383,7 +394,7 @@ export class ChiTietBaiBaoComponent{
             trangthairasoat: trangthai
         }
 
-        this.baiBaoService.capNhatTrangThaiSanPham(baiBao.id,data).pipe(
+        this.baiBaoService.capNhatTrangThaiSanPham(baiBao.sanpham.id,data).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
@@ -409,7 +420,7 @@ export class ChiTietBaiBaoComponent{
 
     onHoanTacXoaBaiBao(baiBao:ChiTietBaiBao){
         this.isRestore = true;
-        this.baiBaoService.hoanTacXoaBaiBao(baiBao.id).pipe(
+        this.baiBaoService.hoanTacXoaBaiBao(baiBao.sanpham.id).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {

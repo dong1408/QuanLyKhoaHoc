@@ -1,0 +1,433 @@
+<div>
+    <nz-modal
+            [nzVisible]="isOpenFormMinhChung"
+            nzTitle="Cập Nhật File Minh Chứng"
+            nzOkText="Gửi"
+            (nzOnOk)="onCapNhatFileMinhChung()"
+            (nzOnCancel)="onOpenFormCapNhatMinhChung()"
+            [nzOkLoading]="isCapNhatFileMinhChung"
+    >
+        <ng-container *nzModalContent>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formCapNhatFileMinhChung">
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Đường Dẫn File Minh Chứng</h3>
+                    <nz-form-control [nzErrorTip]="url_minhchung" nzHasFeedback>
+                        <input nz-input placeholder="Đường Dẫn File Minh Chứng"  type="text" formControlName="url"/>
+
+                        <ng-template #url_minhchung let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Loại Minh Chứng</h3>
+                    <nz-form-control [nzErrorTip]="loaiminhchung" nzHasFeedback>
+                    <textarea
+                            nz-input
+                            placeholder="Loại Minh Chứng"
+                            formControlName="loaiminhchung"
+                            [nzAutosize]="{ minRows: 3, maxRows: 10 }"
+                    ></textarea>
+                        <ng-template #loaiminhchung let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
+<div>
+    <nz-modal
+            [nzVisible]="isOpenFormTacGia"
+            nzTitle="Cập Nhật Tác Giả"
+            nzOkText="Gửi"
+            (nzOnOk)="onCapNhatTacGia()"
+            (nzOnCancel)="onOpenFormTacGia(false)"
+            [nzOkLoading]="isCapNhatTacGia"
+    >
+        <ng-container *nzModalContent>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[5px]" [formGroup]="formCapNhatTacGia">
+                <div >
+                    <h3 class=""><span class="error">*</span> Tác Giả <span (click)="addGuestControls()" class="primary tw-cursor-pointer"> +Thêm Tác Giả Ngoài</span></h3>
+                    <nz-form-control>
+                        <nz-select
+                                nzShowSearch
+                                nzPlaceHolder="Tác Giả"
+                                formControlName="users"
+                                (nzOnSearch)="onSearchUser($event)"
+                                (ngModelChange)="onSelectUser($event)"
+                                [nzLoading]="isGetUsers"
+                        >
+                            <nz-option *ngFor="let data of this.users" nzLabel="{{data.username}} - {{data.name}}" [nzValue]=data></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </div>
+                <div class="" formArrayName="sanpham_tacgia">
+                    <div *ngFor="let control of sanphamTacgiaControls;let i = index">
+                        <div [formGroupName]="i" class="tw-space-y-[0.5rem] tw-mb-[1.5rem]">
+                            <div class="tw-flex tw-items-center tw-gap-[0.5rem]">
+                                <h2>Tác giả {{i + 1}}</h2>
+                                <button
+                                        nz-button
+                                        nzType="primary"
+                                        nzDanger
+                                        (click)="removeUser(i)"
+                                        nzSize="small"
+                                >
+                                    <span nz-icon nzType="close" nzTheme="outline"></span>
+                                </button>
+                            </div>
+                            <nz-form-item>
+                                <nz-form-control [nzErrorTip]="tentacgia" nzHasFeedback>
+                                    <h4 class=""><span class="error">*</span> Tên Tác Giả</h4>
+                                    <input nz-input placeholder="Tên Tác Giả"  type="text" formControlName="tentacgia"/>
+                                    <ng-template #tentacgia>
+                                        <small *ngIf="control.get('tentacgia')?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                                        <small *ngIf="control.get('tentacgia')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                                    </ng-template>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <h4 class=""><span class="error">*</span> Vai Trò</h4>
+                                <nz-form-control [nzErrorTip]="id_vaitro" nzHasFeedback>
+                                    <nz-select
+                                            formControlName="id_vaitro"
+                                            nzShowSearch  nzPlaceHolder="Vai Trò"
+                                    >
+                                        <!--                                <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>-->
+                                        <nz-option *ngFor="let data of vaiTros" nzLabel="{{data.tenvaitro}}" [nzValue]="data.id"></nz-option>
+                                    </nz-select>
+                                    <ng-template #id_vaitro>
+                                        <small *ngIf="control.get('id_vaitro')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                                    </ng-template>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <h4 class="">Thứ Tự</h4>
+                                <nz-form-control>
+                                    <input nz-input placeholder="Thứ Tự"  type="number" formControlName="thutu"/>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <h4 class="">Tỷ Lệ Đóng Góp</h4>
+                                <nz-form-control>
+                                    <input nz-input placeholder="Tỷ Lệ Đóng Góp"  type="number" formControlName="tyledonggop"/>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
+<div>
+    <nz-modal
+            [nzVisible]="isOpenFormTuyenChon"
+            nzTitle="Tuyển Chọn Đề Tài"
+            nzOkText="Gửi"
+            (nzOnOk)="onTuyenChonDeTai()"
+            (nzOnCancel)="onOpenFormTuyenChon()"
+            [nzOkLoading]="isTuyenChon"
+    >
+        <ng-container *nzModalContent>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formTuyenChon">
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Kết Quả Tuyển Chọn</h3>
+                    <nz-form-control [nzErrorTip]="ketquatuyenchon" nzHasFeedback>
+                        <nz-select nzPlaceHolder="Kết Quả Tuyển Chọn" formControlName="ketquatuyenchon">
+                            <nz-option [nzValue]="AppConstant.TT_DETAI_SUCCESS" [nzLabel]="AppConstant.TT_DETAI_SUCCESS"></nz-option>
+                            <nz-option [nzValue]="AppConstant.TT_DETAI_FAILED" [nzLabel]="AppConstant.TT_DETAI_FAILED"></nz-option>
+
+                        </nz-select>
+                        <ng-template #ketquatuyenchon let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                           </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Lý Do</h3>
+                    <nz-form-control [nzErrorTip]="lydo" nzHasFeedback>
+                    <textarea
+                            nz-input
+                            placeholder="Lý Do"
+                            formControlName="lydo"
+                            [nzAutosize]="{ minRows: 3, maxRows: 10 }"
+                    ></textarea>
+                        <ng-template #lydo let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
+<div>
+    <nz-modal
+            [nzVisible]="isOpenFormXetDuyet"
+            nzTitle="Xét Duyệt Đề Tài"
+            nzOkText="Gửi"
+            (nzOnOk)="onXetDuyetDeTai()"
+            (nzOnCancel)="onOpenFormXetDuyet()"
+            [nzOkLoading]="isXetDuyet"
+    >
+        <ng-container *nzModalContent>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formXetDuyet">
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Kết Quả Xét Duyệt</h3>
+                    <nz-form-control [nzErrorTip]="ketquaxetduyet" nzHasFeedback>
+                        <nz-select nzPlaceHolder="Kết Quả Xét Duyêt" formControlName="ketquaxetduyet">
+                            <nz-option [nzValue]="AppConstant.TT_DETAI_SUCCESS" [nzLabel]="AppConstant.TT_DETAI_SUCCESS"></nz-option>
+                            <nz-option [nzValue]="AppConstant.TT_DETAI_FAILED" [nzLabel]="AppConstant.TT_DETAI_FAILED"></nz-option>
+
+                        </nz-select>
+                        <ng-template #ketquaxetduyet let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Ngày Xét Duyệt</h3>
+                    <nz-form-control [nzErrorTip]="ngayxetduyet" nzHasFeedback>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Xét Duyệt" formControlName="ngayxetduyet"></nz-date-picker>
+                        <ng-template #ngayxetduyet let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Số Hợp Đồng</h3>
+                    <nz-form-control [nzErrorTip]="sohopdong" nzHasFeedback>
+                        <input nz-input placeholder="Số Hợp Đồng"  type="text" formControlName="sohopdong"/>
+                        <ng-template #sohopdong let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Ngày Ký Hợp Đồng</h3>
+                    <nz-form-control [nzErrorTip]="ngaykyhopdong" nzHasFeedback>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Ký Hợp Đồng" formControlName="ngaykyhopdong"></nz-date-picker>
+                        <ng-template #ngaykyhopdong let-control>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Thời Hạn Hợp Đồng</h3>
+                    <nz-form-control [nzErrorTip]="thoihanhopdong" nzHasFeedback>
+                        <input nz-input placeholder="Thời Hạn Hợp Đồng"  type="text" formControlName="thoihanhopdong"/>
+                        <ng-template #thoihanhopdong let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Kinh Phí</h3>
+                    <nz-form-control [nzErrorTip]="kinhphi" nzHasFeedback>
+                        <input nz-input placeholder="Kinh Phí"  type="text" formControlName="kinhphi"/>
+                        <ng-template #kinhphi let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
+<div>
+    <nz-modal
+            [nzVisible]="isOpenFormNghiemThu"
+            nzTitle="Nghiệm Thu Đề Tài"
+            nzOkText="Gửi"
+            (nzOnOk)="onNghiemThuDeTai()"
+            (nzOnCancel)="onOpenFormNghiemThu()"
+            [nzOkLoading]="isNghiemThu"
+    >
+        <ng-container *nzModalContent>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formNghiemThu">
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Hội Đồng Nghiệm Thu</h3>
+                    <nz-form-control [nzErrorTip]="hoidongnghiemthu" nzHasFeedback>
+                        <input nz-input placeholder="Hội Đồng Nghiệm Thu"  type="text" formControlName="hoidongnghiemthu"/>
+                        <ng-template #hoidongnghiemthu let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Ngày Nghiệm Thu</h3>
+                    <nz-form-control [nzErrorTip]="ngaynghiemthu" nzHasFeedback>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Xét Duyệt" formControlName="ngaynghiemthu"></nz-date-picker>
+                        <ng-template #ngaynghiemthu let-control>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Kết Quả Nghiệm Thu</h3>
+                    <nz-form-control [nzErrorTip]="ketquanghiemthu" nzHasFeedback>
+                        <input nz-input placeholder="Kết Quả Nghiệm Thu"  type="text" formControlName="ketquanghiemthu"/>
+                        <ng-template #ketquanghiemthu let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Ngày Ký Công Nhận Hoàn Thành</h3>
+                    <nz-form-control [nzErrorTip]="ngaycongnhanhoanthanh" nzHasFeedback>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Ký Công Nhận Hoàn Thành" formControlName="ngaycongnhanhoanthanh"></nz-date-picker>
+                        <ng-template #ngaycongnhanhoanthanh let-control>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Số Quyết Định Công Nhận Hoàn Thành</h3>
+                    <nz-form-control [nzErrorTip]="soqdcongnhanhoanthanh" nzHasFeedback>
+                        <input nz-input placeholder="Số Quyết Định Công Nhận Hoàn Thành"  type="text" formControlName="soqdcongnhanhoanthanh"/>
+                        <ng-template #soqdcongnhanhoanthanh let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Thời Gian Gia Hạn</h3>
+                    <nz-form-control [nzErrorTip]="thoigiangiahan" nzHasFeedback>
+                        <input nz-input placeholder="Thời Gian Gia Hạn"  type="text" formControlName="thoigiangiahan"/>
+                        <ng-template #thoigiangiahan let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+<div class="tw-space-y-[16px]">
+    <button nz-button nzType="primary" [routerLink]="['/de-tai']">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+    <h1 class="text-primary tw-text-5xl">CHI TIẾT ĐỀ TÀI</h1>
+    <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+        <app-loading></app-loading>
+    </ng-template>
+    <ng-template #loaded>
+        <div class="tw-mt-[15] tw-flex tw-flex-col tw-gap-[6px]">
+            <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+                <button nz-button nzType="primary" *ngIf="detai.deleted_at" [nzLoading]="isRestore" nz-popconfirm
+                        nzPopconfirmTitle="Hoàn Tác" (nzOnConfirm)="onHoanTacXoaDeTai(detai)">
+                    <span nz-icon nzType="rollback" nzTheme="outline"></span>
+                    Hoàn Tác
+                </button>
+                <button nz-button nzType="primary" nzDanger *ngIf="detai.deleted_at" [nzLoading]="isForceDelete"
+                        nz-popconfirm nzPopconfirmTitle="Xóa Bài Báo ?" (nzOnConfirm)="onXoaDeTai(detai)">
+                    <span nz-icon nzType="delete" nzTheme="outline"></span>
+                    Xóa
+                </button>
+                <button nz-button nzType="primary" nzDanger *ngIf="!detai.deleted_at" [nzLoading]="isSoftDelete"
+                        nz-popconfirm nzPopconfirmTitle="Xóa Mềm ?" (nzOnConfirm)="onXoaMemDeTai(detai)">
+                    <span nz-icon nzType="delete" nzTheme="outline"></span>
+                    Xóa Mềm
+                </button>
+                <button nz-button nzType="primary" nzDanger
+                        *ngIf="detai.sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN && detai.deleted_at === null"
+                        [nzLoading]="isChangeStatus" nz-popconfirm nzPopconfirmTitle="Hủy Phê Duyệt ?"
+                        (nzOnConfirm)="onCapNhatTrangThai(detai,AppConstant.TT_DANG_RA_SOAT)">
+                    <span nz-icon nzType="close" nzTheme="outline"></span>
+                    Hủy Phê Duyệt
+                </button>
+                <button nz-button nzType="primary" *ngIf="detai.sanpham.trangthairasoat === AppConstant.TT_DANG_RA_SOAT"
+                        [nzLoading]="isChangeStatus" nz-popconfirm nzPopconfirmTitle="Phê Duyệt Bài Báo ?"
+                        (nzOnConfirm)="onCapNhatTrangThai(detai,AppConstant.TT_DA_XAC_NHAN)">
+                    <span nz-icon nzType="check" nzTheme="outline"></span>
+                    Phê Duyệt
+                </button>
+            </div>
+            <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+                <button
+                        nz-button
+                        nzType="primary"
+                        (click)="onOpenFormCapNhatMinhChung()"
+                >
+                    <span nz-icon nzType="edit" nzTheme="outline"></span>
+                    Cập Nhật File Minh Chứng
+                </button>
+                <button nz-button nzType="primary"
+                        (click)="onOpenFormTacGia(true)"
+                >
+                    <span nz-icon nzType="edit" nzTheme="outline"></span>
+                    Cập Nhật Tác Giả
+                </button>
+            </div>
+            <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+                <button
+                        *ngIf="detai.trangthai === AppConstant.CHO_TUYEN_CHON"
+                        nz-button
+                        nzType="primary"
+                        (click)="onOpenFormTuyenChon()"
+                >
+                    <span nz-icon nzType="form" nzTheme="outline"></span>
+                    Tuyển Chọn
+                </button>
+                <button
+                        *ngIf="detai.trangthai === AppConstant.CHO_XET_DUYET"
+                        nz-button
+                        nzType="primary"
+                        (click)="onOpenFormXetDuyet()"
+                >
+                    <span nz-icon nzType="form" nzTheme="outline"></span>
+                    Xét Duyệt
+                </button>
+                <button
+                        *ngIf="detai.trangthai === AppConstant.CHO_NGHIEM_THU"
+                        nz-button
+                        nzType="primary"
+                >
+                    <span nz-icon nzType="form" nzTheme="outline"></span>
+                    Báo Cáo Tiên Độ
+                </button>
+                <button
+                        *ngIf="detai.trangthai === AppConstant.CHO_NGHIEM_THU"
+                        nz-button
+                        nzType="primary"
+                        (click)="onOpenFormNghiemThu()"
+                >
+                    <span nz-icon nzType="form" nzTheme="outline"></span>
+                    Nghiệm Thu
+                </button>
+
+            </div>
+        </div>
+        <div class="tw-space-y-[1rem]">
+            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
+                <h2 class="text-primary tw-text-3xl tw-text-center">Thông Tin Sản Phẩm</h2>
+                <div class="tw-space-x-[0.5rem] tw-text-right">
+                    <button nz-button nzType="primary" [routerLink]="['thong-tin-san-pham']">
+                        <span nz-icon nzType="edit" nzTheme="outline"></span>
+                        Cập Nhật
+                    </button>
+                </div>
+                <app-sanpham-component [sanpham]="detai.sanpham" [sanpham_tacgias]="detai.sanpham_tacgias"></app-sanpham-component>
+                <div class="tw-my-[14px]">
+                    <nz-divider></nz-divider>
+                </div>
+                <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
+                    <h2 class="tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Thông Tin Đề Tài</h2>
+                    <div class="tw-space-x-[0.5rem] tw-text-right">
+                        <button nz-button nzType="primary" [routerLink]="['thong-tin-de-tai']">
+                            <span nz-icon nzType="edit" nzTheme="outline"></span>
+                            Cập Nhật
+                        </button>
+                    </div>
+                    <app-detai-component [detai]="detai"></app-detai-component>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>
