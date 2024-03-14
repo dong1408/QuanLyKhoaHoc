@@ -8,6 +8,6 @@ class ChuyenMonVm
 {
     public int $id;
     public ?string $tenchuyenmon;
-    public string $created_at;
-    public string $updated_at;
+    public ?string $created_at;
+    public ?string $updated_at;
 }

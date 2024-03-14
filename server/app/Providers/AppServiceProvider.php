@@ -16,6 +16,10 @@ use App\Service\QuyDoi\ChuyenNganhTinhDiemService;
 use App\Service\QuyDoi\ChuyenNganhTinhDiemServiceImpl;
 use App\Service\QuyDoi\NganhTinhDiemService;
 use App\Service\QuyDoi\NganhTinhDiemServiceImpl;
+use App\Service\RolePermission\PermissionService;
+use App\Service\RolePermission\PermissionServiceImpl;
+use App\Service\RolePermission\RoleService;
+use App\Service\RolePermission\RoleServiceImpl;
 use App\Service\SanPham\DMSanPhamService;
 use App\Service\SanPham\DMSanPhamServiceImpl;
 use App\Service\SanPham\VaiTroTacGiaService;
@@ -62,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserService::class, UserServiceImpl::class);
         $this->app->bind(DeTaiService::class, DeTaiServiceImpl::class);
         $this->app->bind(PhanLoaiDeTaiService::class, PhanLoaiDeTaiServiceImpl::class);
+        $this->app->bind(RoleService::class, RoleServiceImpl::class);
+        $this->app->bind(PermissionService::class, PermissionServiceImpl::class);
     }
     /**
      * Bootstrap any application services.

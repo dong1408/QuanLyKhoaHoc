@@ -17,8 +17,8 @@ class TapChiVm
     public ?bool $trangthai;
     public ?bool $khongduoccongnhan;
     public ?UserVm $nguoithem; // $di_nguoithem -- UserVm
-    public string $created_at;
-    public string $updated_at;
+    public ?string $created_at;
+    public ?string $updated_at;
     public ?string $issn;
     public ?string $eissn;
     public ?string $pissn;

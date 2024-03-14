@@ -420,10 +420,10 @@ class DeTaiServiceImpl implements DeTaiService
         }
         $result = [];
         foreach ($sanPhams as $sanPham) {
-            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
+            $result[] = Convert::getDeTaiVm($sanPham);
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
-        return new ResponseSuccess("Thành công", $pagingResponse);
+        return new ResponseSuccess("Thành công", $result);
     }
 
     public function getDeTaiChoDuyet(Request $request): ResponseSuccess
