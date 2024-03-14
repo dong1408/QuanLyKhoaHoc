@@ -9,6 +9,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
+import {dateConvert} from "../../../shared/commons/utilities";
 
 @Component({
     selector:"app-baibao-capnhat",
@@ -178,13 +179,24 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
         if(form.invalid){
             this.notificationService.create(
                 'error',
-                "Lỗi",
-                "Vui lòng điền đúng yêu cầu của form"
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
             )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
             return;
         }
 
-        const data:CapNhatBaiBao = form.value
+        const data:CapNhatBaiBao = {
+            ...form.value,
+            received:form.get('received')?.value ? dateConvert(form.get('received')?.value.toString()) : null,
+            accepted:form.get('accepted')?.value ? dateConvert(form.get('accepted')?.value.toString()) : null,
+            published:form.get('published')?.value ? dateConvert(form.get('published')?.value.toString()) : null,
+        }
 
         this.isCapNhatLoading = true
         this.baiBaoService.capNhatBaiBao(this.id,data)

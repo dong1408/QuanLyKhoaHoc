@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\BaiBao;
+namespace App\Http\Requests\RolePermission;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateTrangThaiRaSoatBaiBao extends FormRequest
+class AddRoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,13 +25,12 @@ class UpdateTrangThaiRaSoatBaiBao extends FormRequest
     public function rules()
     {
         return [
-            'id' => [
-                "bail", "required", "integer",
-                Rule::exists('san_phams', 'id')
-            ],
-            "trangthairasoat" => [
-                "bail","required","string",
-                Rule::in(["Đang rà soát","Đã xác nhận"])
+            'name' => 'bail|required|string|unique:roles,name',
+            'description' => 'bail|required|string',
+            'permission_id' => 'bail|nullable|array',
+            'permission_id.*' => [
+                'integer',
+                Rule::exists("permissions", 'id'),
             ]
         ];
     }
@@ -41,15 +40,10 @@ class UpdateTrangThaiRaSoatBaiBao extends FormRequest
         return [
             'required' => 'Trường :attribute là bắt buộc',
             'integer' => 'Trường :attribute phải là một số',
+            'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
-            'in' => 'Trường :attribute phải là một trong các giá trị :values'
+            'permission_id.*.exists' => 'Quyền không tồn tại trên hệ thống',
+            'name.unique' => 'Tên vai trò đã tồn tại trong hệ thống'
         ];
-    }
-
-    public function validationData()
-    {
-        return array_merge($this->all(), [
-            'id' => $this->route('id'),
-        ]);
     }
 }

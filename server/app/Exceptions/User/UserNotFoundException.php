@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Exceptions\BaiBao;
+namespace App\Exceptions\User;
 
+use App\Custom\StatusText;
 use App\Utilities\ResponseError;
 use Exception;
+use Illuminate\Http\Request;
+use Throwable;
 
-
-class FileMinhChungNotFoundException extends Exception
+class UserNotFoundException extends Exception 
 {
     public function render($request)
     {
@@ -14,7 +16,7 @@ class FileMinhChungNotFoundException extends Exception
             new ResponseError(
                 "NOT FOUND",
                 404,
-                "Không tìm thấy file minh chứng"
+                "Không tìm thấy người dùng"
             ),
             404
         );

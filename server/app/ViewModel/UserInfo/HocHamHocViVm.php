@@ -9,6 +9,6 @@ class HocHamHocViVm
 {
     public int $id;
     public ?string $tenhochamhocvi;
-    public string $created_at;
-    public string $updated_at;
+    public ?string $created_at;
+    public ?string $updated_at;
 }

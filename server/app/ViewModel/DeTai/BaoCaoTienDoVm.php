@@ -1,5 +1,7 @@
 <?php
 
+namespace App\ViewModel\DeTai;
+
 use App\Models\DeTai\BaoCaoTienDo;
 use App\ViewModel\SanPham\SanPhamVm;
 use Ramsey\Uuid\Type\Integer;

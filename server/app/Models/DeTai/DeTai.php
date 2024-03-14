@@ -11,11 +11,25 @@ class DeTai extends Model
     use HasFactory;
 
     protected $table = 'de_tais';
+    protected $fillable = [
+        'id',
+        'id_sanpham',
+        'maso',
+        'ngaydangky',
+        'ngoaitruong',
+        'truongchutri',
+        'id_tochucchuquan',
+        'id_loaidetai',
+        'detaihoptac',
+        'id_tochuchoptac',
+        'tylekinhphidonvihoptac',
+        'capdetai'
+    ];
 
     // relation 1-1 with san pham,  inverse to san_pham
     public function sanPham()
     {
-        return $this->belongsTo('App\Models\SanPhamm\SanPham', 'id_sanpham');
+        return $this->belongsTo('App\Models\SanPham\SanPham', 'id_sanpham');
     }
 
     // inverse to d_m_to_chuc (to chuc chu quan)

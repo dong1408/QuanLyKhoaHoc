@@ -1,0 +1,109 @@
+<div class="tw-space-y-[16px]">
+    <button nz-button nzType="primary" routerLink="/de-tai">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+    <h1 class="text-primary tw-text-5xl">ĐỀ TÀI CHỜ RÀ SOÁT</h1>
+    <div class="tw-flex tw-flex-col tw-gap-[6px] tw-w-[300px]">
+        <form nz-form [formGroup]="formAction" class="tw-space-y-[6px]">
+            <input nz-input nzSize='large' formControlName="search" placeholder="Tìm Kiếm"  (input)="onChangeSearch($event)" type="text" />
+            <nz-select
+                    (ngModelChange)="onChangeSortBy($event)"
+                    nzSize='large'
+                    nzPlaceHolder="Sắp Xếp"
+                    formControlName="select"
+                    class="tw-w-full"
+            >
+                <nz-option  nzValue="created_at" nzLabel="Mới Nhất"></nz-option>
+                <nz-option nzValue="updated_at" nzLabel="Mới Cập Nhật"></nz-option>
+            </nz-select>
+        </form>
+    </div>
+
+    <!--    class="tw-overflow-x-auto tw-h-screen-->
+
+    <div class="tw-space-y-[10px]">
+        <nz-table
+            #baibao
+            [nzData]="deTais"
+            [nzLoading]="isTableLoading"
+            [nzShowPagination]="false"
+            [nzScroll]="{x:'auto' }"
+        >
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Sản Phẩm</th>
+                <th>Mã Số</th>
+                <th>Cấp Đề Tài</th>
+                <th>Trạng Thái</th>
+                <th>Trạng Thái Rà Soát</th>
+                <th>Ngày Đăng Ký</th>
+                <ng-container *ngIf="columnDelete">
+                    <th>Ngày Xóa</th>
+                </ng-container>
+                <th>Thao Tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of baibao.data">
+                <td>{{ data.id_sanpham }}</td>
+                <td nzEllipsis>{{ data.tensanpham }}</td>
+                <td nzEllipsis>{{data.maso}}</td>
+                <td nzEllipsis>{{data.capdetai ?? ''}}</td>
+                <td nzEllipsis>{{data.trangthai}}</td>
+                <td nzEllipsis class="{{data.trangthairasoat === AppConstant.TT_DA_XAC_NHAN ? 'success' : 'error'}}">{{data.trangthairasoat}}</td>
+                <td nzEllipsis>{{ data.ngaydangky ?? '' }}</td>
+                <ng-container *ngIf="columnDelete">
+                    <td>{{ data?.deleted_at }}</td>
+                </ng-container>
+                <ng-container *ngIf="data.deleted_at === null">
+                    <td class="tw-flex tw-items-center tw-space-x-[4px]">
+                        <button
+                                [nzLoading]="data.isChangeStatus"
+                                nz-popconfirm
+                                nzPopconfirmTitle="Phê Duyệt Bài Báo ?"
+                                (nzOnConfirm)="onCapNhatTrangThai(data,AppConstant.TT_DA_XAC_NHAN)"
+                                nz-button
+                                nzType="primary"
+                        >
+                            <span nz-icon nzType="check" nzTheme="outline"></span>
+                            Phê Duyệt
+                        </button>
+                        <button nz-button nzType="default" [routerLink]="['/de-tai',data.id_sanpham]">
+                            <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+                            Chi Tiết
+                        </button>
+                        <button
+                                [nzLoading]="data.isSoftDelete"
+                                nz-popconfirm
+                                nzPopconfirmTitle="Xóa Bài Báo ?"
+                                (nzOnConfirm)="onXoaMemDeTai(data)"
+                                nz-button
+                                nzType="default"
+                                nzDanger
+                        >
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                            Xóa
+                        </button>
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="data.deleted_at !== null">
+                    <td class="tw-flex tw-items-center">
+                        <button nz-button nzType="primary" nzDanger>
+                            <span nz-icon nzType="rollback" nzTheme="outline"></span>
+                            Hoàn Tác
+                        </button>
+                    </td>
+                </ng-container>
+            </tr>
+            </tbody>
+        </nz-table>
+        <div class="tw-text-right">
+            <nz-pagination
+                    [nzPageIndex]="1"
+                    [nzTotal]="totalPage*10"
+                    (nzPageIndexChange)="onChangePage($event)"
+            ></nz-pagination>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+<div class="tw-space-y-[0.8rem]">
+    <p><strong class="tw-mr-[0.5rem]">DOI: </strong> {{baibao.doi ?? 'Không Có'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Đường Dẫn (URL): </strong>
+        <ng-container *ngIf="baibao.url"><nz-tag [nzColor]="'#76c5f0'"><a target="_blank" href="{{baibao.url}}">Tại Đây</a></nz-tag></ng-container>
+        <ng-container *ngIf="!baibao.url">Không Có</ng-container>
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">Received: </strong>
+        {{baibao.received  ?? 'Không Có'}}
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">Accepted: </strong> {{baibao.accepted  ?? 'Không Có'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Published: </strong> {{baibao.published  ?? 'Không Có'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Keywords: </strong> {{baibao.keywords  ?? 'Không Có'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Volume: </strong> {{baibao.volume  ?? 'Không Có'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Issue: </strong> {{baibao.issue  ?? 'Không Có'}}
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">Number: </strong> {{baibao.number  ?? 'Không Có'}}</p>
+    <p><strong class="tw-mr-[0.5rem]">Pages: </strong> {{baibao.pages  ?? 'Không Có'}}
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">Tạp Chí:</strong> <br>
+        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã: </strong>{{baibao.tapchi.id}}
+        <br>
+        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên: </strong>{{baibao.tapchi.name ??
+        'Không Có'}} <br>
+        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Trạng Thái: </strong>
+        <span *ngIf="baibao.tapchi.trangthai" class="success">Đã Phê Duyệt</span>
+        <span *ngIf="!baibao.tapchi.trangthai" class="error">Chưa Phê Duyệt</span> <br>
+        <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Được Công Nhận ?: </strong>
+        <span *ngIf="baibao.tapchi.khongduoccongnhan === true" class="error">Không Được Công
+                                Nhận</span>
+        <span *ngIf="baibao.tapchi.khongduoccongnhan === false" class="success">Được Công
+                                Nhận</span>
+        <span *ngIf="baibao.tapchi.khongduoccongnhan === null" class="primary">Không Được Đánh
+                                Giá</span>
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">Abstract: </strong> {{baibao.abstract ?? 'Không Có'}}</p>
+</div>

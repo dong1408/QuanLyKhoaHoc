@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\BaiBao;
+namespace App\Http\Requests\RolePermission;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Route;
 
-class UpdateFileMinhChungSanPhamRequest extends FormRequest
+class UpdatePermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,12 +26,16 @@ class UpdateFileMinhChungSanPhamRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'id' => [
-            //     "bail", "required", "integer",
-            //     Rule::exists('san_phams', 'id')
-            // ],
-            "loaiminhchung" => "bail|nullable|string",
-            "url" => "bail|required|string",
+            'id' => [
+                "bail", "required", "integer",
+                Rule::exists('permissions', 'id')
+            ],
+            'name' => 'bail|required|string',
+            'slug' => [
+                "bail", "required", "string",
+                Rule::unique('permissiosn')->ignore(Route::input('id'), 'id')
+            ],
+            'description' => 'bail|nullable|string|'
         ];
     }
 
@@ -38,9 +43,8 @@ class UpdateFileMinhChungSanPhamRequest extends FormRequest
     {
         return [
             'required' => 'Trường :attribute là bắt buộc',
-            'integer' => 'Trường :attribute phải là một số',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
-            'boolean' => 'Trường :attribute phải là true/false',
+            'slug.unique' => 'Slug phải là duy nhất trong hệ thống'
         ];
     }
 

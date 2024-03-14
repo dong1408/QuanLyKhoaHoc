@@ -67,7 +67,7 @@ class CreateDeTaiRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
-            "tylekinphidonvihoptac" => "bail|nullable|string",
+            "tylekinhphidonvihoptac" => "bail|nullable|string",
             "capdetai" => "bail|nullable|string",
 
 
@@ -87,8 +87,8 @@ class CreateDeTaiRequest extends FormRequest
             "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
 
             // file minh chung san pham
-            // "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
-            // "fileminhchungsanpham.url" => "bail|required|string"
+            "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
+            "fileminhchungsanpham.url" => "bail|required|string"
         ];
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace App\ViewModel\DeTai;
+
 use App\Models\DeTai\XetDuyet;
 use App\ViewModel\SanPham\SanPhamVm;
 

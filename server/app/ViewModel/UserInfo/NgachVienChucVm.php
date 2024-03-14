@@ -9,6 +9,6 @@ class NgachVienChucVm
 {
     public int $id;
     public ?string $tenngach;
-    public string $created_at;
-    public string $updated_at;
+    public ?string $created_at;
+    public ?string $updated_at;
 }

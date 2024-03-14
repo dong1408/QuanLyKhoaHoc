@@ -6,20 +6,20 @@ use App\Exceptions\BaiBao\BaiBaoCanNotUpdateException;
 use App\Exceptions\BaiBao\BaiBaoKhoaHocNotFoundException;
 use App\Exceptions\BaiBao\BaiBaoNotHaveFirstAuthor;
 use App\Exceptions\BaiBao\CreateBaiBaoFailedException;
-use App\Exceptions\BaiBao\FileMinhChungNotFoundException;
 use App\Exceptions\BaiBao\RoleOnlyHeldByOnePersonException;
 use App\Exceptions\BaiBao\TwoRoleSimilarForOnePersonException;
-use App\Exceptions\BaiBao\UpdateTrangThaiRaSoatException;
 use App\Exceptions\BaiBao\VaiTroOfBaiBaoException;
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\InvalidValueException;
+use App\Exceptions\SanPham\FileMinhChungNotFoundException;
 use App\Exceptions\SanPham\LoaiSanPhamWrongException;
+use App\Exceptions\SanPham\UpdateTrangThaiRaSoatException;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
-use App\Http\Requests\BaiBao\UpdateFileMinhChungSanPhamRequest;
-use App\Http\Requests\BaiBao\UpdateTrangThaiRaSoatBaiBao;
+use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
+use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
 use App\Models\FileMinhChungSanPham;
 use App\Models\SanPham\DMSanPham;
@@ -114,7 +114,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new InvalidValueException();
         }
         $sanPham = SanPham::withTrashed()->find($id_sanpham);
-        if ($sanPham == null) {
+        if ($sanPham == null || $sanPham->dmSanPham->masanpham != "baibaokhoahoc") {
             throw new BaiBaoKhoaHocNotFoundException();
         }
         $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
@@ -164,10 +164,10 @@ class BaiBaoServiceImpl implements BaiBaoService
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
-                        'username' => "sgu2024" . $randomId,
-                        'password' => "sgu2024",
+                        'username' => env('SGU_2024') . $randomId,
+                        'password' => Hash::make(env('SGU_2024')),
                         'name' => $item['tentacgia'],
-                        'email' => "sgu2024" . $randomId . "@gmail.com"
+                        'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
                     $newData[] = [
                         'id_tacgia' => $user->id,
@@ -448,7 +448,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $result = [];
 
 
-        DB::transaction(function () use ($validated, &$sanPham,&$result) {
+        DB::transaction(function () use ($validated, &$sanPham, &$result) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
@@ -469,10 +469,10 @@ class BaiBaoServiceImpl implements BaiBaoService
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
-                        'username' => "sgu2024" . $randomId,
-                        'password' => "sgu2024",
+                        'username' => env('SGU_2024') . $randomId,
+                        'password' => Hash::make(env('SGU_2024')),
                         'name' => $item['tentacgia'],
-                        'email' => "sgu2024" . $randomId . "@gmail.com"
+                        'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
                     $newData[] = [
                         'id_tacgia' => $user->id,
@@ -491,7 +491,6 @@ class BaiBaoServiceImpl implements BaiBaoService
             } else {
                 $newListSanPhamTacGia = $filteredWithId;
             }
-
 
 
 
@@ -591,7 +590,7 @@ class BaiBaoServiceImpl implements BaiBaoService
     }
 
 
-    public function updateTrangThaiRaSoatBaiBao(UpdateTrangThaiRaSoatBaiBao $request, int $id): ResponseSuccess
+    public function updateTrangThaiRaSoatBaiBao(UpdateTrangThaiRaSoatRequest $request, int $id): ResponseSuccess
     {
         $id_sanpham = (int) $id;
         $sanPham = SanPham::withTrashed()->find($id_sanpham);

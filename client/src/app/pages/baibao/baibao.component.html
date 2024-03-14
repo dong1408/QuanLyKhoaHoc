@@ -65,20 +65,20 @@
             </thead>
             <tbody>
             <tr *ngFor="let data of baiBao.data">
-                <td>{{ data.id }}</td>
+                <td>{{ data.id_sanpham }}</td>
                 <td nzEllipsis>{{ data.tensanpham }}</td>
                 <td nzEllipsis>{{data.tentapchi}}</td>
                 <td nzEllipsis>{{data.volume ?? ''}}</td>
                 <td nzEllipsis>{{data.number ?? ''}}</td>
                 <td nzEllipsis>{{ data.pages ?? '' }}</td>
-                <td nzEllipsis class="{{data.trangthairasoat === 'Đã xác nhận' ? 'success' : 'error'}}">{{data.trangthairasoat}}</td>
-                <td nzEllipsis>{{ data.updated_at }}</td>
+                <td nzEllipsis class="{{data.trangthairasoat === AppConstant.TT_DA_XAC_NHAN ? 'success' : 'error'}}">{{data.trangthairasoat}}</td>
+                <td nzEllipsis>{{ data.created_at }}</td>
                 <ng-container *ngIf="columnDelete">
                     <td nzEllipsis>{{ data?.deleted_at }}</td>
                 </ng-container>
                 <ng-container *ngIf="data.deleted_at === null">
                     <td  class="tw-flex tw-items-center tw-space-x-[4px]">
-                        <button nz-button nzType="primary" [routerLink]="['/bai-bao',data.id]">
+                        <button nz-button nzType="primary" [routerLink]="['/bai-bao',data.id_sanpham]">
                             <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
                             Chi Tiết
                         </button>
@@ -89,7 +89,7 @@
                                 nz-button
                                 nzType="primary"
                                 nzDanger
-                                (nzOnConfirm)="onCapNhatTrangThai(data,'Đang rà soát')"
+                                (nzOnConfirm)="onCapNhatTrangThai(data,AppConstant.TT_DANG_RA_SOAT)"
 
                         >
                             <span nz-icon nzType="delete" nzTheme="outline"></span>

@@ -1,0 +1,54 @@
+<div class="tw-space-y-[0.8rem]">
+    <p><strong class="tw-mr-[0.5rem]">Mã Số: </strong> {{detai.maso}}</p>
+
+    <p><strong class="tw-mr-[0.5rem]">Trạng Thái: </strong>
+        <span class="primary">{{detai.trangthai}}</span>
+    </p>
+    <p><strong class="tw-mr-[0.5rem]">Đề Tài Ngoài Trường ?: </strong> {{detai.ngoaitruong ===
+    true
+        ? 'Có' : 'Không'}}</p>
+    <ng-container *ngIf="detai.ngoaitruong === true">
+        <p><strong class="tw-mr-[0.5rem]">Đề Tài Ngoài Trường Do Trường Chủ Trì ?: </strong> {{detai.truongchutri ===
+        true
+            ? 'Có' : 'Không'}}</p>
+        <p><strong class="tw-mr-[0.5rem]">Tổ Chức Chủ Quản:</strong> <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+            </strong>{{detai.tochucchuquan?.matochuc ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+            </strong>{{detai.tochucchuquan?.tentochuc ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Điện Thoại:
+            </strong>{{detai.tochucchuquan?.dienthoai ?? 'Không Có'}}<br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Website:
+            </strong>{{detai.tochucchuquan?.website ?? 'Không Có'}}
+        </p>
+    </ng-container>
+    <ng-container *ngIf="detai.ngoaitruong === false">
+        <p><strong class="tw-mr-[0.5rem]">Loại Đề Tài:</strong> <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+            </strong>{{detai.loaidetai?.maloai ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+            </strong>{{detai.loaidetai?.tenloai ?? 'Không Có'}} <br>
+        </p>
+    </ng-container>
+    <p><strong class="tw-mr-[0.5rem]">Đề Tài Hợp Tác ?: </strong> {{detai.detaihoptac ===
+    true
+        ? 'Có' : 'Không'}}</p>
+    <ng-container *ngIf="detai.detaihoptac === true">
+        <p><strong class="tw-mr-[0.5rem]">Tổ Chức Hợp Tác:</strong> <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+            </strong>{{detai.tochuchoptac?.matochuc ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+            </strong>{{detai.tochuchoptac?.tentochuc ?? 'Không Có'}} <br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Điện Thoại:
+            </strong>{{detai.tochuchoptac?.dienthoai ?? 'Không Có'}}<br>
+            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Website:
+            </strong>{{detai.tochuchoptac?.website ?? 'Không Có'}}
+        </p>
+        <p><strong class="tw-mr-[0.5rem]">Tỷ Lệ Kinh Phí Hợp Tác: </strong>
+            {{detai.tylekinhphidonvihoptac}}
+        </p>
+        <p><strong class="tw-mr-[0.5rem]">Cấp Đề Tài: </strong>
+            {{detai.capdetai}}
+        </p>
+    </ng-container>
+</div>

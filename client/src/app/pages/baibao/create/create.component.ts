@@ -69,8 +69,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             tensanpham:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
+                    Validators.required,
+                    noWhiteSpaceValidator()
                 ])
             ],
             tongsotacgia:[
@@ -123,34 +123,34 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     disabled:true
                 },
                 Validators.compose([
-                    noWhiteSpaceValidator
+                    noWhiteSpaceValidator()
                 ]),
             ],
             diemquydoi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
             gioquydoi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
             thongtinchitiet:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
             capsanpham:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
+                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
@@ -165,13 +165,19 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 {
                     value:null,
                     disabled:true
-                }
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             id_donvitaitro:[
                 {
                     value:null,
                     disabled:true
-                }
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             sanpham_tacgia:this.fb.array([]),
 
@@ -392,6 +398,12 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 'Lỗi',
                 'Vui lòng điền đúng yêu cầu của form'
             )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
             return;
         }
         if(arrayForm.length <= 0){
@@ -402,6 +414,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 )
                 return;
         }
+
         const data:TaoBaiTao = {
             sanpham:{
                 tensanpham: form.get('tensanpham')?.value,
@@ -411,7 +424,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 gioquydoi : form.get('gioquydoi')?.value,
                 thongtinchitiet: form.get('thongtinchitiet')?.value,
                 capsanpham: form.get('capsanpham')?.value,
-                thoidiemcongbohoanthanh: dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString()),
+                thoidiemcongbohoanthanh:  dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString())!!,
                 cosudungemailtruong:form.get('cosudungemailtruong')?.value ?? false,
                 cosudungemaildonvikhac: form.get('cosudungemaildonvikhac')?.value ?? false,
                 cothongtintruong : form.get('cothongtintruong')?.value ?? false,
@@ -428,9 +441,9 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             },
             doi:form.get('doi')?.value,
             url:form.get('url')?.value,
-            received:form.get('received')?.value,
-            accepted:form.get('accepted')?.value,
-            published:form.get('published')?.value,
+            received:form.get('received')?.value ? dateConvert(form.get('received')?.value.toString()) : null,
+            accepted:form.get('accepted')?.value ? dateConvert(form.get('accepted')?.value.toString()) : null,
+            published:form.get('published')?.value ? dateConvert(form.get('published')?.value.toString()) : null,
             abstract:form.get('abstract')?.value,
             keywords:form.get('keywords')?.value,
             id_tapchi:form.get('id_tapchi')?.value,

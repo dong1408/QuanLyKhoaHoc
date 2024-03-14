@@ -6,8 +6,12 @@ use App\Http\Controllers\Admin\TapChi\PhanLoaiTapChiController;
 use App\Http\Controllers\Admin\UserInfo\ToChucController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\BaiBao\BaiBaoKhoaHocController;
+use App\Http\Controllers\Admin\DeTai\DeTaiController;
+use App\Http\Controllers\Admin\DeTai\PhanLoaiDeTaiController;
 use App\Http\Controllers\Admin\QuyDoi\ChuyenNganhTinhDiemController;
 use App\Http\Controllers\Admin\QuyDoi\NganhTinhDiemController;
+use App\Http\Controllers\Admin\RolePermission\PermissionController;
+use App\Http\Controllers\Admin\RolePermission\RoleController;
 use App\Http\Controllers\Admin\SanPham\DMSanPhamController;
 use App\Http\Controllers\Admin\SanPham\VaiTroTacGiaController;
 use App\Http\Controllers\Admin\TapChi\TapChiController;
@@ -16,6 +20,7 @@ use App\Http\Controllers\Admin\UserInfo\QuocGiaController;
 use App\Http\Controllers\Admin\UserInfo\TinhThanhController;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
 use App\Models\NhaXuatBan\NhaXuatBan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,24 +52,79 @@ Route::group([
     Route::get('auth/getMe', [AuthController::class, 'getMe']);
 
     // User
-    Route::get('users', [UserController::class, 'getAllUser']);
+    Route::get('user', [UserController::class, 'getAllUser'])->can('user.view');
+    Route::get('user/paging', [UserController::class, 'getUserPaging'])->can('user.view');
+    Route::get('user/{id}', [UserController::class, 'getUserDetail'])->can('user.detail');
+    Route::post('user', [UserController::class, 'registerUser'])->can('user.register');
+    Route::patch('user/{id}', [UserController::class, 'updateUser'])->can('user.update');
+    Route::patch('user/{id}/role', [UserController::class, 'updateRoleOfUser'])->can('user.update');
+    Route::patch('user/{id}/delete', [UserController::class, 'deleteUser'])->can('user.delete');
+    Route::patch('user/{id}/restore', [UserController::class, 'restoreUser'])->can('user.delete');
+    Route::delete('user/{id}/force', [UserController::class, 'forceDeleteUser'])->can('user.delete');
+
+    // Role
+    Route::get('role', [RoleController::class, 'getAllRole']);
+    Route::post('role', [RoleController::class, 'addRole']);
+    Route::patch('role/{id}', [RoleController::class, 'updateRole']);
 
 
-    // BaiBaoKhoaHoc
-    Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
-    Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
-    Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao']);
-    Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham']);
-    Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao']);
-    Route::patch('baibao/{id}/sanphamtacgia', [BaiBaoKhoaHocController::class, 'updateSanPhamTacGia']);
-    Route::patch('baibao/{id}/fileminhchung', [BaiBaoKhoaHocController::class, 'updateFileMinhChung']);
-    Route::patch('baibao/{id}/trangthairasoat', [BaiBaoKhoaHocController::class, 'updateTrangThaiRaSoatBaiBao']);
-    Route::patch('baibao/{id}/delete', [BaiBaoKhoaHocController::class, 'deleteBaiBao']);
-    Route::patch('baibao/{id}/restore', [BaiBaoKhoaHocController::class, 'restoreBaiBao']);
-    Route::delete('baibao/{id}/force', [BaiBaoKhoaHocController::class, 'forceDeleteBaiBao']);
-    Route::get('baibao/kekhai', [BaiBaoKhoaHocController::class, 'getBaiBaoKeKhai']);
-    Route::get('baibao/thamgia', [BaiBaoKhoaHocController::class, 'getBaiBaoThamGia']);
-    Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']);
+    // Permission
+    Route::get('permission', [PermissionController::class, 'getAllPermission']);
+    Route::post('permission', [PermissionController::class, 'addPermission']);
+    Route::patch('permission/{id}', [PermissionController::class, 'updatePermission']);
+
+
+    // baibao/public => m viết hàm riêng người dùng coi
+
+
+    
+    // BaiBaoKhoaHocs
+    Route::get('baibao/public', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
+    Route::get('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']);
+
+
+    Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging'])->can('baibao.view');
+    Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet'])->can('baibao.choduyet');
+    Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao'])->can('baibao.add');
+    Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham'])->can('baibao.update');
+    Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao'])->can('baibao.update');
+    Route::patch('baibao/{id}/sanphamtacgia', [BaiBaoKhoaHocController::class, 'updateSanPhamTacGia'])->can('baibao.update');
+    Route::patch('baibao/{id}/fileminhchung', [BaiBaoKhoaHocController::class, 'updateFileMinhChung'])->can('baibao.update');
+    Route::patch('baibao/{id}/trangthairasoat', [BaiBaoKhoaHocController::class, 'updateTrangThaiRaSoatBaiBao'])->can('baibao.updateTrangThaiRaSoat');
+    Route::patch('baibao/{id}/delete', [BaiBaoKhoaHocController::class, 'deleteBaiBao'])->can('baibao.delete');
+    Route::patch('baibao/{id}/restore', [BaiBaoKhoaHocController::class, 'restoreBaiBao'])->can('baibao.delete');
+    Route::delete('baibao/{id}/force', [BaiBaoKhoaHocController::class, 'forceDeleteBaiBao'])->can('baibao.delete');
+    Route::get('baibao/kekhai', [BaiBaoKhoaHocController::class, 'getBaiBaoKeKhai'])->can('baibao.view');
+    Route::get('baibao/thamgia', [BaiBaoKhoaHocController::class, 'getBaiBaoThamGia'])->can('baibao.view');
+    Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao'])->can('baibao.detail');
+
+
+
+    // DeTai
+    Route::get('detai/public', [DeTaiController::class, 'getDeTaiPaging']);
+    Route::get('detai/public/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.detail');
+
+    
+    Route::get('detai', [DeTaiController::class, 'getDeTaiPaging'])->can('detai.view');
+    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.detail');
+    Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet'])->can('detai.choduyet');
+    Route::post('detai', [DeTaiController::class, 'createDetai'])->can('detai.add');
+    Route::patch('detai/{id}/sanpham', [DeTaiController::class, 'updateSanPham'])->can('detai.update');
+    Route::patch('detai/{id}', [DeTaiController::class, 'updateDeTai'])->can('detai.update');
+    Route::patch('detai/{id}/sanphamtacgia', [DeTaiController::class, 'updateSanPhamTacGia'])->can('detai.update');
+    Route::patch('detai/{id}/fileminhchung', [DeTaiController::class, 'updateFileMinhChung'])->can('detai.update');
+    Route::patch('detai/{id}/trangthairasoat', [DeTaiController::class, 'updateTrangThaiRaSoatDeTai'])->can('detai.updateTrangThaiRaSoat');
+    Route::post('detai/{id}/tuyenchon', [DeTaiController::class, 'tuyenChonDeTai'])->can('detai.tuyenchon');
+    Route::post('detai/{id}/xetduyet', [DeTaiController::class, 'xetDuyetDeTai'])->can('detai.xetduyet');
+    Route::post('detai/{id}/baocao', [DeTaiController::class, 'baoCaoTienDoDeTai'])->can('detai.baocao');
+    Route::post('detai/{id}/nghiemthu', [DeTaiController::class, 'nghiemThuDeTai'])->can('detai.nghiemthu');
+    Route::patch('detai/{id}/delete', [DeTaiController::class, 'deleteDeTai'])->can('detai.delete');
+    Route::patch('detai/{id}/restore', [DeTaiController::class, 'restoreDeTai'])->can('detai.delete');
+    Route::delete('detai/{id}/forceDelete', [DeTaiController::class, 'forceDeleteDeTai'])->can('detai.delete');
+    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.detail');
+
+    // PhanLoaiDeTai
+    Route::get('phanloaidetai', [PhanLoaiDeTaiController::class, 'getPhanLoaiDeTai']);
 
 
     // SanPham
@@ -94,6 +154,9 @@ Route::group([
     Route::patch('tapchi/{id}/delete', [TapChiController::class, 'deleteTapChi']);
     Route::patch('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
     Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
+
+
+
 
 
 
