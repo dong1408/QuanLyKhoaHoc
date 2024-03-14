@@ -11,6 +11,7 @@ use App\Models\DeTai\TuyenChon;
 use App\Models\DeTai\XetDuyet;
 use App\Models\FileMinhChungSanPham;
 use App\Models\NhaXuatBan\NhaXuatBan;
+use App\Models\Permission;
 use App\Models\TapChi\DMNganhTheoHSGS;
 use App\Models\TapChi\DMPhanLoaiTapChi;
 use App\Models\QuyDoi\DMChuyenNganhTinhDiem;
@@ -46,6 +47,7 @@ use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\RolePermission\PermissionBySlugVm;
+use App\ViewModel\RolePermission\PermissionVm;
 use App\ViewModel\RolePermission\RoleVm;
 use App\ViewModel\SanPham\DMSanPhamVm;
 use App\ViewModel\SanPham\FileMinhChungSanPhamVm;
@@ -372,9 +374,21 @@ class Convert
         $a = new RoleVm();
         $a->id = $role->id;
         $a->name = $role->name;
-        $a->description = $role->description;
-        $a->created_at = $role->created_at;
-        $a->updated_at = $role->updated_at;
+        $a->description = $role->description ?? null;
+        $a->created_at = $role->created_at ?? null;
+        $a->updated_at = $role->updated_at ?? null;
+        return $a;
+    }
+
+    public static function getPermissionVm(Permission $permission)
+    {
+        $a = new PermissionVm();
+        $a->id = $permission->id;
+        $a->name = $permission->name ?? null;
+        $a->name = $permission->slug ?? null;
+        $a->description = $permission->description ?? null;
+        $a->created_at = $permission->created_at ?? null;
+        $a->updated_at = $permission->updated_at ?? null;
         return $a;
     }
 
@@ -468,7 +482,7 @@ class Convert
             $a->nguoikekhai = Convert::getUserVm($sanPham->nguoiKeKhai);
         }
 
-        $a->trangthairasoat = $sanPham->trangthairasoat;
+        $a->trangthairasoat = $sanPham->trangthairasoat ?? null;
         $a->ngayrasoat = $sanPham->ngayrasoat ?? null;
         if ($sanPham->nguoiRaSoat == null) {
             $a->nguoirasoat = null;
@@ -659,7 +673,7 @@ class Convert
         $a->capdetai = $sanPham->deTai->capdetai ?? null;
         $a->created_at = $sanPham->deTai->created_at;
         $a->updated_at = $sanPham->deTai->updated_at;
-        $a->trangthairasoat = $sanPham->trangthairasoat;
+        $a->trangthairasoat = $sanPham->trangthairasoat ?? null;
 
         foreach ($sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
             $a->sanpham_tacgias[] = Convert::getSanPhamTacGiaVm($sanPhaMTacGia);
@@ -674,8 +688,8 @@ class Convert
         $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao ?? null;
         $a->ketquaxet = $baoCaoTienDo->ketquaxet ?? null;
         $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan ?? null;
-        $a->created_at = $baoCaoTienDo->created_at;
-        $a->updated_at = $baoCaoTienDo->updated_at;
+        $a->created_at = $baoCaoTienDo->created_at ?? null;
+        $a->updated_at = $baoCaoTienDo->updated_at ?? null;
         return $a;
     }
     public static function getNghiemThuVm(NghiemThu $nghiemThu)

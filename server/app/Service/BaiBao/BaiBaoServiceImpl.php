@@ -122,6 +122,37 @@ class BaiBaoServiceImpl implements BaiBaoService
     }
 
 
+    public function getDetailBaiBaoForUser(int $id): ResponseSuccess
+    {
+        $userCurrent = auth('api')->user();
+        $id_sanpham = $id;
+        if (!is_int($id_sanpham)) {
+            throw new InvalidValueException();
+        }
+        $sanPham = SanPham::withTrashed()->find($id_sanpham);
+        if ($sanPham == null || $sanPham->dmSanPham->masanpham != "baibaokhoahoc") {
+            throw new BaiBaoKhoaHocNotFoundException();
+        }
+        $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id_sanpham)->get();
+        $flag = false;
+        foreach ($sanPhamTacGias as $sanPhamTacGia) {
+            if ($sanPhamTacGia->id_tacgia == $userCurrent->id) {
+                $flag = true;
+            }
+        }
+        $result = null;
+        if ($flag == true) {
+            $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
+        } else {
+            $sanPham->trangthairasoat = null;
+            $sanPham->ngayrasoat = null;
+            $sanPham->id_nguoirasoat = null;
+            $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
+        }
+        return new ResponseSuccess("Thành công", $result);
+    }
+
+
     private function randomUnique()
     {
         $microtime = microtime(true);
