@@ -320,6 +320,37 @@ class DeTaiServiceImpl implements DeTaiService
         return new ResponseSuccess("Thành công", $result);
     }
 
+
+    public function getDetailDeTaiForUser(int $id): ResponseSuccess
+    {
+        $userCurrent = auth('api')->user();
+        $id_sanpham = $id;
+        if (!is_int($id_sanpham)) {
+            throw new InvalidValueException();
+        }
+        $sanPham = SanPham::withTrashed()->find($id_sanpham);
+        if ($sanPham == null || $sanPham->dmSanPham->masanpham != "detai") {
+            throw new DeTaiNotFoundException();
+        }
+        $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id_sanpham)->get();
+        $flag = false;
+        foreach ($sanPhamTacGias as $sanPhamTacGia) {
+            if ($sanPhamTacGia->id_tacgia == $userCurrent->id) {
+                $flag = true;
+            }
+        }
+        $result = null;
+        if ($flag == true) {
+            $result = Convert::getDeTaiDetailVm($sanPham);
+        } else {
+            $sanPham->trangthairasoat = null;
+            $sanPham->ngayrasoat = null;
+            $sanPham->id_nguoirasoat = null;
+            $result = Convert::getDeTaiDetailVm($sanPham);
+        }
+        return new ResponseSuccess("Thành công", $result);
+    }
+
     public function createDeTai(CreateDeTaiRequest $request): ResponseSuccess
     {
         $validated = $request->validated();
@@ -598,7 +629,7 @@ class DeTaiServiceImpl implements DeTaiService
         $result = [];
 
 
-        DB::transaction(function () use ($validated, &$sanPham,&$result) {
+        DB::transaction(function () use ($validated, &$sanPham, &$result) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
@@ -971,6 +1002,31 @@ class DeTaiServiceImpl implements DeTaiService
         ]);
         $result = Convert::getNghiemThuVm($nghiemThu);
         return new ResponseSuccess("Thành công", $result);
+    }
+
+
+    public function getLichSuBaoCao(Request $request, int $id): ResponseSuccess
+    {
+        $id_sanpham = (int) $id;
+
+        if (!is_int($id_sanpham)) {
+            throw new InvalidValueException();
+        }
+
+        $sanPham = SanPham::withTrashed()->find($id_sanpham);
+        if ($sanPham == null || $sanPham->dmSanPham->masanpham != 'detai') {
+            throw new DeTaiNotFoundException();
+        }
+
+        $page = $request->query('page', 1);
+
+        $result = [];
+        $baoCaoTienDos = BaoCaoTienDo::where('id_sanpham', '=', $id_sanpham)->orderBy('created_at', 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        foreach ($baoCaoTienDos as $baoCaoTienDo) {
+            $result[] = Convert::getBaoCaoTienDoVm($baoCaoTienDo);
+        }
+        $pagingResponse = new PagingResponse($baoCaoTienDos->lastPage(), $baoCaoTienDos->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
     }
 
 

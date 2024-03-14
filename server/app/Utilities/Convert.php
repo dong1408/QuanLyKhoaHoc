@@ -11,6 +11,7 @@ use App\Models\DeTai\TuyenChon;
 use App\Models\DeTai\XetDuyet;
 use App\Models\FileMinhChungSanPham;
 use App\Models\NhaXuatBan\NhaXuatBan;
+use App\Models\Permission;
 use App\Models\TapChi\DMNganhTheoHSGS;
 use App\Models\TapChi\DMPhanLoaiTapChi;
 use App\Models\QuyDoi\DMChuyenNganhTinhDiem;
@@ -30,6 +31,7 @@ use App\Models\UserInfo\DMChuyenMon;
 use App\Models\UserInfo\DMDonVi;
 use App\Models\UserInfo\DMHocHamHocVi;
 use App\Models\UserInfo\DMNgachVienChuc;
+use App\Models\UserInfo\DMPhanLoaiToChuc;
 use App\Models\UserInfo\DMQuocGia;
 use App\Models\UserInfo\DMTinhThanh;
 use App\Models\UserInfo\DMToChuc;
@@ -46,6 +48,7 @@ use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\RolePermission\PermissionBySlugVm;
+use App\ViewModel\RolePermission\PermissionVm;
 use App\ViewModel\RolePermission\RoleVm;
 use App\ViewModel\SanPham\DMSanPhamVm;
 use App\ViewModel\SanPham\FileMinhChungSanPhamVm;
@@ -69,6 +72,7 @@ use App\ViewModel\UserInfo\ChuyenMonVm;
 use App\ViewModel\UserInfo\DonViVm;
 use App\ViewModel\UserInfo\HocHamHocViVm;
 use App\ViewModel\UserInfo\NgachVienChucVm;
+use App\ViewModel\UserInfo\PhanLoaiToChucVm;
 use App\ViewModel\UserInfo\QuocGiaDetailVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\TinhThanhDetailVm;
@@ -366,15 +370,37 @@ class Convert
         return $a;
     }
 
+    public static function getPhanLoaiToChucVm(DMPhanLoaiToChuc $dmPhanLoaiToChuc)
+    {
+        $a = new PhanLoaiToChucVm();
+        $a->id = $dmPhanLoaiToChuc->id;
+        $a->tenloai = $dmPhanLoaiToChuc->tenloai ?? null;
+        $a->created_at = $dmPhanLoaiToChuc->created_at ?? null;
+        $a->updated_at = $dmPhanLoaiToChuc->updated_at ?? null;
+        return $a;
+    }
+
     // ========================= ROLE PERMISSION ====================== //
     public static function getRoleVm(Role $role)
     {
         $a = new RoleVm();
         $a->id = $role->id;
         $a->name = $role->name;
-        $a->description = $role->description;
-        $a->created_at = $role->created_at;
-        $a->updated_at = $role->updated_at;
+        $a->description = $role->description ?? null;
+        $a->created_at = $role->created_at ?? null;
+        $a->updated_at = $role->updated_at ?? null;
+        return $a;
+    }
+
+    public static function getPermissionVm(Permission $permission)
+    {
+        $a = new PermissionVm();
+        $a->id = $permission->id;
+        $a->name = $permission->name ?? null;
+        $a->name = $permission->slug ?? null;
+        $a->description = $permission->description ?? null;
+        $a->created_at = $permission->created_at ?? null;
+        $a->updated_at = $permission->updated_at ?? null;
         return $a;
     }
 
@@ -468,7 +494,7 @@ class Convert
             $a->nguoikekhai = Convert::getUserVm($sanPham->nguoiKeKhai);
         }
 
-        $a->trangthairasoat = $sanPham->trangthairasoat;
+        $a->trangthairasoat = $sanPham->trangthairasoat ?? null;
         $a->ngayrasoat = $sanPham->ngayrasoat ?? null;
         if ($sanPham->nguoiRaSoat == null) {
             $a->nguoirasoat = null;
@@ -659,7 +685,7 @@ class Convert
         $a->capdetai = $sanPham->deTai->capdetai ?? null;
         $a->created_at = $sanPham->deTai->created_at;
         $a->updated_at = $sanPham->deTai->updated_at;
-        $a->trangthairasoat = $sanPham->trangthairasoat;
+        $a->trangthairasoat = $sanPham->trangthairasoat ?? null;
 
         foreach ($sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
             $a->sanpham_tacgias[] = Convert::getSanPhamTacGiaVm($sanPhaMTacGia);
@@ -674,8 +700,8 @@ class Convert
         $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao ?? null;
         $a->ketquaxet = $baoCaoTienDo->ketquaxet ?? null;
         $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan ?? null;
-        $a->created_at = $baoCaoTienDo->created_at;
-        $a->updated_at = $baoCaoTienDo->updated_at;
+        $a->created_at = $baoCaoTienDo->created_at ?? null;
+        $a->updated_at = $baoCaoTienDo->updated_at ?? null;
         return $a;
     }
     public static function getNghiemThuVm(NghiemThu $nghiemThu)

@@ -68,6 +68,32 @@ class UserServiceImpl implements UserService
     }
 
 
+    public function getRoleOfUser(): ResponseSuccess
+    {
+        $user = auth('api')->user();
+        $rolesOfUser = $user->roles;
+        $result = [];
+        foreach ($rolesOfUser as $role) {
+            $result[] = Convert::getRoleVm($role);
+        }
+        return new ResponseSuccess("Thành công", $result);
+    }
+
+
+    public function getPermissionOfUser(): ResponseSuccess
+    {
+        $user = auth('api')->user();
+        $rolesOfUser = $user->roles;
+        $result = [];
+        foreach ($rolesOfUser as $role) {
+            foreach ($role->permissions as $permission) {
+                $result[] = Convert::getPermissionVm($permission);
+            }
+        }
+        return new ResponseSuccess("Thành công", $result);
+    }
+
+
 
 
     public function getUserDetail(int $id): ResponseSuccess
@@ -179,7 +205,7 @@ class UserServiceImpl implements UserService
         return new ResponseSuccess("Thành công", true);
     }
 
-    
+
     public function deleteUser(int $id): ResponseSuccess
     {
         $userId = (int) $id;

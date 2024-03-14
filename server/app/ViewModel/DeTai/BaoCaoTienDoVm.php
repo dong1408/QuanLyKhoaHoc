@@ -12,6 +12,6 @@ class BaoCaoTienDoVm
     public ?string $ngaynopbaocao;
     public ?string $ketquaxet;
     public ?string $thoigiangiahan;
-    public string $created_at;
-    public string $updated_at;
+    public ?string $created_at;
+    public ?string $updated_at;
 }

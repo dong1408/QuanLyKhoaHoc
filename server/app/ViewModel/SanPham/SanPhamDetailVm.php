@@ -25,7 +25,7 @@ class SanPhamDetailVm
     public ?string $chitietdonvitaitro;
     public string $ngaykekhai;
     public ?UserVm $nguoikekhai; // $id_nguoikekhai -- UserVm
-    public string $trangthairasoat;
+    public ?string $trangthairasoat;
     public ?string $ngayrasoat;
     public ?UserVm $nguoirasoat; // $id_nguoirasoat -- UserVm
     public string $diemquydoi;

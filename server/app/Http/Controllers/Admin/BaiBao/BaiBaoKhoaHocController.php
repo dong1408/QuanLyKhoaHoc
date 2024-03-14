@@ -43,6 +43,13 @@ class BaiBaoKhoaHocController extends Controller
         return response()->json($result, 200);
     }
 
+
+    public function getDetailBaiBaoForUser(int $id){
+        $result = $this->baiBaoService->getDetailBaiBaoForUser($id);
+        return response()->json($result, 200);
+    }
+
+
     public function createBaiBao(CreateBaiBaoRequest $request): Response
     {
         $result = $this->baiBaoService->createBaiBao($request);

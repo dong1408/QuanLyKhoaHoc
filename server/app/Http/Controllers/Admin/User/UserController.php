@@ -43,6 +43,20 @@ class UserController extends Controller
         return response()->json($result, 200);
     }
 
+
+    public function getRoleOfUser(): response
+    {
+        $result = $this->userService->getRoleOfUser();
+        return response()->json($result, 200);
+    }
+
+
+    public function getPermissionOfUser(): response
+    {
+        $result = $this->userService->getPermissionOfUser();
+        return response()->json($result, 200);
+    }
+
     public function registerUser(RegisterUserRequest $request): response
     {
         $result = $this->userService->registerUser($request);
