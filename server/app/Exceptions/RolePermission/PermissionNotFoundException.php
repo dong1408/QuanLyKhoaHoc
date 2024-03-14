@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Exceptions\User;
+namespace App\Exceptions\RolePermission;
 
-use App\Custom\StatusText;
 use App\Utilities\ResponseError;
 use Exception;
-use Illuminate\Http\Request;
-use Throwable;
 
-class UserNotFound extends Exception 
+
+class PermissionNotFoundException extends Exception
 {
     public function render($request)
     {
@@ -16,7 +14,7 @@ class UserNotFound extends Exception
             new ResponseError(
                 "NOT FOUND",
                 404,
-                "Không tìm thấy người dùng"
+                "Không tìm thấy quyền này trong hệ thống"
             ),
             404
         );

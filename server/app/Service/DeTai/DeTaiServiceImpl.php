@@ -279,7 +279,7 @@ class DeTaiServiceImpl implements DeTaiService
             $result[] = Convert::getDeTaiVm($sanPham);
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
-        return new ResponseSuccess("Thành công", $pagingResponse);
+        return new ResponseSuccess("Thành công", $result);
     }
 
     public function getDeTaiChoDuyet(Request $request): ResponseSuccess

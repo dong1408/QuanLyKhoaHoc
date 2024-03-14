@@ -9,6 +9,6 @@ class DonViVm
 {
     public int $id;
     public ?string $tendonvi;
-    public string $created_at;
-    public string $updated_at;
+    public ?string $created_at;
+    public ?string $updated_at;
 }
