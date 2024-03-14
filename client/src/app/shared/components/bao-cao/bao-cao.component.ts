@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {BaoBaoTienDo} from "../../../core/types/detai/de-tai.type";
+import {BaoCaoTienDo} from "../../../core/types/detai/de-tai.type";
 
 @Component({
     selector:'app-detai-baocao-card',
@@ -8,5 +8,5 @@ import {BaoBaoTienDo} from "../../../core/types/detai/de-tai.type";
 })
 
 export class BaoCaoComponent{
-    @Input() baocao:BaoBaoTienDo
+    @Input() baocao:BaoCaoTienDo
 }

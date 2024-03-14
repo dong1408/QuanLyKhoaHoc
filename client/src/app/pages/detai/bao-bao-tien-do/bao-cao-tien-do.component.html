@@ -1,0 +1,83 @@
+<div>
+    <nz-modal
+            [nzVisible]="isOpenForm"
+            nzTitle="Báo Cáo Tiến Độ Đề Tài"
+            nzOkText="Gửi"
+            (nzOnOk)="onBaoCaoTienDoDeTai()"
+            (nzOnCancel)="onOpenFormBaoCao()"
+            [nzOkLoading]="isUpdateLoading"
+    >
+        <ng-container *nzModalContent>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formBaoCao">
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Ngày Nộp Báo Cáo</h3>
+                    <nz-form-control [nzErrorTip]="ngaynopbaocao" nzHasFeedback>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Nộp Báo Cáo" formControlName="ngaynopbaocao"></nz-date-picker>
+                        <ng-template #ngaynopbaocao let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Kết Quả Xét</h3>
+                    <nz-form-control [nzErrorTip]="ketquaxet" nzHasFeedback>
+                        <input nz-input placeholder="Kết Quả Xét"  type="text" formControlName="ketquaxet"/>
+                        <ng-template #ketquaxet let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class="">Thời Gian Gia Hạn</h3>
+                    <nz-form-control [nzErrorTip]="thoigiangiahan" nzHasFeedback>
+                        <input nz-input placeholder="Thời Gian Gia Hạn"  type="text" formControlName="thoigiangiahan"/>
+                        <ng-template #thoigiangiahan let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
+
+
+<div class="tw-space-y-[16px]">
+    <button nz-button nzType="primary" [routerLink]="['/de-tai',this.id]">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+    <h1 class="text-primary tw-text-5xl">LỊCH SỬ NỘP BÁO CÁO CỦA ĐỀ TÀI</h1>
+    <div class="tw-mt-[15] tw-space-y-[6px]">
+        <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-space-y-[4px] lg:tw-space-x-[8px]">
+            <button nz-button nzType="primary" (click)="onOpenFormBaoCao()">
+                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                Nộp Báo Cáo
+            </button>
+        </div>
+    </div>
+    <div class="tw-space-y-[10px]">
+        <h2 class="primary tw-text-3xl tw-text-center">LỊCH SỬ</h2>
+        <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+            <app-loading></app-loading>
+        </ng-template>
+        <ng-template #loaded>
+            <ng-container *ngIf="baocaos.length > 0">
+                <div>
+                    <app-detai-baocao-card *ngFor="let card of baocaos" [baocao]="card"></app-detai-baocao-card>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="baocaos.length < 1">
+                <div class="tw-text-center tw-mt-[7rem]">
+                    <h1 class="text-primary tw-text-5xl">LỊCH SỬ TRỐNG</h1>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="baocaos.length > 0">
+                <div class="tw-text-right">
+                    <nz-pagination [nzPageIndex]="this.pagingService.pageIndex$ | async" [nzTotal]="totalPage * 10"></nz-pagination>
+                </div>
+            </ng-container>
+        </ng-template>
+    </div>
+</div>
+

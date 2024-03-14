@@ -46,7 +46,7 @@ export interface ChiTietDeTai{
 }
 
 
-export interface BaoBaoTienDo{
+export interface BaoCaoTienDo{
     id:number,
     ngaynopbaocao:string,
     ketquaxet?:string,

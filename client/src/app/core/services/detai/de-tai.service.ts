@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiResponse, PagingResponse} from "../../types/api-response.type";
 import {
-    BaoBaoTienDo,
+    BaoCaoTienDo,
     BaoCaoTienDoDeTai,
     CapNhatDeTai,
     ChiTietDeTai,
@@ -142,7 +142,7 @@ export class DeTaiService{
     }
 
     baoCaoTienDoDeTai(id:number,data:BaoCaoTienDoDeTai){
-        return this.http.post<ApiResponse<BaoBaoTienDo>>(
+        return this.http.post<ApiResponse<BaoCaoTienDo>>(
             `${environment.apiUrl}/detai/${id}/baocao`,
             data
         ).pipe(
@@ -156,6 +156,12 @@ export class DeTaiService{
             data
         ).pipe(
             catchError(handleError)
+        )
+    }
+
+    getLichSuBaoCaoDeTai(id:number,pageIndex:number){
+        return this.http.get<ApiResponse<PagingResponse<BaoCaoTienDo[]>>>(
+            `${environment.apiUrl}/detai/${id}/lichsubaocao?page=${pageIndex}`
         )
     }
 }
