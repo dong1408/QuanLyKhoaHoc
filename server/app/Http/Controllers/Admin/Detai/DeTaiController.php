@@ -44,6 +44,13 @@ class DeTaiController extends Controller
         return response()->json($result, 200);
     }
 
+
+    public function getDetailDeTaiForUser(int $id): response
+    {
+        $result = $this->deTaiService->getDetailDeTaiForUser($id);
+        return response()->json($result, 200);
+    }
+
     public function createDeTai(CreateDeTaiRequest $request): response
     {
         $result = $this->deTaiService->createDeTai($request);
@@ -100,6 +107,12 @@ class DeTaiController extends Controller
     public function nghiemThuDeTai(NghiemThuDeTaiRequest $request, int $id): response
     {
         $result = $this->deTaiService->nghiemThuDeTai($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function getLichSuBaoCao(Request $request, int $id): response
+    {
+        $result = $this->deTaiService->getLichSuBaoCao($request, $id);
         return response()->json($result, 200);
     }
 
