@@ -4,6 +4,7 @@ namespace App\Service\User;
 
 use App\Exceptions\InvalidValueException;
 use App\Exceptions\User\NotAllowDeleteSelfException;
+use App\Exceptions\User\NotAllowDeleteUserIsSuperadminException;
 use App\Exceptions\User\NotAllowUpdateRoleOfUserSuperadminException;
 use App\Exceptions\User\NotAllowUpdateRoleSelfException;
 use App\Exceptions\User\PasswordIncorrectException;
@@ -254,6 +255,15 @@ class UserServiceImpl implements UserService
         $user = User::find($userId);
         if ($user == null) {
             throw new UserNotFoundException();
+        }
+        $flag = false;
+        foreach ($user->roles as $role) {
+            if ($role->mavaitro == 'superadmin') {
+                $flag = true;
+            }
+        }
+        if ($flag == true) {
+            throw new NotAllowDeleteUserIsSuperadminException();
         }
         $user->delete();
         return new ResponseSuccess("Thành công", true);
