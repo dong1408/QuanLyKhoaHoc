@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\User;
 
 use App\Exceptions\User\UserNotHavePermissionException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\RegisterUserRequest;
 use App\Http\Requests\User\UpdateRoleOfUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
@@ -90,6 +91,12 @@ class UserController extends Controller
     public function forceDeleteUser(int $id): response
     {
         $result = $this->userService->forceDeleteUser($id);
+        return response()->json($result, 200);
+    }
+
+    public function changePassword(ChangePasswordRequest $request): response
+    {
+        $result = $this->userService->changePassword($request);
         return response()->json($result, 200);
     }
 }
