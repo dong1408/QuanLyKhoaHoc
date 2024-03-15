@@ -3,6 +3,9 @@
 namespace App\Service\User;
 
 use App\Exceptions\InvalidValueException;
+use App\Exceptions\User\NotAllowDeleteSelfException;
+use App\Exceptions\User\NotAllowUpdateRoleOfUserSuperadminException;
+use App\Exceptions\User\NotAllowUpdateRoleSelfException;
 use App\Exceptions\User\PasswordIncorrectException;
 use App\Exceptions\User\UserNotFoundException;
 use App\Exceptions\User\UserNotHavePermissionException;
@@ -81,7 +84,7 @@ class UserServiceImpl implements UserService
         }
 
         $user = User::find($userId);
-        if($user == null){
+        if ($user == null) {
             throw new UserNotFoundException();
         }
 
@@ -138,7 +141,7 @@ class UserServiceImpl implements UserService
                 'username' => $validated['username'],
                 'email' => $validated['email'],
                 'password' => Hash::make(env('SGU_2024')),
-//                'role' => $validated['role'],
+                //                'role' => $validated['role'],
                 'changed' => 0,
                 'ngaysinh' => $validated['ngaysinh'],
                 'dienthoai' => $validated['dienthoai'],
@@ -161,7 +164,7 @@ class UserServiceImpl implements UserService
             $user->roles()->attach($validated['roles_id']);
         });
 
-//        $result = Convert::getUserDetailVm($user);
+        //        $result = Convert::getUserDetailVm($user);
         return new ResponseSuccess("Thành công", true);
     }
 
@@ -180,7 +183,7 @@ class UserServiceImpl implements UserService
             $user->name = $validated['name'];
             $user->username = $validated['username'];
             $user->email = $validated['email'];
-//            $user->role = $validated['role'];
+            //            $user->role = $validated['role'];
             $user->ngaysinh = $validated['ngaysinh'];
             $user->dienthoai = $validated['dienthoai'];
             $user->email2 = $validated['email2'];
@@ -210,16 +213,28 @@ class UserServiceImpl implements UserService
         if (!is_int($userId)) {
             throw new InvalidValueException();
         }
+        if ($id == auth('api')->user()->id) {
+            throw new NotAllowUpdateRoleSelfException();
+        }
         $user = User::find($userId);
         if ($user == null) {
             throw new UserNotFoundException();
+        }
+        $flag = false;
+        foreach ($user->roles as $role) {
+            if ($role->mavaitro == 'superadmin') {
+                $flag = true;
+            }
+        }
+        if ($flag == true) {
+            throw new NotAllowUpdateRoleOfUserSuperadminException();
         }
         $validated = $request->validated();
         $user->roles()->sync($validated['roles_id']);
 
         $result = [];
 
-        foreach ($user->roles as $role){
+        foreach ($user->roles as $role) {
             $result[] = Convert::getRoleVm($role);
         }
 
@@ -232,6 +247,9 @@ class UserServiceImpl implements UserService
         $userId = (int) $id;
         if (!is_int($userId)) {
             throw new InvalidValueException();
+        }
+        if ($id == auth('api')->user()->id) {
+            throw new NotAllowDeleteSelfException();
         }
         $user = User::find($userId);
         if ($user == null) {
@@ -272,7 +290,7 @@ class UserServiceImpl implements UserService
 
     public function changePassword(ChangePasswordRequest $request): ResponseSuccess
     {
-        $userId = auth('api')->user()->id;        
+        $userId = auth('api')->user()->id;
         $user = User::find($userId);
         if ($user == null) {
             throw new UserNotFoundException();

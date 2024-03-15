@@ -258,10 +258,9 @@ class Convert
         $a->email = $user->email;
         $a->deleted_at = $user->deleted_at ?? null;
 
-        foreach ($user->roles as $role ){
-            $a->roles[] = Convert::getRoleVm($role);
+        foreach ($user->roles as $role) {
+            $a->roles[] = empty($role) ? null : Convert::getRoleVm($role);
         }
-
         return $a;
     }
 
