@@ -282,6 +282,33 @@ class DeTaiServiceImpl implements DeTaiService
         return new ResponseSuccess("Thành công", $pagingResponse);
     }
 
+
+    public function getDeTaiPagingForUser(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::has('tuyenChon')->has('xetDuyet')->has('nghiemThu')
+            ->select('san_phams.*')
+            ->join('nghiem_thus', 'nghiem_thus.id_sanpham', '=', 'san_phams.id')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+            ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
+            ->where('d_m_san_phams.masanpham', '=', 'detai')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
+                    ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_phams.trangthairasoat', 'Đã xác nhận')
+            ->groupBy('san_phams.id')
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getDeTaiVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+
     public function getDeTaiChoDuyet(Request $request): ResponseSuccess
     {
         $page = $request->query('page', 1);
@@ -1109,5 +1136,51 @@ class DeTaiServiceImpl implements DeTaiService
             $resultArray[] = $value['object'];
         }
         return $resultArray;
+    }
+
+
+
+
+
+    public function getDeTaiKeKhai(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::select('san_phams.*')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->where('d_m_san_phams.masanpham', '=', 'detai')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_phams.id_nguoikekhai', auth('api')->user()->id)
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        $result = [];
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getDeTaiVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+    public function getDeTaiThamGia(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::select('san_phams.*')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+            ->where('d_m_san_phams.masanpham', '=', 'detai')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_pham_tac_gias.id_tacgia', auth('api')->user()->id)
+            ->groupBy('san_phams.id')
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        $result = [];
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getDeTaiVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
     }
 }

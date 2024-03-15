@@ -79,6 +79,31 @@ class BaiBaoServiceImpl implements BaiBaoService
 
 
 
+    public function getBaiBaoPagingForUser(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::select('san_phams.*')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+            ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
+            ->where('d_m_san_phams.masanpham', '=', 'baibaokhoahoc')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
+                    ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_phams.trangthairasoat', 'Đã xác nhận')
+            ->groupBy('san_phams.id')
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+
+
 
     public function getBaiBaoChoDuyet(Request $request): ResponseSuccess
     {

@@ -32,6 +32,12 @@ class DeTaiController extends Controller
         return response()->json($result, 200);
     }
 
+    public function getDeTaiPagingForUser(Request $request): response
+    {
+        $result = $this->deTaiService->getDeTaiPagingForUser($request);
+        return response()->json($result, 200);
+    }
+
     public function getDeTaiChoDuyet(Request $request): response
     {
         $result = $this->deTaiService->getDeTaiChoDuyet($request);
@@ -132,6 +138,19 @@ class DeTaiController extends Controller
     public function forceDeleteDeTai(int $id): response
     {
         $result = $this->deTaiService->forceDeleteDeTai($id);
+        return response()->json($result, 200);
+    }
+
+
+    public function getDeTaiKeKhai(Request $request): response
+    {
+        $result = $this->deTaiService->getDeTaiKeKhai($request);
+        return response()->json($result, 200);
+    }
+
+    public function getDeTaiThamGia(Request $request): response
+    {
+        $result = $this->deTaiService->getDeTaiThamGia($request);
         return response()->json($result, 200);
     }
 }
