@@ -30,6 +30,13 @@ class BaiBaoKhoaHocController extends Controller
     }
 
 
+    public function getBaiBaoPagingForUser(Request $request): response
+    {
+        $result = $this->baiBaoService->getBaiBaoPagingForUser($request);
+        return response()->json($result, 200);
+    }
+
+
     public function getBaiBaoChoDuyet(Request $request): Response
     {
         $result = $this->baiBaoService->getBaiBaoChoDuyet($request);
@@ -44,7 +51,8 @@ class BaiBaoKhoaHocController extends Controller
     }
 
 
-    public function getDetailBaiBaoForUser(int $id){
+    public function getDetailBaiBaoForUser(int $id)
+    {
         $result = $this->baiBaoService->getDetailBaiBaoForUser($id);
         return response()->json($result, 200);
     }
