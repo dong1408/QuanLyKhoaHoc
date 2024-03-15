@@ -344,7 +344,7 @@ export class ChiTietDeTaiComponent{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(['/bai-bao'])
+                this.router.navigate(['/de-tai'])
                 return;
             }
         })

@@ -57,29 +57,29 @@ Route::group([
     Route::get('auth/getMe', [AuthController::class, 'getMe']);
 
     // User
-    Route::get('user', [UserController::class, 'getAllUser'])->can('user.view');
-    Route::get('user/paging', [UserController::class, 'getUserPaging'])->can('user.view');
-    Route::get('user/role', [UserController::class, 'getRoleOfUser']);
-    Route::get('user/permission', [UserController::class, 'getPermissionOfUser']);
-    Route::patch('user/changepassword', [UserController::class, 'changePassword']);
-    Route::post('user', [UserController::class, 'registerUser'])->can('user.register');
-    Route::patch('user/{id}', [UserController::class, 'updateUser'])->can('user.update');
-    Route::patch('user/{id}/role', [UserController::class, 'updateRoleOfUser'])->can('user.update');
-    Route::patch('user/{id}/delete', [UserController::class, 'deleteUser'])->can('user.delete');
-    Route::patch('user/{id}/restore', [UserController::class, 'restoreUser'])->can('user.delete');
-    Route::delete('user/{id}/force', [UserController::class, 'forceDeleteUser'])->can('user.delete');
-    Route::get('user/{id}', [UserController::class, 'getUserDetail'])->can('user.detail');
+    Route::get('users', [UserController::class, 'getAllUser']); //select chọn tác giả
+    Route::get('users/paging', [UserController::class, 'getUserPaging'])->can('user.view');
+    Route::get('users/{id}/role', [UserController::class, 'getRoleOfUser'])->can('user.update_role');
+    Route::get('users/permission', [UserController::class, 'getPermissionOfUser'])->can('user.detail');
+    Route::patch('users/password', [UserController::class, 'changePassword']);
+    Route::post('users', [UserController::class, 'registerUser'])->can('user.register');
+    Route::patch('users/{id}', [UserController::class, 'updateUser'])->can('user.update');
+    Route::patch('users/{id}/role', [UserController::class, 'updateRoleOfUser'])->can('user.update_role');
+    Route::patch('users/{id}/delete', [UserController::class, 'deleteUser'])->can('user.delete');
+    Route::patch('users/{id}/restore', [UserController::class, 'restoreUser'])->can('user.delete');
+    Route::delete('users/{id}/force', [UserController::class, 'forceDeleteUser'])->can('user.delete');
+    Route::get('users/{id}', [UserController::class, 'getUserDetail'])->can('user.detail');
 
     // Role
-    Route::get('role', [RoleController::class, 'getAllRole'])->can('role.view');
-    Route::post('role', [RoleController::class, 'addRole'])->can('role.add');
-    Route::patch('role/{id}', [RoleController::class, 'updateRole'])->can('role.update');
+    Route::get('roles', [RoleController::class, 'getAllRole']);
+    Route::post('roles', [RoleController::class, 'addRole'])->can('role.add');
+    Route::patch('roles/{id}', [RoleController::class, 'updateRole'])->can('role.update');
 
 
     // Permission
-    Route::get('permission', [PermissionController::class, 'getAllPermission'])->can('permission.view');
-    Route::post('permission', [PermissionController::class, 'addPermission'])->can('permission.add');
-    Route::patch('permission/{id}', [PermissionController::class, 'updatePermission'])->can('permission.update');
+    Route::get('permissions', [PermissionController::class, 'getAllPermission'])->can('permission.view');
+    Route::post('permissions', [PermissionController::class, 'addPermission'])->can('permission.add');
+    Route::patch('permissions/{id}', [PermissionController::class, 'updatePermission'])->can('permission.update');
 
 
 
@@ -184,6 +184,7 @@ Route::group([
 
     // Don Vi
     Route::get('donvi', [DonViController::class, 'getAllDonVi']);
+    Route::get('donvi/{id}/tochuc', [DonViController::class, 'getDonViByToChucId']);
 
     // Hoc Ham Hoc Vi
     Route::get('hochamhocvi', [HocHamHocViController::class, 'getAllHocHamHocVi']);

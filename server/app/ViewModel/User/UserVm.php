@@ -19,4 +19,7 @@ class UserVm
     public string $name;
     public string $username;
     public string $email;
+    public ?string $deleted_at;
+
+    public  $roles;
 }

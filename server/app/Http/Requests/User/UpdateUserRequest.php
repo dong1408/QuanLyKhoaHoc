@@ -39,17 +39,17 @@ class UpdateUserRequest extends FormRequest
                 "bail", "required", "string",
                 Rule::unique('users')->ignore(Route::input('id'), 'id')
             ],
-            "role" => "bail|required|integer",
+//            "role" => "bail|required|integer",
             "ngaysinh" => "bail|nullable|string",
             "dienthoai" => "bail|nullable|string",
             "email2" => "bail|nullable|string",
             "orchid" => "bail|nullable|string",
             "id_tochuc" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
             "id_donvi" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_don_vis', 'id')
             ],
             "cohuu" => "bail|nullable|boolean",
@@ -60,31 +60,31 @@ class UpdateUserRequest extends FormRequest
                 Rule::in(["caohoc", "ncs"])
             ],
             "id_noihoc" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
             "id_ngachvienchuc" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_ngach_vien_chucs', 'id')
             ],
             "id_quoctich" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_quoc_gias', 'id')
             ],
             "id_hochamhocvi" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_hoc_ham_hoc_vis', 'id')
             ],
             "id_chuyenmon" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_chuyen_mons', 'id')
             ],
             "id_nganhtinhdiem" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_nganh_tinh_diems', 'id')
             ],
             "id_chuyennganhtinhdiem" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_chuyen_nganh_tinh_diems', 'id')
             ],
         ];

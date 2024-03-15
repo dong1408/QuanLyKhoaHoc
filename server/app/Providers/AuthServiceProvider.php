@@ -52,6 +52,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermission('user.view');
         });
 
+        Gate::define('user.update_role', function (User $user) {
+            return $user->hasPermission('user.update_role');
+        });
+
         // 2. view user detail
         Gate::define('user.detail', function (User $user) {
             $userId = Route::current()->parameter('id');

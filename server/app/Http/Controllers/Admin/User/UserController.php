@@ -45,9 +45,9 @@ class UserController extends Controller
     }
 
 
-    public function getRoleOfUser(): response
+    public function getRoleOfUser(int $id): response
     {
-        $result = $this->userService->getRoleOfUser();
+        $result = $this->userService->getRoleOfUser($id);
         return response()->json($result, 200);
     }
 

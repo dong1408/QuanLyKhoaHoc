@@ -14,7 +14,7 @@ interface UserService
     public function getAllUser(Request $request): ResponseSuccess;
     public function getUserPaging(Request $request): ResponseSuccess;
     public function getUserDetail(int $id): ResponseSuccess;
-    public function getRoleOfUser(): ResponseSuccess;
+    public function getRoleOfUser(int $id): ResponseSuccess;
     public function getPermissionOfUser(): ResponseSuccess;
     public function registerUser(RegisterUserRequest $request): ResponseSuccess;
     public function updateUser(UpdateUserRequest $request, int $id): ResponseSuccess;

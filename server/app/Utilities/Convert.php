@@ -67,6 +67,7 @@ use App\ViewModel\TapChi\TinhDiemTapChiVm;
 use App\ViewModel\TapChi\XepHangTapChiDetailVm;
 use App\ViewModel\TapChi\XepHangTapChiVm;
 use App\ViewModel\User\UserDetailVm;
+use App\ViewModel\User\UserSimpleVm;
 use App\ViewModel\User\UserVm;
 use App\ViewModel\UserInfo\ChuyenMonVm;
 use App\ViewModel\UserInfo\DonViVm;
@@ -255,6 +256,23 @@ class Convert
         $a->name = $user->name;
         $a->username = $user->username;
         $a->email = $user->email;
+        $a->deleted_at = $user->deleted_at ?? null;
+
+        foreach ($user->roles as $role ){
+            $a->roles[] = Convert::getRoleVm($role);
+        }
+
+        return $a;
+    }
+
+    public static function getUserSimpleVm(User $user): UserSimpleVm
+    {
+        $a = new UserSimpleVm();
+        $a->id = $user->id;
+        $a->name = $user->name;
+        $a->username = $user->username;
+        $a->email = $user->email;
+
         return $a;
     }
 
@@ -286,6 +304,7 @@ class Convert
         $a->chuyennganhtinhdiem = $user->chuyenNganhTinhDiem == null ? null : Convert::getChuyenNganhTinhDiemVm($user->chuyenNganhTinhDiem);
         $a->created_at = $user->created_at;
         $a->updated_at = $user->updated_at;
+        $a->deleted_at = $user->deleted_at ?? null;
 
         return $a;
     }
@@ -386,6 +405,7 @@ class Convert
         $a = new RoleVm();
         $a->id = $role->id;
         $a->name = $role->name;
+        $a->mavaitro = $role->mavaitro;
         $a->description = $role->description ?? null;
         $a->created_at = $role->created_at ?? null;
         $a->updated_at = $role->updated_at ?? null;
@@ -397,7 +417,7 @@ class Convert
         $a = new PermissionVm();
         $a->id = $permission->id;
         $a->name = $permission->name ?? null;
-        $a->name = $permission->slug ?? null;
+        $a->slug = $permission->slug ?? null;
         $a->description = $permission->description ?? null;
         $a->created_at = $permission->created_at ?? null;
         $a->updated_at = $permission->updated_at ?? null;

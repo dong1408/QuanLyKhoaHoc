@@ -35,7 +35,7 @@ class UpdateRoleRequest extends FormRequest
                 Rule::unique('roles')->ignore(Route::input('id'), 'id')
             ],
             'description' => 'bail|required|string',
-            'permission_id' => 'bail|nullable|array',
+            'permission_id' => 'bail|required|array',
             'permission_id.*' => [
                 'integer',
                 Rule::exists("permissions", 'id'),

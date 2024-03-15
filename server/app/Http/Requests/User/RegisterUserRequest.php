@@ -29,18 +29,18 @@ class RegisterUserRequest extends FormRequest
             "username" => "bail|required|string|unique:users,username",
             "email" => "bail|required|string|unique:users,email",
             // "password" => "bail|nullable|boolean",
-            "role" => "bail|required|integer",
+//            "role" => "bail|required|integer",
             // "changed" => "bail|required|integer",
             "ngaysinh" => "bail|nullable|string",
             "dienthoai" => "bail|nullable|string",
             "email2" => "bail|nullable|string",
             "orchid" => "bail|nullable|string",
             "id_tochuc" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
             "id_donvi" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_don_vis', 'id')
             ],
             "cohuu" => "bail|nullable|boolean",
@@ -51,34 +51,34 @@ class RegisterUserRequest extends FormRequest
                 Rule::in(["caohoc", "ncs"])
             ],
             "id_noihoc" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
             "id_ngachvienchuc" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_ngach_vien_chucs', 'id')
             ],
             "id_quoctich" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_quoc_gias', 'id')
             ],
             "id_hochamhocvi" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_hoc_ham_hoc_vis', 'id')
             ],
             "id_chuyenmon" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_chuyen_mons', 'id')
             ],
             "id_nganhtinhdiem" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_nganh_tinh_diems', 'id')
             ],
             "id_chuyennganhtinhdiem" => [
-                "bail", "nullable", "boolean",
+                "bail", "nullable", "integer",
                 Rule::exists('d_m_chuyen_nganh_tinh_diems', 'id')
             ],
-            "roles_id" => "bail", "nullable", "array",
+            "roles_id" => "bail", "array","nullable",
             "roles_id.*" => [
                 "bail", "integer",
                 Rule::exists('roles', 'id')
@@ -96,7 +96,6 @@ class RegisterUserRequest extends FormRequest
             'boolean' => 'Trường :attribute phải là true/false',
             'id_tochuc.exists' => 'Tổ chức không tồn tại trên hệ thống',
             'id_donvi.exists' => 'Đơn vị không tồn tại trên hệ thống',
-            'id_tochuc.exists' => 'Tổ chúc không tồn tại trên hệ thống',
             'id_noihoc.exists' => 'Nơi học không tồn tại trên hệ thống',
             'id_ngachvienchuc.exists' => 'Ngạch viên chức không tồn tại trên hệ thống',
             'id_quoctich.exists' => 'Quốc gia không tồn tại trên hệ thống',

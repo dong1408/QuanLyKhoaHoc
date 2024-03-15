@@ -74,7 +74,7 @@
             </ng-container>
             <ng-container *ngIf="baocaos.length > 0">
                 <div class="tw-text-right">
-                    <nz-pagination [nzPageIndex]="this.pagingService.pageIndex$ | async" [nzTotal]="totalPage * 10"></nz-pagination>
+                    <nz-pagination (nzPageIndexChange)="onChangePage($event)" [nzPageIndex]="this.pagingService.pageIndex$ | async" [nzTotal]="totalPage * 10"></nz-pagination>
                 </div>
             </ng-container>
         </ng-template>
