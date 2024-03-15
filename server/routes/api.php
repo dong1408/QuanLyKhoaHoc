@@ -61,6 +61,7 @@ Route::group([
     Route::get('user/paging', [UserController::class, 'getUserPaging'])->can('user.view');
     Route::get('user/role', [UserController::class, 'getRoleOfUser']);
     Route::get('user/permission', [UserController::class, 'getPermissionOfUser']);
+    Route::patch('user/changepassword', [UserController::class, 'changePassword']);
     Route::post('user', [UserController::class, 'registerUser'])->can('user.register');
     Route::patch('user/{id}', [UserController::class, 'updateUser'])->can('user.update');
     Route::patch('user/{id}/role', [UserController::class, 'updateRoleOfUser'])->can('user.update');
@@ -70,15 +71,15 @@ Route::group([
     Route::get('user/{id}', [UserController::class, 'getUserDetail'])->can('user.detail');
 
     // Role
-    Route::get('role', [RoleController::class, 'getAllRole']);
-    Route::post('role', [RoleController::class, 'addRole']);
-    Route::patch('role/{id}', [RoleController::class, 'updateRole']);
+    Route::get('role', [RoleController::class, 'getAllRole'])->can('role.view');
+    Route::post('role', [RoleController::class, 'addRole'])->can('role.add');
+    Route::patch('role/{id}', [RoleController::class, 'updateRole'])->can('role.update');
 
 
     // Permission
-    Route::get('permission', [PermissionController::class, 'getAllPermission']);
-    Route::post('permission', [PermissionController::class, 'addPermission']);
-    Route::patch('permission/{id}', [PermissionController::class, 'updatePermission']);
+    Route::get('permission', [PermissionController::class, 'getAllPermission'])->can('permission.view');
+    Route::post('permission', [PermissionController::class, 'addPermission'])->can('permission.add');
+    Route::patch('permission/{id}', [PermissionController::class, 'updatePermission'])->can('permission.update');
 
 
 
@@ -87,7 +88,7 @@ Route::group([
     Route::get('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBaoForUser']);
     Route::post('baibao/public', [BaiBaoKhoaHocController::class, 'createBaiBao']);
 
-    Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging'])->can('baibao.view');
+    Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
     Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet'])->can('baibao.choduyet');
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao'])->can('baibao.add');
     Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham'])->can('baibao.update');
@@ -110,7 +111,7 @@ Route::group([
     Route::post('detai/public', [DeTaiController::class, 'createDetai']);
 
 
-    Route::get('detai', [DeTaiController::class, 'getDeTaiPaging'])->can('detai.view');
+    Route::get('detai', [DeTaiController::class, 'getDeTaiPaging']);
     Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.detail');
     Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet'])->can('detai.choduyet');
     Route::post('detai', [DeTaiController::class, 'createDetai'])->can('detai.add');

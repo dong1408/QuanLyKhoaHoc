@@ -2,6 +2,7 @@
 
 namespace App\Service\User;
 
+use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\RegisterUserRequest;
 use App\Http\Requests\User\UpdateRoleOfUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
@@ -21,4 +22,5 @@ interface UserService
     public function deleteUser(int $id): ResponseSuccess;
     public function restoreUser(int $id): ResponseSuccess;
     public function forceDeleteUser(int $id): ResponseSuccess;
+    public function changePassword(ChangePasswordRequest $request): ResponseSuccess;
 }
