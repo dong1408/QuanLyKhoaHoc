@@ -17,4 +17,14 @@ class DonViServiceImpl implements DonViService
         }
         return new ResponseSuccess("Thành công", $result);
     }
+
+    public function getDonViByIdToChuc(int $id): ResponseSuccess
+    {
+        $result = [];
+        $donVis = DMDonVi::where('id_tochuc',$id)->get();
+        foreach ($donVis as $donVi) {
+            $result[] = Convert::getDonViVm($donVi);
+        }
+        return new ResponseSuccess("Thành công", $result);
+    }
 }

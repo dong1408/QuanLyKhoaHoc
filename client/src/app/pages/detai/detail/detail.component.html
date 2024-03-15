@@ -388,6 +388,7 @@
                         *ngIf="detai.trangthai === AppConstant.CHO_NGHIEM_THU"
                         nz-button
                         nzType="primary"
+                        [routerLink]="['bao-cao-tien-do']"
                 >
                     <span nz-icon nzType="form" nzTheme="outline"></span>
                     Báo Cáo Tiên Độ
@@ -426,6 +427,13 @@
                         </button>
                     </div>
                     <app-detai-component [detai]="detai"></app-detai-component>
+                </div>
+                <div class="tw-my-[14px]">
+                    <nz-divider></nz-divider>
+                </div>
+                <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
+                    <h2 class="tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Thông Tin Trạng Thái</h2>
+                    <app-detai-trangthai [tuyenchon]="detai.tuyenchon" [xetduyet]="detai.xetduyet" [nghiemthu]="detai.nghiemthu" ></app-detai-trangthai>
                 </div>
             </div>
         </div>

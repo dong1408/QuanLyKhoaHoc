@@ -1,0 +1,177 @@
+<div>
+    <nz-modal
+            [nzVisible]="isOpenFormUpdateRole"
+            nzTitle="Cập Nhật Quyền Người Dùng"
+            nzOkText="Gửi"
+            (nzOnOk)="onUpdateRole()"
+            (nzOnCancel)="onCloseFormUpdateRole()"
+            [nzOkLoading]="isUpdateRole"
+    >
+        <ng-container *nzModalContent>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[5px]" [formGroup]="formUpdateRole">
+                <nz-form-item>
+                    <h4 class=""><span class="error">*</span> Quyền</h4>
+                    <nz-form-control [nzErrorTip]="roles_id" nzHasFeedback>
+                        <nz-select
+                                formControlName="roles_id"
+                                nzAllowClear
+                                nzShowSearch
+                                nzPlaceHolder="Quyền"
+                                nzMode="multiple"
+                                [nzLoading]="isGetRoleOfCurrentuser"
+                                [nzDisabled]="isGetRoleOfCurrentuser"
+                        >
+                            <nz-option *ngFor="let data of roles" nzLabel="{{data.name}}" [nzValue]="data.id"></nz-option>
+                           </nz-select>
+                        <ng-template #roles_id let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
+<div class="tw-space-y-[16px]">
+    <h1 class="text-primary tw-text-5xl">NGƯỜI DÙNG</h1>
+    <div class="tw-mt-[15] tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+        <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+            <button nz-button nzType="primary" routerLink="/nguoi-dung/tao-moi">
+                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                Tạo Mới
+            </button>
+        </div>
+    </div>
+
+    <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+        <button nz-button [nzType]="currentButton$.value === 1 ? 'primary' : 'default'" (click)="setCurrentButton(1)">
+            Tất Cả
+        </button>
+        <button nz-button [nzType]="currentButton$.value === 2 ? 'primary' : 'default'" nzDanger (click)="setCurrentButton(2)">
+            Đã Xóa
+        </button>
+    </div>
+
+    <div class="tw-flex tw-flex-col tw-gap-[6px] tw-w-[300px]">
+        <form nz-form [formGroup]="formAction" class="tw-space-y-[6px]">
+            <input nz-input nzSize='large' formControlName="search" placeholder="Tìm Kiếm"  (input)="onChangeSearch($event)" type="text" />
+            <nz-select
+                    (ngModelChange)="onChangeSortBy($event)"
+                    nzSize='large'
+                    nzPlaceHolder="Sắp Xếp"
+                    formControlName="select"
+                    class="tw-w-full"
+            >
+                <nz-option  nzValue="created_at" nzLabel="Mới Nhất"></nz-option>
+                <nz-option nzValue="updated_at" nzLabel="Mới Cập Nhật"></nz-option>
+            </nz-select>
+        </form>
+    </div>
+
+    <!--    class="tw-overflow-x-auto tw-h-screen-->
+
+    <div class="tw-space-y-[10px]">
+        <nz-table
+            #baiBao
+            [nzData]="users"
+            [nzLoading]="isTableLoading"
+            [nzShowPagination]="false"
+            [nzScroll]="{x:'auto' }"
+        >
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tài Khoản</th>
+                <th>Tên Người Dùng</th>
+                <th>Email</th>
+                <th>Quyền</th>
+                <ng-container *ngIf="columnDelete">
+                    <th>Ngày Xóa</th>
+                </ng-container>
+                <th>Thao Tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of baiBao.data">
+                <td>{{ data.id }}</td>
+                <td nzEllipsis>{{ data.username }}</td>
+                <td nzEllipsis>{{data.name}}</td>
+                <td nzEllipsis>{{data.email}}</td>
+                <td nzEllipsis>{{data.roleString}}</td>
+                <ng-container *ngIf="columnDelete">
+                    <td nzEllipsis>{{ data?.deleted_at }}</td>
+                </ng-container>
+                <ng-container *ngIf="data.deleted_at === null">
+                    <td  class="tw-flex tw-items-center tw-space-x-[4px]">
+                        <button nz-button nzType="primary" [routerLink]="['/nguoi-dung',data.id,'cap-nhat-nguoi-dung']">
+                            <span nz-icon nzType="edit" nzTheme="outline"></span>
+                            Cập Nhật
+                        </button>
+                        <button nz-button nzType="default" (click)="onOpenFormUpdateRole(data)">
+                            <span nz-icon nzType="edit" nzTheme="outline"></span>
+                            Cập Nhật Quyền
+                        </button>
+                        <button
+                                [nzLoading]="data.isSoftDelete"
+                                nz-popconfirm
+                                nzPopconfirmTitle="Xóa mềm người dùng ?"
+                                (nzOnConfirm)="onSoftDeleteUser(data)"
+                                nz-button
+                                nzType="default"
+                                nzDanger
+
+                        >
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                            Xóa
+                        </button>
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="data.deleted_at !== null">
+                    <td nzEllipsis class="tw-flex tw-items-center tw-space-x-[4px]">
+                        <button
+                                nz-button
+                                nzType="primary"
+                                [routerLink]="['/bai-bao',data.id]"
+                        >
+                            <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+                            Chi Tiết
+                        </button>
+                        <button
+                                [nzLoading]="data.isRestore"
+                                nz-popconfirm
+                                nzPopconfirmTitle="Hoàn Tác Xóa ?"
+                                (nzOnConfirm)="onRestoreUser(data)"
+                                nz-button
+                                nzType="primary"
+                                nzDanger
+                        >
+                            <span nz-icon nzType="rollback" nzTheme="outline"></span>
+                            Hoàn Tác
+                        </button>
+                        <button
+                                [nzLoading]="data.isDelete"
+                                nz-popconfirm
+                                nzPopconfirmTitle="Xóa Hoàn Toàn ?"
+                                (nzOnConfirm)="onForceDeleteUe(data)"
+                                nz-button
+                                nzType="default"
+                                nzDanger
+                        >
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                            Xóa
+                        </button>
+                    </td>
+                </ng-container>
+            </tr>
+            </tbody>
+        </nz-table>
+        <div class="tw-text-right">
+            <nz-pagination
+                    [nzPageIndex]="1"
+                    [nzTotal]="totalPage*10"
+                    (nzPageIndexChange)="onChangePage($event)"
+            ></nz-pagination>
+        </div>
+    </div>
+</div>

@@ -139,7 +139,7 @@ export class BaoCaoTienDoComponent{
 
         const data:BaoCaoTienDoDeTai = {
             ...form.value,
-            ngaynopbaocao: dateConvert(form.get("ngaynopbaocao")?.value.toString)
+            ngaynopbaocao: dateConvert(form.get("ngaynopbaocao")?.value.toString())
         }
 
         this.isUpdateLoading = true
@@ -154,6 +154,8 @@ export class BaoCaoTienDoComponent{
                     response.message
                 )
                 this.isUpdateLoading = false
+                this.formBaoCao.reset()
+                this.isOpenForm = false
             },
             error:(error) => {
                 this.notificationService.create(

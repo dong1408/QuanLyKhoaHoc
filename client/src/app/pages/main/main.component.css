@@ -94,6 +94,9 @@ nz-header {
 nz-content {
     margin: 24px;
 }
+.img_logo{
+    background-color: transparent;
+}
 
 .inner-content {
     padding: 24px;

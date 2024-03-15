@@ -52,6 +52,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermission('user.view');
         });
 
+        Gate::define('user.update_role', function (User $user) {
+            return $user->hasPermission('user.update_role');
+        });
+
         // 2. view user detail
         Gate::define('user.detail', function (User $user) {
             $userId = Route::current()->parameter('id');
@@ -81,30 +85,6 @@ class AuthServiceProvider extends ServiceProvider
         // ====================================================================== //
         // =====================         BAI BAO      =========================== //
         // ====================================================================== //
-
-        // 1.view bai bao
-        Gate::define('baibao.view', function (User $user) {
-            return $user->hasPermission('baibao.view');
-        });
-
-        // 2. view cho duyet
-        Gate::define('baibao.choduyet', function (User $user) {
-            return $user->hasPermission('baibao.choduyet');
-        });
-
-        // 3. view bai bao detail
-        Gate::define('baibao.detail', function (User $user) {
-            $id = Route::current()->parameter('id');
-            $flag = false;
-            $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id)->get();
-            foreach ($sanPhamTacGias as $sanPhamTacGia) {
-                if ($sanPhamTacGia->id_tacgia == $user->id) {
-                    $flag = true;
-                }
-            }
-            return $user->hasPermission('baibao.detail') || $flag;
-        });
-
         // 4. add bai bao
         Gate::define('baibao.add', function (User $user) {
             return $user->hasPermission('baibao.add');
@@ -149,29 +129,6 @@ class AuthServiceProvider extends ServiceProvider
         // ====================================================================== //
         // ========================      DE TAI      ============================ //
         // ====================================================================== //
-        // 1. view de tai
-        Gate::define('detai.view', function (User $user) {
-            return $user->hasPermission('detai.view');
-        });
-
-        // 2. view cho duyet
-        Gate::define('detai.choduyet', function (User $user) {
-            return $user->hasPermission('detai.choduyet');
-        });
-
-        // 3. view de tai detail
-        Gate::define('detai.detail', function (User $user) {
-            $id = Route::current()->parameter('id');
-            $flag = false;
-            $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id)->get();
-            foreach ($sanPhamTacGias as $sanPhamTacGia) {
-                if ($sanPhamTacGia->id_tacgia == $user->id) {
-                    $flag = true;
-                }
-            }
-            return $user->hasPermission('detai.detail') || $flag;
-        });
-
         // 4. add de tai
         Gate::define('detai.add', function (User $user) {
             return $user->hasPermission('detai.add');
@@ -182,11 +139,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('detai.update', function (User $user) {
             $id = Route::current()->parameter('id');
             $flag = false;
-            $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id)->get();
-            foreach ($sanPhamTacGias as $sanPhamTacGia) {
-                if ($sanPhamTacGia->id_tacgia == $user->id) {
-                    $flag = true;
-                }
+            $sanpham = SanPham::find($id);
+            if($sanpham && $sanpham->nguoiKeKhai->id == $user->id){
+                 $flag = true;
             }
             return $user->hasPermission('detai.update') || $flag;
         });
@@ -219,15 +174,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // 11. delete de tai
         Gate::define('detai.delete', function (User $user) {
-            $id = Route::current()->parameter('id');
-            $flag = false;
-            $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id)->get();
-            foreach ($sanPhamTacGias as $sanPhamTacGia) {
-                if ($sanPhamTacGia->id_tacgia == $user->id) {
-                    $flag = true;
-                }
-            }
-            return $user->hasPermission('detai.delete') || $flag;
+            return $user->hasPermission('detai.delete');
         });
 
 

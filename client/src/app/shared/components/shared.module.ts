@@ -12,6 +12,7 @@ import {NzTagModule} from "ng-zorro-antd/tag";
 import {BaiBaoComponent} from "./bai-bao/bai-bao.component";
 import {DeTaiComponent} from "./de-tai/de-tai.component";
 import {BaoCaoComponent} from "./bao-cao/bao-cao.component";
+import {TrangThaiDeTaiComponent} from "./trang-thai-de-tai/trang-thai-de-tai.component";
 
 @NgModule({
     declarations:[ //declare cac component
@@ -23,7 +24,8 @@ import {BaoCaoComponent} from "./bao-cao/bao-cao.component";
         SanPhamComponent,
         BaiBaoComponent,
         DeTaiComponent,
-        BaoCaoComponent
+        BaoCaoComponent,
+        TrangThaiDeTaiComponent
     ],
     imports: [ // import module
         CommonModule,
@@ -40,7 +42,8 @@ import {BaoCaoComponent} from "./bao-cao/bao-cao.component";
         SanPhamComponent,
         BaiBaoComponent,
         DeTaiComponent,
-        BaoCaoComponent
+        BaoCaoComponent,
+        TrangThaiDeTaiComponent
     ]
 })
 

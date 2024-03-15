@@ -33,8 +33,9 @@ class UserServiceImpl implements UserService
         $users = User::where('name', 'LIKE', '%' . $keysearch . '%')
             ->orWhere('username', 'LIKE', '%' . $keysearch . '%')->get();
         foreach ($users as $user) {
-            $result[] = Convert::getUserVm($user);
+            $result[] = Convert::getUserSimpleVm($user);
         }
+
         return new ResponseSuccess("Thành công", $result);
     }
 
@@ -72,9 +73,18 @@ class UserServiceImpl implements UserService
 
 
 
-    public function getRoleOfUser(): ResponseSuccess
+    public function getRoleOfUser(int $id): ResponseSuccess
     {
-        $user = auth('api')->user();
+        $userId = (int) $id;
+        if (!is_int($userId)) {
+            throw new InvalidValueException();
+        }
+
+        $user = User::find($userId);
+        if($user == null){
+            throw new UserNotFoundException();
+        }
+
         $rolesOfUser = $user->roles;
         $result = [];
         foreach ($rolesOfUser as $role) {
@@ -128,7 +138,7 @@ class UserServiceImpl implements UserService
                 'username' => $validated['username'],
                 'email' => $validated['email'],
                 'password' => Hash::make(env('SGU_2024')),
-                'role' => $validated['role'],
+//                'role' => $validated['role'],
                 'changed' => 0,
                 'ngaysinh' => $validated['ngaysinh'],
                 'dienthoai' => $validated['dienthoai'],
@@ -151,8 +161,8 @@ class UserServiceImpl implements UserService
             $user->roles()->attach($validated['roles_id']);
         });
 
-        $result = Convert::getUserDetailVm($user);
-        return new ResponseSuccess("Thành công", $result);
+//        $result = Convert::getUserDetailVm($user);
+        return new ResponseSuccess("Thành công", true);
     }
 
     public function updateUser(UpdateUserRequest $request, int $id): ResponseSuccess
@@ -170,7 +180,7 @@ class UserServiceImpl implements UserService
             $user->name = $validated['name'];
             $user->username = $validated['username'];
             $user->email = $validated['email'];
-            $user->role = $validated['role'];
+//            $user->role = $validated['role'];
             $user->ngaysinh = $validated['ngaysinh'];
             $user->dienthoai = $validated['dienthoai'];
             $user->email2 = $validated['email2'];
@@ -206,7 +216,14 @@ class UserServiceImpl implements UserService
         }
         $validated = $request->validated();
         $user->roles()->sync($validated['roles_id']);
-        return new ResponseSuccess("Thành công", true);
+
+        $result = [];
+
+        foreach ($user->roles as $role){
+            $result[] = Convert::getRoleVm($role);
+        }
+
+        return new ResponseSuccess("Thành công", $result);
     }
 
 
@@ -268,6 +285,6 @@ class UserServiceImpl implements UserService
         $user->password = Hash::make($validated['password']);
         $user->changed = 1;
         $user->save();
-        return new ResponseSuccess("Thành công", 200);
+        return new ResponseSuccess("Thành công", true);
     }
 }
