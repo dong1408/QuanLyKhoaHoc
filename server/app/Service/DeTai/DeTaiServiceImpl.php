@@ -323,7 +323,6 @@ class DeTaiServiceImpl implements DeTaiService
 
     public function getDetailDeTaiForUser(int $id): ResponseSuccess
     {
-        $userCurrent = auth('api')->user();
         $id_sanpham = $id;
         if (!is_int($id_sanpham)) {
             throw new InvalidValueException();
@@ -332,22 +331,15 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null || $sanPham->dmSanPham->masanpham != "detai") {
             throw new DeTaiNotFoundException();
         }
-        $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id_sanpham)->get();
-        $flag = false;
-        foreach ($sanPhamTacGias as $sanPhamTacGia) {
-            if ($sanPhamTacGia->id_tacgia == $userCurrent->id) {
-                $flag = true;
-            }
-        }
-        $result = null;
-        if ($flag == true) {
-            $result = Convert::getDeTaiDetailVm($sanPham);
-        } else {
-            $sanPham->trangthairasoat = null;
-            $sanPham->ngayrasoat = null;
-            $sanPham->id_nguoirasoat = null;
-            $result = Convert::getDeTaiDetailVm($sanPham);
-        }
+
+        $result = Convert::getDeTaiDetailVm($sanPham);
+        $result->trangthairasoat = null;
+        $result->ngayrasoat = null;
+        $result->id_nguoirasoat = null;
+        $result->nghiemthu = null;
+        $result->xetduyet = null;
+        $result->tuyenchon = null;
+
         return new ResponseSuccess("Thành công", $result);
     }
 

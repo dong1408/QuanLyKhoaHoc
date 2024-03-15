@@ -687,6 +687,10 @@ class Convert
         $a->updated_at = $sanPham->deTai->updated_at;
         $a->trangthairasoat = $sanPham->trangthairasoat ?? null;
 
+        $a->tuyenchon = $sanPham->tuyenChon == null ? null : Convert::getTuyenChonVm($sanPham->tuyenChon);
+        $a->xetduyet = $sanPham->xetDuyet == null ? null : Convert::getXetDuyetVm($sanPham->xetDuyet);
+        $a->nghiemthu = $sanPham->nghiemThu == null ? null : Convert::getNghiemThuVm($sanPham->nghiemThu);
+
         foreach ($sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
             $a->sanpham_tacgias[] = Convert::getSanPhamTacGiaVm($sanPhaMTacGia);
         }

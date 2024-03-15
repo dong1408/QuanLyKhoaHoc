@@ -29,6 +29,9 @@ class DeTaiDetailVm
     public ?string $deleted_at;
     public ?string $trangthairasoat;
     public string $tensanpham;
+    public ?TuyenChonVm $tuyenchon;
+    public ?XetDuyetVm $xetduyet;
+    public ?NghiemThuVm $nghiemthu;
 
     public $sanpham_tacgias = array();
 }

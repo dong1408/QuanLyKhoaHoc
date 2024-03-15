@@ -86,10 +86,9 @@ Route::group([
     // BaiBaoKhoaHocs
     Route::get('baibao/public', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
     Route::get('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBaoForUser']);
-    Route::post('baibao/public', [BaiBaoKhoaHocController::class, 'createBaiBao']);
 
     Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
-    Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet'])->can('baibao.choduyet');
+    Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao'])->can('baibao.add');
     Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham'])->can('baibao.update');
     Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao'])->can('baibao.update');
@@ -99,21 +98,20 @@ Route::group([
     Route::patch('baibao/{id}/delete', [BaiBaoKhoaHocController::class, 'deleteBaiBao'])->can('baibao.delete');
     Route::patch('baibao/{id}/restore', [BaiBaoKhoaHocController::class, 'restoreBaiBao'])->can('baibao.delete');
     Route::delete('baibao/{id}/force', [BaiBaoKhoaHocController::class, 'forceDeleteBaiBao'])->can('baibao.delete');
-    Route::get('baibao/kekhai', [BaiBaoKhoaHocController::class, 'getBaiBaoKeKhai'])->can('baibao.view');
-    Route::get('baibao/thamgia', [BaiBaoKhoaHocController::class, 'getBaiBaoThamGia'])->can('baibao.view');
-    Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao'])->can('baibao.detail');
+
+    Route::get('baibao/kekhai', [BaiBaoKhoaHocController::class, 'getBaiBaoKeKhai']);
+    Route::get('baibao/thamgia', [BaiBaoKhoaHocController::class, 'getBaiBaoThamGia']);
+    Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']); // admin + owner
 
 
 
     // DeTai
     Route::get('detai/public', [DeTaiController::class, 'getDeTaiPaging']);
     Route::get('detai/public/{id}', [DeTaiController::class, 'getDetailDeTaiForUser']);
-    Route::post('detai/public', [DeTaiController::class, 'createDetai']);
 
 
     Route::get('detai', [DeTaiController::class, 'getDeTaiPaging']);
-    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.detail');
-    Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet'])->can('detai.choduyet');
+    Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet']);
     Route::post('detai', [DeTaiController::class, 'createDetai'])->can('detai.add');
     Route::patch('detai/{id}/sanpham', [DeTaiController::class, 'updateSanPham'])->can('detai.update');
     Route::patch('detai/{id}', [DeTaiController::class, 'updateDeTai'])->can('detai.update');
@@ -128,7 +126,7 @@ Route::group([
     Route::patch('detai/{id}/delete', [DeTaiController::class, 'deleteDeTai'])->can('detai.delete');
     Route::patch('detai/{id}/restore', [DeTaiController::class, 'restoreDeTai'])->can('detai.delete');
     Route::delete('detai/{id}/forceDelete', [DeTaiController::class, 'forceDeleteDeTai'])->can('detai.delete');
-    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.detail');
+    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai']); // cho admin + owner
 
     // PhanLoaiDeTai
     Route::get('phanloaidetai', [PhanLoaiDeTaiController::class, 'getPhanLoaiDeTai']);
