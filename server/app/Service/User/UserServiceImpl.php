@@ -3,8 +3,10 @@
 namespace App\Service\User;
 
 use App\Exceptions\InvalidValueException;
+use App\Exceptions\User\PasswordIncorrectException;
 use App\Exceptions\User\UserNotFoundException;
 use App\Exceptions\User\UserNotHavePermissionException;
+use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\RegisterUserRequest;
 use App\Http\Requests\User\UpdateRoleOfUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
@@ -66,6 +68,8 @@ class UserServiceImpl implements UserService
         $pagingResponse = new PagingResponse($users->lastPage(), $users->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
     }
+
+
 
 
     public function getRoleOfUser(): ResponseSuccess
@@ -246,5 +250,24 @@ class UserServiceImpl implements UserService
         }
         User::onlyTrashed()->where('id', $userId)->forceDelete();
         return new ResponseSuccess("Thành công", true);
+    }
+
+
+    public function changePassword(ChangePasswordRequest $request): ResponseSuccess
+    {
+        $userId = auth('api')->user()->id;        
+        $user = User::find($userId);
+        if ($user == null) {
+            throw new UserNotFoundException();
+        }
+        $validated = $request->validated();
+        $currentPassword = $validated['passwordcurrent'];
+        if (!Hash::check($currentPassword, $user->password)) {
+            throw new PasswordIncorrectException();
+        }
+        $user->password = Hash::make($validated['password']);
+        $user->changed = 1;
+        $user->save();
+        return new ResponseSuccess("Thành công", 200);
     }
 }

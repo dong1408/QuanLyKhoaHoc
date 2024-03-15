@@ -232,7 +232,36 @@ class AuthServiceProvider extends ServiceProvider
 
 
         // ====================================================================== //
+        // ==========================    Role Permission    ===================== //
         // ====================================================================== //
-        // ====================================================================== //
+        // 1. view role
+        Gate::define('role.view', function (User $user) {
+            return $user->hasPermission('role.view');
+        });
+
+        // 2. add role
+        Gate::define('role.add', function (User $user) {
+            return $user->hasPermission('role.add');
+        });
+
+        // 3, update role
+        Gate::define('role.update', function (User $user) {
+            return $user->hasPermission('role.update');
+        });
+
+        // 4. view permission
+        Gate::define('permission.view', function (User $user) {
+            return $user->hasPermission('permission.view');
+        });
+
+        // 5, add permission
+        Gate::define('permission.add', function (User $user) {
+            return $user->hasPermission('permission.add');
+        });
+
+        // 6, update permission
+        Gate::define('permission.update', function (User $user) {
+            return $user->hasPermission('permission.update');
+        });
     }
 }
