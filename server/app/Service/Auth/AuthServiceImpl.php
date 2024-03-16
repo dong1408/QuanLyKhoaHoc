@@ -24,6 +24,9 @@ class AuthServiceImpl implements AuthService
                 'username' => $request->username,
                 'password' => $request->password,
             ];
+
+            // $accessToken = auth('api')->attempt($credentials);
+
             // Xác thực và tạo access token
             if (!$accessToken = auth('api')->attempt($credentials)) { // thực hiện xác thực với thông tin đăng nhập được cung cấp. Nếu xác thực thành công thì sẽ trả về một token JWT.            
                 throw new LoginException();

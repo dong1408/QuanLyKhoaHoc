@@ -12,5 +12,6 @@ interface RoleService
     public function getAllRole(): ResponseSuccess;
     public function addRole(AddRoleRequest $request): ResponseSuccess;
     public function updateRole(UpdateRoleRequest $request, int $id): ResponseSuccess;
+    public function getPermissionsOfRole(int $roleId): ResponseSuccess;
     // public function deleteRole(): ResponseSuccess;
 }

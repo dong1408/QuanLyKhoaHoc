@@ -72,6 +72,7 @@ Route::group([
 
     // Role
     Route::get('roles', [RoleController::class, 'getAllRole'])->can("role.view");
+    Route::get('roles/{id}/permissions', [RoleController::class, 'getPermissionsOfRole']);
     Route::post('roles', [RoleController::class, 'addRole'])->can('role.add');
     Route::patch('roles/{id}', [RoleController::class, 'updateRole'])->can('role.update');
 

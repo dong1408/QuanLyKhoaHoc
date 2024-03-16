@@ -58,6 +58,22 @@ class RoleServiceImpl implements RoleService
         return new ResponseSuccess("Thành công", $result);
     }
 
+    public function getPermissionsOfRole(int $roleId): ResponseSuccess
+    {
+        $roleId = (int)$roleId;
+        $role = Role::find($roleId);
+        if ($role == null) {
+            throw new RoleNotFoundException();
+        }
+        // $permissions = $role->permissions;
+        // $result = [];
+        // foreach($permissions as $permission){
+        //     $result[] = Convert::getRoleDeTailVm($role);
+        // }
+        $result = Convert::getRoleDeTailVm($role);
+        return new ResponseSuccess("Thành công", $result);
+    }
+
     // public function deleteRole(): ResponseSuccess
     // {
     // }
