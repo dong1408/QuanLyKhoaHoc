@@ -110,6 +110,10 @@ const routes: Routes = [
         path:"vai-tro/tao-moi",
         loadChildren:() => import('../role/create/create.module').then(m => m.CreateRoleModule)
       },
+      {
+        path:"vai-tro/:id/cap-nhat-vai-tro",
+        loadChildren:() => import('../role/update/update.module').then(m => m.UpdateRoleModule)
+      },
     ]
   },
 ];

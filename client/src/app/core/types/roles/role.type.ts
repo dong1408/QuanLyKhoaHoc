@@ -7,6 +7,16 @@ export interface Role{
     updated_at:string,
 }
 
+export interface ChiTietRole{
+    id:number,
+    name:string,
+    mavaitro:string,
+    description?:string,
+    created_at:string,
+    updated_at:string,
+    permissions:PermissionResponse[]
+}
+
 
 export interface Permission{
     id:number,

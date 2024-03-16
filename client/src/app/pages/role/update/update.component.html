@@ -2,7 +2,7 @@
     <button nz-button nzType="primary" [routerLink]="['/vai-tro']">
         <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
     </button>
-    <h1 class="text-primary tw-text-5xl">TẠO MỚI VAI TRÒ NGƯỜI DÙNG</h1>
+    <h1 class="text-primary tw-text-5xl">CẬP NHẬT VAI TRÒ NGƯỜI DÙNG</h1>
     <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
         <app-loading></app-loading>
     </ng-template>
@@ -123,7 +123,7 @@
                         [nzLoading]="isCreate"
                 >
                     <span nz-icon nzType="plus" nzTheme="outline"></span>
-                    Tạo Vai Trò
+                    Cập Nhật Vai Trò
                 </button>
             </form>
         </div>
