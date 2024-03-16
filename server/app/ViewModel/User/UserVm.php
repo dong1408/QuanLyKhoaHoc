@@ -21,5 +21,5 @@ class UserVm
     public string $email;
     public ?string $deleted_at;
 
-    public  $roles;
+    public ?array $roles;
 }

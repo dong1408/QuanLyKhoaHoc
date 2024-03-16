@@ -27,7 +27,8 @@ class SanPhamTacGia extends Model
     // inverse tac gia (user)
     public function tacGia()
     {
-        return $this->belongsTo('App\Models\User', 'id_tacgia');
+        return $this->belongsTo('App\Models\User', 'id_tacgia')
+            ->withTrashed();
     }
 
     // inverse san pham
