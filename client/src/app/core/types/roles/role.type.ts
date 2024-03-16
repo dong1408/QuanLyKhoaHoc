@@ -17,16 +17,23 @@ export interface Permission{
     updated_at:string
 }
 
+export interface PermissionResponse{
+    prefixSlug:string,
+    permissions:Permission[]
+}
+
 export interface CreateRole{
     name:string,
     description:string,
-    permission_id:Array<number>
+    permission_id:Array<number>,
+    mavaitro:string
 }
 
 export interface UpdateRole{
     name:string,
     description:string,
-    permission_id:Array<number>
+    permission_id:Array<number>,
+    mavaitro:string
 }
 
 export interface CreatePermission{

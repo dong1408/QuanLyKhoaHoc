@@ -30,7 +30,8 @@ class RoleServiceImpl implements RoleService
         $validated = $request->validated();
         $role = Role::create([
             'name' => $validated['name'],
-            'description' => $validated['description']
+            'description' => $validated['description'],
+            'mavaitro' => $validated['mavaitro']
         ]);
 
         $role->permissions()->attach($validated['permission_id']);  // add
@@ -49,6 +50,7 @@ class RoleServiceImpl implements RoleService
         DB::transaction(function () use ($validated, &$role) {
             $role->name = $validated['name'];
             $role->description = $validated['description'];
+            $role->mavaitro = $validated['mavaitro'];
             $role->save();
             $role->permissions()->sync($validated['permission_id']);
         });

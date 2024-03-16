@@ -71,15 +71,15 @@ Route::group([
     Route::get('users/{id}', [UserController::class, 'getUserDetail'])->can('user.detail');
 
     // Role
-    Route::get('roles', [RoleController::class, 'getAllRole']);
+    Route::get('roles', [RoleController::class, 'getAllRole'])->can("role.view");
     Route::post('roles', [RoleController::class, 'addRole'])->can('role.add');
     Route::patch('roles/{id}', [RoleController::class, 'updateRole'])->can('role.update');
 
 
     // Permission
-    Route::get('permissions', [PermissionController::class, 'getAllPermission'])->can('permission.view');
-    Route::post('permissions', [PermissionController::class, 'addPermission'])->can('permission.add');
-    Route::patch('permissions/{id}', [PermissionController::class, 'updatePermission'])->can('permission.update');
+    Route::get('permissions', [PermissionController::class, 'getAllPermission'])->can('role.view');
+    Route::post('permissions', [PermissionController::class, 'addPermission'])->can('role.add');
+    Route::patch('permissions/{id}', [PermissionController::class, 'updatePermission'])->can('role.add');
 
 
 

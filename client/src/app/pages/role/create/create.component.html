@@ -1,0 +1,131 @@
+<div class="tw-space-y-[16px]">
+    <button nz-button nzType="primary" [routerLink]="['/vai-tro']">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+    <h1 class="text-primary tw-text-5xl">TẠO MỚI VAI TRÒ NGƯỜI DÙNG</h1>
+    <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+        <app-loading></app-loading>
+    </ng-template>
+    <ng-template #loaded>
+        <div class="tw-mt-[30px] tw-space-y-[6px]">
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="createForm">
+                <h2 class="text-primary tw-text-4xl">Thông Tin Vai Trò</h2>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Tên Vai Trò</h3>
+                    <nz-form-control [nzErrorTip]="name" nzHasFeedback>
+                        <input nz-input placeholder="Tên Vai Trò"  type="text" formControlName="name"/>
+                        <ng-template #name let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Mã Vai Trò</h3>
+                    <nz-form-control [nzErrorTip]="mavaitro" nzHasFeedback>
+                        <nz-select
+                                formControlName="mavaitro"
+                                nzShowSearch  nzPlaceHolder="Mã Vai Trò"
+                        >
+                            <nz-option *ngFor="let data of AppConstant.MA_VAI_TRO" [nzLabel]="data.name" [nzValue]=data.value></nz-option>
+                        </nz-select>
+                        <ng-template #mavaitro let-control>
+                            <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Mô Tả</h3>
+                    <nz-form-control [nzErrorTip]="description" nzHasFeedback>
+                        <input nz-input min="0" placeholder="Mô Tả"  type="text" formControlName="description"/>
+                        <ng-template #description let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item *ngIf="baibao_permissions.length > 0" class="tw-w-full lg:tw-w-[50%]">
+                    <h4 class=""><span class="error">*</span> Quyền Về Bài Báo Khoa Học</h4>
+                    <nz-form-control [nzErrorTip]="permission_id" nzHasFeedback>
+                        <nz-select
+                                nzAllowClear
+                                nzShowSearch
+                                nzPlaceHolder="Quyền Hạn"
+                                nzMode="multiple"
+                                formControlName="baibao_id"
+                        >
+                            <nz-option *ngFor="let item of baibao_permissions" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+                        </nz-select>
+                        <ng-template #permission_id let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item *ngIf="detai_permissions.length > 0" class="tw-w-full lg:tw-w-[50%]">
+                    <h4 class=""><span class="error">*</span> Quyền Về Đề Tài</h4>
+                    <nz-form-control [nzErrorTip]="permission_id" nzHasFeedback>
+                        <nz-select
+                                nzAllowClear
+                                nzShowSearch
+                                nzPlaceHolder="Quyền Hạn"
+                                nzMode="multiple"
+                                formControlName="detai_id"
+                        >
+                            <nz-option *ngFor="let item of detai_permissions" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+                        </nz-select>
+                        <ng-template #permission_id let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item *ngIf="nguoidung_permissions.length > 0" class="tw-w-full lg:tw-w-[50%]">
+                    <h4 class=""><span class="error">*</span> Quyền Về Người Dùng</h4>
+                    <nz-form-control [nzErrorTip]="permission_id" nzHasFeedback>
+                        <nz-select
+                                nzAllowClear
+                                nzShowSearch
+                                nzPlaceHolder="Quyền Hạn"
+                                nzMode="multiple"
+                                formControlName="nguoidung_id"
+                        >
+                            <nz-option *ngFor="let item of nguoidung_permissions" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+                        </nz-select>
+                        <ng-template #permission_id let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item *ngIf="role_permissions.length > 0" class="tw-w-full lg:tw-w-[50%]">
+                    <h4 class=""><span class="error">*</span> Quyền Về Vai Trò</h4>
+                    <nz-form-control [nzErrorTip]="permission_id" nzHasFeedback>
+                        <nz-select
+                                nzAllowClear
+                                nzShowSearch
+                                nzPlaceHolder="Quyền Hạn"
+                                nzMode="multiple"
+                                formControlName="role_id"
+                        >
+                            <nz-option *ngFor="let item of role_permissions" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+                        </nz-select>
+                        <ng-template #permission_id let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <button
+                        nz-button
+                        nzType="primary"
+                        (click)="onSubmit()"
+                        nzSize="large"
+                        [nzLoading]="isCreate"
+                >
+                    <span nz-icon nzType="plus" nzTheme="outline"></span>
+                    Tạo Bài Báo
+                </button>
+            </form>
+        </div>
+    </ng-template>
+</div>
