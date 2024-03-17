@@ -212,8 +212,9 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
                     'Có lỗi xảy ra, vui lòng thử lại sau'
                 )
 
-                console.log(error)
                 this.loadingService.stopLoading()
+                this.router.navigate(["/de-tai"])
+                return
             }
         })
     }

@@ -58,8 +58,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // 2. view user detail
         Gate::define('user.detail', function (User $user) {
-            $userId = Route::current()->parameter('id');
-            return $user->hasPermission('user.view') || $user->id == $userId;
+            return $user->hasPermission('user.view');
         });
 
 
@@ -76,8 +75,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // 5. delete user
         Gate::define('user.delete', function (User $user) {
-            $userId = Route::current()->parameter('id');
-            return $user->hasPermission('user.delete') || $user->id == $userId;
+            return $user->hasPermission('user.delete');
         });
 
 
@@ -90,24 +88,35 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermission('baibao.add');
         });
 
+        Gate::define('baibao.view', function (User $user) {
+            $id = Route::current()->parameter('id');
+            $flag = false;
+            if($id != null){
+                $sanpham = SanPham::find($id);
+
+                if($sanpham && $sanpham->nguoiKeKhai->id == $user->id){
+                    $flag = true;
+                }
+            }
+            return $user->hasPermission('baibao.view') || $flag;
+        });
 
         // 5. update bai bao
         Gate::define('baibao.update', function (User $user) {
             $id = Route::current()->parameter('id');
             $flag = false;
-            $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id)->get();
-            foreach ($sanPhamTacGias as $sanPhamTacGia) {
-                if ($sanPhamTacGia->id_tacgia == $user->id) {
-                    $flag = true;
-                }
+            $sanpham = SanPham::find($id);
+
+            if($sanpham && $sanpham->nguoiKeKhai->id == $user->id){
+                $flag = true;
             }
             return $user->hasPermission('baibao.update') || $flag;
         });
 
 
         // 6. update trạng thái rà soát bài báo
-        Gate::define('baibao.updateTrangThaiRaSoat', function (User $user) {
-            return $user->hasPermission('baibao.updateTrangThaiRaSoat');
+        Gate::define('baibao.status', function (User $user) {
+            return $user->hasPermission('baibao.status');
         });
 
 
@@ -115,12 +124,12 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('baibao.delete', function (User $user) {
             $id = Route::current()->parameter('id');
             $flag = false;
-            $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id)->get();
-            foreach ($sanPhamTacGias as $sanPhamTacGia) {
-                if ($sanPhamTacGia->id_tacgia == $user->id) {
-                    $flag = true;
-                }
+            $sanpham = SanPham::find($id);
+
+            if($sanpham && $sanpham->nguoiKeKhai->id == $user->id){
+                $flag = true;
             }
+
             return $user->hasPermission('baibao.delete') || $flag;
         });
 
@@ -132,6 +141,19 @@ class AuthServiceProvider extends ServiceProvider
         // 4. add de tai
         Gate::define('detai.add', function (User $user) {
             return $user->hasPermission('detai.add');
+        });
+
+        Gate::define('detai.view', function (User $user) {
+            $id = Route::current()->parameter('id');
+            $flag = false;
+            if($id != null){
+                $sanpham = SanPham::find($id);
+
+                if($sanpham && $sanpham->nguoiKeKhai->id == $user->id){
+                    $flag = true;
+                }
+            }
+            return $user->hasPermission('detai.view') || $flag;
         });
 
 
@@ -146,31 +168,11 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermission('detai.update') || $flag;
         });
 
-        // 6. update trang thai ra soat de tai
-        Gate::define('detai.updateTrangThaiRaSoat', function (User $user) {
-            return $user->hasPermission('detai.updateTrangThaiRaSoat');
+        // trạng thái rà soát + tuyển chọn + báo cáo + nghiệm thu
+        Gate::define('detai.status', function (User $user) {
+            return $user->hasPermission('detai.status');
         });
 
-
-        // 7. tuyen chon de tai
-        Gate::define('detai.tuyenchon', function (User $user) {
-            return $user->hasPermission('detai.tuyenchon');
-        });
-
-        // 8. xet duyet de tai
-        Gate::define('detai.xetduyet', function (User $user) {
-            return $user->hasPermission('detai.xetduyet');
-        });
-
-        // 9. bao cao de tai
-        Gate::define('detai.baocao', function (User $user) {
-            return $user->hasPermission('detai.baocao');
-        });
-
-        // 10. nghiem thu de tai
-        Gate::define('detai.nghiemthu', function (User $user) {
-            return $user->hasPermission('detai.nghiemthu');
-        });
 
         // 11. delete de tai
         Gate::define('detai.delete', function (User $user) {
@@ -196,19 +198,5 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermission('role.update');
         });
 
-        // 4. view permission
-        Gate::define('permission.view', function (User $user) {
-            return $user->hasPermission('permission.view');
-        });
-
-        // 5, add permission
-        Gate::define('permission.add', function (User $user) {
-            return $user->hasPermission('permission.add');
-        });
-
-        // 6, update permission
-        Gate::define('permission.update', function (User $user) {
-            return $user->hasPermission('permission.update');
-        });
     }
 }

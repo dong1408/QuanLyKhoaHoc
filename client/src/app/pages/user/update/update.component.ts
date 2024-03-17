@@ -82,7 +82,7 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/bai-bao"])
+                this.router.navigate(["/nguoi-dung"])
                 return;
             }
         })
@@ -96,7 +96,10 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
                 ])
             ],
             username:[
-                null,
+                {
+                    value:null,
+                    disabled:true
+                },
                 Validators.compose([
                     Validators.required,
                     noWhiteSpaceValidator()
@@ -250,7 +253,9 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
                     "Lỗi",
                     error
                 )
+                this.router.navigate(['/nguoi-dung'])
                 this.loadingService.stopLoading()
+                return
             }
         })
     }
@@ -355,7 +360,7 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
 
         const data:UpdateUser = {
             name:form.get("name")?.value,
-            username:form.get("username")?.value,
+            // username:form.get("username")?.value,
             email:form.get("email")?.value,
             ngaysinh: form.get("ngaysinh")?.value !== null ? dateConvert(form.get("ngaysinh")?.value.toString()) : null,
             dienthoai: form.get("dienthoai")?.value ?? null,
@@ -367,7 +372,7 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
             keodai: form.get("keodai")?.value ?? false,
             dinhmucnghiavunckh: form.get("dinhmucnghiavunckh")?.value ?? null,
             dangdihoc: form.get("dangdihoc")?.value ?? null,
-            id_noihoc: form.get("id_noihoc")?.value ?? null,
+            id_noihoc: form.get("dangdihoc")?.value !== null ? (form.get("id_noihoc")?.value ?? null) : null,
             id_ngachvienchuc: form.get("id_ngachvienchuc")?.value ?? null,
             id_quoctich:form.get("id_quoctich")?.value ?? null,
             id_hochamhocvi:form.get("id_hochamhocvi")?.value ?? null,

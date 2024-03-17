@@ -49,6 +49,7 @@ use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
 use App\ViewModel\RolePermission\PermissionBySlugVm;
 use App\ViewModel\RolePermission\PermissionVm;
+use App\ViewModel\RolePermission\RoleDetailVm;
 use App\ViewModel\RolePermission\RoleVm;
 use App\ViewModel\SanPham\DMSanPhamVm;
 use App\ViewModel\SanPham\FileMinhChungSanPhamVm;
@@ -256,6 +257,7 @@ class Convert
         $a->name = $user->name;
         $a->username = $user->username;
         $a->email = $user->email;
+        $a->changed = $user->changed;
         $a->deleted_at = $user->deleted_at ?? null;
 
         foreach ($user->roles as $role) {
@@ -420,6 +422,22 @@ class Convert
         $a->description = $permission->description ?? null;
         $a->created_at = $permission->created_at ?? null;
         $a->updated_at = $permission->updated_at ?? null;
+        return $a;
+    }
+
+    public static function getRoleDeTailVm(Role $role)
+    {
+        $a = new RoleDetailVm();
+        $a->id = $role->id;
+        $a->name = $role->name;
+        $a->mavaitro = $role->mavaitro;
+        $a->description = $role->description ?? null;
+        $a->created_at = $role->created_at ?? null;
+        $a->updated_at = $role->updated_at ?? null;
+        $permissionsBySlug = $role->permissions->groupBy(function ($permission) {
+            return explode('.', $permission->slug)[0];
+        });
+        $a->permissions = Convert::getPermissionsBySlugVm($permissionsBySlug);
         return $a;
     }
 

@@ -15,14 +15,21 @@ export const authGuards:CanActivateFn = (route:ActivatedRouteSnapshot,state:Rout
         return false
     }
     const currentUser = authService.getCurrentUser()
-    console.log(authService.getCurrentUser())
     if(currentUser){
+        if(!currentUser.changed){
+            router.navigate(["/doi-mat-khau"])
+            return false
+        }
         return true
     }
 
     return from(authService.getMe()).pipe(
         switchMap((response) => {
             authService.setCurrentUser(response.data)
+            if(!response.data.changed){
+                router.navigate(["/doi-mat-khau"])
+                return of(false)
+            }
             return of(true)
         }),
         catchError(() => {

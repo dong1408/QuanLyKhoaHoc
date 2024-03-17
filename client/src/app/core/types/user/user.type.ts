@@ -15,6 +15,15 @@ export interface User{
     email:string
 }
 
+export interface Me{
+    id:number,
+    name:string,
+    username:string,
+    email:string,
+    roles:Role[],
+    changed:boolean
+}
+
 export interface UserVm{
     id:number,
     name:string,
@@ -90,7 +99,7 @@ export interface RegisterUser{
 
 export interface UpdateUser{
     name:string,
-    username:string,
+    // username:string,
     email:string,
     ngaysinh:string | null,
     dienthoai:string | null,

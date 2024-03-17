@@ -36,6 +36,10 @@ class UpdateRoleRequest extends FormRequest
             ],
             'description' => 'bail|required|string',
             'permission_id' => 'bail|required|array',
+            'mavaitro' => [
+                'bail','required','string',
+                Rule::in(['admin','super_admin','giangvien','sinhvien','guest'])
+            ],
             'permission_id.*' => [
                 'integer',
                 Rule::exists("permissions", 'id'),
@@ -51,6 +55,7 @@ class UpdateRoleRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'permission_id.*.exists' => 'Quyền không tồn tại trên hệ thống',
+            'in' => 'Trường :attribute chỉ nhận các giá trị :values'
         ];
     }
 

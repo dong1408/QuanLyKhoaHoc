@@ -30,10 +30,10 @@ class UpdateUserRequest extends FormRequest
                 'required', 'integer',
                 'exists:users,id',
             ],
-            "username" => [
-                "bail", "required", "string",
-                Rule::unique('users')->ignore(Route::input('id'), 'id')
-            ],
+            // "username" => [
+            //     "bail", "required", "string",
+            //     Rule::unique('users')->ignore(Route::input('id'), 'id')
+            // ],
             "name" => "bail|required|string",
             "email" => [
                 "bail", "required", "string",
@@ -110,7 +110,7 @@ class UpdateUserRequest extends FormRequest
             'id_nganhtinhdiem.exists' => 'Ngành tính điểm không tồn tại trên hệ thống',
             'id_chuyennganhtinhdiem.exists' => 'Chuyên ngành tính điểm không tồn tại trên hệ thống',
             'in' => 'Trường :attribute phải là một trong các giá trị null, :values',
-            'username.unique' => 'Username đã tồn tại trong hệ thống',
+            // 'username.unique' => 'Username đã tồn tại trong hệ thống',
             'email.unique' => 'Email đã tồn tại trong hệ thống',
         ];
     }

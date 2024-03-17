@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {BehaviorSubject, catchError, Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {User} from "../../types/user/user.type";
+import {Me, User} from "../../types/user/user.type";
 import {ApiResponse} from "../../types/api-response.type";
 import {environment} from "../../../../environments/environment";
 import {handleError} from "../../../shared/commons/handler-error-http";
@@ -12,22 +12,22 @@ import {Login, Token} from "../../types/user/auth.type";
 })
 export class AuthService{
     userState$:BehaviorSubject<any> = new BehaviorSubject<any>(null)
-    user:User | null = null
+    user:Me | null = null
 
     constructor(private http:HttpClient) {
 
     }
 
-    getCurrentUser():User | null{
+    getCurrentUser():Me | null{
         return this.user
     }
 
-    setCurrentUser(user: User | null){
+    setCurrentUser(user: Me | null){
         this.user = user;
     }
 
-    getMe():Observable<ApiResponse<User>>{
-        return this.http.get<ApiResponse<User>>(`${environment.apiUrl}/auth/getMe`).pipe(
+    getMe():Observable<ApiResponse<Me>>{
+        return this.http.get<ApiResponse<Me>>(`${environment.apiUrl}/auth/getMe`).pipe(
             catchError(handleError)
         )
     }

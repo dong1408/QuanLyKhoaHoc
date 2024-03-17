@@ -30,7 +30,8 @@ class RoleServiceImpl implements RoleService
         $validated = $request->validated();
         $role = Role::create([
             'name' => $validated['name'],
-            'description' => $validated['description']
+            'description' => $validated['description'],
+            'mavaitro' => $validated['mavaitro']
         ]);
 
         $role->permissions()->attach($validated['permission_id']);  // add
@@ -49,6 +50,7 @@ class RoleServiceImpl implements RoleService
         DB::transaction(function () use ($validated, &$role) {
             $role->name = $validated['name'];
             $role->description = $validated['description'];
+            $role->mavaitro = $validated['mavaitro'];
             $role->save();
             $role->permissions()->sync($validated['permission_id']);
         });
@@ -56,7 +58,15 @@ class RoleServiceImpl implements RoleService
         return new ResponseSuccess("Thành công", $result);
     }
 
-    // public function deleteRole(): ResponseSuccess
-    // {
-    // }
+    public function getPermissionsOfRole(int $roleId): ResponseSuccess
+    {
+        $roleId = (int)$roleId;
+        $role = Role::find($roleId);
+        if ($role == null) {
+            throw new RoleNotFoundException();
+        }
+        $result = Convert::getRoleDeTailVm($role);
+        return new ResponseSuccess("Thành công", $result);
+    }
+
 }

@@ -16,6 +16,7 @@ class Role extends Model
     protected $fillable = [
         'name',   
         'description',
+        'mavaitro'
     ];
 
     // relation n-n to users (1 vai tro thuoc ve nhieu nguoi, 1 nguoi co the co nhieu vai tro)

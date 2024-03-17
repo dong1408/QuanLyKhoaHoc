@@ -36,4 +36,10 @@ class RoleController extends Controller
         $result = $this->roleService->updateRole($request, $id);
         return response()->json($result, 200);
     }
+
+    public function getPermissionsOfRole(int $roleId): response
+    {
+        $result = $this->roleService->getPermissionsOfRole($roleId);
+        return response()->json($result, 200);
+    }
 }

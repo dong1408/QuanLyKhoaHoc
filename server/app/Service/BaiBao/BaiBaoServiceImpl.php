@@ -22,6 +22,7 @@ use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
 use App\Models\FileMinhChungSanPham;
+use App\Models\Role;
 use App\Models\SanPham\DMSanPham;
 use App\Models\SanPham\DMVaiTroTacGia;
 use App\Models\SanPham\SanPham;
@@ -149,7 +150,6 @@ class BaiBaoServiceImpl implements BaiBaoService
 
     public function getDetailBaiBaoForUser(int $id): ResponseSuccess
     {
-        $userCurrent = auth('api')->user();
         $id_sanpham = $id;
         if (!is_int($id_sanpham)) {
             throw new InvalidValueException();
@@ -158,22 +158,17 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null || $sanPham->dmSanPham->masanpham != "baibaokhoahoc") {
             throw new BaiBaoKhoaHocNotFoundException();
         }
-        $sanPhamTacGias = SanPhamTacGia::where('id_sanpham', $id_sanpham)->get();
-        $flag = false;
-        foreach ($sanPhamTacGias as $sanPhamTacGia) {
-            if ($sanPhamTacGia->id_tacgia == $userCurrent->id) {
-                $flag = true;
-            }
+
+        if($sanPham->trangthairasoat == "Đang rà soát"){
+            throw new BaiBaoKhoaHocNotFoundException();
         }
-        $result = null;
-        if ($flag == true) {
-            $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
-        } else {
-            $sanPham->trangthairasoat = null;
-            $sanPham->ngayrasoat = null;
-            $sanPham->id_nguoirasoat = null;
-            $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
-        }
+
+
+        $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
+        $result->sanpham->ngayrasoat = null;
+        $result->sanpham->nguoirasoat = null;
+
+
         return new ResponseSuccess("Thành công", $result);
     }
 
@@ -217,6 +212,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             });
             if (count($filteredWithoutId) > 0) {
                 $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
@@ -225,6 +221,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                         'name' => $item['tentacgia'],
                         'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
+                    $user->roles()->attach($idRoleGuest);
                     $newData[] = [
                         'id_tacgia' => $user->id,
                         'id_vaitro' => $item['id_vaitro'],
@@ -522,6 +519,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             });
             if (count($filteredWithoutId) > 0) {
                 $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
@@ -530,6 +528,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                         'name' => $item['tentacgia'],
                         'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
+                    $user->roles()->attach($idRoleGuest);
                     $newData[] = [
                         'id_tacgia' => $user->id,
                         'id_vaitro' => $item['id_vaitro'],

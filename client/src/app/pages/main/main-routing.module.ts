@@ -102,6 +102,18 @@ const routes: Routes = [
         path:"nguoi-dung/:id/cap-nhat-nguoi-dung",
         loadChildren:() => import('../user/update/update.module').then(m => m.UserUpdateModule)
       },
+      {
+        path:"vai-tro",
+        loadChildren:() => import('../role/role.module').then(m => m.RoleModule)
+      },
+      {
+        path:"vai-tro/tao-moi",
+        loadChildren:() => import('../role/create/create.module').then(m => m.CreateRoleModule)
+      },
+      {
+        path:"vai-tro/:id/cap-nhat-vai-tro",
+        loadChildren:() => import('../role/update/update.module').then(m => m.UpdateRoleModule)
+      },
     ]
   },
 ];

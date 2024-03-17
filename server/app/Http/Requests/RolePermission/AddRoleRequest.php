@@ -27,6 +27,10 @@ class AddRoleRequest extends FormRequest
         return [
             'name' => 'bail|required|string|unique:roles,name',
             'description' => 'bail|required|string',
+            'mavaitro' => [
+                'bail','required','string',
+                Rule::in(['admin','super_admin','giangvien','sinhvien','guest'])
+            ],
             'permission_id' => 'bail|required|array',
             'permission_id.*' => [
                 'integer',
@@ -43,7 +47,8 @@ class AddRoleRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'permission_id.*.exists' => 'Quyền không tồn tại trên hệ thống',
-            'name.unique' => 'Tên vai trò đã tồn tại trong hệ thống'
+            'name.unique' => 'Tên vai trò đã tồn tại trong hệ thống',
+            'in' => 'Trường :attribute chỉ nhận các giá trị :values'
         ];
     }
 }
