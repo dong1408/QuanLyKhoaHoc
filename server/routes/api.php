@@ -130,7 +130,7 @@ Route::group([
     Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai']); // cho admin + owner
     Route::get('detai/kekhai', [DeTaiController::class, 'getDeTaiKeKhai']);
     Route::get('detai/thamgia', [DeTaiController::class, 'getDeTaiThamGia']);
-    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.detail');
+    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai']);
 
     // PhanLoaiDeTai
     Route::get('phanloaidetai', [PhanLoaiDeTaiController::class, 'getPhanLoaiDeTai']);

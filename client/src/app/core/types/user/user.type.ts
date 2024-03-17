@@ -90,7 +90,7 @@ export interface RegisterUser{
 
 export interface UpdateUser{
     name:string,
-    username:string,
+    // username:string,
     email:string,
     ngaysinh:string | null,
     dienthoai:string | null,

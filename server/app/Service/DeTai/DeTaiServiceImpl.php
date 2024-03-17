@@ -42,6 +42,7 @@ use App\Models\DeTai\NghiemThu;
 use App\Models\DeTai\TuyenChon;
 use App\Models\DeTai\XetDuyet;
 use App\Models\FileMinhChungSanPham;
+use App\Models\Role;
 use App\Models\SanPham\DMSanPham;
 use App\Models\SanPham\DMVaiTroTacGia;
 use App\Models\SanPham\SanPham;
@@ -394,6 +395,7 @@ class DeTaiServiceImpl implements DeTaiService
             });
             if (count($filteredWithoutId) > 0) {
                 $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
@@ -402,6 +404,7 @@ class DeTaiServiceImpl implements DeTaiService
                         'name' => $item['tentacgia'],
                         'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
+                    $user->roles()->attach($idRoleGuest);
                     $newData[] = [
                         'id_tacgia' => $user->id,
                         'id_vaitro' => $item['id_vaitro'],
@@ -665,6 +668,7 @@ class DeTaiServiceImpl implements DeTaiService
             });
             if (count($filteredWithoutId) > 0) {
                 $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
@@ -673,6 +677,7 @@ class DeTaiServiceImpl implements DeTaiService
                         'name' => $item['tentacgia'],
                         'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
+                    $user->roles()->attach($idRoleGuest);
                     $newData[] = [
                         'id_tacgia' => $user->id,
                         'id_vaitro' => $item['id_vaitro'],

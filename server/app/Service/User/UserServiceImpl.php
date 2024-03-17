@@ -154,7 +154,7 @@ class UserServiceImpl implements UserService
                 'keodai' => $validated['keodai'],
                 'dinhmucnghiavunckh' => $validated['dinhmucnghiavunckh'],
                 'dangdihoc' => $validated['dangdihoc'],
-                'id_noihoc' => $validated['id_noihoc'],
+                'id_noihoc' => !empty($validated['dangdihoc']) ? $validated['id_noihoc'] : null,
                 'id_ngachvienchuc' => $validated['id_ngachvienchuc'],
                 'id_quoctich' => $validated['id_quoctich'],
                 'id_hochamhocvi' => $validated['id_hochamhocvi'],
@@ -182,7 +182,7 @@ class UserServiceImpl implements UserService
         $validated = $request->validated();
         DB::transaction(function () use ($validated, &$user) {
             $user->name = $validated['name'];
-            $user->username = $validated['username'];
+            // $user->username = $validated['username'];
             $user->email = $validated['email'];
             //            $user->role = $validated['role'];
             $user->ngaysinh = $validated['ngaysinh'];
