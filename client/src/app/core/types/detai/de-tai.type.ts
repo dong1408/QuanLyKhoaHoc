@@ -43,6 +43,11 @@ export interface ChiTietDeTai{
     created_at:string,
     updated_at:string,
     sanpham_tacgias:SanPhamTacGia[]
+
+    //
+    xetduyet?:XetDuyet,
+    nghiemthu?:NghiemThu,
+    tuyenchon?:TuyenChon
 }
 
 

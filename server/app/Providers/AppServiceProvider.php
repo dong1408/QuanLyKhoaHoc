@@ -32,6 +32,16 @@ use App\Service\TapChi\TheoHDGSService;
 use App\Service\TapChi\TheoHDGSServiceImpl;
 use App\Service\User\UserService;
 use App\Service\User\UserServiceImpl;
+use App\Service\UserInfo\ChuyenMonService;
+use App\Service\UserInfo\ChuyenMonServiceImpl;
+use App\Service\UserInfo\DonViService;
+use App\Service\UserInfo\DonViServiceImpl;
+use App\Service\UserInfo\HocHamHocViService;
+use App\Service\UserInfo\HocHamHocViServiceImpl;
+use App\Service\UserInfo\NgachVienChucService;
+use App\Service\UserInfo\NgachVienChucServiceImpl;
+use App\Service\UserInfo\PhanLoaiToChucService;
+use App\Service\UserInfo\PhanLoaiToChucServiceImpl;
 use App\Service\UserInfo\QuocGiaService;
 use App\Service\UserInfo\QuocGiaServiceImpl;
 use App\Service\UserInfo\TinhThanhService;
@@ -68,6 +78,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PhanLoaiDeTaiService::class, PhanLoaiDeTaiServiceImpl::class);
         $this->app->bind(RoleService::class, RoleServiceImpl::class);
         $this->app->bind(PermissionService::class, PermissionServiceImpl::class);
+        $this->app->bind(ChuyenMonService::class, ChuyenMonServiceImpl::class);
+        $this->app->bind(DonViService::class, DonViServiceImpl::class);
+        $this->app->bind(HocHamHocViService::class, HocHamHocViServiceImpl::class);
+        $this->app->bind(NgachVienChucService::class, NgachVienChucServiceImpl::class);
+        $this->app->bind(PhanLoaiToChucService::class, PhanLoaiToChucServiceImpl::class);
     }
     /**
      * Bootstrap any application services.

@@ -22,6 +22,7 @@ use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
 use App\Models\FileMinhChungSanPham;
+use App\Models\Role;
 use App\Models\SanPham\DMSanPham;
 use App\Models\SanPham\DMVaiTroTacGia;
 use App\Models\SanPham\SanPham;
@@ -79,6 +80,31 @@ class BaiBaoServiceImpl implements BaiBaoService
 
 
 
+    public function getBaiBaoPagingForUser(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::select('san_phams.*')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+            ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
+            ->where('d_m_san_phams.masanpham', '=', 'baibaokhoahoc')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
+                    ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_phams.trangthairasoat', 'Đã xác nhận')
+            ->groupBy('san_phams.id')
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+
+
 
     public function getBaiBaoChoDuyet(Request $request): ResponseSuccess
     {
@@ -122,6 +148,31 @@ class BaiBaoServiceImpl implements BaiBaoService
     }
 
 
+    public function getDetailBaiBaoForUser(int $id): ResponseSuccess
+    {
+        $id_sanpham = $id;
+        if (!is_int($id_sanpham)) {
+            throw new InvalidValueException();
+        }
+        $sanPham = SanPham::withTrashed()->find($id_sanpham);
+        if ($sanPham == null || $sanPham->dmSanPham->masanpham != "baibaokhoahoc") {
+            throw new BaiBaoKhoaHocNotFoundException();
+        }
+
+        if($sanPham->trangthairasoat == "Đang rà soát"){
+            throw new BaiBaoKhoaHocNotFoundException();
+        }
+
+
+        $result = Convert::getBaiBaoKhoaHocDetailVm($sanPham);
+        $result->sanpham->ngayrasoat = null;
+        $result->sanpham->nguoirasoat = null;
+
+
+        return new ResponseSuccess("Thành công", $result);
+    }
+
+
     private function randomUnique()
     {
         $microtime = microtime(true);
@@ -161,6 +212,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             });
             if (count($filteredWithoutId) > 0) {
                 $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
@@ -169,6 +221,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                         'name' => $item['tentacgia'],
                         'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
+                    $user->roles()->attach($idRoleGuest);
                     $newData[] = [
                         'id_tacgia' => $user->id,
                         'id_vaitro' => $item['id_vaitro'],
@@ -466,6 +519,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             });
             if (count($filteredWithoutId) > 0) {
                 $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
@@ -474,6 +528,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                         'name' => $item['tentacgia'],
                         'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
+                    $user->roles()->attach($idRoleGuest);
                     $newData[] = [
                         'id_tacgia' => $user->id,
                         'id_vaitro' => $item['id_vaitro'],

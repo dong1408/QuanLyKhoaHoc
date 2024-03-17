@@ -61,7 +61,7 @@ class Handler extends ExceptionHandler
 
         // User khong co quyen truy cap
         if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
-            return response()->json(new ResponseError("Forbidden", 403, "Người dùng không có quyền truy cập"));
+            return response()->json(new ResponseError("Forbidden", 403, "Bạn không có quyền thực hiện thao tác này"),403);
         }
 
 
@@ -91,7 +91,7 @@ class Handler extends ExceptionHandler
 
         // Could not decode token: Error while decoding from JSON
         if ($exception instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-            return response()->json(new ResponseError("BAD REQUEST", 401, "Phiên đăng nhập hết hạn"), 400);
+            return response()->json(new ResponseError("BAD REQUEST", 401, "Phiên đăng nhập hết hạn"), 401);
         }
 
         if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {

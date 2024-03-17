@@ -21,6 +21,29 @@ export class ConstantsService{
     readonly TUYEN_CHON_THAT_BAI : STATUS_DE_TAI = "Tuyển chọn thất bại"
     readonly XET_DUYET_THAT_BAI : STATUS_DE_TAI ="Xét duyệt thất bại"
 
+    readonly MA_VAI_TRO = [
+        {
+            name:"Super Admin",
+            value:"super_admin"
+        },
+        {
+            name:"Admin",
+            value:"admin"
+        },
+        {
+            name:"Giảng Viên",
+            value:"giangvien"
+        },
+        {
+            name:"Sinh Viên",
+            value:"sinhvien"
+        },
+        {
+            name:"Guest",
+            value:"guest"
+        },
+    ]
+
     readonly DE_TAI_FILTER = [
         {
             name: "Tất Cả",

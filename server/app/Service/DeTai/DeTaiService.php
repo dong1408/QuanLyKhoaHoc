@@ -18,8 +18,10 @@ use Illuminate\Http\Request;
 interface DeTaiService
 {
     public function getDeTaiPaging(Request $request): ResponseSuccess;
+    public function getDeTaiPagingForUser(Request $request): ResponseSuccess;
     public function getDeTaiChoDuyet(Request $request): ResponseSuccess;
     public function getDetailDeTai(int $id): ResponseSuccess;
+    public function getDetailDeTaiForUser(int $id): ResponseSuccess;
     public function createDeTai(CreateDeTaiRequest $request): ResponseSuccess;
     public function updateSanPham(UpdateSanPhamRequest $request, int $id): ResponseSuccess;
     public function updateDeTai(UpdateDeTaiRequest $request, int $id): ResponseSuccess;
@@ -30,7 +32,10 @@ interface DeTaiService
     public function xetDuyetDeTai(XetDuyetDeTaiRequest $request, int $id): ResponseSuccess;
     public function baoCaoTienDoDeTai(BaoCaoTienDoDeTaiRequest $request, int $id): ResponseSuccess;
     public function nghiemThuDeTai(NghiemThuDeTaiRequest $request, int $id): ResponseSuccess;
+    public function getLichSuBaoCao(Request $request, int $id): ResponseSuccess;
     public function deleteDeTai(int $id): ResponseSuccess;
     public function restoreDeTai(int $id): ResponseSuccess;
     public function forceDeleteDeTai(int $id): ResponseSuccess;
+    public function getDeTaiKeKhai(Request $request): ResponseSuccess;
+    public function getDeTaiThamGia(Request $request): ResponseSuccess;
 }

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {User} from "../../core/types/user/user.type";
+import {Me, User} from "../../core/types/user/user.type";
 import {AuthService} from "../../core/services/user/auth.service";
 import {Subject, takeUntil} from "rxjs";
 import {LocalStorageService} from "../../core/services/local-storage.service";
@@ -14,7 +14,7 @@ import {Router} from "@angular/router";
 export class MainComponent implements OnInit, OnDestroy {
   isCollapsed = false;
 
-  userInfo: User | null = null
+  userInfo: Me | null = null
 
   destroy$: Subject<void> = new Subject<void>()
 

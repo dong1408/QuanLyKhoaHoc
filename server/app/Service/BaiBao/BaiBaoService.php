@@ -14,8 +14,10 @@ use Illuminate\Http\Request;
 interface BaiBaoService
 {
     public function getBaiBaoPaging(Request $request): ResponseSuccess;
+    public function getBaiBaoPagingForUser(Request $request): ResponseSuccess;
     public function getBaiBaoChoDuyet(Request $request): ResponseSuccess;
     public function getDetailBaiBao(int $id): ResponseSuccess;
+    public function getDetailBaiBaoForUser(int $id): ResponseSuccess;
     public function createBaiBao(CreateBaiBaoRequest $request): ResponseSuccess;
     public function updateSanPham(UpdateSanPhamRequest $request, int $id): ResponseSuccess;
     public function updateBaiBao(UpdateBaiBaoRequest $request, int $id): ResponseSuccess;

@@ -1,0 +1,48 @@
+<div class="tw-space-y-[2rem]">
+    <ng-container *ngIf="tuyenchon !== undefined">
+        <div>
+            <h3 class="text-primary">Trạng Thái Tuyển Chọn</h3>
+            <div class="tw-space-y-[0.8rem]">
+                <p><strong class="tw-mr-[0.5rem]">Kết Quả Tuyển Chọn: </strong>
+                    <span *ngIf="tuyenchon.ketquatuyenchon === AppConstant.TT_DETAI_SUCCESS" class="success">{{tuyenchon.ketquatuyenchon}}</span>
+                    <span *ngIf="tuyenchon.ketquatuyenchon === AppConstant.TT_DETAI_FAILED" class="error">{{tuyenchon.ketquatuyenchon}}</span>
+                </p>
+
+                <p><strong class="tw-mr-[0.5rem]">Lý Do: </strong> {{tuyenchon.lydo ?? 'Không Có'}} </p>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="xetduyet !== undefined">
+        <div >
+            <h3 class="text-primary">Trạng Thái Xét Duyệt</h3>
+            <div class="tw-space-y-[0.8rem]">
+                <p><strong class="tw-mr-[0.5rem]">Ngày Xét Duyệt: </strong> {{xetduyet.ngayxetduyet ?? 'Không Có'}} </p>
+                <p><strong class="tw-mr-[0.5rem]">Kết Quả Tuyển Chọn: </strong>
+                    <span *ngIf="xetduyet.ketquaxetduyet === AppConstant.TT_DETAI_SUCCESS" class="success">{{xetduyet.ketquaxetduyet}}</span>
+                    <span *ngIf="xetduyet.ketquaxetduyet === AppConstant.TT_DETAI_FAILED" class="error">{{xetduyet.ketquaxetduyet}}</span>
+                </p>
+                <p><strong class="tw-mr-[0.5rem]">Số Hợp Đồng: </strong> {{xetduyet.sohopdong ?? 'Không Có'}} </p>
+                <p><strong class="tw-mr-[0.5rem]">Ngày Ký Hợp Đồng: </strong> {{xetduyet.ngaykyhopdong ?? 'Không Có'}} </p>
+                <p><strong class="tw-mr-[0.5rem]">Thời Hạn Ký Hợp Đồng: </strong> {{xetduyet.thoihanhopdong ?? 'Không Có'}} </p>
+                <p><strong class="tw-mr-[0.5rem]">Kinh Phí: </strong> {{xetduyet.kinhphi ?? 'Không Có'}} </p>
+
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="nghiemthu !== undefined">
+        <div >
+            <h3 class="text-primary">Trạng Thái Nghiệm Thu</h3>
+            <div class="tw-space-y-[0.8rem]">
+                <p><strong class="tw-mr-[0.5rem]">Hội Đồng Nghiệm Thu: </strong> {{nghiemthu.hoidongnghiemthu ?? 'Không Có'}} </p>
+                <p><strong class="tw-mr-[0.5rem]">Ngày Nghiệm Thu: </strong> {{nghiemthu.ngaynghiemthu ?? 'Không Có'}} </p>
+                <p><strong class="tw-mr-[0.5rem]">Kết Quả Nghiệm Thu: </strong> {{nghiemthu.ketquanghiemthu ?? 'Không Có'}} </p>
+                <p><strong class="tw-mr-[0.5rem]">Ngày Công Nhận Hoàn Thành: </strong> {{nghiemthu.ngaycongnhanhoanthanh ?? 'Không Có'}} </p>
+                <p><strong class="tw-mr-[0.5rem]">Số Quyết Định Công Nhận Hoàn Thành: </strong> {{nghiemthu.soqdcongnhanhoanthanh ?? 'Không Có'}} </p>
+                <p><strong class="tw-mr-[0.5rem]">Thời Gian Hoàn Thành: </strong> {{nghiemthu.thoigianhoanthanh ?? 'Không Có'}} </p>
+            </div>
+        </div>
+    </ng-container>
+
+</div>

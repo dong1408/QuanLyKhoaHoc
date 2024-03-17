@@ -7,28 +7,44 @@
               [nzTrigger]="null">
         <div class="sidebar-logo">
             <a href="#" target="_blank">
-                <img src="./assets/images/blob.jpg" alt="logo">
+                <img src="./assets/images/blob.png" alt="logo" class="img_logo">
                 <h1>Quản Lý Khoa Học</h1>
             </a>
         </div>
         <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-            <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+            <li nz-submenu nzOpen nzTitle="Đề Tài" nzIcon="form">
                 <ul>
-                    <li nz-menu-item nzMatchRouter>
-                        <a routerLink="/welcome">Welcome</a>
+                    <li nz-menu-item >
+                        <a routerLink="/de-tai">Quản Lý</a>
                     </li>
-                    <li nz-menu-item nzMatchRouter>
-                        <a>Monitor</a>
+                    <li nz-menu-item >
+                        <a routerLink="/de-tai/tao-moi">Tạo Mới</a>
                     </li>
-                    <li nz-menu-item nzMatchRouter>
-                        <a>Workplace</a>
+                    <li nz-menu-item>
+                        <a routerLink="/de-tai/cho-phe-duyet">Chờ Duyêt</a>
                     </li>
                 </ul>
             </li>
-            <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
+            <li nz-submenu nzOpen nzTitle="Bài Báo Khoa Học" nzIcon="form">
                 <ul>
-                    <li nz-menu-item nzMatchRouter>
-                        <a>Basic Form</a>
+                    <li nz-menu-item >
+                        <a routerLink="/bai-bao">Quản Lý</a>
+                    </li>
+                    <li nz-menu-item>
+                        <a routerLink="/bai-bao/tao-moi">Tạo Mới</a>
+                    </li>
+                    <li nz-menu-item>
+                        <a routerLink="/bai-bao/cho-phe-duyet">Chờ Duyêt</a>
+                    </li>
+                </ul>
+            </li>
+            <li nz-submenu nzOpen nzTitle="Tạp Chí" nzIcon="form">
+                <ul>
+                    <li nz-menu-item>
+                        <a>Quản Lý</a>
+                    </li>
+                    <li nz-menu-item >
+                        <a>Tạo Mới</a>
                     </li>
                 </ul>
             </li>

@@ -1,0 +1,289 @@
+<div class="tw-space-y-[16px]">
+    <button nz-button nzType="primary" [routerLink]="['/nguoi-dung']">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+    <h1 class="text-primary tw-text-5xl">TẠO MỚI NGƯỜI DÙNG</h1>
+    <ng-template [ngIf]="this.loadingService.isLoading$ | async" [ngIfElse]="loaded">
+        <app-loading></app-loading>
+    </ng-template>
+    <ng-template #loaded>
+        <div class="tw-mt-[30px] tw-space-y-[6px]">
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="createForm">
+                <h2 class="text-primary tw-text-4xl">Thông Tin Người Dùng</h2>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Tên Người Dùng</h3>
+                    <nz-form-control [nzErrorTip]="name" nzHasFeedback>
+                        <input nz-input placeholder="Tên Người Dùng"  type="text" formControlName="name"/>
+                        <ng-template #name let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Tài khoản</h3>
+                    <nz-form-control [nzErrorTip]="username" nzHasFeedback>
+                        <input nz-input placeholder="Tài Khoản"  type="text" formControlName="username"/>
+                        <ng-template #username let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class=""><span class="error">*</span> Email</h3>
+                    <nz-form-control [nzErrorTip]="email" nzHasFeedback>
+                        <input nz-input placeholder="Email"  type="text" formControlName="email"/>
+                        <ng-template #email let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                            <small *ngIf="control.errors?.['email']" class="tw-ml-2 error">Email không đúng định dạng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Ngày Sinh</h3>
+                    <nz-form-control [nzErrorTip]="ngaysinh" nzHasFeedback>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Sinh" formControlName="ngaysinh"></nz-date-picker>
+                        <ng-template #ngaysinh let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Điện Thoại</h3>
+                    <nz-form-control [nzErrorTip]="dienthoai" nzHasFeedback>
+                        <input nz-input placeholder="Điện Thoại"  type="text" formControlName="dienthoai"/>
+                        <ng-template #dienthoai let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                           </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Email 2</h3>
+                    <nz-form-control [nzErrorTip]="email2" nzHasFeedback>
+                        <input nz-input placeholder="Email 2"  type="text" formControlName="email2"/>
+                        <ng-template #email2 let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Orchid</h3>
+                    <nz-form-control [nzErrorTip]="orchid" nzHasFeedback>
+                        <input nz-input placeholder="Orchid"  type="text" formControlName="orchid"/>
+                        <ng-template #orchid let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Tổ Chức</h3>
+                    <nz-form-control  nzHasFeedback>
+                        <nz-select
+                                (ngModelChange)="onSelectToChuc($event)"
+                                formControlName="id_tochuc"
+                                nzAllowClear
+                                nzShowSearch  nzPlaceHolder="Tổ Chức"
+                        >
+                            <nz-option *ngFor="let data of this.toChucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Đơn Vị</h3>
+                    <nz-form-control  nzHasFeedback>
+                        <nz-select
+                                nzAllowClear
+                                formControlName="id_donvi"
+                                nzShowSearch  nzPlaceHolder="Đơn Vị"
+                                [nzLoading]="isGetDonViLoading"
+                                [nzDisabled]="isGetDonViLoading"
+                        >
+                            <nz-option *ngFor="let data of this.donVis" [nzLabel]="data.tendonvi ? data.tendonvi : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Cơ Hữu</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="cohuu"
+                                nzShowSearch nzPlaceHolder="Cơ Hữu ?"
+                        >
+                            <nz-option nzLabel="Có" [nzValue]=true></nz-option>
+                            <nz-option nzLabel="Không" [nzValue]=false></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Kéo Dài</h3>
+                    <nz-form-control>
+                        <nz-select
+                                formControlName="keodai"
+                                nzShowSearch nzPlaceHolder="Kéo Dài ?"
+                        >
+                            <nz-option nzLabel="Có" [nzValue]=true></nz-option>
+                            <nz-option nzLabel="Không" [nzValue]=false></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Định Mức Nghĩa Vụ NCKH</h3>
+                    <nz-form-control [nzErrorTip]="dinhmucnghiavunckh" nzHasFeedback>
+                        <input nz-input placeholder="Định Mức Nghĩa Vụ NCKH"  type="text" formControlName="dinhmucnghiavunckh"/>
+                        <ng-template #dinhmucnghiavunckh let-control>
+                            <small *ngIf="control.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Đang Đi Học ?</h3>
+                    <nz-form-control [nzErrorTip]="dangdihoc" nzHasFeedback>
+                        <nz-select
+                                (ngModelChange)="onSelectNoHoc($event)"
+                                formControlName="dangdihoc"
+                                nzShowSearch
+                                nzAllowClear
+                                nzPlaceHolder="Đang Đi Học ?"
+                        >
+                            <nz-option nzLabel="Cao Học" nzValue="caohoc"></nz-option>
+                            <nz-option nzLabel="Nghiên Cứu Sinh" nzValue="ncs"></nz-option>
+                        </nz-select>
+                        <ng-template #dangdihoc let-control>
+
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Nơi Học</h3>
+                    <nz-form-control  nzHasFeedback>
+                        <nz-select
+                                formControlName="id_noihoc"
+                                nzShowSearch
+                                nzAllowClear
+                                nzPlaceHolder="Nơi Học"
+                        >
+                            <nz-option *ngFor="let data of this.toChucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Ngạch Viên Chức</h3>
+                    <nz-form-control  nzHasFeedback>
+                        <nz-select
+                                formControlName="id_ngachvienchuc"
+                                nzShowSearch
+                                nzAllowClear
+                                nzPlaceHolder="Ngạch Viên Chức"
+                        >
+                            <nz-option *ngFor="let data of this.ngachVienChucs" [nzLabel]="data.tenngach ? data.tenngach : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Quốc Tịch</h3>
+                    <nz-form-control  nzHasFeedback>
+                        <nz-select
+                                formControlName="id_quoctich"
+                                nzShowSearch
+                                nzAllowClear
+                                nzPlaceHolder="Quốc Tịch"
+                        >
+                            <nz-option *ngFor="let data of this.quocTichs" [nzLabel]="data.tenquocgia ? data.tenquocgia : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Chuyên Môn</h3>
+                    <nz-form-control  nzHasFeedback>
+                        <nz-select
+                                formControlName="id_chuyenmon"
+                                nzShowSearch
+                                nzAllowClear
+                                nzPlaceHolder="Chuyên Môn"
+                        >
+                            <nz-option *ngFor="let data of this.chuyenMons" [nzLabel]="data.tenchuyenmon ? data.tenchuyenmon : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Ngành Tính Điểm</h3>
+                    <nz-form-control  nzHasFeedback>
+                        <nz-select
+                                (ngModelChange)="onSelectNganhTinhDiem($event)"
+                                formControlName="id_nganhtinhdiem"
+                                nzShowSearch
+                                nzAllowClear
+                                nzPlaceHolder="Ngành Tính Điểm"
+                        >
+                            <nz-option *ngFor="let data of this.nganhTinhDiem" [nzLabel]="data.tennganhtinhdiem ? data.tennganhtinhdiem : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Chuyên Ngành Tính Điểm</h3>
+                    <nz-form-control  nzHasFeedback>
+                        <nz-select
+                                formControlName="id_chuyennganhtinhdiem"
+                                nzShowSearch
+                                nzAllowClear
+                                nzPlaceHolder="Chuyên Ngành Tính Điểm"
+                                [nzLoading]="isGetChuyenNganhTinhDiemLoading"
+                                [nzDisabled]="isGetChuyenNganhTinhDiemLoading"
+                        >
+                            <nz-option *ngFor="let data of this.chuyenNganhTinhDiem" [nzLabel]="data.tenchuyennganh ? data.tenchuyennganh : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3 class="">Học Hàm Học Vị</h3>
+                    <nz-form-control  nzHasFeedback>
+                        <nz-select
+                                formControlName="id_hochamhocvi"
+                                nzShowSearch
+                                nzAllowClear
+                                nzPlaceHolder="Học Hàm Học Vị"
+                        >
+                            <nz-option *ngFor="let data of this.hocHams" [nzLabel]="data.tenhochamhocvi ? data.tenhochamhocvi : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                    <h3><span class="error">*</span> Quyền Người Dùng</h3>
+                    <nz-form-control [nzErrorTip]="roles_id" nzHasFeedback>
+                        <nz-select
+                                nzMode="multiple"
+                                nzPlaceHolder="Chọn Quyền"
+                                formControlName="roles_id"
+                        >
+                            <nz-option *ngFor="let role of this.roles" [nzValue]="role.id" [nzLabel]="role.name">
+                            </nz-option>
+                        </nz-select>
+                        <ng-template #roles_id let-control>
+                            <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <button
+                        nz-button
+                        nzType="primary"
+                        (click)="onSubmit()"
+                        nzSize="large"
+                        [nzLoading]="isCreate"
+                >
+                    <span nz-icon nzType="plus" nzTheme="outline"></span>
+                    Tạo Người Dùng
+                </button>
+            </form>
+        </div>
+    </ng-template>
+</div>

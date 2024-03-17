@@ -42,6 +42,7 @@ use App\Models\DeTai\NghiemThu;
 use App\Models\DeTai\TuyenChon;
 use App\Models\DeTai\XetDuyet;
 use App\Models\FileMinhChungSanPham;
+use App\Models\Role;
 use App\Models\SanPham\DMSanPham;
 use App\Models\SanPham\DMVaiTroTacGia;
 use App\Models\SanPham\SanPham;
@@ -279,8 +280,35 @@ class DeTaiServiceImpl implements DeTaiService
             $result[] = Convert::getDeTaiVm($sanPham);
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
     }
+
+
+    public function getDeTaiPagingForUser(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::has('tuyenChon')->has('xetDuyet')->has('nghiemThu')
+            ->select('san_phams.*')
+            ->join('nghiem_thus', 'nghiem_thus.id_sanpham', '=', 'san_phams.id')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+            ->join('users', 'san_pham_tac_gias.id_tacgia', '=', 'users.id')
+            ->where('d_m_san_phams.masanpham', '=', 'detai')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%')
+                    ->orwhere('users.name', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_phams.trangthairasoat', 'Đã xác nhận')
+            ->groupBy('san_phams.id')
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getDeTaiVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
 
     public function getDeTaiChoDuyet(Request $request): ResponseSuccess
     {
@@ -320,6 +348,35 @@ class DeTaiServiceImpl implements DeTaiService
         return new ResponseSuccess("Thành công", $result);
     }
 
+
+    public function getDetailDeTaiForUser(int $id): ResponseSuccess
+    {
+        $id_sanpham = $id;
+        if (!is_int($id_sanpham)) {
+            throw new InvalidValueException();
+        }
+        $sanPham = SanPham::withTrashed()
+            ->has('tuyenChon')->has('xetDuyet')->has('nghiemThu')
+            ->find($id_sanpham);
+        if ($sanPham == null || $sanPham->dmSanPham->masanpham != "detai") {
+            throw new DeTaiNotFoundException();
+        }
+
+        if($sanPham->trangthairasoat == "Đang rà soát"){
+            throw new DeTaiNotFoundException();
+        }
+
+        $result = Convert::getDeTaiDetailVm($sanPham);
+        $result->trangthairasoat = null;
+        $result->sanpham->ngayrasoat = null;
+        $result->sanpham->nguoirasoat = null;
+        $result->nghiemthu = null;
+        $result->xetduyet = null;
+        $result->tuyenchon = null;
+
+        return new ResponseSuccess("Thành công", $result);
+    }
+
     public function createDeTai(CreateDeTaiRequest $request): ResponseSuccess
     {
         $validated = $request->validated();
@@ -344,6 +401,7 @@ class DeTaiServiceImpl implements DeTaiService
             });
             if (count($filteredWithoutId) > 0) {
                 $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
@@ -352,6 +410,7 @@ class DeTaiServiceImpl implements DeTaiService
                         'name' => $item['tentacgia'],
                         'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
+                    $user->roles()->attach($idRoleGuest);
                     $newData[] = [
                         'id_tacgia' => $user->id,
                         'id_vaitro' => $item['id_vaitro'],
@@ -598,7 +657,7 @@ class DeTaiServiceImpl implements DeTaiService
         $result = [];
 
 
-        DB::transaction(function () use ($validated, &$sanPham,&$result) {
+        DB::transaction(function () use ($validated, &$sanPham, &$result) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
@@ -615,6 +674,7 @@ class DeTaiServiceImpl implements DeTaiService
             });
             if (count($filteredWithoutId) > 0) {
                 $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
+                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
                 foreach ($listObjectUnique as  $item) {
                     $randomId = $this->randomUnique();
                     $user = User::create([
@@ -623,6 +683,7 @@ class DeTaiServiceImpl implements DeTaiService
                         'name' => $item['tentacgia'],
                         'email' => env('SGU_2024') . $randomId . "@gmail.com"
                     ]);
+                    $user->roles()->attach($idRoleGuest);
                     $newData[] = [
                         'id_tacgia' => $user->id,
                         'id_vaitro' => $item['id_vaitro'],
@@ -974,6 +1035,31 @@ class DeTaiServiceImpl implements DeTaiService
     }
 
 
+    public function getLichSuBaoCao(Request $request, int $id): ResponseSuccess
+    {
+        $id_sanpham = (int) $id;
+
+        if (!is_int($id_sanpham)) {
+            throw new InvalidValueException();
+        }
+
+        $sanPham = SanPham::withTrashed()->find($id_sanpham);
+        if ($sanPham == null || $sanPham->dmSanPham->masanpham != 'detai') {
+            throw new DeTaiNotFoundException();
+        }
+
+        $page = $request->query('page', 1);
+
+        $result = [];
+        $baoCaoTienDos = BaoCaoTienDo::where('id_sanpham', '=', $id_sanpham)->orderBy('created_at', 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        foreach ($baoCaoTienDos as $baoCaoTienDo) {
+            $result[] = Convert::getBaoCaoTienDoVm($baoCaoTienDo);
+        }
+        $pagingResponse = new PagingResponse($baoCaoTienDos->lastPage(), $baoCaoTienDos->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+
     public function deleteDeTai(int $id): ResponseSuccess
     {
         $id_sanpham = (int) $id;
@@ -1053,5 +1139,51 @@ class DeTaiServiceImpl implements DeTaiService
             $resultArray[] = $value['object'];
         }
         return $resultArray;
+    }
+
+
+
+
+
+    public function getDeTaiKeKhai(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::select('san_phams.*')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->where('d_m_san_phams.masanpham', '=', 'detai')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_phams.id_nguoikekhai', auth('api')->user()->id)
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        $result = [];
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getDeTaiVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+    public function getDeTaiThamGia(Request $request): ResponseSuccess
+    {
+        $page = $request->query('page', 1);
+        $keysearch = $request->query('search', "");
+        $sortby = $request->query('sortby', "created_at");
+        $sanPhams = SanPham::select('san_phams.*')
+            ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
+            ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
+            ->where('d_m_san_phams.masanpham', '=', 'detai')
+            ->where(function ($query) use ($keysearch) {
+                $query->where('san_phams.tensanpham', 'LIKE', '%' . $keysearch . '%');
+            })->where('san_pham_tac_gias.id_tacgia', auth('api')->user()->id)
+            ->groupBy('san_phams.id')
+            ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        $result = [];
+        foreach ($sanPhams as $sanPham) {
+            $result[] = Convert::getDeTaiVm($sanPham);
+        }
+        $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
+        return new ResponseSuccess("Thành công", $pagingResponse);
     }
 }
