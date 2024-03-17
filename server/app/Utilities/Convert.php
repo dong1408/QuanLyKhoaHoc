@@ -257,6 +257,7 @@ class Convert
         $a->name = $user->name;
         $a->username = $user->username;
         $a->email = $user->email;
+        $a->changed = $user->changed;
         $a->deleted_at = $user->deleted_at ?? null;
 
         foreach ($user->roles as $role) {

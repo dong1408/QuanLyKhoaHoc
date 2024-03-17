@@ -10,13 +10,13 @@
         <ng-container *nzModalContent>
             <form nzLayout="vertical" nz-form class="tw-space-y-[5px]" [formGroup]="formUpdateRole">
                 <nz-form-item>
-                    <h4 class=""><span class="error">*</span> Quyền</h4>
+                    <h4 class=""><span class="error">*</span> Vai Trò</h4>
                     <nz-form-control [nzErrorTip]="roles_id" nzHasFeedback>
                         <nz-select
                                 formControlName="roles_id"
                                 nzAllowClear
                                 nzShowSearch
-                                nzPlaceHolder="Quyền"
+                                nzPlaceHolder="Vai Trò"
                                 nzMode="multiple"
                                 [nzLoading]="isGetRoleOfCurrentuser"
                                 [nzDisabled]="isGetRoleOfCurrentuser"
@@ -85,7 +85,7 @@
                 <th>Tài Khoản</th>
                 <th>Tên Người Dùng</th>
                 <th>Email</th>
-                <th>Quyền</th>
+                <th>Vai Trò</th>
                 <ng-container *ngIf="columnDelete">
                     <th>Ngày Xóa</th>
                 </ng-container>
@@ -110,7 +110,7 @@
                         </button>
                         <button nz-button nzType="default" (click)="onOpenFormUpdateRole(data)">
                             <span nz-icon nzType="edit" nzTheme="outline"></span>
-                            Cập Nhật Quyền
+                            Cập Nhật Vai Trò
                         </button>
                         <button
                                 [nzLoading]="data.isSoftDelete"

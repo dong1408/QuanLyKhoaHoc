@@ -48,13 +48,13 @@ export class UserService{
         )
     }
 
-    getUserPermission(){
-        return this.http.get<ApiResponse<Permission[]>>(
-            `${environment.apiUrl}/users/permission`
-        ).pipe(
-            catchError(handleError)
-        )
-    }
+    // getUserPermission(){
+    //     return this.http.get<ApiResponse<Permission[]>>(
+    //         `${environment.apiUrl}/users/permission`
+    //     ).pipe(
+    //         catchError(handleError)
+    //     )
+    // }
 
     changePassword(data:ChangePassword){
         return this.http.patch<ApiResponse<boolean>>(

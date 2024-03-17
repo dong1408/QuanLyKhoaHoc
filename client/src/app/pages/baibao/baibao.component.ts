@@ -89,7 +89,6 @@ export class BaiBaoComponent implements OnInit,OnDestroy{
                         isChangeStatus:false
                     }
                 })
-                console.log(response.data.data)
                 this.isTableLoading = false
             },
             error: (error) => {

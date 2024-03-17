@@ -66,7 +66,6 @@ class AuthServiceImpl implements AuthService
     public function getMe(): ResponseSuccess
     {
         $user = auth('api')->user();
-        $me = new Me();
         $me = Convert::getUserVm($user);
         return new ResponseSuccess("Thành công", $me);
     }

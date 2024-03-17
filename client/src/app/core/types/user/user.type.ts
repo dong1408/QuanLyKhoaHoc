@@ -15,6 +15,15 @@ export interface User{
     email:string
 }
 
+export interface Me{
+    id:number,
+    name:string,
+    username:string,
+    email:string,
+    roles:Role[],
+    changed:boolean
+}
+
 export interface UserVm{
     id:number,
     name:string,

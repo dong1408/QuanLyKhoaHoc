@@ -315,7 +315,6 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 this.tapChis = response.listTaC
                 this.vaiTros = response.listVT
                 this.loadingService.stopLoading()
-                console.log(response)
             },
             error:(error) =>{
                 this.loadingService.stopLoading()

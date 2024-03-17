@@ -355,15 +355,21 @@ class DeTaiServiceImpl implements DeTaiService
         if (!is_int($id_sanpham)) {
             throw new InvalidValueException();
         }
-        $sanPham = SanPham::withTrashed()->find($id_sanpham);
+        $sanPham = SanPham::withTrashed()
+            ->has('tuyenChon')->has('xetDuyet')->has('nghiemThu')
+            ->find($id_sanpham);
         if ($sanPham == null || $sanPham->dmSanPham->masanpham != "detai") {
+            throw new DeTaiNotFoundException();
+        }
+
+        if($sanPham->trangthairasoat == "Đang rà soát"){
             throw new DeTaiNotFoundException();
         }
 
         $result = Convert::getDeTaiDetailVm($sanPham);
         $result->trangthairasoat = null;
-        $result->ngayrasoat = null;
-        $result->id_nguoirasoat = null;
+        $result->sanpham->ngayrasoat = null;
+        $result->sanpham->nguoirasoat = null;
         $result->nghiemthu = null;
         $result->xetduyet = null;
         $result->tuyenchon = null;

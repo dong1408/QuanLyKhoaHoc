@@ -27,6 +27,7 @@ import {RoleService} from "../../../core/services/roles/role.service";
 import {Role} from "../../../core/types/roles/role.type";
 import {RegisterUser} from "../../../core/types/user/user.type";
 import {dateConvert} from "../../../shared/commons/utilities";
+import {Router} from "@angular/router";
 
 @Component({
     selector:'app-user-create',
@@ -67,7 +68,8 @@ export class UserCreateComponent implements OnInit,OnDestroy{
         private quocGiaService:QuocGiaService,
         private ngachVienChucService:NgachVienChucService,
         public loadingService:LoadingService,
-        private roleService:RoleService
+        private roleService:RoleService,
+        private router:Router
     ) {
     }
 
@@ -204,7 +206,6 @@ export class UserCreateComponent implements OnInit,OnDestroy{
                 this.noiHocs = response.listTC
                 this.roles = response.listR
 
-                console.log(this.roles)
                 this.loadingService.stopLoading()
             },
             error:(error) => {

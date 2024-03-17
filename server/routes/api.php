@@ -51,7 +51,7 @@ Route::group([
 
     // Auth
     Route::post('auth/login', [AuthController::class, 'login']);
-    Route::post('auth/register', [AuthController::class, 'register']);
+//    Route::post('auth/register', [AuthController::class, 'register']);
     Route::post('auth/logout', [AuthController::class, 'logout']);
     Route::post('auth/refreshToken', [AuthController::class, 'refreshToken']);
     Route::get('auth/getMe', [AuthController::class, 'getMe']);
@@ -60,15 +60,15 @@ Route::group([
     Route::get('users', [UserController::class, 'getAllUser']); //select chọn tác giả
     Route::get('users/paging', [UserController::class, 'getUserPaging'])->can('user.view');
     Route::get('users/{id}/role', [UserController::class, 'getRoleOfUser'])->can('user.update_role');
-    Route::get('users/permission', [UserController::class, 'getPermissionOfUser'])->can('user.detail');
+//    Route::get('users/permission', [UserController::class, 'getPermissionOfUser'])->can('user.detail');
     Route::patch('users/password', [UserController::class, 'changePassword']);
     Route::post('users', [UserController::class, 'registerUser'])->can('user.register');
-    Route::patch('users/{id}', [UserController::class, 'updateUser'])->can('user.update');
+    Route::patch('users/{id}', [UserController::class, 'updateUser'])->can('user.update'); // admin + owner
     Route::patch('users/{id}/role', [UserController::class, 'updateRoleOfUser'])->can('user.update_role');
     Route::patch('users/{id}/delete', [UserController::class, 'deleteUser'])->can('user.delete');
     Route::patch('users/{id}/restore', [UserController::class, 'restoreUser'])->can('user.delete');
     Route::delete('users/{id}/force', [UserController::class, 'forceDeleteUser'])->can('user.delete');
-    Route::get('users/{id}', [UserController::class, 'getUserDetail'])->can('user.detail');
+    Route::get('users/{id}', [UserController::class, 'getUserDetail'])->can('user.update'); // dùng cho admin
 
     // Role
     Route::get('roles', [RoleController::class, 'getAllRole'])->can("role.view");
@@ -80,7 +80,7 @@ Route::group([
     // Permission
     Route::get('permissions', [PermissionController::class, 'getAllPermission'])->can('role.view');
     Route::post('permissions', [PermissionController::class, 'addPermission'])->can('role.add');
-    Route::patch('permissions/{id}', [PermissionController::class, 'updatePermission'])->can('role.add');
+    Route::patch('permissions/{id}', [PermissionController::class, 'updatePermission'])->can('role.update');
 
 
 
@@ -88,21 +88,21 @@ Route::group([
     Route::get('baibao/public', [BaiBaoKhoaHocController::class, 'getBaiBaoPagingForUser']);
     Route::get('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBaoForUser']);
 
-    Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']);
-    Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet']);
+    Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging'])->can('baibao.view'); // canview
+    Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet'])->can('baibao.view'); // canview
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao'])->can('baibao.add');
-    Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham'])->can('baibao.update');
-    Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao'])->can('baibao.update');
-    Route::patch('baibao/{id}/sanphamtacgia', [BaiBaoKhoaHocController::class, 'updateSanPhamTacGia'])->can('baibao.update');
-    Route::patch('baibao/{id}/fileminhchung', [BaiBaoKhoaHocController::class, 'updateFileMinhChung'])->can('baibao.update');
-    Route::patch('baibao/{id}/trangthairasoat', [BaiBaoKhoaHocController::class, 'updateTrangThaiRaSoatBaiBao'])->can('baibao.updateTrangThaiRaSoat');
+    Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham'])->can('baibao.update'); // admin + owner
+    Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao'])->can('baibao.update'); // admin + owner
+    Route::patch('baibao/{id}/sanphamtacgia', [BaiBaoKhoaHocController::class, 'updateSanPhamTacGia'])->can('baibao.update'); // admin + owner
+    Route::patch('baibao/{id}/fileminhchung', [BaiBaoKhoaHocController::class, 'updateFileMinhChung'])->can('baibao.update'); // admin + owner
+    Route::patch('baibao/{id}/trangthairasoat', [BaiBaoKhoaHocController::class, 'updateTrangThaiRaSoatBaiBao'])->can('baibao.status');
     Route::patch('baibao/{id}/delete', [BaiBaoKhoaHocController::class, 'deleteBaiBao'])->can('baibao.delete');
     Route::patch('baibao/{id}/restore', [BaiBaoKhoaHocController::class, 'restoreBaiBao'])->can('baibao.delete');
     Route::delete('baibao/{id}/force', [BaiBaoKhoaHocController::class, 'forceDeleteBaiBao'])->can('baibao.delete');
 
     Route::get('baibao/kekhai', [BaiBaoKhoaHocController::class, 'getBaiBaoKeKhai']);
     Route::get('baibao/thamgia', [BaiBaoKhoaHocController::class, 'getBaiBaoThamGia']);
-    Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao']); // admin + owner
+    Route::get('baibao/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBao'])->can('baibao.view'); // admin + owner canview
 
 
 
@@ -111,26 +111,25 @@ Route::group([
     Route::get('detai/public/{id}', [DeTaiController::class, 'getDetailDeTaiForUser']);
 
 
-    Route::get('detai', [DeTaiController::class, 'getDeTaiPaging']);
-    Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet']);
+    Route::get('detai', [DeTaiController::class, 'getDeTaiPaging'])->can('detai.view');
+    Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet'])->can('detai.view');
     Route::post('detai', [DeTaiController::class, 'createDetai'])->can('detai.add');
-    Route::patch('detai/{id}/sanpham', [DeTaiController::class, 'updateSanPham'])->can('detai.update');
-    Route::patch('detai/{id}', [DeTaiController::class, 'updateDeTai'])->can('detai.update');
-    Route::patch('detai/{id}/sanphamtacgia', [DeTaiController::class, 'updateSanPhamTacGia'])->can('detai.update');
-    Route::patch('detai/{id}/fileminhchung', [DeTaiController::class, 'updateFileMinhChung'])->can('detai.update');
-    Route::patch('detai/{id}/trangthairasoat', [DeTaiController::class, 'updateTrangThaiRaSoatDeTai'])->can('detai.updateTrangThaiRaSoat');
-    Route::post('detai/{id}/tuyenchon', [DeTaiController::class, 'tuyenChonDeTai'])->can('detai.tuyenchon');
-    Route::post('detai/{id}/xetduyet', [DeTaiController::class, 'xetDuyetDeTai'])->can('detai.xetduyet');
-    Route::post('detai/{id}/baocao', [DeTaiController::class, 'baoCaoTienDoDeTai'])->can('detai.baocao');
-    Route::post('detai/{id}/nghiemthu', [DeTaiController::class, 'nghiemThuDeTai'])->can('detai.nghiemthu');
-    Route::get('detai/{id}/lichsubaocao', [DeTaiController::class, 'getLichSuBaoCao']);
+    Route::patch('detai/{id}/sanpham', [DeTaiController::class, 'updateSanPham'])->can('detai.update');// admin + owner
+    Route::patch('detai/{id}', [DeTaiController::class, 'updateDeTai'])->can('detai.update');// admin + owner
+    Route::patch('detai/{id}/sanphamtacgia', [DeTaiController::class, 'updateSanPhamTacGia'])->can('detai.update'); // admin + owner
+    Route::patch('detai/{id}/fileminhchung', [DeTaiController::class, 'updateFileMinhChung'])->can('detai.update'); // admin + owner
+    Route::patch('detai/{id}/trangthairasoat', [DeTaiController::class, 'updateTrangThaiRaSoatDeTai'])->can('detai.status');
+    Route::post('detai/{id}/tuyenchon', [DeTaiController::class, 'tuyenChonDeTai'])->can('detai.status');
+    Route::post('detai/{id}/xetduyet', [DeTaiController::class, 'xetDuyetDeTai'])->can('detai.status');
+    Route::post('detai/{id}/baocao', [DeTaiController::class, 'baoCaoTienDoDeTai'])->can('detai.status');
+    Route::post('detai/{id}/nghiemthu', [DeTaiController::class, 'nghiemThuDeTai'])->can('detai.status');
+    Route::get('detai/{id}/lichsubaocao', [DeTaiController::class, 'getLichSuBaoCao'])->can('detai.status');
     Route::patch('detai/{id}/delete', [DeTaiController::class, 'deleteDeTai'])->can('detai.delete');
     Route::patch('detai/{id}/restore', [DeTaiController::class, 'restoreDeTai'])->can('detai.delete');
     Route::delete('detai/{id}/forceDelete', [DeTaiController::class, 'forceDeleteDeTai'])->can('detai.delete');
-    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai']); // cho admin + owner
+    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.view'); // cho admin + owner
     Route::get('detai/kekhai', [DeTaiController::class, 'getDeTaiKeKhai']);
     Route::get('detai/thamgia', [DeTaiController::class, 'getDeTaiThamGia']);
-    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai']);
 
     // PhanLoaiDeTai
     Route::get('phanloaidetai', [PhanLoaiDeTaiController::class, 'getPhanLoaiDeTai']);
