@@ -58,6 +58,7 @@ Route::group([
 
     // User
     Route::get('users', [UserController::class, 'getAllUser']); //select chọn tác giả
+    Route::get('users/info', [UserController::class, 'getUserInfo']); 
     Route::get('users/paging', [UserController::class, 'getUserPaging'])->can('user.view');
     Route::get('users/{id}/role', [UserController::class, 'getRoleOfUser'])->can('user.update_role');
 //    Route::get('users/permission', [UserController::class, 'getPermissionOfUser'])->can('user.detail');
