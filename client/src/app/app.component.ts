@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "./core/services/user/auth.service";
 import {LocalStorageService} from "./core/services/local-storage.service";
-import {ACCESS_TOKEN, REFRESH_TOKEN} from "./shared/commons/constants";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from "@angular/router";
 
@@ -26,6 +25,10 @@ export class AppComponent implements OnInit{
     //     next:(response) => {
     //       this.authService.setCurrentUser(response.data)
     //       this.authService.userState$.next(response.data)
+    //       if(!response.data.changed){
+    //         this.router.navigate(["/doi-mat-khau"])
+    //         return;
+    //       }
     //     },
     //     error:(error) => {
     //       this.notificationService.create(

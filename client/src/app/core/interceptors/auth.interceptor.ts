@@ -61,15 +61,19 @@ export class AuthInterceptor implements HttpInterceptor{
                     concatMap((response: any) => {
                         console.log("abcadsasd lỗi chỗ interceptor")
                         this.isRetry = false
-                        this.localStorageService.set(ACCESS_TOKEN, response.accessToken)
-                        return next.handle(this.addTokenToHeader(request, response.accessToken))
+                        this.localStorageService.set(ACCESS_TOKEN, response.data.accessToken)
+                        return next.handle(this.addTokenToHeader(request, response.data.accessToken))
                     }),
                     catchError((error: any) => {
                         this.isRetry = false
                         this.localStorageService.remove(ACCESS_TOKEN)
                         this.localStorageService.remove(REFRESH_TOKEN)
                         this.authService.userState$.next(null)
-                        return throwError(() => error);
+                        window.location.href  = "/dang-nhap"
+                        return throwError(() => {
+                            window.location.href  = "/dang-nhap"
+                            return error
+                        });
                     })
                 )
             }

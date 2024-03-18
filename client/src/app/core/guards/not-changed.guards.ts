@@ -1,11 +1,11 @@
 import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from "@angular/router";
-import {catchError, from, of, switchMap} from "rxjs";
 import {inject} from "@angular/core";
 import {LocalStorageService} from "../services/local-storage.service";
 import {AuthService} from "../services/user/auth.service";
 import {ACCESS_TOKEN} from "../../shared/commons/constants";
+import {catchError, from, of, switchMap} from "rxjs";
 
-export const authGuards:CanActivateFn = (route:ActivatedRouteSnapshot,state:RouterStateSnapshot) => {
+export const notChangedGuards:CanActivateFn = (route:ActivatedRouteSnapshot,state:RouterStateSnapshot) => {
     const router = inject(Router)
     const localStorageService = inject(LocalStorageService)
     const authService = inject(AuthService)
@@ -15,23 +15,18 @@ export const authGuards:CanActivateFn = (route:ActivatedRouteSnapshot,state:Rout
         return false
     }
     const currentUser = authService.getCurrentUser()
-    if(currentUser){
-        if(!currentUser.changed){
-            router.navigate(["/doi-mat-khau"])
-            return false
-        }
+    if(currentUser && !currentUser.changed){
         return true
     }
 
     return from(authService.getMe()).pipe(
         switchMap((response) => {
             authService.setCurrentUser(response.data)
-            authService.userState$.next(response.data)
             if(!response.data.changed){
-                router.navigate(["/doi-mat-khau"])
-                return of(false)
-            }else{
                 return of(true)
+            }else{
+                router.navigate(["/"])
+                return of(false)
             }
         }),
         catchError(() => {

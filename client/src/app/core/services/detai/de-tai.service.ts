@@ -45,6 +45,22 @@ export class DeTaiService{
         )
     }
 
+    getDeTaiThamGia(page:number,keyword:string,sortby:string){
+        return this.http.get<ApiResponse<PagingResponse<DeTai[]>>>(
+            `${environment.apiUrl}/detai/thamgia?page=${page}&search=${keyword}&sortby=${sortby}`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    getDeTaiKeKhai(page:number,keyword:string,sortby:string){
+        return this.http.get<ApiResponse<PagingResponse<DeTai[]>>>(
+            `${environment.apiUrl}/detai/kekhai?page=${page}&search=${keyword}&sortby=${sortby}`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
     getChiTietDeTai(id:number){
         return this.http.get<ApiResponse<ChiTietDeTai>>(
             `${environment.apiUrl}/detai/${id}`

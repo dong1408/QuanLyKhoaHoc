@@ -1,0 +1,18 @@
+h1,h2,h3,h4,h5,h6 {
+    margin-bottom: 0px;
+    margin-left:0px;
+}
+
+.username{
+    font-size: 16px;
+    color: var(--primary)
+}
+
+.name{
+    font-size:18px;
+    color: var(--text-primary)
+}
+.border-primary{
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
