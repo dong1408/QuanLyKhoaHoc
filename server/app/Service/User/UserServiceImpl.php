@@ -129,6 +129,18 @@ class UserServiceImpl implements UserService
     }
 
 
+    public function getUserInfo(): ResponseSuccess
+    {
+        $idUser = auth('api')->user()->id;
+        $user = User::find($idUser);
+        if ($user == null) {
+            throw new UserNotFoundException();
+        }
+        $result = Convert::getUserInfoVm($user);
+        return new ResponseSuccess("Thành công", $result);
+    }
+
+
 
 
 

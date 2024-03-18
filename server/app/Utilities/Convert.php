@@ -68,6 +68,7 @@ use App\ViewModel\TapChi\TinhDiemTapChiVm;
 use App\ViewModel\TapChi\XepHangTapChiDetailVm;
 use App\ViewModel\TapChi\XepHangTapChiVm;
 use App\ViewModel\User\UserDetailVm;
+use App\ViewModel\User\UserInfoVm;
 use App\ViewModel\User\UserSimpleVm;
 use App\ViewModel\User\UserVm;
 use App\ViewModel\UserInfo\ChuyenMonVm;
@@ -80,6 +81,7 @@ use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\TinhThanhDetailVm;
 use App\ViewModel\UserInfo\TinhThanhVm;
 use App\ViewModel\UserInfo\ToChucVm;
+use Illuminate\Database\Console\Migrations\StatusCommand;
 use Illuminate\Database\Eloquent\Collection;
 
 class Convert
@@ -307,6 +309,43 @@ class Convert
         $a->updated_at = $user->updated_at;
         $a->deleted_at = $user->deleted_at ?? null;
 
+        return $a;
+    }
+
+
+    public static function getUserInfoVm(User $user)
+    {
+        $a = new UserInfoVm();
+        $a->id = $user->id;
+        $a->name = $user->name;
+        $a->username = $user->username;
+        $a->email = $user->email;
+        $a->role = $user->role;
+        $a->changed = $user->changed ?? null;
+        $a->ngaysinh = $user->ngaysinh ?? null;
+        $a->dienthoai = $user->dienthoai ?? null;
+        $a->email2 = $user->email2 ?? null;
+        $a->orchid = $user->orchid ?? null;
+        $a->tochuc = $user->toChuc == null ? null : Convert::getToChucVm($user->toChuc);
+        $a->donvi = $user->donVi == null ? null : Convert::getDonViVm($user->donVi);
+        $a->cohuu = $user->cohuu ?? null;
+        $a->keodai = $user->keodai ?? null;
+        $a->dinhmucnghiavunckh = $user->dinhmucnghiavunckh ?? null;
+        $a->dangdihoc = $user->dangdihoc ?? null;
+        $a->noihoc = $user->noiHoc == null ? null : Convert::getToChucVm($user->noihoc);
+        $a->ngachvienchuc = $user->ngachVienChuc == null ? null : Convert::getNgachVienChucVm($user->ngachVienChuc);
+        $a->quoctich = $user->quocGia == null ? null : Convert::getQuocGiaVm($user->quocGia);
+        $a->hochamhocvi = $user->hocHamHocVi == null ? null : Convert::getHocHamHocViVm($user->hocHamHocVi);
+        $a->chuyenmon = $user->chuyenMon == null ? null : Convert::getChuyenMonVm($user->chuyenMon);
+        $a->nganhtinhdiem = $user->nganhTinhDiem == null ? null : Convert::getNganhTinhDiemVm($user->nganhTinhDiem);
+        $a->chuyennganhtinhdiem = $user->chuyenNganhTinhDiem == null ? null : Convert::getChuyenNganhTinhDiemVm($user->chuyenNganhTinhDiem);
+        $a->created_at = $user->created_at;
+        $a->updated_at = $user->updated_at;
+        $a->deleted_at = $user->deleted_at ?? null;
+
+        foreach ($user->roles as $role) {
+            $a->listRole[] = empty($role) ? null : Convert::getRoleVm($role);
+        }
         return $a;
     }
 
