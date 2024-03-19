@@ -44,7 +44,7 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/bai-bao"])
+                this.router.navigate(["/admin/bai-bao"])
                 return;
             }
         })
@@ -168,7 +168,7 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(['/bai-bao'])
+                this.router.navigate(['/admin/bai-bao'])
                 return;
             }
         })

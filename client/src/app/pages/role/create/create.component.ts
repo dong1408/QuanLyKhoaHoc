@@ -116,7 +116,7 @@ export class CreateRoleComponent implements OnInit,OnDestroy{
                         error
                     )
                     this.loadingService.stopLoading()
-                    this.router.navigate(['/vai-tro'])
+                    this.router.navigate(['/admin/vai-tro'])
                     return;
                 }
             })

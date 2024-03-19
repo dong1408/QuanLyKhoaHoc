@@ -10,6 +10,7 @@ export const adminGuards:CanActivateFn = (route:ActivatedRouteSnapshot,state:Rou
     const localStorageService = inject(LocalStorageService)
     const authService = inject(AuthService)
     const accessToken = localStorageService.get(ACCESS_TOKEN)
+
     if(!accessToken){
         router.navigate(["/dang-nhap"])
         return false

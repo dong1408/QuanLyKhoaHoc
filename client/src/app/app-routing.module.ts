@@ -10,12 +10,16 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {adminGuards} from "./core/guards/admin.guards";
 
 const routes: Routes = [
+    {
+        path: "",
+        redirectTo: "/home",
+        pathMatch: "full"
+    },
   {
-      path: '',
+      path: 'admin',
       canActivate:[adminGuards],
       loadChildren: () => import('./pages/main/main.module').then(m => m.MainModule)
   },
-
   {
       path: 'dang-nhap',
       canActivate:[notAuthGuard],
@@ -25,7 +29,12 @@ const routes: Routes = [
       path: 'home',
       canActivate:[authGuards],
       loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
-  }
+  },
+    {
+        path: 'doi-mat-khau',
+        canActivate:[notChangedGuards],
+        loadChildren: () => import('./pages/change-password/change-password.module').then(m => m.ChangePasswordModule)
+    }
 ];
 
 @NgModule({

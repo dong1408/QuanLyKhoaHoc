@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {forkJoin, Subject, take, takeUntil} from "rxjs";
-import {PagingService} from "../../../core/services/paging.service";
+import {forkJoin, Subject, take, takeUntil} from "rxjs"
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {UserService} from "../../../core/services/user/user.service";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";

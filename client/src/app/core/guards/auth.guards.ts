@@ -14,6 +14,7 @@ export const authGuards:CanActivateFn = (route:ActivatedRouteSnapshot,state:Rout
         router.navigate(["/dang-nhap"])
         return false
     }
+
     const currentUser = authService.getCurrentUser()
     if(currentUser){
         if(!currentUser.changed){
