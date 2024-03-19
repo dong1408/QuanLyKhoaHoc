@@ -1,23 +1,21 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
-import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
 import {forkJoin, Subject, takeUntil} from "rxjs";
-import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
-import {LoadingService} from "../../../core/services/loading.service";
+import {CapNhatDeTai, ChiTietDeTai} from "../../../../../core/types/detai/de-tai.type";
+import {ToChuc} from "../../../../../core/types/user-info/to-chuc.type";
+import {PhanLoaiDeTai} from "../../../../../core/types/detai/phan-loai-de-tai.type";
+import {PhanLoaiDeTaiService} from "../../../../../core/services/detai/phan-loai-de-tai.service";
+import {LoadingService} from "../../../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {DeTaiService} from "../../../core/services/detai/de-tai.service";
+import {DeTaiService} from "../../../../../core/services/detai/de-tai.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
-import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {validValuesValidator} from "../../../shared/validators/valid-value.validator";
-import {PhanLoaiDeTai} from "../../../core/types/detai/phan-loai-de-tai.type";
-import {PhanLoaiDeTaiService} from "../../../core/services/detai/phan-loai-de-tai.service";
-import {CapNhatDeTai, ChiTietDeTai, TaoDeTai} from "../../../core/types/detai/de-tai.type";
-import {dateConvert} from "../../../shared/commons/utilities";
+import {ToChucService} from "../../../../../core/services/user-info/to-chuc.service";
+import {noWhiteSpaceValidator} from "../../../../../shared/validators/no-white-space.validator";
+import {validValuesValidator} from "../../../../../shared/validators/valid-value.validator";
+import {dateConvert} from "../../../../../shared/commons/utilities";
 
 @Component({
-    selector:'app-detai-capnhat',
+    selector:'app-taikhoan-detai-capnhat',
     templateUrl:'./capnhat-detai.component.html',
     styleUrls:['./capnhat-detai.component.css']
 })
@@ -51,7 +49,7 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
             if (parseInt(params.get("id") as string)) {
                 this.id = parseInt(params.get("id") as string)
             } else {
-                this.router.navigate(["/de-tai"])
+                this.router.navigate(["/home/tai-khoan/san-pham/de-tai"])
                 return;
             }
         })
@@ -213,7 +211,7 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
                 )
 
                 this.loadingService.stopLoading()
-                this.router.navigate(["/de-tai"])
+                this.router.navigate(["/home/tai-khoan/san-pham/de-tai"])
                 return
             }
         })

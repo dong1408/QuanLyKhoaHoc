@@ -16,3 +16,13 @@ h1,h2,h3,h4,h5,h6 {
     border: 1px solid var(--color-border);
     border-radius: 4px;
 }
+
+li{
+    font-size: 16px;
+}
+
+li:hover{
+    color: var(--primary);
+    transition-duration: 300ms;
+    cursor: pointer;
+}

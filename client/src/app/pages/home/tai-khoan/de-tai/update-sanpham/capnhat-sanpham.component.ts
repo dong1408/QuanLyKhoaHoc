@@ -1,23 +1,18 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {CapNhatBaiBao, ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
-import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {forkJoin, Subject, takeUntil} from "rxjs";
-import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
-import {LoadingService} from "../../../core/services/loading.service";
+import {ChiTietDeTai} from "../../../../../core/types/detai/de-tai.type";
+import {ToChuc} from "../../../../../core/types/user-info/to-chuc.type";
+import {LoadingService} from "../../../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
+import {DeTaiService} from "../../../../../core/services/detai/de-tai.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
-import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
-import {CapNhatSanPham} from "../../../core/types/sanpham/san-pham.type";
-import {dateConvert} from "../../../shared/commons/utilities";
-import {DeTaiService} from "../../../core/services/detai/de-tai.service";
-import {ChiTietDeTai} from "../../../core/types/detai/de-tai.type";
-
+import {ToChucService} from "../../../../../core/services/user-info/to-chuc.service";
+import {noWhiteSpaceValidator} from "../../../../../shared/validators/no-white-space.validator";
+import {CapNhatSanPham} from "../../../../../core/types/sanpham/san-pham.type";
+import {dateConvert} from "../../../../../shared/commons/utilities";
 @Component({
-    selector:"app-detai-sanpham-capnhat",
+    selector:"app-taikhoan-detai-sanpham-capnhat",
     templateUrl:"./capnhat-sanpham.component.html",
     styleUrls:["./capnhat-sanpham.component.css"]
 })
@@ -49,7 +44,7 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/de-tai"])
+                this.router.navigate(["/home/tai-khoan/san-pham/de-tai"])
                 return;
             }
         })
@@ -250,7 +245,7 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(['/de-tai'])
+                this.router.navigate(["/home/tai-khoan/san-pham/de-tai"])
                 return;
             }
         })
@@ -292,14 +287,11 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
                     "Lỗi",
                     "Cập nhật thất bại, vui lòng thử lại sau"
                 )
-                console.log(error)
                 this.isCapNhatLoading = false
                 return;
             }
         })
     }
-
-    // compareFn = (o1: any, o2: any) => (o1 && o2 ? o1.id === o2.id : o1 === o2);
 
     ngOnDestroy() {
         this.destroy$.next()

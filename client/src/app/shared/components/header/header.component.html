@@ -28,8 +28,16 @@
                             <nz-divider></nz-divider>
                         </div>
                         <div>
-                            <ul class="tw-space-y-[0.6rem] tw-list-none">
-                                <li class="tw-text-[18px] hover:tw-text-primary" *ngFor="let item of AppConstant.NAVIGATE" [routerLink]="item.value">{{item.title}}</li>
+                            <ul class="tw-font-semibold tw-list-none tw-space-y-[0.6rem]">
+                                <li routerLink="/home">
+                                    Trang Chủ
+                                </li>
+                                <li routerLink="/home/tai-khoan/thong-tin">
+                                    Thông Tin Tài Khoản
+                                </li>
+                                <li >
+                                    Sản Phẩm
+                                </li>
                             </ul>
                         </div>
                     </div>

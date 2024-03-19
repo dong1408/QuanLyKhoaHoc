@@ -2,7 +2,7 @@ import {NgModule} from "@angular/core";
 import {ChiTietBaiBaoComponent} from "./detail.component";
 import {CommonModule} from "@angular/common";
 import {ReactiveFormsModule} from "@angular/forms";
-import {ChiTietBaiBaoRoutingModule} from "./detai-routing.module";
+import {ChiTietBaiBaoRoutingModule} from "./detail-routing.module";
 import {NzButtonModule} from "ng-zorro-antd/button";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzIconModule} from "ng-zorro-antd/icon";

@@ -1,48 +1,43 @@
-<div class="tw-space-y-[2rem]">
-    <ng-container *ngIf="tuyenchon !== undefined">
-        <div>
-            <h3 class="text-primary">Trạng Thái Tuyển Chọn</h3>
-            <div class="tw-space-y-[0.8rem]">
-                <p><strong class="tw-mr-[0.5rem]">Kết Quả Tuyển Chọn: </strong>
-                    <span *ngIf="tuyenchon.ketquatuyenchon === AppConstant.TT_DETAI_SUCCESS" class="success">{{tuyenchon.ketquatuyenchon}}</span>
-                    <span *ngIf="tuyenchon.ketquatuyenchon === AppConstant.TT_DETAI_FAILED" class="error">{{tuyenchon.ketquatuyenchon}}</span>
-                </p>
+<div class="tw-mt-[1rem] tw-space-y-[2rem]">
+    <ng-container *ngIf="tuyenchon !== null || xetduyet !== null || nghiemthu != null">
+        <ng-container *ngIf="tuyenchon !== null">
+            <nz-descriptions nzTitle="Trạng Thái Tuyển Chọn" class="tw-space-y-[0.8rem]" [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }" nzBordered nzLayout="horizontal">
+                    <nz-descriptions-item nzTitle="Kết Quả Tuyển Chọn">
+                        <span *ngIf="tuyenchon?.ketquatuyenchon === AppConstant.TT_DETAI_SUCCESS" class="success">{{tuyenchon?.ketquatuyenchon}}</span>
+                        <span *ngIf="tuyenchon?.ketquatuyenchon === AppConstant.TT_DETAI_FAILED" class="error">{{tuyenchon?.ketquatuyenchon}}</span>
+                    </nz-descriptions-item>
 
-                <p><strong class="tw-mr-[0.5rem]">Lý Do: </strong> {{tuyenchon.lydo ?? 'Không Có'}} </p>
-            </div>
-        </div>
+                    <nz-descriptions-item nzTitle="Lý Do">{{tuyenchon?.lydo ?? 'Không Có'}} </nz-descriptions-item>
+            </nz-descriptions>
+        </ng-container>
+        <ng-container *ngIf="xetduyet !== null">
+            <nz-descriptions nzTitle="Trạng Thái Xét Duyệt" class="tw-space-y-[0.8rem]" [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }" nzBordered nzLayout="horizontal">
+                    <nz-descriptions-item nzTitle="Ngày Xét Duyệt">{{xetduyet?.ngayxetduyet ?? 'Không Có'}} </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Kết Quả Tuyển Chọn">
+                        <span *ngIf="xetduyet?.ketquaxetduyet === AppConstant.TT_DETAI_SUCCESS" class="success">{{xetduyet?.ketquaxetduyet}}</span>
+                        <span *ngIf="xetduyet?.ketquaxetduyet === AppConstant.TT_DETAI_FAILED" class="error">{{xetduyet?.ketquaxetduyet}}</span>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Số Hợp Đồng">{{xetduyet?.sohopdong ?? 'Không Có'}} </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Ngày Ký Hợp Đồng">{{xetduyet?.ngaykyhopdong ?? 'Không Có'}} </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Thời Hạn Ký Hợp Đồng"> {{xetduyet?.thoihanhopdong ?? 'Không Có'}} </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Kinh Phí">{{xetduyet?.kinhphi ?? 'Không Có'}} </nz-descriptions-item>
+            </nz-descriptions>
+        </ng-container>
+        <ng-container *ngIf="nghiemthu !== null">
+            <nz-descriptions nzTitle="Trạng Thái Nghiệm Thu" class="tw-space-y-[0.8rem]" [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }" nzBordered nzLayout="horizontal">
+                    <nz-descriptions-item nzTitle="Hội Đồng Nghiệm Thu">{{nghiemthu?.hoidongnghiemthu ?? 'Không Có'}} </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Ngày Nghiệm Thu">{{nghiemthu?.ngaynghiemthu ?? 'Không Có'}} </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Kết Quả Nghiệm Thu">{{nghiemthu?.ketquanghiemthu ?? 'Không Có'}} </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Ngày Công Nhận Hoàn Thành">{{nghiemthu?.ngaycongnhanhoanthanh ?? 'Không Có'}} </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Số Quyết Định Công Nhận Hoàn Thành">{{nghiemthu?.soqdcongnhanhoanthanh ?? 'Không Có'}} </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Thời Gian Hoàn Thành">{{nghiemthu?.thoigianhoanthanh ?? 'Không Có'}} </nz-descriptions-item>
+            </nz-descriptions>
+        </ng-container>
     </ng-container>
-
-    <ng-container *ngIf="xetduyet !== undefined">
-        <div >
-            <h3 class="text-primary">Trạng Thái Xét Duyệt</h3>
-            <div class="tw-space-y-[0.8rem]">
-                <p><strong class="tw-mr-[0.5rem]">Ngày Xét Duyệt: </strong> {{xetduyet.ngayxetduyet ?? 'Không Có'}} </p>
-                <p><strong class="tw-mr-[0.5rem]">Kết Quả Tuyển Chọn: </strong>
-                    <span *ngIf="xetduyet.ketquaxetduyet === AppConstant.TT_DETAI_SUCCESS" class="success">{{xetduyet.ketquaxetduyet}}</span>
-                    <span *ngIf="xetduyet.ketquaxetduyet === AppConstant.TT_DETAI_FAILED" class="error">{{xetduyet.ketquaxetduyet}}</span>
-                </p>
-                <p><strong class="tw-mr-[0.5rem]">Số Hợp Đồng: </strong> {{xetduyet.sohopdong ?? 'Không Có'}} </p>
-                <p><strong class="tw-mr-[0.5rem]">Ngày Ký Hợp Đồng: </strong> {{xetduyet.ngaykyhopdong ?? 'Không Có'}} </p>
-                <p><strong class="tw-mr-[0.5rem]">Thời Hạn Ký Hợp Đồng: </strong> {{xetduyet.thoihanhopdong ?? 'Không Có'}} </p>
-                <p><strong class="tw-mr-[0.5rem]">Kinh Phí: </strong> {{xetduyet.kinhphi ?? 'Không Có'}} </p>
-
-            </div>
-        </div>
-    </ng-container>
-
-    <ng-container *ngIf="nghiemthu !== undefined">
-        <div >
-            <h3 class="text-primary">Trạng Thái Nghiệm Thu</h3>
-            <div class="tw-space-y-[0.8rem]">
-                <p><strong class="tw-mr-[0.5rem]">Hội Đồng Nghiệm Thu: </strong> {{nghiemthu.hoidongnghiemthu ?? 'Không Có'}} </p>
-                <p><strong class="tw-mr-[0.5rem]">Ngày Nghiệm Thu: </strong> {{nghiemthu.ngaynghiemthu ?? 'Không Có'}} </p>
-                <p><strong class="tw-mr-[0.5rem]">Kết Quả Nghiệm Thu: </strong> {{nghiemthu.ketquanghiemthu ?? 'Không Có'}} </p>
-                <p><strong class="tw-mr-[0.5rem]">Ngày Công Nhận Hoàn Thành: </strong> {{nghiemthu.ngaycongnhanhoanthanh ?? 'Không Có'}} </p>
-                <p><strong class="tw-mr-[0.5rem]">Số Quyết Định Công Nhận Hoàn Thành: </strong> {{nghiemthu.soqdcongnhanhoanthanh ?? 'Không Có'}} </p>
-                <p><strong class="tw-mr-[0.5rem]">Thời Gian Hoàn Thành: </strong> {{nghiemthu.thoigianhoanthanh ?? 'Không Có'}} </p>
-            </div>
-        </div>
-    </ng-container>
-
 </div>
+
+<ng-container *ngIf="!tuyenchon && !xetduyet && !nghiemthu">
+    <div class="tw-text-center tw-mt-[2rem]">
+        <h3 class="text-primary">Đang Chờ</h3>
+    </div>
+</ng-container>

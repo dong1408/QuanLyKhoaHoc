@@ -1,21 +1,20 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {CapNhatBaiBao, ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
-import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {forkJoin, Subject, takeUntil} from "rxjs";
-import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
-import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
-import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
-import {CapNhatSanPham} from "../../../core/types/sanpham/san-pham.type";
-import {dateConvert} from "../../../shared/commons/utilities";
+import {ChiTietBaiBao} from "../../../../../core/types/baibao/bai-bao.type";
+import {ToChuc} from "../../../../../core/types/user-info/to-chuc.type";
+import {BaiBaoService} from "../../../../../core/services/baibao/bai-bao.service";
+import {LoadingService} from "../../../../../core/services/loading.service";
+import {TapChiService} from "../../../../../core/services/tapchi/tap-chi.service";
+import {ToChucService} from "../../../../../core/services/user-info/to-chuc.service";
+import {noWhiteSpaceValidator} from "../../../../../shared/validators/no-white-space.validator";
+import {CapNhatSanPham} from "../../../../../core/types/sanpham/san-pham.type";
+import {dateConvert} from "../../../../../shared/commons/utilities";
 
 @Component({
-    selector:"app-baibao-sanpham-capnhat",
+    selector:"app-taikhoan-baibao-sanpham-capnhat",
     templateUrl:"./capnhat-sanpham.component.html",
     styleUrls:["./capnhat-sanpham.component.css"]
 })
@@ -48,7 +47,7 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/bai-bao"])
+                this.router.navigate(["/home/tai-khoan/san-pham/bai-bao"])
                 return;
             }
         })
@@ -249,7 +248,7 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(['/bai-bao'])
+                this.router.navigate(['/home/tai-khoan/san-pham/bai-bao'])
                 return;
             }
         })

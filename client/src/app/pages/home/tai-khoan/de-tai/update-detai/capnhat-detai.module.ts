@@ -11,9 +11,9 @@ import {NzInputModule} from "ng-zorro-antd/input";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {ReactiveFormsModule} from "@angular/forms";
-import {SharedModule} from "../../../shared/components/shared.module";
 import {RouterLink} from "@angular/router";
 import {CapNhatDeTaiRoutingModule} from "./capnhat-detai-routing.module";
+import {SharedModule} from "../../../../../shared/components/shared.module";
 
 @NgModule({
     declarations:[

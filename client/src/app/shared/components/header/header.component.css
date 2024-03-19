@@ -38,3 +38,13 @@ h1,h2,h3,h4,h5,h6 {
     font-size:18px;
     color: var(--text-primary)
 }
+
+li{
+    font-size: 16px;
+}
+
+li:hover{
+    color: var(--primary);
+    transition-duration: 300ms;
+    cursor: pointer;
+}

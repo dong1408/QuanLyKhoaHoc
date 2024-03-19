@@ -71,7 +71,7 @@ export class ChiTietBaiBaoComponent{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/tap-chi"])
+                this.router.navigate(["/bai-bao"])
                 return;
             }
         })

@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {ChiTietDeTaiComponent} from "./detail.component";
-import {PagingService} from "../../../core/services/paging.service";
 import {ChiTietDeTaiRoutingModule} from "./detail-routing.module";
 import {CommonModule} from "@angular/common";
 import {ReactiveFormsModule} from "@angular/forms";
@@ -14,8 +13,9 @@ import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzPopconfirmModule} from "ng-zorro-antd/popconfirm";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
-import {SharedModule} from "../../../shared/components/shared.module";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {SharedModule} from "../../../../../shared/components/shared.module";
+import {PagingService} from "../../../../../core/services/paging.service";
 
 @NgModule({
     declarations:[
@@ -36,7 +36,7 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
         NzSelectModule,
         NzWaveModule,
         SharedModule,
-        NzDatePickerModule
+        NzDatePickerModule,
     ],
     exports:[
 

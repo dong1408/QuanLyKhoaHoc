@@ -7,11 +7,12 @@ import {AuthService} from "./core/services/user/auth.service";
 import {LocalStorageService} from "./core/services/local-storage.service";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "./shared/commons/constants";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import {adminGuards} from "./core/guards/admin.guards";
 
 const routes: Routes = [
   {
       path: '',
-      canActivate:[authGuards],
+      canActivate:[adminGuards],
       loadChildren: () => import('./pages/main/main.module').then(m => m.MainModule)
   },
 
