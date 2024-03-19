@@ -52,7 +52,7 @@ export class UpdateRoleComponent implements OnInit,OnDestroy{
             if (parseInt(params.get("id") as string)) {
                 this.id = parseInt(params.get("id") as string)
             } else {
-                this.router.navigate(["/vai-tro"])
+                this.router.navigate(["/admin/vai-tro"])
                 return;
             }
         })
@@ -160,7 +160,7 @@ export class UpdateRoleComponent implements OnInit,OnDestroy{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(['/vai-tro'])
+                this.router.navigate(['/admin/vai-tro'])
             }
         })
 

@@ -71,7 +71,7 @@ export class ChiTietBaiBaoComponent{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/bai-bao"])
+                this.router.navigate(["/admin/bai-bao"])
                 return;
             }
         })
@@ -284,7 +284,7 @@ export class ChiTietBaiBaoComponent{
                     response.message
                 )
                 this.isDelete = false
-                this.router.navigate(['/bai-bao'])
+                this.router.navigate(['/admin/bai-bao'])
             },
             error:(error) => {
                 this.notificationService.create(

@@ -9,7 +9,7 @@ import {NzFormModule} from "ng-zorro-antd/form";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
-import {SharedModule} from "../../../shared/components/shared.module";
+import {SharedModule} from "../../shared/components/shared.module";
 
 @NgModule({
     declarations:[

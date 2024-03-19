@@ -14,6 +14,7 @@ export const notChangedGuards:CanActivateFn = (route:ActivatedRouteSnapshot,stat
         router.navigate(["/dang-nhap"])
         return false
     }
+
     const currentUser = authService.getCurrentUser()
     if(currentUser && !currentUser.changed){
         return true
@@ -22,10 +23,11 @@ export const notChangedGuards:CanActivateFn = (route:ActivatedRouteSnapshot,stat
     return from(authService.getMe()).pipe(
         switchMap((response) => {
             authService.setCurrentUser(response.data)
+            authService.userState$.next(response.data)
             if(!response.data.changed){
                 return of(true)
             }else{
-                router.navigate(["/"])
+                router.navigate(["/home/tai-khoan/thong-tin"])
                 return of(false)
             }
         }),

@@ -12,11 +12,6 @@ const routes:Routes = [
                 path:"tai-khoan",
                 loadChildren: () => import('./tai-khoan/tai-khoan.module').then(m => m.TaiKhoanModule)
             },
-            {
-                path: 'doi-mat-khau',
-                // canActivate:[notChangedGuards],
-                loadChildren: () => import('./change-password/change-password.module').then(m => m.ChangePasswordModule)
-            },
         ]
     },
 ]

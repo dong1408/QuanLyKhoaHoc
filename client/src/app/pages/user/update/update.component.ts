@@ -82,7 +82,7 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/nguoi-dung"])
+                this.router.navigate(["/admin/nguoi-dung"])
                 return;
             }
         })
@@ -253,7 +253,7 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
                     "Lỗi",
                     error
                 )
-                this.router.navigate(['/nguoi-dung'])
+                this.router.navigate(['/admin/nguoi-dung'])
                 this.loadingService.stopLoading()
                 return
             }

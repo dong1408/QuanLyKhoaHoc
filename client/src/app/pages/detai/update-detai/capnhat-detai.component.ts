@@ -51,7 +51,7 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
             if (parseInt(params.get("id") as string)) {
                 this.id = parseInt(params.get("id") as string)
             } else {
-                this.router.navigate(["/de-tai"])
+                this.router.navigate(["/admin/de-tai"])
                 return;
             }
         })
@@ -213,7 +213,7 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
                 )
 
                 this.loadingService.stopLoading()
-                this.router.navigate(["/de-tai"])
+                this.router.navigate(["/admin/de-tai"])
                 return
             }
         })
