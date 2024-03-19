@@ -113,7 +113,7 @@ export class DeTaiComponent implements OnInit,OnDestroy{
             debounceTime(700),
             distinctUntilChanged(),
             switchMap(([pageIndex, keyword, sortBy]) => {
-                return this.deTaiService.getDeTaiKeKhai(pageIndex, keyword, sortBy)
+                return this.deTaiService.getDeTaiThamGia(pageIndex, keyword, sortBy)
             })
         ).subscribe({
             next: (response) => {

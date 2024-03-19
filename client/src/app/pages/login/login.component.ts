@@ -74,7 +74,7 @@ export class LoginComponent implements OnInit,OnDestroy{
                 this.authService.userState$.next(response.data)
                 this.authService.setCurrentUser(response.data)
                 this.loginLoading = false
-                this.router.navigate(["/"])
+                this.router.navigate(["/home/tai-khoan/thong-tin"])
             },
             error:(response) => {
                 this.notificationService.create(

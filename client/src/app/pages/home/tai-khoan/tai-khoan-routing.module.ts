@@ -16,9 +16,42 @@ const routes:Routes = [
                 loadChildren: () => import('./bai-bao/bai-bao.module').then(m => m.BaiBaoModule)
             },
             {
+                path:"san-pham/bai-bao/:id/thong-tin-bai-bao",
+                loadChildren: () => import('./bai-bao/update-baibao/capnhat-baibao.module').then(m => m.CapNhatBaiBaoModule)
+            },
+            {
+                path:"san-pham/bai-bao/:id/thong-tin-san-pham",
+                loadChildren: () => import('./bai-bao/update-sanpham/capnhat-sanpham.module').then(m => m.CapNhatSanPhamBaiBaoModule)
+            },
+            {
+                path:"san-pham/bai-bao/tao-moi",
+                loadChildren: () => import('./bai-bao/create/create.module').then(m => m.BaiBaoCreateModule)
+            },
+            {
+                path:"san-pham/bai-bao/:id",
+                loadChildren: () => import('./bai-bao/detail/detail.module').then(m => m.ChiTietBaiBaoModule)
+            },
+            {
                 path:"san-pham/de-tai",
                 loadChildren: () => import('./de-tai/de-tai.module').then(m => m.DeTaiModule)
-            }
+            },
+            //
+            {
+                path:"san-pham/de-tai/:id/thong-tin-de-tai",
+                loadChildren: () => import('./de-tai/update-detai/capnhat-detai.module').then(m => m.CapNhatDeTaiModule)
+            },
+            {
+                path:"san-pham/de-tai/:id/thong-tin-san-pham",
+                loadChildren: () => import('./de-tai/update-sanpham/capnhat-sanpham.module').then(m => m.CapNhatSanPhamDeTaiModule)
+            },
+            {
+                path:"san-pham/de-tai/tao-moi",
+                loadChildren: () => import('./de-tai/create/create.module').then(m => m.TaoDeTaiModule)
+            },
+            {
+                path:"san-pham/de-tai/:id",
+                loadChildren: () => import('./de-tai/detail/detail.module').then(m => m.ChiTietDeTaiModule)
+            },
         ]
     }
 ]

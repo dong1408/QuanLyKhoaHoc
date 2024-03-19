@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {
     combineLatest,
@@ -13,22 +12,23 @@ import {
     takeUntil,
     tap
 } from "rxjs";
-import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
-import {User} from "../../../core/types/user/user.type";
-import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
-import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
-import {UserService} from "../../../core/services/user/user.service";
-import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
-import {TaoBaiTao} from "../../../core/types/baibao/bai-bao.type";
-import {dateConvert} from "../../../shared/commons/utilities";
-import {PagingService} from "../../../core/services/paging.service";
-import {VaiTroTacGia} from "../../../core/types/sanpham/vai-tro-tac-gia.type";
-import {VaiTroService} from "../../../core/services/sanpham/vai-tro.service";
-import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
+import {ToChuc} from "../../../../../core/types/user-info/to-chuc.type";
+import {Magazine} from "../../../../../core/types/tapchi/tap-chi.type";
+import {VaiTroTacGia} from "../../../../../core/types/sanpham/vai-tro-tac-gia.type";
+import { User } from "src/app/core/types/user/user.type";
+import {LoadingService} from "../../../../../core/services/loading.service";
+import { ToChucService } from "src/app/core/services/user-info/to-chuc.service";
+import {TapChiService} from "../../../../../core/services/tapchi/tap-chi.service";
+import {UserService} from "../../../../../core/services/user/user.service";
+import {PagingService} from "../../../../../core/services/paging.service";
+import {VaiTroService} from "../../../../../core/services/sanpham/vai-tro.service";
+import {BaiBaoService} from "../../../../../core/services/baibao/bai-bao.service";
+import {noWhiteSpaceValidator} from "../../../../../shared/validators/no-white-space.validator";
+import {TaoBaiTao} from "../../../../../core/types/baibao/bai-bao.type";
+import {dateConvert} from "../../../../../shared/commons/utilities";
 
 @Component({
-    selector:"app-baibao-create",
+    selector:"app-taikhoan-baibao-create",
     templateUrl:'./create.component.html',
     styleUrls:['./create.component.css']
 })

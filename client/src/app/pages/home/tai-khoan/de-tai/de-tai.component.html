@@ -2,7 +2,7 @@
     <h1 class="text-primary tw-text-5xl">ĐỀ TÀI</h1>
     <div class="tw-mt-[15] tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
         <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
-            <button nz-button nzType="primary" routerLink="/bai-bao/tao-moi">
+            <button nz-button nzType="primary" routerLink="tao-moi">
                 <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
                 Tạo Mới
             </button>
@@ -58,7 +58,7 @@
                            <td nzEllipsis class="{{data.trangthairasoat === AppConstant.TT_DA_XAC_NHAN ? 'success' : 'error'}}">{{data.trangthairasoat}}</td>
                            <td nzEllipsis>{{ data.ngaydangky ?? '' }}</td>
                            <td  class="tw-flex tw-items-center tw-space-x-[4px]">
-                               <button nz-button nzType="primary" [routerLink]="['/de-tai',data.id_sanpham]">
+                               <button nz-button nzType="primary" [routerLink]="[data.id_sanpham]">
                                    <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
                                    Chi Tiết
                                </button>
@@ -110,7 +110,6 @@
                            <th>Trạng Thái</th>
                            <th>Trạng Thái Rà Soát</th>
                            <th>Ngày Đăng Ký</th>
-                           <th>Thao Tác</th>
                        </tr>
                        </thead>
                        <tbody>
@@ -122,12 +121,6 @@
                            <td nzEllipsis>{{data.trangthai}}</td>
                            <td nzEllipsis class="{{data.trangthairasoat === AppConstant.TT_DA_XAC_NHAN ? 'success' : 'error'}}">{{data.trangthairasoat}}</td>
                            <td nzEllipsis>{{ data.ngaydangky ?? '' }}</td>
-                           <td  class="tw-flex tw-items-center tw-space-x-[4px]">
-                               <button nz-button nzType="primary" [routerLink]="['/bai-bao',data.id_sanpham]">
-                                   <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
-                                   Chi Tiết
-                               </button>
-                           </td>
                        </tr>
                        </tbody>
                    </nz-table>

@@ -19,6 +19,7 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzIconModule} from "ng-zorro-antd/icon";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {RouterLink, RouterOutlet} from "@angular/router";
+import {NzDescriptionsModule} from "ng-zorro-antd/descriptions";
 
 @NgModule({
     declarations:[ //declare cac component
@@ -44,7 +45,8 @@ import {RouterLink, RouterOutlet} from "@angular/router";
         NzIconModule,
         NzWaveModule,
         RouterOutlet,
-        RouterLink
+        RouterLink,
+        NzDescriptionsModule
     ],
     exports:[ //export cac component
         HeaderComponent,
