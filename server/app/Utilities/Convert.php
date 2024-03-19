@@ -567,7 +567,7 @@ class Convert
         if ($sanPham->nguoiKeKhai == null) {
             $a->nguoikekhai = null;
         } else {
-            $a->nguoikekhai = Convert::getUserVm($sanPham->nguoiKeKhai);
+            $a->nguoikekhai = Convert::getUserSimpleVm($sanPham->nguoiKeKhai);
         }
 
         $a->trangthairasoat = $sanPham->trangthairasoat ?? null;
@@ -575,7 +575,7 @@ class Convert
         if ($sanPham->nguoiRaSoat == null) {
             $a->nguoirasoat = null;
         } else {
-            $a->nguoirasoat = Convert::getUserVm($sanPham->nguoiRaSoat);
+            $a->nguoirasoat = Convert::getUserSimpleVm($sanPham->nguoiRaSoat);
         }
 
         $a->diemquydoi = $sanPham->diemquydoi;
@@ -612,7 +612,7 @@ class Convert
     {
         $a = new SanPhamTacGiaVm();
         $a->id = $sanPhaMTacGia->id;
-        $a->tacgia = Convert::getUserVm($sanPhaMTacGia->tacGia);
+        $a->tacgia = Convert::getUserSimpleVm($sanPhaMTacGia->tacGia);
         $a->vaitrotacgia = Convert::getVaiTroTacGiaVm($sanPhaMTacGia->vaiTroTacGia);
 
         $a->thutu = $sanPhaMTacGia->thutu ?? null;
