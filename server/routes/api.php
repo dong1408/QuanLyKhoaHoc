@@ -128,9 +128,9 @@ Route::group([
     Route::patch('detai/{id}/delete', [DeTaiController::class, 'deleteDeTai'])->can('detai.delete');
     Route::patch('detai/{id}/restore', [DeTaiController::class, 'restoreDeTai'])->can('detai.delete');
     Route::delete('detai/{id}/forceDelete', [DeTaiController::class, 'forceDeleteDeTai'])->can('detai.delete');
-    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.view'); // cho admin + owner
     Route::get('detai/kekhai', [DeTaiController::class, 'getDeTaiKeKhai']);
     Route::get('detai/thamgia', [DeTaiController::class, 'getDeTaiThamGia']);
+    Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.view'); // cho admin + owner
 
     // PhanLoaiDeTai
     Route::get('phanloaidetai', [PhanLoaiDeTaiController::class, 'getPhanLoaiDeTai']);

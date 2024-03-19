@@ -567,7 +567,7 @@ class Convert
         if ($sanPham->nguoiKeKhai == null) {
             $a->nguoikekhai = null;
         } else {
-            $a->nguoikekhai = Convert::getUserVm($sanPham->nguoiKeKhai);
+            $a->nguoikekhai = Convert::getUserSimpleVm($sanPham->nguoiKeKhai);
         }
 
         $a->trangthairasoat = $sanPham->trangthairasoat ?? null;
@@ -575,7 +575,7 @@ class Convert
         if ($sanPham->nguoiRaSoat == null) {
             $a->nguoirasoat = null;
         } else {
-            $a->nguoirasoat = Convert::getUserVm($sanPham->nguoiRaSoat);
+            $a->nguoirasoat = Convert::getUserSimpleVm($sanPham->nguoiRaSoat);
         }
 
         $a->diemquydoi = $sanPham->diemquydoi;
@@ -612,7 +612,7 @@ class Convert
     {
         $a = new SanPhamTacGiaVm();
         $a->id = $sanPhaMTacGia->id;
-        $a->tacgia = Convert::getUserVm($sanPhaMTacGia->tacGia);
+        $a->tacgia = Convert::getUserSimpleVm($sanPhaMTacGia->tacGia);
         $a->vaitrotacgia = Convert::getVaiTroTacGiaVm($sanPhaMTacGia->vaiTroTacGia);
 
         $a->thutu = $sanPhaMTacGia->thutu ?? null;
@@ -682,9 +682,9 @@ class Convert
         $a->issue = $sanPham->baiBao->issue ?? null;
         $a->number = $sanPham->baiBao->number ?? null;
         $a->pages = $sanPham->baiBao->pages ?? null;
-        $a->deleted_at = $sanPham->baiBao->sanPham->deleted_at ?? null;
-        $a->created_at = $sanPham->baiBao->created_at;
-        $a->updated_at = $sanPham->baiBao->updated_at;
+        $a->deleted_at = $sanPham->deleted_at ?? null;
+        $a->created_at = $sanPham->created_at;
+        $a->updated_at = $sanPham->updated_at;
 
         foreach ($sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
             $a->sanpham_tacgias[] = Convert::getSanPhamTacGiaVm($sanPhaMTacGia);
@@ -759,8 +759,8 @@ class Convert
         $a->tochuchoptac = $sanPham->deTai->toChucHopTac == null ? null : Convert::getToChucVm($sanPham->deTai->toChucHopTac); // $id_tochuchoptac -- tochuc
         $a->tylekinhphidonvihoptac = $sanPham->deTai->tylekinhphidonvihoptac ?? null;
         $a->capdetai = $sanPham->deTai->capdetai ?? null;
-        $a->created_at = $sanPham->deTai->created_at;
-        $a->updated_at = $sanPham->deTai->updated_at;
+        $a->created_at = $sanPham->created_at;
+        $a->updated_at = $sanPham->updated_at;
         $a->trangthairasoat = $sanPham->trangthairasoat ?? null;
 
         $a->tuyenchon = $sanPham->tuyenChon == null ? null : Convert::getTuyenChonVm($sanPham->tuyenChon);

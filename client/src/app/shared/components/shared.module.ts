@@ -13,6 +13,12 @@ import {BaiBaoComponent} from "./bai-bao/bai-bao.component";
 import {DeTaiComponent} from "./de-tai/de-tai.component";
 import {BaoCaoComponent} from "./bao-cao/bao-cao.component";
 import {TrangThaiDeTaiComponent} from "./trang-thai-de-tai/trang-thai-de-tai.component";
+import {HuongDanComponent} from "./huong-dan/huong-dan.component";
+import {NzButtonModule} from "ng-zorro-antd/button";
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
+import {NzIconModule} from "ng-zorro-antd/icon";
+import {NzWaveModule} from "ng-zorro-antd/core/wave";
+import {RouterLink, RouterOutlet} from "@angular/router";
 
 @NgModule({
     declarations:[ //declare cac component
@@ -25,13 +31,20 @@ import {TrangThaiDeTaiComponent} from "./trang-thai-de-tai/trang-thai-de-tai.com
         BaiBaoComponent,
         DeTaiComponent,
         BaoCaoComponent,
-        TrangThaiDeTaiComponent
+        TrangThaiDeTaiComponent,
+        HuongDanComponent
     ],
     imports: [ // import module
         CommonModule,
         NzDividerModule,
         NzSpinModule,
-        NzTagModule
+        NzTagModule,
+        NzButtonModule,
+        NzDrawerModule,
+        NzIconModule,
+        NzWaveModule,
+        RouterOutlet,
+        RouterLink
     ],
     exports:[ //export cac component
         HeaderComponent,
@@ -43,7 +56,8 @@ import {TrangThaiDeTaiComponent} from "./trang-thai-de-tai/trang-thai-de-tai.com
         BaiBaoComponent,
         DeTaiComponent,
         BaoCaoComponent,
-        TrangThaiDeTaiComponent
+        TrangThaiDeTaiComponent,
+        HuongDanComponent
     ]
 })
 

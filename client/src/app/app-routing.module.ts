@@ -1,19 +1,29 @@
-import { NgModule } from '@angular/core';
-import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
+import {Routes, RouterModule, PreloadAllModules, Router} from '@angular/router';
 import {authGuards} from "./core/guards/auth.guards";
 import {notAuthGuard} from "./core/guards/not-auth.guards";
+import {notChangedGuards} from "./core/guards/not-changed.guards";
+import {AuthService} from "./core/services/user/auth.service";
+import {LocalStorageService} from "./core/services/local-storage.service";
+import {ACCESS_TOKEN, REFRESH_TOKEN} from "./shared/commons/constants";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 const routes: Routes = [
   {
       path: '',
-      // canActivate:[authGuards],
+      canActivate:[authGuards],
       loadChildren: () => import('./pages/main/main.module').then(m => m.MainModule)
   },
 
   {
       path: 'dang-nhap',
-      // canActivate:[notAuthGuard],
+      canActivate:[notAuthGuard],
       loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)
+  },
+  {
+      path: 'home',
+      canActivate:[authGuards],
+      loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
   }
 ];
 

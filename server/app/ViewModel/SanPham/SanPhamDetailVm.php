@@ -3,6 +3,7 @@
 namespace App\ViewModel\SanPham;
 
 use App\Models\SanPham\SanPham;
+use App\ViewModel\User\UserSimpleVm;
 use App\ViewModel\User\UserVm;
 use App\ViewModel\UserInfo\ToChucVm;
 use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
@@ -24,10 +25,10 @@ class SanPhamDetailVm
     public ?ToChucVm $donvitaitro; // $id_donvitaitro -- ToChucVm
     public ?string $chitietdonvitaitro;
     public string $ngaykekhai;
-    public ?UserVm $nguoikekhai; // $id_nguoikekhai -- UserVm
+    public ?UserSimpleVm $nguoikekhai; // $id_nguoikekhai -- UserVm
     public ?string $trangthairasoat;
     public ?string $ngayrasoat;
-    public ?UserVm $nguoirasoat; // $id_nguoirasoat -- UserVm
+    public ?UserSimpleVm $nguoirasoat; // $id_nguoirasoat -- UserVm
     public string $diemquydoi;
     public string $gioquydoi;
     public string $thongtinchitiet;

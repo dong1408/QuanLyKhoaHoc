@@ -48,6 +48,14 @@ export class UserService{
         )
     }
 
+    getUserInfo(){
+        return this.http.get<ApiResponse<UserDetail>>(
+            `${environment.apiUrl}/users/info`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
     // getUserPermission(){
     //     return this.http.get<ApiResponse<Permission[]>>(
     //         `${environment.apiUrl}/users/permission`

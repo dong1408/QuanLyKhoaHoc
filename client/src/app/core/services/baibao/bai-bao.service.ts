@@ -34,6 +34,22 @@ export class BaiBaoService{
         )
     }
 
+    getBaiBaoKeKhai(page:number,keyword:string,sortby:string){
+        return this.http.get<ApiResponse<PagingResponse<BaiBao[]>>>(
+            `${environment.apiUrl}/baibao/kekhai?page=${page}&search=${keyword}&sortby=${sortby}`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    getBaiBaoThamGia(page:number,keyword:string,sortby:string){
+        return this.http.get<ApiResponse<PagingResponse<BaiBao[]>>>(
+            `${environment.apiUrl}/baibao/thamgia?page=${page}&search=${keyword}&sortby=${sortby}`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
     getChiTietBaiBao(id:number){
         return this.http.get<ApiResponse<ChiTietBaiBao>>(
             `${environment.apiUrl}/baibao/${id}`
