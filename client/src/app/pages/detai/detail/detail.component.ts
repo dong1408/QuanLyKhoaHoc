@@ -652,7 +652,7 @@ export class ChiTietDeTaiComponent{
         const data:XetDuyetDeTai = {
             ...form.value,
             ngayxetduyet : dateConvert(form.get("ngayxetduyet")?.value.toString()),
-            ngaykyhopdong: form.get("ngaykyhopdong")?.value !== null ? dateConvert(form.get("ngaykyhopdong")?.value.toString) : null
+            ngaykyhopdong: form.get("ngaykyhopdong")?.value !== null ? dateConvert(form.get("ngaykyhopdong")?.value.toString()) : null
         }
 
         this.isXetDuyet = true
