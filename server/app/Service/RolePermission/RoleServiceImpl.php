@@ -36,7 +36,7 @@ class RoleServiceImpl implements RoleService
 
         $role->permissions()->attach($validated['permission_id']);  // add
         $result = Convert::getRoleVm($role);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Tạo vai trò thành công", $result);
     }
 
     public function updateRole(UpdateRoleRequest $request, int $id): ResponseSuccess
@@ -55,7 +55,7 @@ class RoleServiceImpl implements RoleService
             $role->permissions()->sync($validated['permission_id']);
         });
         $result = Convert::getRoleVm($role);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật vai trò thành công", $result);
     }
 
     public function getPermissionsOfRole(int $roleId): ResponseSuccess

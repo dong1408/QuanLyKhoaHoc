@@ -22,8 +22,6 @@ import {ChuyenMonService} from "../../../../core/services/user-info/chuyen-mon.s
 import {QuocGiaService} from "../../../../core/services/user-info/quoc-gia.service";
 import {NgachVienChucService} from "../../../../core/services/user-info/ngach-vien-chuc.service";
 import {LoadingService} from "../../../../core/services/loading.service";
-import {RoleService} from "../../../../core/services/roles/role.service";
-import {ActivatedRoute, Router} from "@angular/router";
 import {noWhiteSpaceValidator} from "../../../../shared/validators/no-white-space.validator";
 import {validValuesValidator} from "../../../../shared/validators/valid-value.validator";
 import {dateConvert} from "../../../../shared/commons/utilities";
@@ -57,7 +55,6 @@ export class UserInfoComponent{
     chuyenMons:ChuyenMon[] = []
     nganhTinhDiem:NganhTinhDiem[] = []
     chuyenNganhTinhDiem:ChuyenNganhTinhDiem[] = []
-    roles:Role[] = []
     user:UserDetail
 
     constructor(
@@ -73,9 +70,6 @@ export class UserInfoComponent{
         private quocGiaService:QuocGiaService,
         private ngachVienChucService:NgachVienChucService,
         public loadingService:LoadingService,
-        private roleService:RoleService,
-        private _router: ActivatedRoute,
-        private router:Router,
     ) {
     }
 
@@ -211,10 +205,9 @@ export class UserInfoComponent{
             this.quocGiaService.getAllQuocGia(),
             this.nganhTinhDiemService.getNganhTinhDiem(),
             this.donViService.getAllDonVi(),
-            this.roleService.getAllRoles(),
             this.userService.getUserInfo(),
             this.chuyenNganhTinhDiemService.getChuyenNganhTinhDiem()
-        ],(tcResponse,hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,dvResponse,rResponse,uResponse,cnResponse) => {
+        ],(tcResponse,hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,dvResponse,uResponse,cnResponse) => {
             return {
                 listTC: tcResponse.data,
                 listHH: hhResponse.data,
@@ -223,7 +216,6 @@ export class UserInfoComponent{
                 listQG:qgResponse.data,
                 listNTD:ntdResponse.data,
                 listDV:dvResponse.data,
-                listR:rResponse.data,
                 user:uResponse.data,
                 listCN:cnResponse.data,
             }
@@ -236,7 +228,6 @@ export class UserInfoComponent{
                 this.quocTichs = response.listQG
                 this.nganhTinhDiem = response.listNTD
                 this.noiHocs = response.listTC
-                this.roles = response.listR
                 this.user = response.user
                 this.donVis = response.listDV
                 this.chuyenNganhTinhDiem = response.listCN

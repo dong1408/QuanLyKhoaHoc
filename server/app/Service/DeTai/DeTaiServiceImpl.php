@@ -543,7 +543,7 @@ class DeTaiServiceImpl implements DeTaiService
         });
 
         $result = Convert::getDeTaiVm($sanPham);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Đăng ký đề tài thành công", $result);
     }
 
 
@@ -592,7 +592,7 @@ class DeTaiServiceImpl implements DeTaiService
         $sanPham->capsanpham = $validated['capsanpham'];
         $sanPham->thoidiemcongbohoanthanh = $validated['thoidiemcongbohoanthanh'];
         $sanPham->save();
-        return new ResponseSuccess("Cập nhật thành công", true);
+        return new ResponseSuccess("Cập nhật sản phẩm thành công", true);
     }
 
 
@@ -629,7 +629,7 @@ class DeTaiServiceImpl implements DeTaiService
         $deTai->tylekinhphidonvihoptac = $validated['detaihoptac'] == true ? $validated['tylekinhphidonvihoptac'] : null;
         $deTai->capdetai = $validated['capdetai'];
         $deTai->save();
-        return new ResponseSuccess("Cập nhật thành công", true);
+        return new ResponseSuccess("Cập nhật đề tài thành công", true);
     }
 
 
@@ -769,7 +769,7 @@ class DeTaiServiceImpl implements DeTaiService
                 $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
             }
         });
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật tác giả thành công", $result);
     }
 
 
@@ -796,7 +796,7 @@ class DeTaiServiceImpl implements DeTaiService
         $fileMinhChung->url = $validated['url'];
         $fileMinhChung->save();
         $result = Convert::getFileMinhChungSanPhamVm($fileMinhChung);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật file minh chứng thành công", $result);
     }
 
 
@@ -825,7 +825,7 @@ class DeTaiServiceImpl implements DeTaiService
         $sanPham->id_nguoirasoat = auth('api')->user()->id;
         $sanPham->ngayrasoat = date("Y-m-d H:i:s");
         $sanPham->save();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Cập nhật trạng thái thành công", true);
     }
 
     public function tuyenChonDeTai(TuyenChonDeTaiRequest $request, int $id): ResponseSuccess
@@ -864,7 +864,7 @@ class DeTaiServiceImpl implements DeTaiService
         ]);
 
         $result = Convert::getTuyenChonVm($tuyenChon);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Tuyển chọn đề tài thành công", $result);
     }
 
 
@@ -920,7 +920,7 @@ class DeTaiServiceImpl implements DeTaiService
             'kinhphi' => $validated['kinhphi']
         ]);
         $result = Convert::getXetDuyetVm($xetDuyet);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Xét duyệt đề tài thành công", $result);
     }
 
 
@@ -974,7 +974,7 @@ class DeTaiServiceImpl implements DeTaiService
             'thoigiangiahan' => $validated['thoigiangiahan'],
         ]);
         $result = Convert::getBaoCaoTienDoVm($baoCao);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Báo cáo tiến độ đề tài thành công", $result);
     }
 
 
@@ -1031,7 +1031,7 @@ class DeTaiServiceImpl implements DeTaiService
             'thoigiangiahan' => $validated['thoigiangiahan'],
         ]);
         $result = Convert::getNghiemThuVm($nghiemThu);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Nghiệm thu đề tài thành công", $result);
     }
 
 
@@ -1073,7 +1073,7 @@ class DeTaiServiceImpl implements DeTaiService
         if (!$sanPham->delete()) {
             throw new DeleteFailException();
         }
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa đề tài thành công", true);
     }
 
     public function restoreDeTai(int $id): ResponseSuccess
@@ -1087,7 +1087,7 @@ class DeTaiServiceImpl implements DeTaiService
             throw new DeTaiNotFoundException();
         }
         SanPham::onlyTrashed()->where('id', $id_sanpham)->restore();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Hoàn tác đề tài thành công", true);
     }
 
     public function forceDeleteDeTai(int $id): ResponseSuccess
@@ -1101,7 +1101,7 @@ class DeTaiServiceImpl implements DeTaiService
             throw new DeTaiNotFoundException();
         }
         SanPham::onlyTrashed()->where('id', $id_sanpham)->forceDelete();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa đề tài thành công", true);
     }
 
     private function randomUnique()

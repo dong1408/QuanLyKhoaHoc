@@ -259,6 +259,14 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
                 "Lỗi",
                 "Vui lòng điền đúng yêu cầu của form"
             )
+
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
+
             return;
         }
 

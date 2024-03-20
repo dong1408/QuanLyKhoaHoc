@@ -13,11 +13,11 @@ class LoginException extends Exception
     {
         return response()->json(
             new ResponseError(
-                "NOT FOUND",
-                404,
-                "Sai tài khoản mật khẩu"
+                "BAD REQUEST",
+                400,
+                "Sai tài khoản hoặc mật khẩu"
             ),
-            404
+            400
         );
     }
 }

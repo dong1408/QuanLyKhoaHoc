@@ -364,7 +364,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             }
         });
         $result = Convert::getBaiBaoKhoaHocVm($sanPham);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Tạo bài báo khoa học thành công", $result);
     }
 
     private function filterUniqueAndDuplicates($array, $field)
@@ -434,7 +434,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham->capsanpham = $validated['capsanpham'];
         $sanPham->thoidiemcongbohoanthanh = $validated['thoidiemcongbohoanthanh'];
         $sanPham->save();
-        return new ResponseSuccess("Cập nhật thành công", true);
+        return new ResponseSuccess("Cập nhật sản phẩm thành công", true);
     }
 
 
@@ -474,7 +474,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $baiBao->number = $validated['number'];
         $baiBao->pages = $validated['pages'];
         $baiBao->save();
-        return new ResponseSuccess("Cập nhật thành công", true);
+        return new ResponseSuccess("Cập nhật bài báo khoa học thành công", true);
     }
 
     public function updateSanPhamTacGia(UpdateSanPhamTacGiaRequest $request, int $id): ResponseSuccess
@@ -614,7 +614,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
             }
         });
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật tác giả thành công", $result);
     }
 
 
@@ -641,7 +641,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $fileMinhChung->url = $validated['url'];
         $fileMinhChung->save();
         $result = Convert::getFileMinhChungSanPhamVm($fileMinhChung);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật file minh chứng thành công", $result);
     }
 
 
@@ -670,7 +670,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham->id_nguoirasoat = auth('api')->user()->id;
         $sanPham->ngayrasoat = date("Y-m-d");
         $sanPham->save();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Cập nhật trạng thái thành công", true);
     }
 
     public function deleteBaiBao(int $id): ResponseSuccess
@@ -686,7 +686,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         if (!$sanPham->delete()) {
             throw new DeleteFailException();
         }
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa bài báo thành công", true);
     }
 
 
@@ -701,7 +701,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new BaiBaoKhoaHocNotFoundException();
         }
         SanPham::onlyTrashed()->where('id', $id_sanpham)->restore();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Hoàn tác bài báo thành công", true);
     }
 
     public function forceDeleteBaiBao(int $id): ResponseSuccess
@@ -715,7 +715,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new BaiBaoKhoaHocNotFoundException();
         }
         SanPham::onlyTrashed()->where('id', $id_sanpham)->forceDelete();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa bài báo thành công", true);
     }
 
 
