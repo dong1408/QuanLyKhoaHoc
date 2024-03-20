@@ -178,7 +178,7 @@ class UserServiceImpl implements UserService
         });
 
         //        $result = Convert::getUserDetailVm($user);
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Tạo người dùng thành công", true);
     }
 
     public function updateUser(UpdateUserRequest $request, int $id): ResponseSuccess
@@ -217,7 +217,7 @@ class UserServiceImpl implements UserService
             $user->save();
         });
         $result = Convert::getUserDetailVm($user);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật thông tin thành công", $result);
     }
 
     public function updateRoleOfUser(UpdateRoleOfUserRequest $request, int $id): ResponseSuccess
@@ -251,7 +251,7 @@ class UserServiceImpl implements UserService
             $result[] = Convert::getRoleVm($role);
         }
 
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật vai trò thành công", $result);
     }
 
 
@@ -278,7 +278,7 @@ class UserServiceImpl implements UserService
             throw new NotAllowDeleteUserIsSuperadminException();
         }
         $user->delete();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa người dùng thành công", true);
     }
 
     public function restoreUser(int $id): ResponseSuccess
@@ -292,7 +292,7 @@ class UserServiceImpl implements UserService
             throw new UserNotFoundException();
         }
         User::onlyTrashed()->where('id', $userId)->restore();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Hoàn tác thành công", true);
     }
 
     public function forceDeleteUser(int $id): ResponseSuccess
@@ -306,7 +306,7 @@ class UserServiceImpl implements UserService
             throw new UserNotFoundException();
         }
         User::onlyTrashed()->where('id', $userId)->forceDelete();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa người dùng thành công", true);
     }
 
 
@@ -325,6 +325,6 @@ class UserServiceImpl implements UserService
         $user->password = Hash::make($validated['password']);
         $user->changed = 1;
         $user->save();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Đổi mật khẩu thành công", true);
     }
 }

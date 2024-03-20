@@ -152,7 +152,7 @@
                     Xóa Mềm
                 </button>
                 <button nz-button nzType="primary" nzDanger
-                        *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN && baibao.deleted_at === null"
+                        *ngIf="baibao.sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN"
                         [nzLoading]="isChangeStatus" nz-popconfirm nzPopconfirmTitle="Hủy Phê Duyệt ?"
                         (nzOnConfirm)="onCapNhatTrangThai(baibao,AppConstant.TT_DANG_RA_SOAT)">
                     <span nz-icon nzType="close" nzTheme="outline"></span>
