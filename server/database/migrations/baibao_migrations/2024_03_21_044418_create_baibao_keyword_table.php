@@ -13,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('baibao_keyword', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 200);
-            $table->string('description', 1000);
-            $table->string('mavaitro', 255);
-
-            $table->softDeletes();
+            $table->unsignedBigInteger('baibao_id');
+            $table->unsignedBigInteger('keyword_id');
             $table->timestamps();
+
+            $table->foreign('baibao_id')->references('id')->on('bai_bao_khoa_hocs')->onDelete('cascade');
+            $table->foreign('keyword_id')->references('id')->on('keywords')->onDelete('cascade');
         });
     }
 
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('baibao_keyword');
     }
 };

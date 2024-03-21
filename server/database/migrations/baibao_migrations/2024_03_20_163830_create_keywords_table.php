@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('d_m_vai_tro_tac_gias', function (Blueprint $table) {
-            $table->string('mavaitro')->unique();
+        Schema::create('keywords', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('d_m_vai_tro_tac_gias', function (Blueprint $table) {
-            $table->dropColumn('mavaitro');
-        });
+        Schema::dropIfExists('keywords');
     }
 };

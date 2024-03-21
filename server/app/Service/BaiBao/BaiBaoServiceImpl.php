@@ -14,6 +14,7 @@ use App\Exceptions\InvalidValueException;
 use App\Exceptions\SanPham\FileMinhChungNotFoundException;
 use App\Exceptions\SanPham\LoaiSanPhamWrongException;
 use App\Exceptions\SanPham\UpdateTrangThaiRaSoatException;
+use App\Exceptions\User\UserNotHavePermissionException;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
 use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
@@ -159,7 +160,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new BaiBaoKhoaHocNotFoundException();
         }
 
-        if($sanPham->trangthairasoat == "Đang rà soát"){
+        if ($sanPham->trangthairasoat == "Đang rà soát") {
             throw new BaiBaoKhoaHocNotFoundException();
         }
 
@@ -299,12 +300,6 @@ class BaiBaoServiceImpl implements BaiBaoService
                 'tensanpham' => $validated['sanpham']['tensanpham'],
                 'id_loaisanpham' => $dmSanPhamBaiBao->id,
                 'tongsotacgia' => $validated['sanpham']['tongsotacgia'],
-                'solandaquydoi' => $validated['sanpham']['solandaquydoi'],
-                'cosudungemailtruong' => $validated['sanpham']['cosudungemailtruong'],
-                'cosudungemaildonvikhac' => $validated['sanpham']['cosudungemaildonvikhac'],
-                'cothongtintruong' => $validated['sanpham']['cothongtintruong'],
-                'cothongtindonvikhac' => $validated['sanpham']['cothongtindonvikhac'],
-                'id_thongtinnoikhac' =>  $validated['sanpham']['cothongtindonvikhac'] == true ? $validated['sanpham']['id_thongtinnoikhac'] : null,
                 'conhantaitro' => $validated['sanpham']['conhantaitro'],
                 'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['id_donvitaitro'] : null,
                 'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null,
@@ -313,10 +308,6 @@ class BaiBaoServiceImpl implements BaiBaoService
                 'trangthairasoat' => "Đang rà soát",
                 'ngayrasoat' => null,
                 'id_nguoirasoat' => null,
-                'diemquydoi' => $validated['sanpham']['diemquydoi'],
-                'gioquydoi' => $validated['sanpham']['gioquydoi'],
-                'thongtinchitiet' => $validated['sanpham']['thongtinchitiet'],
-                'capsanpham' => $validated['sanpham']['capsanpham'],
                 'thoidiemcongbohoanthanh' => $validated['sanpham']['thoidiemcongbohoanthanh']
             ]);
             $baiBao = BaiBaoKhoaHoc::create([
@@ -337,7 +328,6 @@ class BaiBaoServiceImpl implements BaiBaoService
 
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
-                'loaiminhchung' => $validated['fileminhchungsanpham']['loaiminhchung'],
                 'url' => $validated['fileminhchungsanpham']['url'],
             ]);
 
@@ -408,6 +398,15 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new BaiBaoCanNotUpdateException();
         }
 
+        // check bài báo đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
         // check đúng loại sản phẩm là bài báo khoa học
         if ($sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
             throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
@@ -454,6 +453,15 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new BaiBaoCanNotUpdateException();
         }
 
+        // check bài báo đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($baiBao->sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
         // check đúng loại sản phẩm là bài báo khoa học
         if ($baiBao->sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
             throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
@@ -490,6 +498,15 @@ class BaiBaoServiceImpl implements BaiBaoService
         // Check san pham trong trang thai softDelete thi khong cho chinh sua
         if ($sanPham->trashed()) {
             throw new BaiBaoCanNotUpdateException();
+        }
+
+        // check bài báo đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
         }
 
         // check đúng loại sản phẩm là bài báo khoa học
@@ -631,13 +648,21 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new BaiBaoCanNotUpdateException();
         }
 
+        // check bài báo đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($fileMinhChung->sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
         // check đúng loại sản phẩm là bài báo khoa học
         if ($fileMinhChung->sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
             throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
         }
 
         $validated = $request->validated();
-        $fileMinhChung->loaiminhchung = $validated['loaiminhchung'];
         $fileMinhChung->url = $validated['url'];
         $fileMinhChung->save();
         $result = Convert::getFileMinhChungSanPhamVm($fileMinhChung);

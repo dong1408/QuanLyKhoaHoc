@@ -33,7 +33,15 @@ class TuyenChonDeTaiRequest extends FormRequest
                 "bail", "required", "string",
                 Rule::in(["Đủ điều kiện", "Không đủ điều kiện"])
             ],
-            "lydo" => "bail|nullable|string"
+            // "lydo" => "bail|nullable|string"
+            "lydo" => [
+                "bail",
+                // Nếu ketquatuyenchon là "Không đủ điều kiện", lydo không được null
+                Rule::requiredIf(function () {
+                    return request()->ketquatuyenchon === "Không đủ điều kiện";
+                }),
+                "string"
+            ]
         ];
     }
 
@@ -45,6 +53,7 @@ class TuyenChonDeTaiRequest extends FormRequest
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'id.exists' => 'Sản phẩm không tồn tại trên hệ thống',
             'in' => 'Trường :attribute phải là một trong các giá trị :values',
+            'requiredIf' => 'Trường :attribute bắt buộc phải nhập'
         ];
     }
 

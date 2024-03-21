@@ -17,9 +17,9 @@ class ToChucController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function getAllToChuc(): Response
+    public function getAllToChuc(Request $request): Response
     {
-        $result = $this->toChucService->getAllToChuc();
+        $result = $this->toChucService->getAllToChuc($request);
         return response()->json($result, 200);
     }
 }

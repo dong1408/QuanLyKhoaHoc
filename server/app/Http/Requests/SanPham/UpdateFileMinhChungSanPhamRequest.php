@@ -29,7 +29,6 @@ class UpdateFileMinhChungSanPhamRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "loaiminhchung" => "bail|nullable|string",
             "url" => "bail|required|string",
         ];
     }

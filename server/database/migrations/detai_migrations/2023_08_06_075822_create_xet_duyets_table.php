@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('ketquaxetduyet')->nullable();
             $table->string('sohopdong')->nullable();
             $table->string('ngaykyhopdong')->nullable();
-            $table->string('thoihanhopdong')->nullable();
+            $table->integer('thoihanhopdong')->nullable();
             $table->string('kinhphi')->nullable();
 
             $table->timestamps();

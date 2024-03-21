@@ -27,35 +27,13 @@ class CreateBaiBaoRequest extends FormRequest
         return [
             // san pham
             "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",
-            //            "sanpham.id_loaisanpham" => [
-            //                "bail", "integer",
-            //                Rule::exists('d_m_san_phams', 'id')
-            //            ],
-            "sanpham.tongsotacgia" => "bail|required|integer",
-            "sanpham.solandaquydoi" => "bail|required|integer",
-            "sanpham.cosudungemailtruong" => "bail|nullable|boolean",
-            "sanpham.cosudungemaildonvikhac" => "bail|nullable|boolean",
-            "sanpham.cothongtintruong" => "bail|nullable|boolean",
-            "sanpham.cothongtindonvikhac" => "bail|nullable|boolean",
-            "sanpham.id_thongtinnoikhac" => [
-                "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
-            ],
+            "sanpham.tongsotacgia" => "bail|required|integer",      
             "sanpham.conhantaitro" => "bail|nullable|boolean",
             "sanpham.id_donvitaitro" => [
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
-            // "sanpham.ngaykekhai" => "bail|required|string",
-            // "sanpham.id_nguoikekhai" => [
-            //     "bail", "required", "integer",
-            //     Rule::exists('users', 'id')
-            // ],
-            "sanpham.diemquydoi" => "bail|required|string",
-            "sanpham.gioquydoi" => "bail|required|string",
-            "sanpham.thongtinchitiet" => "bail|required|string",
-            "sanpham.capsanpham" => "bail|required|string",
             "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
 
             // Thong tin chi tiet bai bao
@@ -91,7 +69,6 @@ class CreateBaiBaoRequest extends FormRequest
             "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
 
             // file minh chung san pham
-            "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
             "fileminhchungsanpham.url" => "bail|required|string"
         ];
     }

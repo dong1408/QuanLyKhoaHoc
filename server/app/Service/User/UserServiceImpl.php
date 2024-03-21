@@ -161,7 +161,6 @@ class UserServiceImpl implements UserService
                 'email2' => $validated['email2'],
                 'orchid' => $validated['orchid'],
                 'id_tochuc' => $validated['id_tochuc'],
-                'id_donvi' => $validated['id_donvi'],
                 'cohuu' => $validated['cohuu'],
                 'keodai' => $validated['keodai'],
                 'dinhmucnghiavunckh' => $validated['dinhmucnghiavunckh'],
@@ -202,7 +201,6 @@ class UserServiceImpl implements UserService
             $user->email2 = $validated['email2'];
             $user->orchid = $validated['orchid'];
             $user->id_tochuc = $validated['id_tochuc'];
-            $user->id_donvi = $validated['id_donvi'];
             $user->cohuu = $validated['cohuu'];
             $user->keodai = $validated['keodai'];
             $user->dinhmucnghiavunckh = $validated['dinhmucnghiavunckh'];

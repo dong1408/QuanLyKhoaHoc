@@ -29,12 +29,13 @@ class NghiemThuDeTaiRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "hoidongnghiemthu" => "bail|required|string",
             "ngaynghiemthu" => "bail|nullable|string",
-            "ketquanghiemthu" => "bail|nullable|string",
+            "ketquanghiemthu" => [
+                "bail", "nullable", "string",
+                Rule::in(["Đủ điều kiện", "Không đủ điều kiện"])
+            ],
             "ngaycongnhanhoanthanh" => "bail|nullable|string",
             "soqdcongnhanhoanthanh" => "bail|nullable|string",
-            "thoigiangiahan" => "bail|nullable|string",
         ];
     }
 

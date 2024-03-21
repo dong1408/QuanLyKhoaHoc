@@ -31,8 +31,6 @@ return new class extends Migration
             //Thuộc tổ chức, đơn vị nào
             $table->unsignedBigInteger('id_tochuc')->nullable();
             $table->foreign('id_tochuc')->references('id')->on('d_m_to_chucs')->onDelete('cascade');
-            $table->unsignedBigInteger('id_donvi')->nullable();
-            $table->foreign('id_donvi')->references('id')->on('d_m_don_vis')->onDelete('cascade');
             //Có phải cơ hữu không viên chức
             $table->boolean('cohuu')->nullable();
             //Có phải kéo dài không

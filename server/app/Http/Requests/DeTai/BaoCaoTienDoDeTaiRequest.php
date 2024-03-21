@@ -30,9 +30,10 @@ class BaoCaoTienDoDeTaiRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
+            "tenbaocao" => "bail|required|string",
             "ngaynopbaocao" => "bail|required|string",
             "ketquaxet" => "bail|nullable|string",
-            "thoigiangiahan" => "bail|nullable|string",
+            "thoigiangiahan" => "bail|nullable|integer",
         ];
     }
 

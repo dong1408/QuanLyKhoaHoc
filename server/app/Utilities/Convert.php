@@ -293,7 +293,6 @@ class Convert
         $a->email2 = $user->email2 ?? null;
         $a->orchid = $user->orchid ?? null;
         $a->tochuc = $user->toChuc == null ? null : Convert::getToChucVm($user->toChuc);
-        $a->donvi = $user->donVi == null ? null : Convert::getDonViVm($user->donVi);
         $a->cohuu = $user->cohuu ?? null;
         $a->keodai = $user->keodai ?? null;
         $a->dinhmucnghiavunckh = $user->dinhmucnghiavunckh ?? null;
@@ -628,7 +627,6 @@ class Convert
     {
         $a = new FileMinhChungSanPhamVm();
         $a->id = $fileMinhChungSanPham->id;
-        $a->loaiminhchung = $fileMinhChungSanPham->loaiminhchung ?? null;
         $a->url = $fileMinhChungSanPham->url ?? null;
         $a->created_at = $fileMinhChungSanPham->created_at ?? null;
         $a->updated_at = $fileMinhChungSanPham->deleted_at ?? null;
@@ -777,6 +775,7 @@ class Convert
     {
         $a = new BaoCaoTienDoVm();
         $a->id = $baoCaoTienDo->id;
+        $a->tenbaocao = $baoCaoTienDo->tenbaocao ?? null;
         $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao ?? null;
         $a->ketquaxet = $baoCaoTienDo->ketquaxet ?? null;
         $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan ?? null;
@@ -788,12 +787,10 @@ class Convert
     {
         $a = new NghiemThuVm();
         $a->id = $nghiemThu->id;
-        $a->hoidongnghiemthu = $nghiemThu->hoidongnghiemthu ?? null;
         $a->ngaynghiemthu = $nghiemThu->ngaynghiemhtu ?? null;
         $a->ketquanghiemthu = $nghiemThu->ketquanghiemthu ?? null;
         $a->ngaycongnhanhoanthanh = $nghiemThu->ngaycongnhanhoanthanh ?? null;
         $a->soqdcongnhanhoanthanh = $nghiemThu->soqdcongnhanhoanthanh ?? null;
-        $a->thoigianhoanthanh = $nghiemThu->thoigianhoanthanh ?? null;
         $a->created_at = $nghiemThu->created_at;
         $a->updated_at = $nghiemThu->updated_at;
         return $a;

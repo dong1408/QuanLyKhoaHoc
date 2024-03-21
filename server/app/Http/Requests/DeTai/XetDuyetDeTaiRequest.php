@@ -36,7 +36,7 @@ class XetDuyetDeTaiRequest extends FormRequest
             ],
             "sohopdong" => "bail|nullable|string",
             "ngaykyhopdong" => "bail|nullable|string",
-            "thoihanhopdong" => "bail|nullable|string",
+            "thoihanhopdong" => "bail|nullable|integer",
             "kinhphi" => "bail|nullable|string",
         ];
     }

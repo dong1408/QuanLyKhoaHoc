@@ -26,7 +26,6 @@ class UserDetailVm
     public ?string $email2;
     public ?string $orchid;
     public ?ToChucVm $tochuc; // $id_tochuc
-    public ?DonViVm $donvi; // $id_donvi
     public ?bool $cohuu;
     public ?bool $keodai;
     public ?string $dinhmucnghiavunckh;

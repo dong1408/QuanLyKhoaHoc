@@ -26,6 +26,7 @@ use App\Exceptions\InvalidValueException;
 use App\Exceptions\SanPham\FileMinhChungNotFoundException;
 use App\Exceptions\SanPham\LoaiSanPhamWrongException;
 use App\Exceptions\SanPham\UpdateTrangThaiRaSoatException;
+use App\Exceptions\User\UserNotHavePermissionException;
 use App\Http\Requests\Detai\BaoCaoTienDoDeTaiRequest;
 use App\Http\Requests\Detai\CreateDeTaiRequest;
 use App\Http\Requests\Detai\NghiemThuDeTaiRequest;
@@ -362,7 +363,7 @@ class DeTaiServiceImpl implements DeTaiService
             throw new DeTaiNotFoundException();
         }
 
-        if($sanPham->trangthairasoat == "Đang rà soát"){
+        if ($sanPham->trangthairasoat == "Đang rà soát") {
             throw new DeTaiNotFoundException();
         }
 
@@ -485,12 +486,6 @@ class DeTaiServiceImpl implements DeTaiService
                 'tensanpham' => $validated['sanpham']['tensanpham'],
                 'id_loaisanpham' => $dmSanPhamDeTai->id,
                 'tongsotacgia' => $validated['sanpham']['tongsotacgia'],
-                'solandaquydoi' => $validated['sanpham']['solandaquydoi'],
-                'cosudungemailtruong' => $validated['sanpham']['cosudungemailtruong'],
-                'cosudungemaildonvikhac' => $validated['sanpham']['cosudungemaildonvikhac'],
-                'cothongtintruong' => $validated['sanpham']['cothongtintruong'],
-                'cothongtindonvikhac' => $validated['sanpham']['cothongtindonvikhac'],
-                'id_thongtinnoikhac' =>  $validated['sanpham']['cothongtindonvikhac'] == true ? $validated['sanpham']['id_thongtinnoikhac'] : null,
                 'conhantaitro' => $validated['sanpham']['conhantaitro'],
                 'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['id_donvitaitro'] : null,
                 'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null,
@@ -499,11 +494,6 @@ class DeTaiServiceImpl implements DeTaiService
                 'trangthairasoat' => "Đang rà soát",
                 'ngayrasoat' => null,
                 'id_nguoirasoat' => null,
-                'diemquydoi' => $validated['sanpham']['diemquydoi'],
-                'gioquydoi' => $validated['sanpham']['gioquydoi'],
-                'thongtinchitiet' => $validated['sanpham']['thongtinchitiet'],
-                'capsanpham' => $validated['sanpham']['capsanpham'],
-                'thoidiemcongbohoanthanh' => $validated['sanpham']['thoidiemcongbohoanthanh']
             ]);
 
             $deTai = DeTai::create([
@@ -522,7 +512,6 @@ class DeTaiServiceImpl implements DeTaiService
 
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
-                'loaiminhchung' => $validated['fileminhchungsanpham']['loaiminhchung'],
                 'url' => $validated['fileminhchungsanpham']['url'],
             ]);
 
@@ -560,6 +549,16 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
         // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
         if ($sanPham->trashed()) {
             throw new DeTaiCanNotUpdateException();
@@ -606,6 +605,16 @@ class DeTaiServiceImpl implements DeTaiService
         if ($deTai == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($deTai->sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
         // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
         if ($deTai->sanPham == null) {
             throw new DeTaiCanNotUpdateException();
@@ -643,6 +652,18 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
+
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
+
         // Check san pham trong trang thai softDelete thi khong cho chinh sua
         if ($sanPham->trashed()) {
             throw new DeTaiCanNotUpdateException();
@@ -786,13 +807,21 @@ class DeTaiServiceImpl implements DeTaiService
             throw new DeTaiCanNotUpdateException();
         }
 
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($fileMinhChung->sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
         // check đúng loại sản phẩm là đề tài
         if ($fileMinhChung->sanPham->dmSanPham->masanpham != 'detai') {
             throw new LoaiSanPhamWrongException("Sản phẩm không phải đề tài");
         }
 
         $validated = $request->validated();
-        $fileMinhChung->loaiminhchung = $validated['loaiminhchung'];
         $fileMinhChung->url = $validated['url'];
         $fileMinhChung->save();
         $result = Convert::getFileMinhChungSanPhamVm($fileMinhChung);
@@ -860,7 +889,7 @@ class DeTaiServiceImpl implements DeTaiService
         $tuyenChon = TuyenChon::create([
             'id_sanpham' => $sanPham->id,
             'ketquatuyenchon' => $validated['ketquatuyenchon'],
-            'lydo' => $validated['lydo']
+            'lydo' =>  $validated['lydo']
         ]);
 
         $result = Convert::getTuyenChonVm($tuyenChon);
@@ -914,10 +943,10 @@ class DeTaiServiceImpl implements DeTaiService
             'id_sanpham' => $sanPham->id,
             'ngayxetduyet' => $validated['ngayxetduyet'],
             'ketquaxetduyet' => $validated['ketquaxetduyet'],
-            'sohopdong' => $validated['sohopdong'],
-            'ngaykyhopdong' => $validated['ngaykyhopdong'],
-            'thoihanhopdong' => $validated['thoihanhopdong'],
-            'kinhphi' => $validated['kinhphi']
+            'sohopdong' => $validated['ketquaxetduyet'] == "Đủ điều kiện" ? $validated['sohopdong'] : null,
+            'ngaykyhopdong' => $validated['ketquaxetduyet'] == "Đủ điều kiện" ? $validated['ngaykyhopdong'] : null,
+            'thoihanhopdong' => $validated['ketquaxetduyet'] == "Đủ điều kiện" ? $validated['thoihanhopdong'] : null,
+            'kinhphi' => $validated['ketquaxetduyet'] == "Đủ điều kiện" ? $validated['kinhphi'] : null
         ]);
         $result = Convert::getXetDuyetVm($xetDuyet);
         return new ResponseSuccess("Xét duyệt đề tài thành công", $result);
@@ -969,6 +998,7 @@ class DeTaiServiceImpl implements DeTaiService
         $validated = $request->validated();
         $baoCao = BaoCaoTienDo::create([
             'id_sanpham' => $sanPham->id,
+            'tenbaocao' => $validated['tenbaocao'],
             'ngaynopbaocao' => $validated['ngaynopbaocao'],
             'ketquaxet' => $validated['ketquaxet'],
             'thoigiangiahan' => $validated['thoigiangiahan'],
@@ -1023,12 +1053,10 @@ class DeTaiServiceImpl implements DeTaiService
         $validated = $request->validated();
         $nghiemThu = NghiemThu::create([
             'id_sanpham' => $sanPham->id,
-            'hoidongnghiemthu' => $validated['hoidongnghiemthu'],
             'ngaynghiemthu' => $validated['ngaynghiemthu'],
             'ketquanghiemthu' => $validated['ketquanghiemthu'],
-            'ngaycongnhanhoanthanh' => $validated['ngaycongnhanhoanthanh'],
-            'soqdcongnhanhoanthanh' => $validated['soqdcongnhanhoanthanh'],
-            'thoigiangiahan' => $validated['thoigiangiahan'],
+            'ngaycongnhanhoanthanh' => $validated['ketquanghiemthu'] == "Đủ điều kiện" ? $validated['ngaycongnhanhoanthanh'] : null,
+            'soqdcongnhanhoanthanh' => $validated['ketquanghiemthu'] == "Đủ điều kiện" ? $validated['soqdcongnhanhoanthanh'] : null,
         ]);
         $result = Convert::getNghiemThuVm($nghiemThu);
         return new ResponseSuccess("Nghiệm thu đề tài thành công", $result);
@@ -1070,6 +1098,23 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // Kiểm tra nếu đề tài đã nghiệm thu thì chỉ có sp admin mới được phép xóa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        $flag = false;
+        if (!empty(NghiemThu::where('id_sanpham', $id_sanpham)->first())) {
+            foreach ($userCurrent->roles as $role) {
+                if ($role->mavaitro == 'super_admin') {
+                    $flag = true;
+                }
+            }
+        }
+        if (!$flag) {
+            throw new UserNotHavePermissionException();
+        }
+
+
         if (!$sanPham->delete()) {
             throw new DeleteFailException();
         }
@@ -1086,6 +1131,22 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // Kiểm tra nếu đề tài đã nghiệm thu thì chỉ có sp admin mới được khôi phục
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        $flag = false;
+        if (!empty(NghiemThu::where('id_sanpham', $id_sanpham)->first())) {
+            foreach ($userCurrent->roles as $role) {
+                if ($role->mavaitro == 'super_admin') {
+                    $flag = true;
+                }
+            }
+        }
+        if (!$flag) {
+            throw new UserNotHavePermissionException();
+        }
+
         SanPham::onlyTrashed()->where('id', $id_sanpham)->restore();
         return new ResponseSuccess("Hoàn tác đề tài thành công", true);
     }
@@ -1100,6 +1161,22 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // Kiểm tra nếu đề tài đã nghiệm thu thì chỉ có sp admin mới được phép xóa hẳn
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        $flag = false;
+        if (!empty(NghiemThu::where('id_sanpham', $id_sanpham)->first())) {
+            foreach ($userCurrent->roles as $role) {
+                if ($role->mavaitro == 'super_admin') {
+                    $flag = true;
+                }
+            }
+        }
+        if (!$flag) {
+            throw new UserNotHavePermissionException();
+        }
+
         SanPham::onlyTrashed()->where('id', $id_sanpham)->forceDelete();
         return new ResponseSuccess("Xóa đề tài thành công", true);
     }

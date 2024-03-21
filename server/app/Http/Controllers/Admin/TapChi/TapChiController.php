@@ -26,9 +26,9 @@ class TapChiController extends Controller
     }
 
 
-    public function getAllTapChi(): Response
+    public function getAllTapChi(Request $request): Response
     {
-        $result =  $this->tapChiService->getAllTapChi();
+        $result =  $this->tapChiService->getAllTapChi($request);
         return response()->json($result, 200);
     }
 

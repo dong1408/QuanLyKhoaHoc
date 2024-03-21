@@ -26,10 +26,11 @@ use Illuminate\Support\Facades\DB;
 
 class TapChiServiceImpl implements TapChiService
 {
-    public function getAllTapChi(): ResponseSuccess
+    public function getAllTapChi(Request $request): ResponseSuccess
     {
+        $keysearch = $request->query('search', "");
+        $tapChis = TapChi::where('name', 'LIKE', '%' . $keysearch . '%')->where('trangthai', true)->get();
         $result = [];
-        $tapChis = TapChi::where('trangthai', true)->get();
         foreach ($tapChis as $tapChi) {
             $result[] = Convert::getTapChiVm($tapChi);
         }
@@ -82,7 +83,7 @@ class TapChiServiceImpl implements TapChiService
                     ->orWhere('pissn', 'LIKE', '%' . $keysearch . '%')
                     ->orWhere('eissn', 'LIKE', '%' . $keysearch . '%');
             })->where(function ($query) {
-                $query->where('trangthai', true)->orWhere('trangthai',null);
+                $query->where('trangthai', true)->orWhere('trangthai', null);
             })->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         }
         $result = [];
@@ -224,9 +225,9 @@ class TapChiServiceImpl implements TapChiService
                 'trangthai' => $validated['trangthai'],
                 'id_nguoithem' => auth('api')->user()->id,
             ]);
-//            if($validated['dmnganhtheohdgs'] != null){
-//                $tapChi->dmNganhTheoHDGS()->attach($validated['dmnganhtheohdgs']);
-//            }
+            //            if($validated['dmnganhtheohdgs'] != null){
+            //                $tapChi->dmNganhTheoHDGS()->attach($validated['dmnganhtheohdgs']);
+            //            }
         });
         $result = Convert::getTapChiVm($tapChi);
         return new ResponseSuccess("Thành công", $result);
@@ -326,8 +327,8 @@ class TapChiServiceImpl implements TapChiService
 
         $validated = $request->validated();
 
-        $xepHangTapChi = null;
-        DB::transaction(function () use ($validated, &$xepHangTapChi,$tapChi) {
+        $xepHangTapChi = new XepHangTapChi();
+        DB::transaction(function () use ($validated, &$xepHangTapChi, $tapChi) {
             $xepHangTapChi = XepHangTapChi::create([
                 'id_tapchi' => $tapChi->id,
                 'wos' => $validated['wos'],
@@ -339,7 +340,7 @@ class TapChiServiceImpl implements TapChiService
                 'ghichu' => $validated['ghichu'],
                 'id_user' => auth('api')->user()->id,
             ]);
-            if($validated['dmphanloaitapchi'] != null){
+            if ($validated['dmphanloaitapchi'] != null) {
                 $tapChi->dmPhanLoaiTapChis()->sync($validated['dmphanloaitapchi']);
             }
         });
