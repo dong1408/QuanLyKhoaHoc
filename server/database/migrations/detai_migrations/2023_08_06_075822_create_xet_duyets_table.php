@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_sanpham');
             $table->foreign('id_sanpham')->references('id')->on('san_phams')->onDelete('cascade');
             //Thông tin xét duyệt
-            $table->string('ngayxetduyet')->nullable();
-            $table->string('ketquaxetduyet')->nullable();
+            $table->string('ngayxetduyet');
+            $table->string('ketquaxetduyet');
             $table->string('sohopdong')->nullable();
             $table->string('ngaykyhopdong')->nullable();
             $table->integer('thoihanhopdong')->nullable();

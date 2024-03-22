@@ -27,13 +27,14 @@ class CreateDeTaiRequest extends FormRequest
         return [
             // ======================== san pham ====================== //
             "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",
-            "sanpham.tongsotacgia" => "bail|required|integer",           
+            "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.conhantaitro" => "bail|nullable|boolean",
             "sanpham.id_donvitaitro" => [
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
+
 
             // =========== Thong tin chi tiet de tai ================ //            
             "maso" => "bail|required|string|unique:de_tais,maso",
@@ -61,16 +62,32 @@ class CreateDeTaiRequest extends FormRequest
             // ================= san pham _ tac gia ================ //            
             "sanpham_tacgia" => "bail|array",
             "sanpham_tacgia.*.id_tacgia" => [
-                "bail", "nullable", "int",
+                "bail", "nullable", "integer",
                 Rule::exists("users", "id")
             ],
             "sanpham_tacgia.*.tentacgia" => "bail|required|string",
-            "sanpham_tacgia.*.id_vaitro" => [
-                "bail", "required", "int",
+            "sanpham_tacgia.*.list_id_vaitro" => "bail|array",
+            "sanpham_tacgia.*.list_id_vaitro.*" => [
+                "bail", "required", "integer",
                 Rule::exists("d_m_vai_tro_tac_gias", "id")
             ],
             "sanpham_tacgia.*.thutu" => "bail|nullable|integer",
             "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
+            "sanpham_tacgia.*.ngaysinh" => "bail|nullable|string",
+            "sanpham_tacgia.*.dienthoai" => "bail|nullable|string",
+            "sanpham_tacgia.*.email" => "bail|required|email|unique:users,email",
+            "sanpham_tacgia.*.tochuc.id_tochuc" => [
+                "bail", "nullable", "integer",
+                Rule::exists("d_m_to_chucs", "id")
+            ],
+            "sanpham_tacgia.*.tochuc.matochuc" => [
+                "bail", "required", "string",
+                Rule::unique('d_m_to_chucs', 'matochuc')->where(function ($query) {
+                    // Kiểm tra xem trường 'sanpham_tacgia.*.tochuc.id_tochuc' có giá trị null hay không
+                    return request()->input('sanpham_tacgia.*.tochuc.id_tochuc') === null;
+                })
+            ],
+            "sanpham_tacgia.*.tochuc.tentochuc" => "bail|required|string",
 
             // file minh chung san pham
             "fileminhchungsanpham.url" => "bail|required|string"

@@ -27,7 +27,7 @@ class RegisterUserRequest extends FormRequest
         return [
             "name" => "bail|required|string",
             "username" => "bail|required|string|unique:users,username",
-            "email" => "bail|required|string|unique:users,email",
+            "email" => "bail|required|email|unique:users,email",
             // "password" => "bail|nullable|boolean",
             //            "role" => "bail|required|integer",
             // "changed" => "bail|required|integer",

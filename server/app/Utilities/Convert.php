@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use App\Models\BaiBao\BaiBaoKhoaHoc;
+use App\Models\BaiBao\Keyword;
 use App\Models\DeTai\BaoCaoTienDo;
 use App\Models\DeTai\DeTai;
 use App\Models\DeTai\NghiemThu;
@@ -37,6 +38,7 @@ use App\Models\UserInfo\DMTinhThanh;
 use App\Models\UserInfo\DMToChuc;
 use App\ViewModel\BaiBao\BaiBaoKhoaHocDetailVm;
 use App\ViewModel\BaiBao\BaiBaoKhoaHocVm;
+use App\ViewModel\BaiBao\KeywordVm;
 use App\ViewModel\DeTai\BaoCaoTienDoVm;
 use App\ViewModel\DeTai\DeTaiDetailVm;
 use App\ViewModel\DeTai\DeTaiVm;
@@ -275,6 +277,8 @@ class Convert
         $a->name = $user->name;
         $a->username = $user->username;
         $a->email = $user->email;
+        $a->hochamhocvi = $user->hocHamHocVi == null ? null : Convert::getHocHamHocViVm($user->hocHamHocVi);
+        $a->tochuc = $user->toChuc == null ? null : Convert::getToChucVm($user->toChuc);
 
         return $a;
     }
@@ -690,6 +694,15 @@ class Convert
         return $a;
     }
 
+    public static function getKeywordVm(Keyword $keyword)
+    {
+        $a = new KeywordVm();
+        $a->id = $keyword->id;
+        $a->name = $keyword->name;
+        $a->created_at = $keyword->created_at;
+        $a->updated_at = $keyword->updated_at;
+    }
+
 
     // ========================= DE TAI ============================= //
 
@@ -767,6 +780,15 @@ class Convert
 
         foreach ($sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
             $a->sanpham_tacgias[] = Convert::getSanPhamTacGiaVm($sanPhaMTacGia);
+        }
+
+        $baoCaoTienDos = BaoCaoTienDo::where('id_sanpham', '=', $sanPham->id)->orderBy('created_at', 'desc')->get();
+        if (!empty($baoCaoTienDos)) {
+            foreach ($baoCaoTienDos as $baoCaoTienDo) {
+                $a->lichsubaocao[] = Convert::getBaoCaoTienDoVm($baoCaoTienDo);
+            }
+        } else {
+            $a->lichsubaocao = null;
         }
 
         return $a;
