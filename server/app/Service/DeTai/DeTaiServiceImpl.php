@@ -492,8 +492,6 @@ class DeTaiServiceImpl implements DeTaiService
                 'ngaykekhai' => date("Y-m-d"),
                 'id_nguoikekhai' => auth('api')->user()->id,
                 'trangthairasoat' => "Đang rà soát",
-                'ngayrasoat' => null,
-                'id_nguoirasoat' => null,
             ]);
 
             $deTai = DeTai::create([

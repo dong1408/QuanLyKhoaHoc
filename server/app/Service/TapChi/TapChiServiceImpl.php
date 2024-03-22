@@ -29,10 +29,12 @@ class TapChiServiceImpl implements TapChiService
     public function getAllTapChi(Request $request): ResponseSuccess
     {
         $keysearch = $request->query('search', "");
-        $tapChis = TapChi::where('name', 'LIKE', '%' . $keysearch . '%')->where('trangthai', true)->get();
         $result = [];
-        foreach ($tapChis as $tapChi) {
-            $result[] = Convert::getTapChiVm($tapChi);
+        if (!empty($keysearch)) {
+            $tapChis = TapChi::where('name', 'LIKE', '%' . $keysearch . '%')->where('trangthai', true)->take(10)->get();
+            foreach ($tapChis as $tapChi) {
+                $result[] = Convert::getTapChiVm($tapChi);
+            }
         }
         return new ResponseSuccess("Thành công", $result);
     }

@@ -34,4 +34,6 @@ class DeTaiDetailVm
     public ?NghiemThuVm $nghiemthu;
 
     public $sanpham_tacgias = array();
+
+    public ?array $lichsubaocao;
 }

@@ -19,4 +19,6 @@ class UserSimpleVm
     public string $name;
     public string $username;
     public string $email;
+    public ?HocHamHocViVm $hochamhocvi;
+    public ?ToChucVm $tochuc;
 }

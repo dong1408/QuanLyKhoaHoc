@@ -13,10 +13,12 @@ class ToChucServiceImpl implements ToChucService
     public function getAllToChuc(Request $request): ResponseSuccess
     {
         $keysearch = $request->query('search', "");
-        $toChucs = DMToChuc::where('name', 'LIKE', '%' . $keysearch . '%')->get();
         $result = [];
-        foreach ($toChucs as $toChuc) {
-            $result[] = Convert::getToChucVm($toChuc);
+        if (!empty($keysearch)) {
+            $toChucs = DMToChuc::where('name', 'LIKE', '%' . $keysearch . '%')->take(10)->get();
+            foreach ($toChucs as $toChuc) {
+                $result[] = Convert::getToChucVm($toChuc);
+            }
         }
         return new ResponseSuccess("Thành công", $result);
     }
