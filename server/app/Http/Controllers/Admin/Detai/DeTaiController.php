@@ -7,6 +7,7 @@ use App\Http\Requests\Detai\BaoCaoTienDoDeTaiRequest;
 use App\Http\Requests\Detai\CreateDeTaiRequest;
 use App\Http\Requests\Detai\NghiemThuDeTaiRequest;
 use App\Http\Requests\Detai\TuyenChonDeTaiRequest;
+use App\Http\Requests\Detai\UpdateDeTaiForUserRequest;
 use App\Http\Requests\Detai\UpdateDeTaiRequest;
 use App\Http\Requests\Detai\XetDuyetDeTaiRequest;
 use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
@@ -151,6 +152,12 @@ class DeTaiController extends Controller
     public function getDeTaiThamGia(Request $request): response
     {
         $result = $this->deTaiService->getDeTaiThamGia($request);
+        return response()->json($result, 200);
+    }
+
+    public function updateDeTaiForUser(UpdateDeTaiForUserRequest $request, int $id): response
+    {
+        $result = $this->deTaiService->updateDeTaiForUser($request, $id);
         return response()->json($result, 200);
     }
 }

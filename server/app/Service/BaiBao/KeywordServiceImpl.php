@@ -21,9 +21,11 @@ class KeywordServiceImpl implements KeywordService
     }
 
 
-    public function keKhaiKeyword()
+    public function themKeywordNgoai($array): Keyword
     {
-        
-        return new ResponseSuccess("abc", "abc");
+        $keyword = Keyword::create([
+            'name' => $array['name']
+        ]);
+        return $keyword;
     }
 }
