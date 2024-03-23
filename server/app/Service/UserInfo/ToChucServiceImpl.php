@@ -22,4 +22,13 @@ class ToChucServiceImpl implements ToChucService
         }
         return new ResponseSuccess("Thành công", $result);
     }
+
+    public function themToChucNgoai($array): DMToChuc
+    {
+        $toChuc = DMToChuc::create([
+            'matochuc' => $array['matochuc'],
+            'tentochuc' => $array['tentochuc']
+        ]);
+        return $toChuc;
+    }
 }

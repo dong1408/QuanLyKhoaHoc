@@ -26,11 +26,13 @@ use App\Exceptions\InvalidValueException;
 use App\Exceptions\SanPham\FileMinhChungNotFoundException;
 use App\Exceptions\SanPham\LoaiSanPhamWrongException;
 use App\Exceptions\SanPham\UpdateTrangThaiRaSoatException;
+use App\Exceptions\User\UserNotFoundException;
 use App\Exceptions\User\UserNotHavePermissionException;
 use App\Http\Requests\Detai\BaoCaoTienDoDeTaiRequest;
 use App\Http\Requests\Detai\CreateDeTaiRequest;
 use App\Http\Requests\Detai\NghiemThuDeTaiRequest;
 use App\Http\Requests\Detai\TuyenChonDeTaiRequest;
+use App\Http\Requests\Detai\UpdateDeTaiForUserRequest;
 use App\Http\Requests\Detai\UpdateDeTaiRequest;
 use App\Http\Requests\Detai\XetDuyetDeTaiRequest;
 use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
@@ -49,7 +51,10 @@ use App\Models\SanPham\DMVaiTroTacGia;
 use App\Models\SanPham\SanPham;
 use App\Models\SanPham\SanPhamTacGia;
 use App\Models\User;
+use App\Models\UserInfo\DMToChuc;
 use App\Service\DeTai\DeTaiService;
+use App\Service\User\UserService;
+use App\Service\UserInfo\ToChucService;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
@@ -59,6 +64,17 @@ use Illuminate\Support\Facades\Hash;
 
 class DeTaiServiceImpl implements DeTaiService
 {
+
+    private UserService $userService;
+    private ToChucService $toChucService;
+
+    public function __construct(UserService $userService, ToChucService $toChucService)
+    {
+        $this->userService = $userService;
+        $this->toChucService = $toChucService;
+    }
+
+
     public function getDeTaiPaging(Request $request): ResponseSuccess
     {
         $page = $request->query('page', 1);
@@ -392,54 +408,49 @@ class DeTaiServiceImpl implements DeTaiService
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
 
-            $newListSanPhamTacGia = [];
 
-            $filteredWithId = array_filter($listSanPhamTacGia, function ($object) {
-                return !is_null($object['id_tacgia']);
-            });
-            $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
+            $filteredWithoutIdTacGia = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
             });
-            if (count($filteredWithoutId) > 0) {
-                $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
-                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
-                foreach ($listObjectUnique as  $item) {
-                    $randomId = $this->randomUnique();
-                    $user = User::create([
-                        'username' => env('SGU_2024') . $randomId,
-                        'password' => Hash::make(env('SGU_2024')),
-                        'name' => $item['tentacgia'],
-                        'email' => env('SGU_2024') . $randomId . "@gmail.com"
-                    ]);
-                    $user->roles()->attach($idRoleGuest);
-                    $newData[] = [
-                        'id_tacgia' => $user->id,
-                        'id_vaitro' => $item['id_vaitro'],
-                        'thutu' => $item['thutu'],
-                        'tyledonggop' => $item['tyledonggop'],
-                        'duplicates' => $item['duplicates'],
-                    ];
-                }
-                foreach ($newData as $item) {
-                    foreach ($item["duplicates"] as $duplicate) {
-                        $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
-                    }
-                }
-                $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
-            } else {
-                $newListSanPhamTacGia = $filteredWithId;
+
+            $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
+                return is_null($object['tochuc']['id_tochuc']);
+            });
+
+
+            // check những tác giả ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdTacGia) > 0) {
+                $listSanPhamTacGia = $this->keKhaiTacGia($listSanPhamTacGia);
+            }
+
+            // check những tổ chức ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdToChuc) > 0) {
+                $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
             }
 
 
-
-            for ($i = 0; $i < count($newListSanPhamTacGia); $i++) {
-                if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $newListSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
-                    throw new VaiTroOfDeTaiException();
+            // add tổ chức cho tác giả
+            foreach ($listSanPhamTacGia as $sanPhamTacGia) {
+                $user = User::find($sanPhamTacGia['id_tacgia']);
+                if ($user == null) {
+                    throw new UserNotFoundException();
                 }
-                $listIdTacGia[] = $newListSanPhamTacGia[$i]['id_tacgia'];
-                $listIdVaiTro[] = $newListSanPhamTacGia[$i]['id_vaitro'];
-                $thuTus[] = $newListSanPhamTacGia[$i]['thutu'] == null ? null : $newListSanPhamTacGia[$i]['thutu'];
-                $tyLeDongGops[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
+                $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
+                $user->save();
+            }
+
+
+            // Kiểm tra các vai trò tác giả phải là vai trò tác giả của đề tài 
+            foreach ($listSanPhamTacGia as $sanPhamTacGia) {
+                foreach ($sanPhamTacGia['list_id_vaitro'] as $idvaitro) {
+                    if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $idvaitro]])->first() == null) {
+                        throw new VaiTroOfBaiBaoException();
+                    }
+                    $listIdTacGia[] = $sanPhamTacGia['id_tacgia'];
+                    $listIdVaiTro[] = $idvaitro;
+                    $thuTus[] = $sanPhamTacGia['thutu'];
+                    $tyLeDongGops[] = $sanPhamTacGia['tyledonggop'];
+                }
             }
 
             $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
@@ -496,8 +507,8 @@ class DeTaiServiceImpl implements DeTaiService
 
             $deTai = DeTai::create([
                 'id_sanpham' => $sanPham->id,
-                "ngaydangky" => date("Y-m-d"),
                 'maso' => $validated['maso'],
+                "ngaydangky" => date("Y-m-d"),
                 'ngoaitruong' => $validated['ngoaitruong'],
                 'truongchutri' => $validated['ngoaitruong'] == true ?  $validated['truongchutri'] : null,
                 'id_tochucchuquan' => $validated['ngoaitruong'] == true ? $validated['id_tochucchuquan'] : null,
@@ -531,6 +542,93 @@ class DeTaiServiceImpl implements DeTaiService
 
         $result = Convert::getDeTaiVm($sanPham);
         return new ResponseSuccess("Đăng ký đề tài thành công", $result);
+    }
+
+
+    private function keKhaiTacGia($listSanPhamTacGia)
+    {
+        if (is_array($listSanPhamTacGia)) {
+            // Lọc ra những tác giả cần thêm vào hệ thống (những id_tacgia = null)
+            $tacGiaMois = array_filter($listSanPhamTacGia, function ($object) {
+                return is_null($object['id_tacgia']);
+            });
+
+            // Lọc ra những tác giả kh cần kê khai
+            $tacGiaOlds = array_filter($listSanPhamTacGia, function ($object) {
+                return !is_null($object['id_tacgia']);
+            });
+
+            // Lọc ra những tác giả kê khai giống nhau (giống email)  thì thông báo lỗi
+            $listTacGiaSame = $this->filterUniqueAndDuplicates($tacGiaMois, 'email');
+            if (count($listTacGiaSame) > 0) {
+            }
+
+
+            // Lưu thông tin của những tác giả mới vào hệ thống
+            $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
+            foreach ($tacGiaMois as $key => $tacGia) {
+                $randomId = $this->randomUnique();
+                $array = [
+                    'username' => env('SGU_2024') . $randomId,
+                    'password' => Hash::make(env('SGU_2024')),
+                    'name' => $tacGia['tentacgia'],
+                    'ngaysinh' => $tacGia['ngaysinh'],
+                    'dienthoai' => $tacGia['dienthoai'],
+                    'email' => $tacGia['email'],
+                    'id_hochamhocvi' => $tacGia['id_hochamhocvi']
+                ];
+                $user = $this->userService->themTacGiaNgoai($array);
+                $user->roles()->attach($idRoleGuest);
+                $tacGiaMois[$key]['id_tacgia'] = $user->id;
+            }
+            $listSanPhamTacGia = array_merge($tacGiaOlds, $tacGiaMois);
+        }
+        // Trả lại dữ liệu đã được cập nhật theo đúng định dạng
+        return $listSanPhamTacGia;
+    }
+
+    private function keKhaiToChuc($listSanPhamTacGia)
+    {
+        if (is_array($listSanPhamTacGia)) {
+            // Lọc ra những sanphamtacgia co tổ chức cần thêm vào hệ thống
+            $sanphamtacgiasWithIdTochucNull = array_filter($listSanPhamTacGia, function ($object) {
+                return is_null($object['tochuc']['id_tochuc']);
+            });
+
+            // Lojc ra những sanphamtacgia có những tổ chức không cần thêm (id_tochuc != null)
+            $sanphamtacgiasWithIdTochucNotNull = array_filter($listSanPhamTacGia, function ($object) {
+                return !is_null($object['tochuc']['id_tochuc']);
+            });
+
+
+            // Lọc ra những tổ chức cần thêm vào hệ thống nhưng kê khai giống nhau (những tác giả đều thuộc tổ chức đó) => chỉ insert 1 lần tổ chức đó vào hệ thống
+            $toChucMois = [];
+            foreach ($sanphamtacgiasWithIdTochucNull as $key => $item) {
+                $toChucMois[$key] = $item['tochuc'];
+            }
+            $listToChucSame = $this->filterUniqueAndDuplicates($toChucMois, 'matochuc');
+
+            $newData = [];
+            foreach ($listToChucSame as $toChuc) {
+                $array = [
+                    'matochuc' => $toChuc['matochuc'],
+                    'tentochuc' => $toChuc['tentochuc'],
+                ];
+                $toChucModel = $this->toChucService->themToChucNgoai($array);
+                $newData[] = [
+                    'id_tochuc' => $toChucModel->id,
+                    'duplicates' => $toChuc['duplicates']
+                ];
+            }
+            foreach ($newData as $item) {
+                foreach ($item['duplicates'] as $duplicates) {
+                    $sanphamtacgiasWithIdTochucNull[$duplicates]['tochuc']['id_tochuc'] = $item['id_tochuc'];
+                }
+            }
+            $listSanPhamTacGia = array_merge($sanphamtacgiasWithIdTochucNull, $sanphamtacgiasWithIdTochucNotNull);
+        }
+        // Trả lại dữ liệu đã được cập nhật theo đúng định dạng
+        return $listSanPhamTacGia;
     }
 
 
@@ -683,54 +781,49 @@ class DeTaiServiceImpl implements DeTaiService
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
 
-            $newListSanPhamTacGia = [];
 
-            $filteredWithId = array_filter($listSanPhamTacGia, function ($object) {
-                return !is_null($object['id_tacgia']);
-            });
-            $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
+            $filteredWithoutIdTacGia = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
             });
-            if (count($filteredWithoutId) > 0) {
-                $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
-                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
-                foreach ($listObjectUnique as  $item) {
-                    $randomId = $this->randomUnique();
-                    $user = User::create([
-                        'username' => env('SGU_2024') . $randomId,
-                        'password' => Hash::make(env('SGU_2024')),
-                        'name' => $item['tentacgia'],
-                        'email' => env('SGU_2024') . $randomId . "@gmail.com"
-                    ]);
-                    $user->roles()->attach($idRoleGuest);
-                    $newData[] = [
-                        'id_tacgia' => $user->id,
-                        'id_vaitro' => $item['id_vaitro'],
-                        'thutu' => $item['thutu'],
-                        'tyledonggop' => $item['tyledonggop'],
-                        'duplicates' => $item['duplicates'],
-                    ];
-                }
-                foreach ($newData as $item) {
-                    foreach ($item["duplicates"] as $duplicate) {
-                        $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
-                    }
-                }
-                $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
-            } else {
-                $newListSanPhamTacGia = $filteredWithId;
+
+            $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
+                return is_null($object['tochuc']['id_tochuc']);
+            });
+
+
+            // check những tác giả ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdTacGia) > 0) {
+                $listSanPhamTacGia = $this->keKhaiTacGia($listSanPhamTacGia);
+            }
+
+            // check những tổ chức ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdToChuc) > 0) {
+                $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
             }
 
 
-
-            for ($i = 0; $i < count($newListSanPhamTacGia); $i++) {
-                if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $newListSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
-                    throw new VaiTroOfDeTaiException();
+            // add tổ chức cho tác giả
+            foreach ($listSanPhamTacGia as $sanPhamTacGia) {
+                $user = User::find($sanPhamTacGia['id_tacgia']);
+                if ($user == null) {
+                    throw new UserNotFoundException();
                 }
-                $listIdTacGia[] = $newListSanPhamTacGia[$i]['id_tacgia'];
-                $listIdVaiTro[] = $newListSanPhamTacGia[$i]['id_vaitro'];
-                $thuTus[] = $newListSanPhamTacGia[$i]['thutu'] == null ? null : $newListSanPhamTacGia[$i]['thutu'];
-                $tyLeDongGops[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
+                $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
+                $user->save();
+            }
+
+
+            // Kiểm tra các vai trò tác giả phải là vai trò tác giả của đề tài 
+            foreach ($listSanPhamTacGia as $sanPhamTacGia) {
+                foreach ($sanPhamTacGia['list_id_vaitro'] as $idvaitro) {
+                    if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $idvaitro]])->first() == null) {
+                        throw new VaiTroOfBaiBaoException();
+                    }
+                    $listIdTacGia[] = $sanPhamTacGia['id_tacgia'];
+                    $listIdVaiTro[] = $idvaitro;
+                    $thuTus[] = $sanPhamTacGia['thutu'];
+                    $tyLeDongGops[] = $sanPhamTacGia['tyledonggop'];
+                }
             }
 
             $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
@@ -1216,10 +1309,6 @@ class DeTaiServiceImpl implements DeTaiService
         return $resultArray;
     }
 
-
-
-
-
     public function getDeTaiKeKhai(Request $request): ResponseSuccess
     {
         $page = $request->query('page', 1);
@@ -1260,5 +1349,65 @@ class DeTaiServiceImpl implements DeTaiService
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+
+
+    public function updateDeTaiForUser(UpdateDeTaiForUserRequest $request, int $id): ResponseSuccess
+    {
+        $id_sanpham = (int) $id;
+        if (!is_int($id_sanpham)) {
+            throw new InvalidValueException();
+        }
+        $deTai = DeTai::where('id_sanpham', $id_sanpham)->first();
+        $sanPham = SanPham::find($id_sanpham);
+        if ($deTai == null || $sanPham == null) {
+            throw new DeTaiNotFoundException();
+        }
+
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($deTai->sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
+        // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
+        if ($sanPham->trashed() == null) {
+            throw new DeTaiCanNotUpdateException();
+        }
+
+        // check đúng loại sản phẩm là đề tài
+        if ($sanPham->dmSanPham->masanpham != 'detai') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải đề tài");
+        }
+
+        // Update khi không còn lỗi
+        $validated = $request->validated();
+        DB::transaction(function () use ($validated, $sanPham, $deTai) {
+
+            // Update san pham
+            $sanPham->tensanpham = $validated['sanpham']['tensanpham'];
+            $sanPham->tongsotacgia = $validated['sanpham']['tongsotacgia'];
+            $sanPham->conhantaitro = $validated['sanpham']['conhantaitro'];
+            $sanPham->id_donvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['id_donvitaitro'] : null;
+            $sanPham->chitietdonvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null;
+            $sanPham->save();
+
+            // Update de tai
+            $deTai->maso = $validated['maso'];
+            $deTai->ngoaitruong = $validated['ngoaitruong'];
+            $deTai->truongchutri = $validated['ngoaitruong'] == true ? $validated['truongchutri'] : null;
+            $deTai->id_tochucchuquan = $validated['ngoaitruong'] == true ? $validated['id_tochucchuquan'] : null;
+            $deTai->id_loaidetai = $validated['id_loaidetai'];
+            $deTai->detaihoptac = $validated['detaihoptac'];
+            $deTai->id_tochuchoptac = $validated['detaihoptac'] == true ? $validated['id_tochuchoptac'] : null;
+            $deTai->tylekinhphidonvihoptac = $validated['detaihoptac'] == true ? $validated['tylekinhphidonvihoptac'] : null;
+            $deTai->capdetai = $validated['capdetai'];
+            $deTai->save();
+        });
+        return new ResponseSuccess("Cập nhật đề tài thành công", true);
     }
 }

@@ -325,4 +325,19 @@ class UserServiceImpl implements UserService
         $user->save();
         return new ResponseSuccess("Đổi mật khẩu thành công", true);
     }
+
+
+    public function themTacGiaNgoai($array): User
+    {
+        $user = User::create([
+            'username' => $array['username'],
+            'password' => $array['password'],
+            'name' => $array['name'],
+            'ngaysinh' => $array['ngaysinh'],
+            'dienthoai' => $array['dienthoai'],
+            'email' => $array['email'],
+            'id_hochamhocvi' => $array['id_hochamhocvi']
+        ]);
+        return $user;
+    }
 }

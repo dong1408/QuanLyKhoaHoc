@@ -416,4 +416,17 @@ class TapChiServiceImpl implements TapChiService
         TapChi::onlyTrashed()->where('id', $id)->forceDelete();
         return new ResponseSuccess("Thành công", true);
     }
+
+
+    public function themTapChiNgoai($array): TapChi
+    {
+        $tapChi = TapChi::cretae([
+            'name' => $array['name'],
+            'issn' => $array['issn'],
+            'eissn' => $array['eissn'],
+            'pissn' => $array['pissn'],
+            'website' => $array['website']
+        ]);
+        return $tapChi;
+    }
 }

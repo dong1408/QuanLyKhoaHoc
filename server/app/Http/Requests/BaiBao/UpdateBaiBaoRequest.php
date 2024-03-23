@@ -37,35 +37,34 @@ class UpdateBaiBaoRequest extends FormRequest
             "accepted" => "bail|nullable|string",
             "published" => "bail|nullable|string",
             "abstract" => "bail|nullable|string",
-            "keywords" => "bail|nullable|string",
-            "id_tapchi" => [
-                "bail", "required", "integer",
+            "keyword" => "bail|nullable|array",
+            "keyword.*.id_keyword" => [
+                "bail", "nullable", "integer",
+                Rule::exists("keywords", "id")
+            ],
+            "keyword.*.name" => "bail|required|string",
+
+            "tapchi" => "bail|array",
+            "tapchi.id_tapchi" => [
+                "bail", "nullable", "integer",
                 Rule::exists('tap_chis', 'id')
             ],
+            "tapchi.name" => [
+                "bail", "required", "string",
+                Rule::unique('tap_chis', 'name')->where(function ($query) {
+                    // Kiểm tra xem trường 'tapchi.id_tapchi' có giá trị null hay không
+                    return request()->input('tapchi.id_tapchi') === null;
+                })
+            ],
+            "tapchi.issn" => "bail|nullable|string",
+            "tapchi.eissn" => "bail|nullable|string",
+            "tapchi.pissn" => "bail|nullable|string",
+            "tapchi.website" => "bail|nullable|string",
+
             "volume" => "bail|nullable|string",
             "issue" => "bail|nullable|string",
             "number" => "bail|nullable|string",
             "pages" => "bail|nullable|string",
-
-
-            // san pham _ tac gia
-            // "sanphamtacgia.tacgias" => 'bail|array',
-            // "sanphamtacgia.tacgias.*" => [
-            //     "int",
-            //     Rule::exists("users", 'id')
-            // ],
-
-            // "sanphamtacgia.vaitro" => 'bail|array',
-            // "sanphamtacgia.vaitros.*" => [
-            //     "int",
-            //     Rule::exists("d_m_vai_tro_tac_gias", 'id')
-            // ],
-
-            // "sanphamtacgia.thutu" => 'bail|array',
-            // "sanphamtacgia.thutu.*" => 'bail|nullable|string',
-
-            // "sanphamtacgia.tyledonggop" => 'bail|array',
-            // "sanphamtacgia.tyledonggop.*" => 'bail|nullable|string'
 
         ];
     }
@@ -79,9 +78,9 @@ class UpdateBaiBaoRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-            'id_tapchi.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
-            // 'sanphamtacgia.tacgias.*.exists' => 'Tác giả không tồn tại trên hệ thống',
-            // 'sanphamtacgia.vaitros.*.exists' => 'Vai trò không tồn tại trên hệ thống'
+            'keyword.*.id_keyword.exists' => 'Keyword không tồn tại trên hệ thống',
+            'tapchi.id_tapchi.exists' => 'Tạp chí không tồn tại trên hệ thống',
+            'tapchi.name.unique' => 'Tên tạp chí đã tồn tại trên hệ thống',
         ];
     }
 

@@ -34,10 +34,6 @@ class UpdateSanPhamRequest extends FormRequest
                 "bail", "required",
                 Rule::unique('san_phams')->ignore(Route::input('id'), 'id')
             ],
-            //            "id_loaisanpham" => [
-            //                "bail", "integer",
-            //                Rule::exists('d_m_san_phams', 'id')
-            //            ],
             "tongsotacgia" => "bail|required|integer",
             "solandaquydoi" => "bail|required|integer",
             "cosudungemailtruong" => "bail|nullable|boolean",

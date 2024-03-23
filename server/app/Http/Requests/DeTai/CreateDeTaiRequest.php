@@ -38,7 +38,6 @@ class CreateDeTaiRequest extends FormRequest
 
             // =========== Thong tin chi tiet de tai ================ //            
             "maso" => "bail|required|string|unique:de_tais,maso",
-            // "ngaydangky" => "bail|nullable|string",
             "ngoaitruong" => "bail|nullable|boolean",
             "truongchutri" => "bail|nullable|boolean",
             "id_tochucchuquan" => [
@@ -76,6 +75,10 @@ class CreateDeTaiRequest extends FormRequest
             "sanpham_tacgia.*.ngaysinh" => "bail|nullable|string",
             "sanpham_tacgia.*.dienthoai" => "bail|nullable|string",
             "sanpham_tacgia.*.email" => "bail|required|email|unique:users,email",
+            "sanpham_tacgia.*.id_hochamhocvi" => [
+                "bail", "nullable", "integer",
+                Rule::exists('d_m_hoc_ham_hoc_vis', 'id')
+            ],
             "sanpham_tacgia.*.tochuc.id_tochuc" => [
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
@@ -102,15 +105,19 @@ class CreateDeTaiRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-            'sanpham.id_thongtinnoikhac.exists' => 'Thông tin nơi khác không tồn tại trên hệ thống',
-            'sanpham.id_donvitaitro.exists' => 'Thông tin đơn vị tài trợ không tồn tại trên hệ thống',
-            'sanpham.id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
+            //
+            'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
+            'sanpham.id_donvitaitro.exists' => 'Đơn vị tài trợ không tồn tại trên hệ thống',
             'id_tochucchuquan.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
             'id_loaidetai.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
             'id_tochuchoptac.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
-            'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
+
             "sanpham_tacgia.*.id_tacgia.exists" => "Tác giả không tồn tại trên hệ thống",
-            "sanpham_tacgia.*.id_vaitro.exists" => "Vai trò tác giả không tồn tại trên hệ thống"
+            "sanpham_tacgia.*.list_id_vaitro.*.exists" => "Vai trò tác giả không tồn tại trên hệ thống",
+            'sanpham_tacgia.*.email.unique' => 'Email đã tồn tại trên hệ thống',
+            'sanpham_tacgia.*.tochuc.id_tochuc.exists' => "Tổ chức không tồn tại trên hệ thống",
+            'sanpham_tacgia.*.tochuc.matochuc.unique' => "Mã tổ chức đã tồn tại trên hệ thống",
+            "sanpham_tacgia.*.id_hochamhocvi.exists" => "Học hàm học vị không tồn tại trên hệ thống"
         ];
     }
 }

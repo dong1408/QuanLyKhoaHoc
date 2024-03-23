@@ -17,6 +17,7 @@ use App\Exceptions\SanPham\UpdateTrangThaiRaSoatException;
 use App\Exceptions\User\UserNotFoundException;
 use App\Exceptions\User\UserNotHavePermissionException;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
+use App\Http\Requests\BaiBao\UpdateBaiBaoForUserRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
 use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
@@ -33,6 +34,9 @@ use App\Models\SanPham\SanPhamTacGia;
 use App\Models\TapChi\TapChi;
 use App\Models\User;
 use App\Models\UserInfo\DMToChuc;
+use App\Service\TapChi\TapChiService;
+use App\Service\User\UserService;
+use App\Service\UserInfo\ToChucService;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
@@ -42,6 +46,19 @@ use Illuminate\Support\Facades\DB;
 
 class BaiBaoServiceImpl implements BaiBaoService
 {
+
+    private UserService $userService;
+    private TapChiService $tapChiService;
+    private ToChucService $toChucService;
+    private KeywordService $keywordService;
+
+    public function __construct(UserService $userService, TapChiService $tapChiService, ToChucService $toChucService, KeywordService $keywordService)
+    {
+        $this->userService = $userService;
+        $this->tapChiService = $tapChiService;
+        $this->toChucService = $toChucService;
+        $this->keywordService = $keywordService;
+    }
 
     public function getBaiBaoPaging(Request $request): ResponseSuccess
     {
@@ -206,14 +223,14 @@ class BaiBaoServiceImpl implements BaiBaoService
             $thuTus = [];
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
-            $listKeyword = $validated['keyword'];
+            $listKeyword = $validated['keywords'];
 
             $filteredWithoutIdTacGia = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
             });
 
             $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
-                return is_null($object['id_tacgia']);
+                return is_null($object['tochuc']['id_tochuc']);
             });
 
             $filteredWithoutIdKeyword = array_filter($listKeyword, function ($object) {
@@ -223,7 +240,7 @@ class BaiBaoServiceImpl implements BaiBaoService
 
             // check có keyword ngoài thì thêm mới vào hệ thống
             if (count($filteredWithoutIdKeyword) > 0) {
-                $validated['keyword'] = $this->keKhaiKeyword($listKeyword);
+                $validated['keywords'] = $this->keKhaiKeyword($listKeyword);
             }
 
             // check tạp chí ngoài thì thêm mới vào hệ thống
@@ -232,14 +249,14 @@ class BaiBaoServiceImpl implements BaiBaoService
             }
 
 
-            // check những tổ chức ngoài thì thêm vào hệ thống
-            if (count($filteredWithoutIdToChuc) > 0) {
-                $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
-            }
-
             // check những tác giả ngoài thì thêm vào hệ thống
             if (count($filteredWithoutIdTacGia) > 0) {
                 $listSanPhamTacGia = $this->keKhaiTacGia($listSanPhamTacGia);
+            }
+
+            // check những tổ chức ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdToChuc) > 0) {
+                $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
             }
 
             // add tổ chức cho tác giả
@@ -328,13 +345,17 @@ class BaiBaoServiceImpl implements BaiBaoService
                 'accepted' => $validated['accepted'],
                 'published' => $validated['published'],
                 'abstract' => $validated['abstract'],
-                'keywords' => $validated['keywords'],
-                'id_tapchi' => $validated['id_tapchi'],
+                'id_tapchi' => $validated['tapchi']['id_tapchi'],
                 'volume' => $validated['volume'],
                 'issue' => $validated['issue'],
                 'number' => $validated['number'],
                 'pages' => $validated['pages']
             ]);
+            $listIdKeyword = [];
+            foreach ($validated['keywords'] as $keyword) {
+                $listIdKeyword[] = $keyword['id_keyword'];
+            }
+            $baiBao->keyWords()->attach($listIdKeyword);
 
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
@@ -368,7 +389,7 @@ class BaiBaoServiceImpl implements BaiBaoService
     }
 
 
-    public function keKhaiTacGia($listSanPhamTacGia)
+    private function keKhaiTacGia($listSanPhamTacGia)
     {
         if (is_array($listSanPhamTacGia)) {
             // Lọc ra những tác giả cần thêm vào hệ thống (những id_tacgia = null)
@@ -390,15 +411,17 @@ class BaiBaoServiceImpl implements BaiBaoService
             // Lưu thông tin của những tác giả mới vào hệ thống
             $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
             foreach ($tacGiaMois as $key => $tacGia) {
-                $randomId = $this->randomUnique();
-                $user = User::create([
+                $randomId = $this->randomUnique();                
+                $array = [
                     'username' => env('SGU_2024') . $randomId,
                     'password' => Hash::make(env('SGU_2024')),
                     'name' => $tacGia['tentacgia'],
                     'ngaysinh' => $tacGia['ngaysinh'],
                     'dienthoai' => $tacGia['dienthoai'],
                     'email' => $tacGia['email'],
-                ]);
+                    'id_hochamhocvi' => $tacGia['id_hochamhocvi']
+                ];
+                $user = $this->userService->themTacGiaNgoai($array);
                 $user->roles()->attach($idRoleGuest);
                 $tacGiaMois[$key]['id_tacgia'] = $user->id;
             }
@@ -408,56 +431,67 @@ class BaiBaoServiceImpl implements BaiBaoService
         return $listSanPhamTacGia;
     }
 
-    public function keKhaiToChuc($listSanPhamTacGia)
+    private function keKhaiToChuc($listSanPhamTacGia)
     {
         if (is_array($listSanPhamTacGia)) {
-            // Lọc ra những tổ chức cần thêm vào hệ thống
-            $toChucMois = array_filter($listSanPhamTacGia, function ($object) {
+            // Lọc ra những sanphamtacgia co tổ chức cần thêm vào hệ thống
+            $sanphamtacgiasWithIdTochucNull = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['tochuc']['id_tochuc']);
             });
 
-            // Lojc ra những tổ chức không cần thêm (id_tochuc != null)
-            $toChucOlds = array_filter($listSanPhamTacGia, function ($object) {
+            // Lojc ra những sanphamtacgia có những tổ chức không cần thêm (id_tochuc != null)
+            $sanphamtacgiasWithIdTochucNotNull = array_filter($listSanPhamTacGia, function ($object) {
                 return !is_null($object['tochuc']['id_tochuc']);
             });
 
 
-            // Lọc ra những tổ chức kê khai giống nhau (giống matochuc)  thì thông báo lỗi
+            // Lọc ra những tổ chức cần thêm vào hệ thống nhưng kê khai giống nhau (những tác giả đều thuộc tổ chức đó) => chỉ insert 1 lần tổ chức đó vào hệ thống
+            $toChucMois = [];
+            foreach ($sanphamtacgiasWithIdTochucNull as $key => $item) {
+                $toChucMois[$key] = $item['tochuc'];
+            }
             $listToChucSame = $this->filterUniqueAndDuplicates($toChucMois, 'matochuc');
-            if (count($listToChucSame) > 0) {
-            }
 
-            // Lưu thông tin của những tổ chức mới vào hệ thống
-            foreach ($toChucMois as $key => $toChuc) {
-                $toChuc = DMToChuc::create([
-                    'matochuc' => $toChuc['tochuc']['matochuc'],
-                    'tentochuc' => $toChuc['tochuc']['tentochuc'],
-                ]);
-                $toChucMois[$key]['tochuc']['id_tochuc'] = $toChuc->id;
+            $newData = [];
+            foreach ($listToChucSame as $toChuc) {                
+                $array = [
+                    'matochuc' => $toChuc['matochuc'],
+                    'tentochuc' => $toChuc['tentochuc'],
+                ];
+                $toChucModel = $this->toChucService->themToChucNgoai($array);
+                $newData[] = [
+                    'id_tochuc' => $toChucModel->id,
+                    'duplicates' => $toChuc['duplicates']
+                ];
             }
-            $listSanPhamTacGia = array_merge($toChucOlds, $toChucMois);
+            foreach ($newData as $item) {
+                foreach ($item['duplicates'] as $duplicates) {
+                    $sanphamtacgiasWithIdTochucNull[$duplicates]['tochuc']['id_tochuc'] = $item['id_tochuc'];
+                }
+            }
+            $listSanPhamTacGia = array_merge($sanphamtacgiasWithIdTochucNull, $sanphamtacgiasWithIdTochucNotNull);
         }
         // Trả lại dữ liệu đã được cập nhật theo đúng định dạng
         return $listSanPhamTacGia;
     }
 
 
-    public function keKhaiTapChi($tapChi)
+    private function keKhaiTapChi($tapChi)
     {
-        $tapChi = TapChi::create([
+        $array = [
             'name' => $tapChi['tapchi']['name'],
             'issn' => $tapChi['tapchi']['issn'],
             'eissn' => $tapChi['tapchi']['eissn'],
             'pissn' => $tapChi['tapchi']['pissn'],
             'website' => $tapChi['tapchi']['website']
-        ]);
-        $tapChi['tapchi']['id_tapchi'] = $tapChi->id;
+        ];
+        $tapChi = $this->tapChiService->themTapChiNgoai($array);
 
         return $tapChi->id;
     }
 
 
-    public function keKhaiKeyword($listKeyword)
+    private function keKhaiKeyword($listKeyword)
     {
         if (is_array($listKeyword)) {
             // Lọc ra những keyword ngoài cần thêm vào hệ thống
@@ -471,26 +505,23 @@ class BaiBaoServiceImpl implements BaiBaoService
             });
 
             // Lọc ra những keyword kê khai giống nhau (giống name)  thì thông báo lỗi
-            $listKeywordSame = $this->filterUniqueAndDuplicates($keywordNews, 'email');
+            $listKeywordSame = $this->filterUniqueAndDuplicates($keywordNews, 'name');
             if (count($listKeywordSame) > 0) {
             }
 
             // Lưu thông tin của những keyword mới vào hệ thống
-            foreach ($keywordNews as $key => $keyword) {
-                $keyword = Keyword::create([
+            foreach ($keywordNews as $key => $keyword) {                
+                $array = [
                     'name' => $keyword['name']
-                ]);
-                $keywordNews[$key]['id_keyword'] = $keyword->id;
+                ];
+                $keywordMd = $this->keywordService->themKeywordNgoai($array);
+                $keywordNews[$key]['id_keyword'] = $keywordMd->id;
             }
             $listKeyword = array_merge($keyWordOlds, $keywordNews);
         }
         // Trả lại dữ liệu đã được cập nhật theo đúng định dạng
         return $listKeyword;
     }
-
-
-
-
 
 
 
@@ -574,7 +605,6 @@ class BaiBaoServiceImpl implements BaiBaoService
     }
 
 
-
     public function updateBaiBao(UpdateBaiBaoRequest $request, int $id): ResponseSuccess
     {
         $id_sanpham = (int) $id;
@@ -604,21 +634,42 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
         }
 
-        $validated = $request->validated();
 
-        $baiBao->doi = $validated['doi'];
-        $baiBao->url = $validated['url'];
-        $baiBao->received = $validated['received'];
-        $baiBao->accepted = $validated['accepted'];
-        $baiBao->published = $validated['published'];
-        $baiBao->abstract = $validated['abstract'];
-        $baiBao->keywords = $validated['keywords'];
-        $baiBao->id_tapchi = $validated['id_tapchi'];
-        $baiBao->volume = $validated['volume'];
-        $baiBao->issue = $validated['issue'];
-        $baiBao->number = $validated['number'];
-        $baiBao->pages = $validated['pages'];
-        $baiBao->save();
+        // Update khi không còn lỗi
+        $validated = $request->validated();
+        DB::transaction(function () use ($validated, $baiBao) {
+
+            $listKeyword = $validated['keyword'];
+            $filteredWithoutIdKeyword = array_filter($listKeyword, function ($object) {
+                return is_null($object['id_keyword']);
+            });
+            // check có keyword ngoài thì thêm mới vào hệ thống
+            if (count($filteredWithoutIdKeyword) > 0) {
+                $validated['keyword'] = $this->keKhaiKeyword($listKeyword);
+            }
+            // check tạp chí ngoài thì thêm mới vào hệ thống
+            if ($validated['tapchi']['id_tapchi'] == null) {
+                $validated['tapchi']['id_tapchi'] = $this->keKhaiTapChi($validated['tapchi']);
+            }
+
+            $baiBao->doi = $validated['doi'];
+            $baiBao->url = $validated['url'];
+            $baiBao->received = $validated['received'];
+            $baiBao->accepted = $validated['accepted'];
+            $baiBao->published = $validated['published'];
+            $baiBao->abstract = $validated['abstract'];
+            $baiBao->id_tapchi = $validated['tapchi']['id_tapchi'];
+            $baiBao->volume = $validated['volume'];
+            $baiBao->issue = $validated['issue'];
+            $baiBao->number = $validated['number'];
+            $baiBao->pages = $validated['pages'];
+            $baiBao->save();
+            $listIdKeyword = [];
+            foreach ($validated['keywords'] as $keyword) {
+                $listIdKeyword[] = $keyword['id_keyword'];
+            }
+            $baiBao->keyWords()->sync($listIdKeyword);
+        });
         return new ResponseSuccess("Cập nhật bài báo khoa học thành công", true);
     }
 
@@ -667,18 +718,18 @@ class BaiBaoServiceImpl implements BaiBaoService
             });
 
             $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
-                return is_null($object['id_tacgia']);
+                return is_null($object['tochuc']['id_tochuc']);
             });
 
-
-            // check những tổ chức ngoài thì thêm vào hệ thống
-            if (count($filteredWithoutIdToChuc) > 0) {
-                $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
-            }
 
             // check những tác giả ngoài thì thêm vào hệ thống
             if (count($filteredWithoutIdTacGia) > 0) {
                 $listSanPhamTacGia = $this->keKhaiTacGia($listSanPhamTacGia);
+            }
+
+            // check những tổ chức ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdToChuc) > 0) {
+                $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
             }
 
             // add tổ chức cho tác giả
@@ -919,5 +970,86 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+
+    public function updateBaiBaoForUser(UpdateBaiBaoForUserRequest $request, int $id): ResponseSuccess
+    {
+        $id_sanpham = (int) $id;
+        if (!is_int($id_sanpham)) {
+            throw new InvalidValueException();
+        }
+        $sanPham = SanPham::find($id_sanpham);
+        $baiBao = BaiBaoKhoaHoc::where('id_sanpham', $id_sanpham)->first();
+        if ($baiBao == null || $sanPham == null) {
+            throw new BaiBaoKhoaHocNotFoundException();
+        }
+        // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
+        if ($sanPham->trashed()) {
+            throw new BaiBaoCanNotUpdateException();
+        }
+
+        // check bài báo đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+        // check đúng loại sản phẩm là bài báo khoa học
+        if ($sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
+        }
+
+        // Update khi không còn lỗi
+        $validated = $request->validated();
+        DB::transaction(function () use ($validated, $sanPham, $baiBao) {
+
+            $listKeyword = $validated['keyword'];
+
+            $filteredWithoutIdKeyword = array_filter($listKeyword, function ($object) {
+                return is_null($object['id_keyword']);
+            });
+
+            // check có keyword ngoài thì thêm mới vào hệ thống
+            if (count($filteredWithoutIdKeyword) > 0) {
+                $validated['keyword'] = $this->keKhaiKeyword($listKeyword);
+            }
+
+            // check tạp chí ngoài thì thêm mới vào hệ thống
+            if ($validated['tapchi']['id_tapchi'] == null) {
+                $validated['tapchi']['id_tapchi'] = $this->keKhaiTapChi($validated['tapchi']);
+            }
+
+            // update phần sản phẩm
+            $sanPham->tensanpham = $validated['sanpham']['tensanpham'];
+            $sanPham->tongsotacgia = $validated['sanpham']['tongsotacgia'];
+            $sanPham->conhantaitro = $validated['sanpham']['conhantaitro'];
+            $sanPham->id_donvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['id_donvitaitro'] : null;
+            $sanPham->chitietdonvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null;
+            $sanPham->thoidiemcongbohoanthanh = $validated['sanpham']['thoidiemcongbohoanthanh'];
+            $sanPham->save();
+
+            // update bai bao
+            $baiBao->doi = $validated['doi'];
+            $baiBao->url = $validated['url'];
+            $baiBao->received = $validated['received'];
+            $baiBao->accepted = $validated['accepted'];
+            $baiBao->published = $validated['published'];
+            $baiBao->abstract = $validated['abstract'];
+            $baiBao->id_tapchi = $validated['tapchi']['id_tapchi'];
+            $baiBao->volume = $validated['volume'];
+            $baiBao->issue = $validated['issue'];
+            $baiBao->number = $validated['number'];
+            $baiBao->pages = $validated['pages'];
+            $baiBao->save();
+            $listIdKeyword = [];
+            foreach ($validated['keywords'] as $keyword) {
+                $listIdKeyword[] = $keyword['id_keyword'];
+            }
+            $baiBao->keyWords()->sync($listIdKeyword);
+        });
+        return new ResponseSuccess("Cập nhật bài báo thành công", true);
     }
 }
