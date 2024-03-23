@@ -52,17 +52,17 @@ Route::group([
 
     // Auth
     Route::post('auth/login', [AuthController::class, 'login']);
-//    Route::post('auth/register', [AuthController::class, 'register']);
+    //    Route::post('auth/register', [AuthController::class, 'register']);
     Route::post('auth/logout', [AuthController::class, 'logout']);
     Route::post('auth/refreshToken', [AuthController::class, 'refreshToken']);
     Route::get('auth/getMe', [AuthController::class, 'getMe']);
 
     // User
     Route::get('users', [UserController::class, 'getAllUser']); //select chọn tác giả
-    Route::get('users/info', [UserController::class, 'getUserInfo']); 
+    Route::get('users/info', [UserController::class, 'getUserInfo']);
     Route::get('users/paging', [UserController::class, 'getUserPaging'])->can('user.view');
     Route::get('users/{id}/role', [UserController::class, 'getRoleOfUser'])->can('user.update_role');
-//    Route::get('users/permission', [UserController::class, 'getPermissionOfUser'])->can('user.detail');
+    //    Route::get('users/permission', [UserController::class, 'getPermissionOfUser'])->can('user.detail');
     Route::patch('users/password', [UserController::class, 'changePassword']);
     Route::post('users', [UserController::class, 'registerUser'])->can('user.register');
     Route::patch('users/{id}', [UserController::class, 'updateUser'])->can('user.update'); // admin + owner
@@ -90,6 +90,7 @@ Route::group([
     // BaiBaoKhoaHocs
     Route::get('baibao/public', [BaiBaoKhoaHocController::class, 'getBaiBaoPagingForUser']);
     Route::get('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBaoForUser']);
+    Route::patch('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBaoForUser']);
 
     Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging'])->can('baibao.view'); // canview
     Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet'])->can('baibao.view'); // canview
@@ -112,13 +113,14 @@ Route::group([
     // DeTai
     Route::get('detai/public', [DeTaiController::class, 'getDeTaiPagingForUser']);
     Route::get('detai/public/{id}', [DeTaiController::class, 'getDetailDeTaiForUser']);
+    Route::patch('detai/public/{id}', [DeTaiController::class, 'updateDeTaiForUser']);
 
 
     Route::get('detai', [DeTaiController::class, 'getDeTaiPaging'])->can('detai.view');
     Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet'])->can('detai.view');
     Route::post('detai', [DeTaiController::class, 'createDetai'])->can('detai.add');
-    Route::patch('detai/{id}/sanpham', [DeTaiController::class, 'updateSanPham'])->can('detai.update');// admin + owner
-    Route::patch('detai/{id}', [DeTaiController::class, 'updateDeTai'])->can('detai.update');// admin + owner
+    Route::patch('detai/{id}/sanpham', [DeTaiController::class, 'updateSanPham'])->can('detai.update'); // admin + owner
+    Route::patch('detai/{id}', [DeTaiController::class, 'updateDeTai'])->can('detai.update'); // admin + owner
     Route::patch('detai/{id}/sanphamtacgia', [DeTaiController::class, 'updateSanPhamTacGia'])->can('detai.update'); // admin + owner
     Route::patch('detai/{id}/fileminhchung', [DeTaiController::class, 'updateFileMinhChung'])->can('detai.update'); // admin + owner
     Route::patch('detai/{id}/trangthairasoat', [DeTaiController::class, 'updateTrangThaiRaSoatDeTai'])->can('detai.status');

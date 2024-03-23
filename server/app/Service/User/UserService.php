@@ -6,6 +6,7 @@ use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\RegisterUserRequest;
 use App\Http\Requests\User\UpdateRoleOfUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Models\User;
 use App\Utilities\ResponseSuccess;
 use Illuminate\Http\Request;
 
@@ -24,4 +25,5 @@ interface UserService
     public function restoreUser(int $id): ResponseSuccess;
     public function forceDeleteUser(int $id): ResponseSuccess;
     public function changePassword(ChangePasswordRequest $request): ResponseSuccess;
+    public function themTacGiaNgoai($array): User;
 }
