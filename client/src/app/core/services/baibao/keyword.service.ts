@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiResponse} from "../../types/api-response.type";
-import {ToChuc} from "../../types/user-info/to-chuc.type";
+import {Keyword} from "../../types/baibao/keyword.type";
 import {environment} from "../../../../environments/environment";
 import {catchError} from "rxjs";
 import {handleError} from "../../../shared/commons/handler-error-http";
@@ -9,15 +9,17 @@ import {handleError} from "../../../shared/commons/handler-error-http";
 @Injectable({
     providedIn:"root"
 })
-export class ToChucService{
+
+export class KeywordService{
     constructor(private http:HttpClient) {
 
     }
 
-    getAllToChuc(keyword:string){
-        return this.http.get<ApiResponse<ToChuc[]>>(`${environment.apiUrl}/tochuc?search=${keyword}`)
-            .pipe(
-                catchError(handleError)
-            )
+    getAllKeyword(keyword:string){
+        return this.http.get<ApiResponse<Keyword[]>>(
+            `${environment.apiUrl}/keywords?search=${keyword}`
+        ).pipe(
+            catchError(handleError)
+        )
     }
 }

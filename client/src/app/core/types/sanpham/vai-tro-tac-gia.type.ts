@@ -1,4 +1,5 @@
 import {User} from "../user/user.type";
+import {KeKhaiToChuc} from "../user-info/to-chuc.type";
 
 export interface VaiTroTacGia{
     id:number,
@@ -25,7 +26,8 @@ export interface TaoVaiTroTacGia{
     id_vaitro:number,
     thutu:string | null,
     tyledonggop:string | null,
-    tentacgia:string
+    tentacgia:string,
+    tochuc:KeKhaiToChuc
 }
 
 export interface CapNhatVaiTroTacGia{

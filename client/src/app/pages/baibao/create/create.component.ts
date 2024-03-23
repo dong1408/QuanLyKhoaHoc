@@ -1,17 +1,15 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {
-    combineLatest,
+    BehaviorSubject,
     debounceTime,
-    distinctUntilChanged,
     forkJoin,
     Observable,
     Subject,
     switchMap,
     takeUntil,
-    tap
 } from "rxjs";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
 import {User} from "../../../core/types/user/user.type";
@@ -26,6 +24,11 @@ import {PagingService} from "../../../core/services/paging.service";
 import {VaiTroTacGia} from "../../../core/types/sanpham/vai-tro-tac-gia.type";
 import {VaiTroService} from "../../../core/services/sanpham/vai-tro.service";
 import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
+import {ApiResponse} from "../../../core/types/api-response.type";
+import {KeKhaiKeyword, Keyword} from "../../../core/types/baibao/keyword.type";
+import {KeywordService} from "../../../core/services/baibao/keyword.service";
+import {HocHamHocViService} from "../../../core/services/user-info/hoc-ham-hoc-vi.service";
+import {HocHamHocVi} from "../../../core/types/user-info/hoc-ham-hoc-vi.type";
 
 @Component({
     selector:"app-baibao-create",
@@ -35,21 +38,43 @@ import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 
 export class BaiBaoCreateComponent implements OnInit,OnDestroy{
 
+    keKhaiToChuc:any = []
+    keKhaiKeyword:any = []
+    keKhaiTapChi:any = []
+
     tochucs:ToChuc[]
     tapChis:Magazine[]
     vaiTros:VaiTroTacGia[]
-
     users:User[]
+    keywords:Keyword[]
+    dvTaiTros:ToChuc[]
+    hhhvs:HocHamHocVi[]
 
     createForm:FormGroup
+    tochucForm:FormGroup
+    keywordForm:FormGroup
+    tapchiForm:FormGroup
+
     isCreate:boolean = false
     isGetUsers:boolean = false
+    isGetToChuc: boolean = false
+    isGetKeyword:boolean = false
+    isGetTapChi:boolean = false
+    isGetTaiTro:boolean = false
 
     destroy$ = new Subject<void>()
 
-    search$:Observable<[string]>
+    searchUser$ = new BehaviorSubject('');
+    searchToChuc$ = new BehaviorSubject('');
+    searchKeyword$ = new BehaviorSubject('');
+    searchTapChi$ = new BehaviorSubject('');
+    searchTaiTro$ = new BehaviorSubject('');
 
-    private firstSearch:boolean = false
+
+    // form
+    isOpenFormToChuc:boolean = false
+    isOpenFormTapChi:boolean = false
+    isOpenFormKeyword:boolean = false
 
     constructor(
         private fb:FormBuilder,
@@ -60,7 +85,9 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         private userService:UserService,
         private pagingService:PagingService,
         private vaiTroService:VaiTroService,
-        private baiBaoService:BaiBaoService
+        private baiBaoService:BaiBaoService,
+        private keywordService:KeywordService,
+        private hhhvService:HocHamHocViService
     ) {
     }
 
@@ -76,45 +103,12 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             tongsotacgia:[
                 0,
                 Validators.compose([
-                    noWhiteSpaceValidator,
                     Validators.required
-                ])
-            ],
-            solandaquydoi:[
-                0,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            cosudungemailtruong:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
-            cosudungemaildonvikhac:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
-            cothongtintruong:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
-            cothongtindonvikhac:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
                 ])
             ],
             conhantaitro:[
                 false,
                 Validators.compose([
-                    noWhiteSpaceValidator
                 ])
             ],
             chitietdonvitaitro:[
@@ -126,46 +120,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     noWhiteSpaceValidator()
                 ]),
             ],
-            diemquydoi:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
-            gioquydoi:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
-            thongtinchitiet:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
-            capsanpham:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
             thoidiemcongbohoanthanh:[
                 null,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            id_thongtinnoikhac:[
-                {
-                    value:null,
-                    disabled:true
-                },
                 Validators.compose([
                     Validators.required
                 ])
@@ -256,12 +212,6 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     Validators.required
                 ])
             ],
-            loaiminhchung:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator()
-                ])
-            ],
             url_minhchung:[
                 null,
                 Validators.compose([
@@ -269,6 +219,76 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     Validators.required
                 ])
             ]
+        })
+
+        this.tochucForm = this.fb.group({
+            id:[
+                null
+            ],
+            matochuc:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            tentochuc:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+        })
+
+        this.keywordForm = this.fb.group({
+            id:[
+                null
+            ],
+            name:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ]
+        })
+
+        this.tapchiForm = this.fb.group({
+            id:[
+                null
+            ],
+            name:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            issn:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            eissn:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            pissn:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            website:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
         })
 
         this.createForm.get("conhantaitro")?.valueChanges.pipe(
@@ -296,24 +316,26 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             }
         })
 
+        this.onGetSearchUser()
+        this.onGetSearchDVTaiTro()
+        this.onGetSearchKeyword()
+        this.onGetSearchTapChi()
+        this.onGetSearchToChuc()
         this.loadingService.startLoading()
         forkJoin([
-            this.toChucService.getAllToChuc(),
-            this.tapChiService.getAllTapChi(),
-            this.vaiTroService.getVaiTroBaiBao()
-        ],(tcResponse,tacResponse,vtResponse) => {
+            this.vaiTroService.getVaiTroBaiBao(),
+            this.hhhvService.getAllHocHamHocVi()
+        ],(vtResponse,hhResponse) => {
             return {
-                listTC: tcResponse.data,
-                listTaC: tacResponse.data,
-                listVT: vtResponse.data
+                listVT: vtResponse.data,
+                listhh: hhResponse.data
             }
         }).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.tochucs = response.listTC
-                this.tapChis = response.listTaC
                 this.vaiTros = response.listVT
+                this.hhhvs = response.listhh
                 this.loadingService.stopLoading()
             },
             error:(error) =>{
@@ -322,6 +344,110 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         })
     }
 
+    onOpenFormToChuc(){
+        this.tochucForm.reset()
+        this.isOpenFormToChuc = !this.isOpenFormToChuc
+    }
+
+    onOpenFormKeyword(){
+        this.keywordForm.reset()
+        this.isOpenFormKeyword = !this.isOpenFormKeyword
+    }
+
+    onOpenFormTapChi(){
+        this.tapchiForm.reset()
+        this.isOpenFormTapChi = !this.isOpenFormTapChi
+    }
+
+    onKeKhaiKeyword(){
+        const form = this.keywordForm
+        if(form.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
+            )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
+            return;
+        }
+        const data = form.value
+        this.keKhaiKeyword.push(data)
+        this.keywords.push(data)
+        form.reset()
+
+        this.notificationService.create(
+            'success',
+            'Thành Công',
+            'Kê khai keyword mới thành công, vui lòng chọn'
+        )
+    }
+
+
+
+    onKeKhaiTapChi(){
+        const form = this.tapchiForm
+        if(form.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
+            )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
+            return;
+        }
+        const data = form.value
+        this.keKhaiTapChi.push(data)
+        this.tapChis.push(data)
+        form.reset()
+
+        this.notificationService.create(
+            'success',
+            'Thành Công',
+            'Kê khai tạp chí mới thành công, vui lòng chọn'
+        )
+
+        this.isOpenFormTapChi =false
+    }
+
+    onKeKhaiToChuc(){
+        const form = this.tochucForm
+        if(form.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
+            )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
+            return;
+        }
+        const data = form.value
+        this.keKhaiToChuc.push(data)
+        this.tochucs.push(data)
+        form.reset()
+
+        this.notificationService.create(
+            'success',
+            'Thành Công',
+            'Kê khai tổ chức mới thành công, vui lòng chọn'
+        )
+
+        this.isOpenFormToChuc =false
+    }
 
     addGuestControls(){
         const control = this.fb.group({
@@ -335,58 +461,164 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             ],
             thutu:[null],
             tyledonggop:[null],
-            id_vaitro:[null]
+            list_id_vaitro:[
+                null,
+                Validators.compose([
+                    Validators.required
+                ])
+            ],
+            ngaysinh:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                ])
+            ],
+            dienthoai:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            email:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator(),
+                    Validators.email,
+                ])
+            ],
+            tochuc:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                ])
+            ],
+            hocham:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            in_system:[
+                false
+            ]
         })
         const formArray = this.createForm.get('sanpham_tacgia') as FormArray
         formArray.push(control)
-
     }
 
-    getAllUser(){
-        this.isGetUsers = true
-        this.search$ = combineLatest([
-            this.pagingService.keyword$,
-        ]).pipe(
-            takeUntil(this.destroy$)
-        )
+    onGetSearchUser(){
+        const listUser = (keyword:string):Observable<ApiResponse<User[]>> =>  this.userService.getAllUsers(keyword)
+        const optionList$:Observable<ApiResponse<User[]>> = this.searchUser$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listUser))
 
-        this.search$.pipe(
-            takeUntil(this.destroy$),
-            tap(() => this.isGetUsers = true),
-            debounceTime(700),
-            distinctUntilChanged(),
-            switchMap(([ keyword]) => {
-                return this.userService.getAllUsers( keyword)
-            })
-        ).subscribe({
-            next:(response) => {
-                this.users = response.data
-                this.isGetUsers = false
-            },
-            error:(error) => {
-                this.notificationService.create(
-                    "error",
-                    "Lỗi",
-                    error
-                )
-                this.isGetUsers = false
-            }
+        optionList$.subscribe(data => {
+            this.users = data.data
+            this.isGetUsers = false
+        })
+    }
+
+
+
+    onGetSearchKeyword(){
+        const listKeyword = (keyword:string):Observable<ApiResponse<Keyword[]>> =>  this.keywordService.getAllKeyword(keyword)
+        const optionList$:Observable<ApiResponse<Keyword[]>> = this.searchKeyword$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listKeyword))
+
+        optionList$.subscribe(data => {
+            this.keywords = data.data
+
+            this.keywords = [...this.keKhaiKeyword,...this.keywords]
+            this.isGetKeyword = false
+        })
+    }
+
+    onGetSearchToChuc(){
+        const listToChuc = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchToChuc$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listToChuc))
+
+        optionList$.subscribe(data => {
+            this.tochucs = data.data
+
+            this.tochucs = [...this.keKhaiToChuc,...this.tochucs]
+            this.isGetToChuc = false
+        })
+    }
+
+    onGetSearchDVTaiTro(){
+        const listDVTraiTro = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchTaiTro$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listDVTraiTro))
+
+        optionList$.subscribe(data => {
+            this.dvTaiTros = data.data
+            this.isGetTaiTro = false
+        })
+    }
+
+    onGetSearchTapChi(){
+        const listTapChi = (keyword:string):Observable<ApiResponse<Magazine[]>> =>  this.tapChiService.getAllTapChi(keyword)
+        const optionList$:Observable<ApiResponse<Magazine[]>> = this.searchTapChi$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listTapChi))
+
+        optionList$.subscribe(data => {
+            this.tapChis = data.data
+
+            this.tapChis = [...this.keKhaiTapChi,...this.tapChis]
+            this.isGetTapChi = false
         })
     }
 
     onSearchUser(event:any){
-        if(!this.firstSearch && event.length >= 3){
-            this.getAllUser()
-        }
-        if(event && event.length >= 3){
-            this.pagingService.updateKeyword(event)
-            this.firstSearch = true
-        }
-        if(event.length <= 0){
-            console.log("reset đi ?")
-            this.createForm.get("users")?.reset()
+        if(event && event !== ""){
+            this.isGetUsers = true
+            this.searchUser$.next(event)
         }
     }
+
+    onSearchTapChi(event:any){
+        if(event && event !== ""){
+            this.isGetTapChi = true
+            this.searchTapChi$.next(event)
+        }
+    }
+
+    onSearchKeyword(event:any){
+        if(event && event !== ""){
+            this.isGetKeyword = true
+            this.searchKeyword$.next(event)
+        }
+    }
+
+    onSearchToChuc(event:any){
+        if(event && event !== ""){
+            this.isGetToChuc = true
+            this.searchToChuc$.next(event)
+        }
+    }
+
+    onSearchTaiTro(event:any){
+        if(event && event !== ""){
+            this.isGetTaiTro = true
+            this.searchTaiTro$.next(event)
+        }
+    }
+
+
+
 
     onSubmit(){
         const form = this.createForm
@@ -403,6 +635,17 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     control.updateValueAndValidity({ onlySelf: true });
                 }
             })
+
+            // console.log(arrayForm.controls)
+
+            arrayForm.controls.forEach((formGroup:any) => {
+                Object.values(formGroup).forEach((control:any) =>{
+                    if(control && control.invalid){
+                        control.markAsDirty()
+                        control.updateValueAndValidity({ emitEvent: true });
+                    }
+                })
+            })
             return;
         }
         if(arrayForm.length <= 0){
@@ -417,26 +660,30 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         const data:TaoBaiTao = {
             sanpham:{
                 tensanpham: form.get('tensanpham')?.value,
-                tongsotacgia: form.get('tongsotacgia')?.value,
-                solandaquydoi : form.get('solandaquydoi')?.value,
-                diemquydoi: form.get('diemquydoi')?.value,
-                gioquydoi : form.get('gioquydoi')?.value,
-                thongtinchitiet: form.get('thongtinchitiet')?.value,
-                capsanpham: form.get('capsanpham')?.value,
+                tongsotacgia: arrayForm.length,
                 thoidiemcongbohoanthanh:  dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString())!!,
-                cosudungemailtruong:form.get('cosudungemailtruong')?.value ?? false,
-                cosudungemaildonvikhac: form.get('cosudungemaildonvikhac')?.value ?? false,
-                cothongtintruong : form.get('cothongtintruong')?.value ?? false,
-                cothongtindonvikhac : form.get('cothongtindonvikhac')?.value ?? false,
-                id_thongtinnoikhac : form.get('cothongtindonvikhac')?.value === true ? form.get('id_thongtinnoikhac')?.value : null,
                 conhantaitro : form.get('conhantaitro')?.value ?? false,
                 id_donvitaitro :form.get('conhantaitro')?.value === true ? form.get('id_donvitaitro')?.value : null,
                 chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
             },
-            sanpham_tacgia: form.get('sanpham_tacgia')?.value,
+            sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
+                let tochuc = item.tochuc
+                return {
+                    list_id_vaitro: item.list_id_vaitro,
+                    tentacgia: item.tentacgia,
+                    id_tacgia: item.id_tacgia ?? null,
+                    ngaysinh: item.ngaysinh !== null ? dateConvert(item.ngaysinh) : null,
+                    dienthoai: item.dienthoai ?? null,
+                    email: item.email,
+                    tochuc:{
+                        id_tochuc:tochuc.id ?? null,
+                        matochuc:tochuc.matochuc,
+                        tentochuc:tochuc.tentochuc
+                    }
+                }
+            }),
             fileminhchungsanpham:{
                 url:form.get('url_minhchung')?.value,
-                loaiminhchung: form.get('loaiminhchung')?.value ?? null
             },
             doi:form.get('doi')?.value,
             url:form.get('url')?.value,
@@ -444,38 +691,54 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             accepted:form.get('accepted')?.value ? dateConvert(form.get('accepted')?.value.toString()) : null,
             published:form.get('published')?.value ? dateConvert(form.get('published')?.value.toString()) : null,
             abstract:form.get('abstract')?.value,
-            keywords:form.get('keywords')?.value,
-            id_tapchi:form.get('id_tapchi')?.value,
+            keyword:form.get('keywords')?.value !== null ? form.get('keywords')?.value.map((item:Keyword) => {
+                return {
+                    id_keyword:item.id,
+                    name:item.name
+                }
+                }) : null,
+
+            tapchi:{
+                id_tapchi: form.get("id_tapchi")?.value['id'] ?? null,
+                name:form.get("id_tapchi")?.value['name'],
+                issn:form.get("id_tapchi")?.value['issn'] ?? null,
+                eissn:form.get("id_tapchi")?.value['eissn'] ?? null,
+                pissn:form.get("id_tapchi")?.value['pissn'] ?? null,
+                website:form.get("id_tapchi")?.value['website'] ?? null
+            },
             volume:form.get('volume')?.value,
             issue:form.get('issue')?.value,
             number:form.get('number')?.value,
             pages:form.get('pages')?.value,
         }
-        this.isCreate = true
-        this.baiBaoService.taoBaiBao(data)
-            .pipe(
-                takeUntil(this.destroy$)
-            ).subscribe({
-            next:(response) =>{
-                this.notificationService.create(
-                    'success',
-                    "Thành Công",
-                    response.message
-                )
-                this.isCreate = false
-                const formArray = this.createForm.get('sanpham_tacgia') as FormArray
-                formArray.clear()
-                this.createForm.reset()
-            },
-            error:(error) => {
-                this.notificationService.create(
-                    'error',
-                    "Lỗi",
-                    error
-                )
-                this.isCreate = false
-            }
-        })
+
+        console.log(data)
+        //
+        // this.isCreate = true
+        // this.baiBaoService.taoBaiBao(data)
+        //     .pipe(
+        //         takeUntil(this.destroy$)
+        //     ).subscribe({
+        //     next:(response) =>{
+        //         this.notificationService.create(
+        //             'success',
+        //             "Thành Công",
+        //             response.message
+        //         )
+        //         this.isCreate = false
+        //         const formArray = this.createForm.get('sanpham_tacgia') as FormArray
+        //         formArray.clear()
+        //         this.createForm.reset()
+        //     },
+        //     error:(error) => {
+        //         this.notificationService.create(
+        //             'error',
+        //             "Lỗi",
+        //             error
+        //         )
+        //         this.isCreate = false
+        //     }
+        // })
     }
 
     onSelectUser(event:any){
@@ -485,22 +748,43 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         else{
             const data:User = event;
             const formArray = this.createForm.get('sanpham_tacgia') as FormArray
-                const control = this.fb.group({
-                    id_tacgia:[data.id],
-                    tentacgia:[
-                        data.name,
-                        Validators.compose([
-                            Validators.required,
-                            noWhiteSpaceValidator
-                        ])
-                    ],
-                    thutu:[null],
-                    tyledonggop:[null],
-                    id_vaitro:[null]
-                })
-                formArray.push(control);
+            const isUserAvailable = formArray.value.some((item:any) => {
+                return item.id_tacgia === data.id
+            })
+            if(isUserAvailable){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Vui lòng không chọn 2 tác giả giống nhau'
+                )
                 this.createForm.get("users")?.setValue(null)
+                return;
             }
+            const control = this.fb.group({
+                id_tacgia:[data.id],
+                tentacgia:[
+                    data.name,
+                    Validators.compose([
+                        Validators.required,
+                        noWhiteSpaceValidator
+                    ])
+                ],
+                thutu:[null],
+                tyledonggop:[null],
+                list_id_vaitro:[null],
+                in_system:[
+                    true
+                ],
+                tochuc:[
+                    data.tochuc
+                ],
+                email:[
+                    data.email
+                ]
+            })
+            formArray.push(control);
+            this.createForm.get("users")?.setValue(null)
+        }
     }
 
     removeUser(index:number){

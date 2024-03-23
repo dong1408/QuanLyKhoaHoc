@@ -204,13 +204,11 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
         this.loadingService.startLoading()
 
         forkJoin([
-                this.baiBaoService.getChiTietBaiBao(this.id),
-                this.toChucService.getAllToChuc()
+                this.baiBaoService.getChiTietBaiBao(this.id)
             ],
-            (bbResponse,tcResponse) => {
+            (bbResponse) => {
                 return {
-                    baibao:bbResponse.data,
-                    tochucs:tcResponse.data
+                    baibao:bbResponse.data
                 }
             }
         ).pipe(
@@ -218,7 +216,6 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
         ).subscribe({
             next:(response) => {
                 this.baibao = response.baibao
-                this.tochucs = response.tochucs
 
                 this.capNhatForm.patchValue({
                     tensanpham:this.baibao.sanpham.tensanpham,

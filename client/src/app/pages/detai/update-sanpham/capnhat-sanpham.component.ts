@@ -1,12 +1,8 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {CapNhatBaiBao, ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
-import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {forkJoin, Subject, takeUntil} from "rxjs";
-import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
 import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
@@ -206,12 +202,10 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
 
         forkJoin([
                 this.deTaiService.getChiTietDeTai(this.id),
-                this.toChucService.getAllToChuc()
             ],
-            (dtResponse,tcResponse) => {
+            (dtResponse) => {
                 return {
                     detai:dtResponse.data,
-                    tochucs:tcResponse.data
                 }
             }
         ).pipe(
@@ -219,7 +213,6 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
         ).subscribe({
             next:(response) => {
                 this.detai = response.detai
-                this.tochucs = response.tochucs
 
                 this.capNhatForm.patchValue({
                     tensanpham:this.detai.sanpham.tensanpham,

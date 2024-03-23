@@ -79,7 +79,6 @@
                     href="{{sanpham.minhchung?.url}}">Tại Đây</a></nz-tag></ng-container>
         <ng-container *ngIf="!sanpham.minhchung?.url">Không Có</ng-container>
     </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Loại Minh Chứng">{{sanpham.minhchung?.loaiminhchung ?? 'Không Có'}}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Danh Sách Tác Giả">
     <div *ngFor="let tacgia of this.sanpham_tacgias; let i = index" class="tw-mb-[1rem]">
         <h3>Tác Giả {{i + 1}}</h3>

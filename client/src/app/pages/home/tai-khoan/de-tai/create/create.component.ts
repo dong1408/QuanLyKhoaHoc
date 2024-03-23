@@ -26,7 +26,6 @@ import {PhanLoaiDeTaiService} from "../../../../../core/services/detai/phan-loai
 import {noWhiteSpaceValidator} from "../../../../../shared/validators/no-white-space.validator";
 import {validValuesValidator} from "../../../../../shared/validators/valid-value.validator";
 import {TaoDeTai} from "../../../../../core/types/detai/de-tai.type";
-import {dateConvert} from "../../../../../shared/commons/utilities";
 
 @Component({
     selector:'app-taikhoan-detai-create',
@@ -80,37 +79,6 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                     Validators.required
                 ])
             ],
-            solandaquydoi:[
-                0,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            cosudungemailtruong:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
-            cosudungemaildonvikhac:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
-            cothongtintruong:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
-            cothongtindonvikhac:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
             conhantaitro:[
                 false,
                 Validators.compose([
@@ -144,29 +112,6 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
-            capsanpham:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
-            thoidiemcongbohoanthanh:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            id_thongtinnoikhac:[
-                {
-                    value:null,
-                    disabled:true
-                },
-                Validators.compose([
                     Validators.required
                 ])
             ],
@@ -258,13 +203,6 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                     noWhiteSpaceValidator()
                 ])
             ],
-
-            loaiminhchung:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator()
-                ])
-            ],
             url_minhchung:[
                 null,
                 Validators.compose([
@@ -336,12 +274,10 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
 
         this.loadingService.startLoading()
         forkJoin([
-            this.toChucService.getAllToChuc(),
             this.vaiTroService.getVaiTroDeTai(),
             this.phanLoaiDeTaiService.getPhanLoaiDeTai()
-        ],(tcResponse,vtResponse,plResponse) => {
+        ],(vtResponse,plResponse) => {
             return {
-                listTC: tcResponse.data,
                 listVT: vtResponse.data,
                 listPL: plResponse.data
             }
@@ -349,7 +285,6 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.tochucs = response.listTC
                 this.vaiTros = response.listVT
                 this.phanLoais = response.listPL
                 this.loadingService.stopLoading()
@@ -462,25 +397,13 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
             sanpham:{
                 tensanpham: form.get('tensanpham')?.value,
                 tongsotacgia: form.get('tongsotacgia')?.value,
-                solandaquydoi : form.get('solandaquydoi')?.value,
-                diemquydoi: form.get('diemquydoi')?.value,
-                gioquydoi : form.get('gioquydoi')?.value,
-                thongtinchitiet: form.get('thongtinchitiet')?.value,
-                capsanpham: form.get('capsanpham')?.value,
-                thoidiemcongbohoanthanh: dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString())!!,
-                cosudungemailtruong:form.get('cosudungemailtruong')?.value ?? false,
-                cosudungemaildonvikhac: form.get('cosudungemaildonvikhac')?.value ?? false,
-                cothongtintruong : form.get('cothongtintruong')?.value ?? false,
-                cothongtindonvikhac : form.get('cothongtindonvikhac')?.value ?? false,
-                id_thongtinnoikhac : form.get('cothongtindonvikhac')?.value === true ? form.get('id_thongtinnoikhac')?.value : null,
                 conhantaitro : form.get('conhantaitro')?.value ?? false,
                 id_donvitaitro :form.get('conhantaitro')?.value === true ? form.get('id_donvitaitro')?.value : null,
                 chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
             },
             sanpham_tacgia: form.get('sanpham_tacgia')?.value,
             fileminhchungsanpham:{
-                url:form.get('url_minhchung')?.value,
-                loaiminhchung: form.get('loaiminhchung')?.value ?? null
+                url:form.get('url_minhchung')?.value
             },
             maso:form.get('maso')?.value,
             ngoaitruong:form.get('ngoaitruong')?.value ?? false,

@@ -198,7 +198,6 @@ export class UserInfoComponent{
 
         this.loadingService.startLoading()
         forkJoin([
-            this.toChucService.getAllToChuc(),
             this.hocHamHocViService.getAllHocHamHocVi(),
             this.ngachVienChucService.getAllNgachVienChuc(),
             this.chuyenMonService.getAllChuyeMon(),
@@ -207,9 +206,8 @@ export class UserInfoComponent{
             this.donViService.getAllDonVi(),
             this.userService.getUserInfo(),
             this.chuyenNganhTinhDiemService.getChuyenNganhTinhDiem()
-        ],(tcResponse,hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,dvResponse,uResponse,cnResponse) => {
+        ],(hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,dvResponse,uResponse,cnResponse) => {
             return {
-                listTC: tcResponse.data,
                 listHH: hhResponse.data,
                 listNVC: nvcResponse.data,
                 listCM: cmResponse.data,
@@ -221,13 +219,11 @@ export class UserInfoComponent{
             }
         }).subscribe({
             next:(response) =>{
-                this.toChucs = response.listTC
                 this.hocHams = response.listHH
                 this.ngachVienChucs = response.listNVC
                 this.chuyenMons = response.listCM
                 this.quocTichs = response.listQG
                 this.nganhTinhDiem = response.listNTD
-                this.noiHocs = response.listTC
                 this.user = response.user
                 this.donVis = response.listDV
                 this.chuyenNganhTinhDiem = response.listCN

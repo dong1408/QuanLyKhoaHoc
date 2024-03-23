@@ -115,14 +115,12 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
             this.hoiDongGiaoSuService.getAllHDGS(),
             this.tinhThanhService.getAllTinhThanh(),
             this.quocGiaService.getAllQuocGia(),
-            this.toChucService.getAllToChuc(),
             this.nhaXuatBanService.getAllNhaXuatBan()
-        ],(gsResponse,ttResponse,qgResponse,tcResponse,nxbResponse) => {
+        ],(gsResponse,ttResponse,qgResponse,nxbResponse) => {
             return {
                 listGS: gsResponse.data,
                 listTT: ttResponse.data,
                 listQG: qgResponse.data,
-                listTC: tcResponse.data,
                 listNXB: nxbResponse.data
             }
         }).pipe(
@@ -132,7 +130,6 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
                 this.hoiDongGiaoSus = response.listGS
                 this.quocGias = response.listQG
                 this.tinhThanhs = response.listTT
-                this.toChucs = response.listTC
                 this.nhaXuatBans = response.listNXB
                 this.loadingService.stopLoading()
             },

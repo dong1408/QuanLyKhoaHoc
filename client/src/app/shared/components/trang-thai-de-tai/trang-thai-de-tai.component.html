@@ -25,12 +25,10 @@
         </ng-container>
         <ng-container *ngIf="nghiemthu !== null">
             <nz-descriptions nzTitle="Trạng Thái Nghiệm Thu" class="tw-space-y-[0.8rem]" [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }" nzBordered nzLayout="horizontal">
-                    <nz-descriptions-item nzTitle="Hội Đồng Nghiệm Thu">{{nghiemthu?.hoidongnghiemthu ?? 'Không Có'}} </nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Ngày Nghiệm Thu">{{nghiemthu?.ngaynghiemthu ?? 'Không Có'}} </nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Kết Quả Nghiệm Thu">{{nghiemthu?.ketquanghiemthu ?? 'Không Có'}} </nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Ngày Công Nhận Hoàn Thành">{{nghiemthu?.ngaycongnhanhoanthanh ?? 'Không Có'}} </nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Số Quyết Định Công Nhận Hoàn Thành">{{nghiemthu?.soqdcongnhanhoanthanh ?? 'Không Có'}} </nz-descriptions-item>
-                    <nz-descriptions-item nzTitle="Thời Gian Hoàn Thành">{{nghiemthu?.thoigianhoanthanh ?? 'Không Có'}} </nz-descriptions-item>
             </nz-descriptions>
         </ng-container>
     </ng-container>

@@ -1,9 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
 import {forkJoin, Subject, takeUntil} from "rxjs";
-import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {DeTaiService} from "../../../core/services/detai/de-tai.service";
@@ -13,7 +11,7 @@ import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.v
 import {validValuesValidator} from "../../../shared/validators/valid-value.validator";
 import {PhanLoaiDeTai} from "../../../core/types/detai/phan-loai-de-tai.type";
 import {PhanLoaiDeTaiService} from "../../../core/services/detai/phan-loai-de-tai.service";
-import {CapNhatDeTai, ChiTietDeTai, TaoDeTai} from "../../../core/types/detai/de-tai.type";
+import {CapNhatDeTai, ChiTietDeTai} from "../../../core/types/detai/de-tai.type";
 import {dateConvert} from "../../../shared/commons/utilities";
 
 @Component({
@@ -173,12 +171,10 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
 
         this.loadingService.startLoading()
         forkJoin([
-            this.toChucService.getAllToChuc(),
             this.phanLoaiDeTaiService.getPhanLoaiDeTai(),
             this.deTaiService.getChiTietDeTai(this.id)
-        ],(tcResponse,plResponse,dtResponse) => {
+        ],(plResponse,dtResponse) => {
             return {
-                listTC: tcResponse.data,
                 listPL: plResponse.data,
                 detai:dtResponse.data
             }
@@ -186,7 +182,6 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.tochucs = response.listTC
                 this.phanLoais = response.listPL
                 this.detai = response.detai
 

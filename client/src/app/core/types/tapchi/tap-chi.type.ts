@@ -26,6 +26,15 @@ export interface Magazine{
     isChangeStatus:boolean,
 }
 
+export interface KeKhaiTapChi{
+    name:string,
+    id_tapchi:number,
+    issn:string | null,
+    pissn:string | null,
+    eissn: string | null,
+    website:string | null
+}
+
 export interface ChiTietTapChi{
     id:number,
     name?:string,

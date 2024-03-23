@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BaiBao\KeywordController;
 use App\Http\Controllers\Admin\NhaXuatBan\NhaXuatBanController;
 use App\Http\Controllers\Admin\TapChi\NganhTheoHDGSController;
 use App\Http\Controllers\Admin\TapChi\PhanLoaiTapChiController;
@@ -83,7 +84,8 @@ Route::group([
     Route::post('permissions', [PermissionController::class, 'addPermission'])->can('role.add');
     Route::patch('permissions/{id}', [PermissionController::class, 'updatePermission'])->can('role.update');
 
-
+    // ============================== Keyword ================================= //
+    Route::get('keywords', [KeywordController::class, 'getAllKeyword']);
 
     // BaiBaoKhoaHocs
     Route::get('baibao/public', [BaiBaoKhoaHocController::class, 'getBaiBaoPagingForUser']);

@@ -55,6 +55,13 @@ export class BaoCaoTienDoComponent{
         })
 
         this.formBaoCao = this.fb.group({
+            tenbaocao:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    Validators.required
+                ])
+            ],
             ngaynopbaocao:[
                 null,
                 Validators.compose([

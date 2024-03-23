@@ -20,3 +20,8 @@ export interface PhanLoaiToChuc{
     created_at:string,
     updated_at:string
 }
+
+export interface KeKhaiToChuc{
+    matochuc:string,
+    tentochuc:string
+}

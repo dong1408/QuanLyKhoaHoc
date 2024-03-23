@@ -15,7 +15,7 @@ class ToChucServiceImpl implements ToChucService
         $keysearch = $request->query('search', "");
         $result = [];
         if (!empty($keysearch)) {
-            $toChucs = DMToChuc::where('name', 'LIKE', '%' . $keysearch . '%')->take(10)->get();
+            $toChucs = DMToChuc::where('tentochuc', 'LIKE', '%' . $keysearch . '%')->take(10)->get();
             foreach ($toChucs as $toChuc) {
                 $result[] = Convert::getToChucVm($toChuc);
             }

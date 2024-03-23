@@ -80,37 +80,6 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     Validators.required
                 ])
             ],
-            solandaquydoi:[
-                0,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            cosudungemailtruong:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
-            cosudungemaildonvikhac:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
-            cothongtintruong:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
-            cothongtindonvikhac:[
-                false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
-            ],
             conhantaitro:[
                 false,
                 Validators.compose([
@@ -126,46 +95,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     noWhiteSpaceValidator()
                 ]),
             ],
-            diemquydoi:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
-            gioquydoi:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
-            thongtinchitiet:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
-            capsanpham:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
-                ])
-            ],
             thoidiemcongbohoanthanh:[
                 null,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
-            id_thongtinnoikhac:[
-                {
-                    value:null,
-                    disabled:true
-                },
                 Validators.compose([
                     Validators.required
                 ])
@@ -256,12 +187,6 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     Validators.required
                 ])
             ],
-            loaiminhchung:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator()
-                ])
-            ],
             url_minhchung:[
                 null,
                 Validators.compose([
@@ -298,21 +223,15 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
 
         this.loadingService.startLoading()
         forkJoin([
-            this.toChucService.getAllToChuc(),
-            this.tapChiService.getAllTapChi(),
             this.vaiTroService.getVaiTroBaiBao()
-        ],(tcResponse,tacResponse,vtResponse) => {
+        ],(vtResponse) => {
             return {
-                listTC: tcResponse.data,
-                listTaC: tacResponse.data,
                 listVT: vtResponse.data
             }
         }).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.tochucs = response.listTC
-                this.tapChis = response.listTaC
                 this.vaiTros = response.listVT
                 this.loadingService.stopLoading()
             },
@@ -418,25 +337,14 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             sanpham:{
                 tensanpham: form.get('tensanpham')?.value,
                 tongsotacgia: form.get('tongsotacgia')?.value,
-                solandaquydoi : form.get('solandaquydoi')?.value,
-                diemquydoi: form.get('diemquydoi')?.value,
-                gioquydoi : form.get('gioquydoi')?.value,
-                thongtinchitiet: form.get('thongtinchitiet')?.value,
-                capsanpham: form.get('capsanpham')?.value,
                 thoidiemcongbohoanthanh:  dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString())!!,
-                cosudungemailtruong:form.get('cosudungemailtruong')?.value ?? false,
-                cosudungemaildonvikhac: form.get('cosudungemaildonvikhac')?.value ?? false,
-                cothongtintruong : form.get('cothongtintruong')?.value ?? false,
-                cothongtindonvikhac : form.get('cothongtindonvikhac')?.value ?? false,
-                id_thongtinnoikhac : form.get('cothongtindonvikhac')?.value === true ? form.get('id_thongtinnoikhac')?.value : null,
                 conhantaitro : form.get('conhantaitro')?.value ?? false,
                 id_donvitaitro :form.get('conhantaitro')?.value === true ? form.get('id_donvitaitro')?.value : null,
                 chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
             },
             sanpham_tacgia: form.get('sanpham_tacgia')?.value,
             fileminhchungsanpham:{
-                url:form.get('url_minhchung')?.value,
-                loaiminhchung: form.get('loaiminhchung')?.value ?? null
+                url:form.get('url_minhchung')?.value
             },
             doi:form.get('doi')?.value,
             url:form.get('url')?.value,
@@ -444,8 +352,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             accepted:form.get('accepted')?.value ? dateConvert(form.get('accepted')?.value.toString()) : null,
             published:form.get('published')?.value ? dateConvert(form.get('published')?.value.toString()) : null,
             abstract:form.get('abstract')?.value,
-            keywords:form.get('keywords')?.value,
-            id_tapchi:form.get('id_tapchi')?.value,
+            keyword:form.get('keywords')?.value,
+            tapchi:form.get('id_tapchi')?.value,
             volume:form.get('volume')?.value,
             issue:form.get('issue')?.value,
             number:form.get('number')?.value,

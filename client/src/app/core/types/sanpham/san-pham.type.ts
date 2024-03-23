@@ -8,7 +8,7 @@ export interface SanPham{
     tensanpham:string,
     loaisanpham:DMSanPham,
     tongsotacgia:number,
-    solandaquydoi:number,
+    solandaquydoi?:number,
     cosudungemailtruong?:boolean,
     cosudungemaildonvikhac?:boolean,
     cothongtintruong?:boolean,
@@ -22,11 +22,11 @@ export interface SanPham{
     trangthairasoat:string,
     ngayrasoat?:string,
     nguoirasoat?:User,
-    diemquydoi:string,
-    gioquydoi:string,
-    thongtinchitiet:string,
-    capsanpham:string,
-    thoidiemcongbohoanthanh:string,
+    diemquydoi?:string,
+    gioquydoi?:string,
+    thongtinchitiet?:string,
+    capsanpham?:string,
+    thoidiemcongbohoanthanh?:string,
     minhchung?:FileMinhChung
     created_at:string,
     updated_at:string
@@ -62,23 +62,12 @@ export interface CapNhatTrangThaiSanPham{
 export interface TaoSanPham{
     tensanpham:string,
     tongsotacgia:number,
-    solandaquydoi:number,
-    cosudungemailtruong:boolean | null,
-    cosudungemaildonvikhac:boolean | null,
-    cothongtintruong:boolean | null,
-    cothongtindonvikhac:boolean | null,
-    id_thongtinnoikhac:number  | null,
     conhantaitro:boolean | null,
     id_donvitaitro:number | null,
     chitietdonvitaitro:string | null,
-    diemquydoi:string,
-    gioquydoi:string,
-    thongtinchitiet:string,
-    capsanpham:string,
-    thoidiemcongbohoanthanh:string
+    thoidiemcongbohoanthanh?:string | null
 }
 
 export interface TaoFileMinhChung{
-    loaiminhchung:string | null,
     url:string
 }

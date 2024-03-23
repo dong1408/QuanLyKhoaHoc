@@ -1,6 +1,7 @@
 import {SanPham, TaoFileMinhChung, TaoSanPham} from "../sanpham/san-pham.type";
-import {Magazine} from "../tapchi/tap-chi.type";
+import {KeKhaiTapChi, Magazine} from "../tapchi/tap-chi.type";
 import {SanPhamTacGia, TaoVaiTroTacGia} from "../sanpham/vai-tro-tac-gia.type";
+import {KeKhaiKeyword} from "./keyword.type";
 
 export interface BaiBao{
     id:number,
@@ -61,8 +62,8 @@ export interface TaoBaiTao{
     accepted:string  | null,
     published:string | null ,
     abstract:string | null,
-    keywords:string | null,
-    id_tapchi:number,
+    keyword?:KeKhaiKeyword[],
+    tapchi:KeKhaiTapChi,
     volume:string  | null,
     issue:string | null,
     number:string | null,

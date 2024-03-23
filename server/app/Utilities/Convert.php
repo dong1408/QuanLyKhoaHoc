@@ -277,6 +277,8 @@ class Convert
         $a->name = $user->name;
         $a->username = $user->username;
         $a->email = $user->email;
+        $a->ngaysinh = $user->ngaysinh ?? null;
+        $a->dienthoai = $user->dienthoai ?? null;
         $a->hochamhocvi = $user->hocHamHocVi == null ? null : Convert::getHocHamHocViVm($user->hocHamHocVi);
         $a->tochuc = $user->toChuc == null ? null : Convert::getToChucVm($user->toChuc);
 
@@ -699,8 +701,10 @@ class Convert
         $a = new KeywordVm();
         $a->id = $keyword->id;
         $a->name = $keyword->name;
-        $a->created_at = $keyword->created_at;
-        $a->updated_at = $keyword->updated_at;
+        $a->created_at = $keyword->created_at ?? null;
+        $a->updated_at = $keyword->updated_at ?? null;
+
+        return $a;
     }
 
 

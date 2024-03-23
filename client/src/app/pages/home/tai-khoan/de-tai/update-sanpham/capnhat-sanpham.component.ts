@@ -201,12 +201,10 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
 
         forkJoin([
                 this.deTaiService.getChiTietDeTai(this.id),
-                this.toChucService.getAllToChuc()
             ],
-            (dtResponse,tcResponse) => {
+            (dtResponse) => {
                 return {
                     detai:dtResponse.data,
-                    tochucs:tcResponse.data
                 }
             }
         ).pipe(
@@ -214,7 +212,6 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
         ).subscribe({
             next:(response) => {
                 this.detai = response.detai
-                this.tochucs = response.tochucs
 
                 this.capNhatForm.patchValue({
                     tensanpham:this.detai.sanpham.tensanpham,

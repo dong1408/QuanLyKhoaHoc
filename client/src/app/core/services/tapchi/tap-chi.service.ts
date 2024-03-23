@@ -152,9 +152,9 @@ export class TapChiService{
         )
     }
 
-    getAllTapChi(){
+    getAllTapChi(keyword:string){
         return this.http.get<ApiResponse<Magazine[]>>(
-            `${environment.apiUrl}/tapchi`
+            `${environment.apiUrl}/tapchi?search=${keyword}`
         ).pipe(
             catchError(handleError)
         )

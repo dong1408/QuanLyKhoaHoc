@@ -20,20 +20,6 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full">
-                    <h3 class="">Loại Minh Chứng</h3>
-                    <nz-form-control [nzErrorTip]="loaiminhchung" nzHasFeedback>
-                    <textarea
-                            nz-input
-                            placeholder="Loại Minh Chứng"
-                            formControlName="loaiminhchung"
-                            [nzAutosize]="{ minRows: 3, maxRows: 10 }"
-                    ></textarea>
-                        <ng-template #loaiminhchung let-control>
-                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        </ng-template>
-                    </nz-form-control>
-                </nz-form-item>
             </form>
         </ng-container>
     </nz-modal>

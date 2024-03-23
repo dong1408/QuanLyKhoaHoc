@@ -99,12 +99,6 @@ export class ChiTietDeTaiComponent{
                     Validators.required,
                     noWhiteSpaceValidator()
                 ])
-            ],
-            loaiminhchung:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator()
-                ])
             ]
         })
 
@@ -160,20 +154,16 @@ export class ChiTietDeTaiComponent{
         })
 
         this.formNghiemThu = this.fb.group({
-            hoidongnghiemthu:[
-                null,
-                Validators.compose([
-                    Validators.required,
-                    noWhiteSpaceValidator()
-                ])
-            ],
-            ngaynghiemthu:[
-                null
-            ],
             ketquanghiemthu:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator()
+                    Validators.required,
+                ])
+            ],
+            ngaynghiemthu:[
+                null,
+                Validators.compose([
+                    Validators.required,
                 ])
             ],
             ngaycongnhanhoanthanh:[
@@ -184,13 +174,43 @@ export class ChiTietDeTaiComponent{
                 Validators.compose([
                     noWhiteSpaceValidator()
                 ])
-            ],
-            thoigiangiahan:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator()
-                ])
             ]
+        })
+
+        this.formXetDuyet.get("ketquaxetduyet")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select === this.AppConstant.TT_DETAI_SUCCESS){
+                this.formXetDuyet.get("sohopdong")?.enable()
+                this.formXetDuyet.get("ngaykyhopdong")?.enable()
+                this.formXetDuyet.get("thoihanhopdong")?.enable()
+                this.formXetDuyet.get("kinhphi")?.enable()
+            }else {
+                this.formXetDuyet.get("sohopdong")?.reset()
+                this.formXetDuyet.get("ngaykyhopdong")?.reset()
+                this.formXetDuyet.get("thoihanhopdong")?.reset()
+                this.formXetDuyet.get("kinhphi")?.reset()
+
+                this.formXetDuyet.get("sohopdong")?.disable()
+                this.formXetDuyet.get("ngaykyhopdong")?.disable()
+                this.formXetDuyet.get("thoihanhopdong")?.disable()
+                this.formXetDuyet.get("kinhphi")?.disable()
+            }
+        })
+
+        this.formXetDuyet.get("ketquanghiemthu")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select === this.AppConstant.TT_DETAI_SUCCESS){
+                this.formXetDuyet.get("ngaycongnhanhoanthanh")?.enable()
+                this.formXetDuyet.get("soqdcongnhanhoanthanh")?.enable()
+            }else{
+                this.formXetDuyet.get("ngaycongnhanhoanthanh")?.reset()
+                this.formXetDuyet.get("soqdcongnhanhoanthanh")?.reset()
+
+                this.formXetDuyet.get("ngaycongnhanhoanthanh")?.disable()
+                this.formXetDuyet.get("soqdcongnhanhoanthanh")?.disable()
+            }
         })
 
         this.getChiTietDeTai()
@@ -331,7 +351,6 @@ export class ChiTietDeTaiComponent{
                 this.detai = response.data
                 this.formCapNhatFileMinhChung.patchValue({
                     url: this.detai.sanpham.minhchung?.url,
-                    loaiminhchung:this.detai.sanpham.minhchung?.loaiminhchung ?? null
                 })
 
                 this.initSanPhamTacGia(response.data.sanpham_tacgias)
@@ -425,7 +444,6 @@ export class ChiTietDeTaiComponent{
                 )
                 if (this.detai && this.detai.sanpham && this.detai.sanpham.minhchung) {
                     this.detai.sanpham.minhchung.url = data.url;
-                    this.detai.sanpham.minhchung.loaiminhchung = data.loaiminhchung ?? undefined
                 }
                 this.isOpenFormMinhChung = false
                 this.isCapNhatFileMinhChung = false
@@ -604,6 +622,16 @@ export class ChiTietDeTaiComponent{
 
         const data:TuyenChonDeTai = form.value
 
+        if(data.ketquatuyenchon === this.AppConstant.TT_DETAI_FAILED && (data.lydo === null || data.lydo === "")){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                "Vui lòng nhập lý do nếu kết quả tuyển chọn không đủ kiều kiện"
+            )
+
+            return;
+        }
+
         this.isTuyenChon = true
 
         this.deTaiService.tuyenChonDeTai(this.id,data)
@@ -618,10 +646,11 @@ export class ChiTietDeTaiComponent{
                 )
                 if(data.ketquatuyenchon === this.AppConstant.TT_DETAI_SUCCESS){
                     this.detai.trangthai = this.AppConstant.CHO_XET_DUYET
+                    this.detai.tuyenchon = response.data
                 }else{
                     this.detai.trangthai = this.AppConstant.TUYEN_CHON_THAT_BAI
+                    this.detai.tuyenchon = response.data
                 }
-                // thiếu trả về vm add vào this.detai
                 this.isTuyenChon = false
                 this.isOpenFormTuyenChon = false
             },
@@ -669,10 +698,11 @@ export class ChiTietDeTaiComponent{
                 )
                 if(data.ketquaxetduyet === this.AppConstant.TT_DETAI_SUCCESS){
                     this.detai.trangthai = this.AppConstant.CHO_NGHIEM_THU
+                    this.detai.xetduyet = response.data
                 }else{
                     this.detai.trangthai = this.AppConstant.XET_DUYET_THAT_BAI
+                    this.detai.xetduyet = response.data
                 }
-                // thiếu trả về vm add vào this.detai
                 this.isXetDuyet = false
                 this.isOpenFormXetDuyet = false
             },
@@ -718,7 +748,7 @@ export class ChiTietDeTaiComponent{
                     response.message
                 )
                 this.detai.trangthai = this.AppConstant.NGHIEM_THU
-                // thiếu trả về vm add vào this.detai
+                this.detai.nghiemthu = response.data
                 this.isNghiemThu = false
                 this.isOpenFormNghiemThu = false
             },

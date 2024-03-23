@@ -171,12 +171,10 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
 
         this.loadingService.startLoading()
         forkJoin([
-            this.toChucService.getAllToChuc(),
             this.phanLoaiDeTaiService.getPhanLoaiDeTai(),
             this.deTaiService.getChiTietDeTai(this.id)
-        ],(tcResponse,plResponse,dtResponse) => {
+        ],(plResponse,dtResponse) => {
             return {
-                listTC: tcResponse.data,
                 listPL: plResponse.data,
                 detai:dtResponse.data
             }
@@ -184,7 +182,6 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) => {
-                this.tochucs = response.listTC
                 this.phanLoais = response.listPL
                 this.detai = response.detai
 

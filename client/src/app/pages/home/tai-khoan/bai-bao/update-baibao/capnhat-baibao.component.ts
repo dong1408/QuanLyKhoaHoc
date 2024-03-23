@@ -130,12 +130,10 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
 
         forkJoin([
             this.baiBaoService.getChiTietBaiBao(this.id),
-            this.tapChiService.getAllTapChi()
         ],
-            (bbResponse,tcResponse) => {
+            (bbResponse) => {
                 return {
                     baibao:bbResponse.data,
-                    tapchis:tcResponse.data
                 }
             }
         ).pipe(
@@ -143,7 +141,6 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
         ).subscribe({
             next:(response) => {
                 this.baibao = response.baibao
-                this.tapchis = response.tapchis
 
                 this.capNhatForm.patchValue({
                     doi:this.baibao.doi ?? null,

@@ -12,7 +12,9 @@ export interface User{
     id:number,
     name:string,
     username:string,
-    email:string
+    email:string,
+    tochuc:ToChuc,
+    hochamhocvi:HocHamHocVi
 }
 
 export interface Me{

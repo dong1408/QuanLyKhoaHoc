@@ -9,7 +9,7 @@ import {
     DeTai, NghiemThu, NghiemThuDeTai,
     TaoDeTai,
     TuyenChon,
-    TuyenChonDeTai,
+    TuyenChonDeTai, XetDuyet,
     XetDuyetDeTai
 } from "../../types/detai/de-tai.type";
 import {environment} from "../../../../environments/environment";
@@ -149,7 +149,7 @@ export class DeTaiService{
     }
 
     xetDuyetDeTai(id:number,data:XetDuyetDeTai){
-        return this.http.post<ApiResponse<XetDuyetDeTai>>(
+        return this.http.post<ApiResponse<XetDuyet>>(
             `${environment.apiUrl}/detai/${id}/xetduyet`,
             data
         ).pipe(
