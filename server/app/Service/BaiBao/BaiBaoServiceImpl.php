@@ -751,13 +751,13 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
 
         // check bài báo đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
-        $idUserCurent = auth('api')->user()->id;
-        $userCurrent = User::find($idUserCurent);
-        if ($sanPham->trangthairasoat == "Đã xác nhận") {
-            if (!$userCurrent->hasPermission('baibao.status')) {
-                throw new UserNotHavePermissionException();
-            }
-        }
+        // $idUserCurent = auth('api')->user()->id;
+        // $userCurrent = User::find($idUserCurent);
+        // if ($sanPham->trangthairasoat == "Đã xác nhận") {
+        //     if (!$userCurrent->hasPermission('baibao.status')) {
+        //         throw new UserNotHavePermissionException();
+        //     }
+        // }
 
         // check đúng loại sản phẩm là bài báo khoa học
         if ($sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {

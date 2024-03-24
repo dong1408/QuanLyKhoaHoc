@@ -8,8 +8,8 @@ use App\ViewModel\SanPham\SanPhamVm;
 class NghiemThuVm
 {
     public int $id;
-    public ?string $ngaynghiemthu;
-    public ?string $ketquanghiemthu;
+    public string $ngaynghiemthu;
+    public string $ketquanghiemthu;
     public ?string $ngaycongnhanhoanthanh;
     public ?string $soqdcongnhanhoanthanh;
     public string $created_at;

@@ -10,8 +10,8 @@ class SanPhamTacGiaVm
     //public ?SanPhamVm $sanpham; //$id_sanpham
     public UserSimpleVm $tacgia; // $id_tacgia -- user
     public VaiTroTacGiaVm $vaitrotacgia; //$id_vaotrotacgia
-    public ?string $thutu;
-    public ?string $tyledonggop;
+    public ?int $thutu;
+    public ?int $tyledonggop;
     public string $created_at;
     public string $updated_at;
 }

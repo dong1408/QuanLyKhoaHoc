@@ -8,8 +8,8 @@ use App\ViewModel\SanPham\SanPhamVm;
 class XetDuyetVm
 {
     public int $id;
-    public ?string $ngayxetduyet;
-    public ?string $ketquaxetduyet;
+    public string $ngayxetduyet;
+    public string $ketquaxetduyet;
     public ?string $sohopdong;
     public ?string $ngaykyhopdong;
     public ?int $thoihanhopdong;
