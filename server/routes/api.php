@@ -94,7 +94,7 @@ Route::group([
 
     Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging'])->can('baibao.view'); // canview
     Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet'])->can('baibao.view'); // canview
-    Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao'])->can('baibao.add');
+    Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao']); //->can('baibao.add');
     Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham'])->can('baibao.update'); // admin + owner
     Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao'])->can('baibao.update'); // admin + owner
     Route::patch('baibao/{id}/sanphamtacgia', [BaiBaoKhoaHocController::class, 'updateSanPhamTacGia'])->can('baibao.update'); // admin + owner
@@ -118,7 +118,7 @@ Route::group([
 
     Route::get('detai', [DeTaiController::class, 'getDeTaiPaging'])->can('detai.view');
     Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet'])->can('detai.view');
-    Route::post('detai', [DeTaiController::class, 'createDetai'])->can('detai.add');
+    Route::post('detai', [DeTaiController::class, 'createDetai']); //->can('detai.add');
     Route::patch('detai/{id}/sanpham', [DeTaiController::class, 'updateSanPham'])->can('detai.update'); // admin + owner
     Route::patch('detai/{id}', [DeTaiController::class, 'updateDeTai'])->can('detai.update'); // admin + owner
     Route::patch('detai/{id}/sanphamtacgia', [DeTaiController::class, 'updateSanPhamTacGia'])->can('detai.update'); // admin + owner

@@ -2,6 +2,11 @@
 
 namespace App\Http\Requests\BaiBao;
 
+use App\Rules\EmailUniqueIfIdTacgiaNull;
+use App\Rules\MatochucUniqueIfIdDonviNull;
+use App\Rules\MatochucUniqueIfIdTochucNull;
+use App\Rules\NameUniqueIfIdKeywordNull;
+use App\Rules\NameUniqueIfIdTapchiNull;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,9 +34,17 @@ class CreateBaiBaoRequest extends FormRequest
             "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.conhantaitro" => "bail|nullable|boolean",
-            "sanpham.id_donvitaitro" => [
+
+            "sanpham.donvi.id_donvi" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
+                Rule::exists("d_m_to_chucs", "id")
+            ],
+            "sanpham.donvi.matochuc" => [
+                "bail", "required", "string",
+                new MatochucUniqueIfIdDonviNull // với những tạp chí được kê khai thì cần phải check trường matochuc unique
+            ],
+            "sanpham.donvi.tentochuc" => [
+                "bail", "required", "string"
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
             "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
@@ -44,29 +57,32 @@ class CreateBaiBaoRequest extends FormRequest
             "published" => "bail|nullable|string",
             "abstract" => "bail|nullable|string",
 
+
             "keywords" => "bail|nullable|array",
             "keywords.*.id_keyword" => [
                 "bail", "nullable", "integer",
                 Rule::exists("keywords", "id")
             ],
-            "keywords.*.name" => "bail|required|string",
+            "keywords.*.name" => [
+                "bail", "required", "string",
+                new NameUniqueIfIdKeywordNull // với những keyword được kê khai thì cần phải check trường name unique            
+            ],
 
-            "tapchi" => "bail|array",
+
+            "tapchi" => "bail|required",
             "tapchi.id_tapchi" => [
                 "bail", "nullable", "integer",
                 Rule::exists('tap_chis', 'id')
             ],
             "tapchi.name" => [
                 "bail", "required", "string",
-                Rule::unique('tap_chis', 'name')->where(function ($query) {
-                    // Kiểm tra xem trường 'tapchi.id_tapchi' có giá trị null hay không
-                    return request()->input('tapchi.id_tapchi') === null;
-                })
+                new NameUniqueIfIdTapchiNull  // với những tạp chí được kê khai thì cần phải check trường name unique 
             ],
             "tapchi.issn" => "bail|nullable|string",
             "tapchi.eissn" => "bail|nullable|string",
             "tapchi.pissn" => "bail|nullable|string",
             "tapchi.website" => "bail|nullable|string",
+
 
             "volume" => "bail|nullable|string",
             "issue" => "bail|nullable|string",
@@ -92,9 +108,7 @@ class CreateBaiBaoRequest extends FormRequest
             "sanpham_tacgia.*.dienthoai" => "bail|nullable|string",
             "sanpham_tacgia.*.email" => [
                 "bail", "required", "string",
-                Rule::unique('users', 'email')->where(function ($query) {
-                    return request()->input('sanpham_tacgia.*.id_tacgia') === null;
-                })
+                new EmailUniqueIfIdTacgiaNull
             ],
             "sanpham_tacgia.*.id_hochamhocvi" => [
                 "bail", "nullable", "integer",
@@ -106,10 +120,7 @@ class CreateBaiBaoRequest extends FormRequest
             ],
             "sanpham_tacgia.*.tochuc.matochuc" => [
                 "bail", "required", "string",
-                Rule::unique('d_m_to_chucs', 'matochuc')->where(function ($query) {
-                    // Kiểm tra xem trường 'sanpham_tacgia.*.tochuc.id_tochuc' có giá trị null hay không
-                    return request()->input('sanpham_tacgia.*.tochuc.id_tochuc') === null;
-                })
+                new MatochucUniqueIfIdTochucNull
             ],
             "sanpham_tacgia.*.tochuc.tentochuc" => "bail|required|string",
 
@@ -126,10 +137,12 @@ class CreateBaiBaoRequest extends FormRequest
             'integer' => 'Trường :attribute phải là một số',
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
-            'boolean' => 'Trường :attribute phải là true/false',                        
+            'boolean' => 'Trường :attribute phải là true/false',
             //
             'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
-            'sanpham.id_donvitaitro.exists' => 'Đơn vị tài trợ không tồn tại trên hệ thống',
+            "sanpham.donvi.id_donvi.exists" => "Đơn vị tài trợ không tồn tại trên hệ thống",
+
+
             'keywords.*.id_keyword.exists' => 'Keyword không tồn tại trên hệ thống',
             'tapchi.id_tapchi.exists' => 'Tạp chí không tồn tại trên hệ thống',
             'tapchi.name.unique' => 'Tên tạp chí đã tồn tại trên hệ thống',

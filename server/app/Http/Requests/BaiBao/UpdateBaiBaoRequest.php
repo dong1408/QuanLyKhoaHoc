@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\BaiBao;
 
+use App\Rules\NameUniqueIfIdKeywordNull;
+use App\Rules\NameUniqueIfIdTapchiNull;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
@@ -37,24 +39,26 @@ class UpdateBaiBaoRequest extends FormRequest
             "accepted" => "bail|nullable|string",
             "published" => "bail|nullable|string",
             "abstract" => "bail|nullable|string",
-            "keyword" => "bail|nullable|array",
-            "keyword.*.id_keyword" => [
-                "bail", "nullable", "integer",
+
+
+            "keywords" => "bail|nullable|array",
+            "keywords.*.id_keyword" => [
+                "bail", "required", "integer",
                 Rule::exists("keywords", "id")
             ],
-            "keyword.*.name" => "bail|required|string",
+            "keywords.*.name" => [
+                "bail", "required", "string",
+            ],
 
-            "tapchi" => "bail|array",
+
+
+            "tapchi" => "bail|required",
             "tapchi.id_tapchi" => [
                 "bail", "nullable", "integer",
                 Rule::exists('tap_chis', 'id')
             ],
             "tapchi.name" => [
                 "bail", "required", "string",
-                Rule::unique('tap_chis', 'name')->where(function ($query) {
-                    // Kiểm tra xem trường 'tapchi.id_tapchi' có giá trị null hay không
-                    return request()->input('tapchi.id_tapchi') === null;
-                })
             ],
             "tapchi.issn" => "bail|nullable|string",
             "tapchi.eissn" => "bail|nullable|string",

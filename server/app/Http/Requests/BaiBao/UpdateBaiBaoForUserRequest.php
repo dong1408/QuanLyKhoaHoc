@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests\BaiBao;
 
+use App\Rules\MatochucUniqueIfIdDonviNull;
+use App\Rules\NameUniqueIfIdKeywordNull;
+use App\Rules\NameUniqueIfIdTapchiNull;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
@@ -33,17 +36,25 @@ class UpdateBaiBaoForUserRequest extends FormRequest
 
             // san pham
             "sanpham.tensanpham" => [
-                "bail", "required",
-                Rule::unique('san_phams')->ignore(Route::input('id'), 'id')
+                "bail", "required", "string",
+                Rule::unique('san_phams', 'tensanpham')->ignore(Route::input('id'), 'id')
             ],
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.conhantaitro" => "bail|nullable|boolean",
-            "sanpham.id_donvitaitro" => [
+            "sanpham.donvi.id_donvi" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
+                Rule::exists("d_m_to_chucs", "id")
+            ],
+            "sanpham.donvi.matochuc" => [
+                "bail", "required", "string",
+                new MatochucUniqueIfIdDonviNull // với những đơn vị được kê khai thì cần phải check trường matochuc unique
+            ],
+            "sanpham.donvi.tentochuc" => [
+                "bail", "required", "string"
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
             "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
+
 
             // Thong tin chi tiet bai bao
             "doi" => "bail|nullable|string",
@@ -53,24 +64,26 @@ class UpdateBaiBaoForUserRequest extends FormRequest
             "published" => "bail|nullable|string",
             "abstract" => "bail|nullable|string",
 
-            "keyword" => "bail|nullable|array",
-            "keyword.*.id_keyword" => [
+
+            "keywords" => "bail|nullable|array",
+            "keywords.*.id_keyword" => [
                 "bail", "nullable", "integer",
                 Rule::exists("keywords", "id")
             ],
-            "keyword.*.name" => "bail|required|string",
+            "keywords.*.name" => [
+                "bail", "required", "string",
+                new NameUniqueIfIdKeywordNull // với những keyword được kê khai thì cần phải check trường name unique            
+            ],
 
-            "tapchi" => "bail|array",
+
+            "tapchi" => "bail|required",
             "tapchi.id_tapchi" => [
                 "bail", "nullable", "integer",
                 Rule::exists('tap_chis', 'id')
             ],
             "tapchi.name" => [
                 "bail", "required", "string",
-                Rule::unique('tap_chis', 'name')->where(function ($query) {
-                    // Kiểm tra xem trường 'tapchi.id_tapchi' có giá trị null hay không
-                    return request()->input('tapchi.id_tapchi') === null;
-                })
+                new NameUniqueIfIdTapchiNull  // với những tạp chí được kê khai thì cần phải check trường name unique 
             ],
             "tapchi.issn" => "bail|nullable|string",
             "tapchi.eissn" => "bail|nullable|string",
@@ -94,10 +107,11 @@ class UpdateBaiBaoForUserRequest extends FormRequest
             'boolean' => 'Trường :attribute phải là true/false',
             //
             'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
-            'sanpham.id_donvitaitro.exists' => 'Đơn vị tài trợ không tồn tại trên hệ thống',
-            'keyword.*.id_keyword.exists' => 'Keyword không tồn tại trên hệ thống',
+            "sanpham.donvi.id_donvi.exists" => "Đơn vị tài trợ không tồn tại trên hệ thống",
+            'keywords.*.id_keyword.exists' => 'Keyword không tồn tại trên hệ thống',
             'tapchi.id_tapchi.exists' => 'Tạp chí không tồn tại trên hệ thống',
             'tapchi.name.unique' => 'Tên tạp chí đã tồn tại trên hệ thống',
+
         ];
     }
 
