@@ -47,6 +47,6 @@ class MatochucUniqueIfIdTochucchuquanNull implements Rule
      */
     public function message()
     {
-        return 'Trường :attribute của tổ chức chủ quản kê khai đã tồn tại trên hệ thống.';
+        return 'Tổ chức chủ quản kê khai đã tồn tại trên hệ thống.';
     }
 }

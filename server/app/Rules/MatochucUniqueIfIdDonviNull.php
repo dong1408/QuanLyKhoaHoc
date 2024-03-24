@@ -47,6 +47,6 @@ class MatochucUniqueIfIdDonviNull implements Rule
      */
     public function message()
     {
-        return 'Trường :attribute của đơn vị kê khai đã tồn tại trên hệ thống.';
+        return 'Đơn vị kê khai đã tồn tại trên hệ thống.';
     }
 }

@@ -42,6 +42,6 @@ class NameUniqueIfIdTapchiNull implements Rule
      */
     public function message()
     {
-        return 'Trường :attribute của tạp chí kê khai đã tồn tại trên hệ thống.';
+        return 'Tạp chí kê khai đã tồn tại trên hệ thống.';
     }
 }

@@ -16,7 +16,7 @@ class BaiBaoKhoaHocDetailVm
     public ?string $accepted;
     public ?string $published;
     public ?string $abstract;
-    public ?TapChiVm $tapchi; // $id_tapchi
+    public TapChiVm $tapchi; // $id_tapchi
     public ?string $volume;
     public ?string $issue;
     public ?string $number;
@@ -25,7 +25,6 @@ class BaiBaoKhoaHocDetailVm
     public string $updated_at;
     public ?string $deleted_at;
 
-    public $keywords = array();
+    public ?array $keywords;
     public $sanpham_tacgias = array();
-
 }
