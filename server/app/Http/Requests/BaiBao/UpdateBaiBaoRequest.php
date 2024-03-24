@@ -43,18 +43,18 @@ class UpdateBaiBaoRequest extends FormRequest
 
             "keywords" => "bail|nullable|array",
             "keywords.*.id_keyword" => [
-                "bail", "required", "integer",
+                "bail", "required_with:keywords", "integer",
                 Rule::exists("keywords", "id")
             ],
             "keywords.*.name" => [
-                "bail", "required", "string",
+                "bail", "required_with:keywords", "string",
             ],
 
 
 
             "tapchi" => "bail|required",
             "tapchi.id_tapchi" => [
-                "bail", "nullable", "integer",
+                "bail", "required", "integer",
                 Rule::exists('tap_chis', 'id')
             ],
             "tapchi.name" => [

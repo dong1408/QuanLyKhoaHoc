@@ -80,7 +80,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 })
                 ->groupBy('san_phams.id')
                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
-        } else { // Lấy những bản ghi not softdelete            
+        } else { // Lấy những bản ghi không bị xóa mềm           
             $sanPhams = SanPham::select('san_phams.*')
                 ->join('d_m_san_phams', 'd_m_san_phams.id', '=', 'san_phams.id_loaisanpham')
                 ->join('san_pham_tac_gias', 'san_pham_tac_gias.id_sanpham', '=', 'san_phams.id')
@@ -94,9 +94,11 @@ class BaiBaoServiceImpl implements BaiBaoService
                 ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         }
         $result = [];
+        // $sanPhams = SanPham::where('tensanpham', 'LIKE', '%' . 'Báo' . '%')->where('id_loaisanpham', 1)->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         foreach ($sanPhams as $sanPham) {
             $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
         }
+
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
     }
@@ -119,6 +121,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             })->where('san_phams.trangthairasoat', 'Đã xác nhận')
             ->groupBy('san_phams.id')
             ->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
+        $result = [];
         foreach ($sanPhams as $sanPham) {
             $result[] = Convert::getBaiBaoKhoaHocVm($sanPham);
         }
@@ -225,8 +228,10 @@ class BaiBaoServiceImpl implements BaiBaoService
             $thuTus = [];
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
-            $listKeyword = $validated['keywords'];
 
+            $listKeyword = !empty($validated['keywords']) ? $validated['keywords'] : null;
+            $donVi = !empty($validated['sanpham']['donvi']) ? $validated['sanpham']['donvi'] : null;
+            $tapChi = !empty($validated['tapchi']) ? $validated['tapchi'] : null;
 
             // Lọc ra những sanphamtacgia có id_tacgia = nul
             $filteredWithoutIdTacGia = array_filter($listSanPhamTacGia, function ($object) {
@@ -239,24 +244,38 @@ class BaiBaoServiceImpl implements BaiBaoService
             });
 
             // Lọc ra  những keyword có id_keyword = null
-            $filteredWithoutIdKeyword = array_filter($listKeyword, function ($object) {
-                return is_null($object['id_keyword']);
-            });
+            $filteredWithoutIdKeyword = [];
+            if ($listKeyword != null) {
+                $filteredWithoutIdKeyword = array_filter($listKeyword, function ($object) {
+                    return is_null($object['id_keyword']);
+                });
+            }
+
 
 
             // check có nhận tài trợ và đơn vị tài trợ ngoài thì thêm mới vào hệ thống
-            if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
-                $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+            if ($donVi != null) {
+                if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
+                    $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+                }
             }
+
 
             // check tạp chí ngoài thì thêm mới vào hệ thống
-            if ($validated['tapchi']['id_tapchi'] == null) {
-                $validated['tapchi']['id_tapchi'] = $this->keKhaiTapChi($validated['tapchi']);
+            if ($tapChi != null) {
+                if ($validated['tapchi']['id_tapchi'] == null) {
+                    $validated['tapchi']['id_tapchi'] = $this->keKhaiTapChi($validated['tapchi']);
+                }
             }
 
+
             // check có keyword ngoài thì thêm mới vào hệ thống
-            if (count($filteredWithoutIdKeyword) > 0) {
-                $validated['keywords'] = $this->keKhaiKeyword($listKeyword);
+            if ($listKeyword != null) {
+                if (count($filteredWithoutIdKeyword) > 0) {
+                    $validated['keywords'] = $this->keKhaiKeyword($listKeyword);
+                }
+            } else {
+                $validated['keywords'] = [];
             }
 
 
@@ -264,18 +283,23 @@ class BaiBaoServiceImpl implements BaiBaoService
             if (count($filteredWithoutIdTacGia) > 0) {
                 $listSanPhamTacGia = $this->keKhaiTacGia($listSanPhamTacGia);
             }
+
+
             // check trung keyword
-            $keywords = $validated['keywords'];
-            $listIdKeyword = [];
-            foreach ($keywords as $keyword) {
-                $listIdKeyword[] = $keyword['id_keyword'];
-            }
-            $valueCounts = array_count_values($listIdKeyword);
-            foreach ($valueCounts as $count) {
-                if ($count > 1) {
-                    throw new TrungKeywordException();
+            if ($listKeyword != null) {
+                $keywords = $validated['keywords'];
+                $listIdKeyword = [];
+                foreach ($keywords as $keyword) {
+                    $listIdKeyword[] = $keyword['id_keyword'];
+                }
+                $valueCounts = array_count_values($listIdKeyword);
+                foreach ($valueCounts as $count) {
+                    if ($count > 1) {
+                        throw new TrungKeywordException();
+                    }
                 }
             }
+
 
 
             // check những tổ chức ngoài thì thêm vào hệ thống
@@ -356,8 +380,8 @@ class BaiBaoServiceImpl implements BaiBaoService
                 'id_loaisanpham' => $dmSanPhamBaiBao->id,
                 'tongsotacgia' => $validated['sanpham']['tongsotacgia'],
                 'conhantaitro' => $validated['sanpham']['conhantaitro'],
-                'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['donvi']['id_donvi'] : null,
-                'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null,
+                'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true && !empty($validated['sanpham']['donvi']['id_donvi']) ? $validated['sanpham']['donvi']['id_donvi'] : null,
+                'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true && !empty($validated['sanpham']['chitietdonvitaitro']) ? $validated['sanpham']['chitietdonvitaitro'] : null,
                 'ngaykekhai' => date("Y-m-d"),
                 'id_nguoikekhai' => auth('api')->user()->id,
                 'trangthairasoat' => "Đang rà soát",
@@ -378,8 +402,10 @@ class BaiBaoServiceImpl implements BaiBaoService
                 'pages' => $validated['pages']
             ]);
             $listIdKeyword = [];
-            foreach ($validated['keywords'] as $keyword) {
-                $listIdKeyword[] = $keyword['id_keyword'];
+            if ($listKeyword != null) {
+                foreach ($validated['keywords'] as $keyword) {
+                    $listIdKeyword[] = $keyword['id_keyword'];
+                }
             }
             $baiBao->keyWords()->attach($listIdKeyword);
 
@@ -1047,46 +1073,69 @@ class BaiBaoServiceImpl implements BaiBaoService
 
 
         $validated = $request->validated();
-        // check trung keyword
-        $keywords = $validated['keywords'];
-        $listIdKeyword = [];
-        foreach ($keywords as $keyword) {
-            $listIdKeyword[] = $keyword['id_keyword'];
-        }
-        $valueCounts = array_count_values($listIdKeyword);
-        foreach ($valueCounts as $count) {
-            if ($count > 1) {
-                throw new TrungKeywordException();
-            }
-        }
 
         // Update khi không còn lỗi
         DB::transaction(function () use ($validated, $sanPham, $baiBao) {
 
-            $listKeyword = $validated['keywords'];
+
+            $listKeyword = !empty($validated['keywords']) ? $validated['keywords'] : null;
+            $donVi = !empty($validated['sanpham']['donvi']) ? $validated['sanpham']['donvi'] : null;
+            $tapChi = !empty($validated['tapchi']) ? $validated['tapchi'] : null;
+
+
+
             // Lọc ra  những keyword có id_keyword = null
-            $filteredWithoutIdKeyword = array_filter($listKeyword, function ($object) {
-                return is_null($object['id_keyword']);
-            });
+            $filteredWithoutIdKeyword = [];
+            if ($listKeyword != null) {
+                $filteredWithoutIdKeyword = array_filter($listKeyword, function ($object) {
+                    return is_null($object['id_keyword']);
+                });
+            }
+
             // check có keyword ngoài thì thêm mới vào hệ thống
-            if (count($filteredWithoutIdKeyword) > 0) {
-                $validated['keywords'] = $this->keKhaiKeyword($listKeyword);
+            if ($listKeyword != null) {
+                if (count($filteredWithoutIdKeyword) > 0) {
+                    $validated['keywords'] = $this->keKhaiKeyword($listKeyword);
+                }
             }
+
+            // check trung keyword
+            if ($listKeyword != null) {
+                $keywords = $validated['keywords'];
+                $listIdKeyword = [];
+                foreach ($keywords as $keyword) {
+                    $listIdKeyword[] = $keyword['id_keyword'];
+                }
+                $valueCounts = array_count_values($listIdKeyword);
+                foreach ($valueCounts as $count) {
+                    if ($count > 1) {
+                        throw new TrungKeywordException();
+                    }
+                }
+            }
+
+
             // check tạp chí ngoài thì thêm mới vào hệ thống
-            if ($validated['tapchi']['id_tapchi'] == null) {
-                $validated['tapchi']['id_tapchi'] = $this->keKhaiTapChi($validated['tapchi']);
+            if ($tapChi != null) {
+                if ($validated['tapchi']['id_tapchi'] == null) {
+                    $validated['tapchi']['id_tapchi'] = $this->keKhaiTapChi($validated['tapchi']);
+                }
             }
+
             // check có nhận tài trợ và check đơn vị tài trợ ngoài thì thêm mới vào hệ thống
-            if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
-                $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+            if ($donVi != null) {
+                if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
+                    $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+                }
             }
+
 
 
             // update phần sản phẩm
             $sanPham->tensanpham = $validated['sanpham']['tensanpham'];
             $sanPham->tongsotacgia = $validated['sanpham']['tongsotacgia'];
             $sanPham->conhantaitro = $validated['sanpham']['conhantaitro'];
-            $sanPham->id_donvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['donvi']['id_donvi'] : null;
+            $sanPham->id_donvitaitro = $validated['sanpham']['conhantaitro'] == true && !empty($validated['sanpham']['donvi']['id_donvi']) ? $validated['sanpham']['donvi']['id_donvi'] : null;
             $sanPham->chitietdonvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null;
             $sanPham->thoidiemcongbohoanthanh = $validated['sanpham']['thoidiemcongbohoanthanh'];
             $sanPham->save();
@@ -1105,8 +1154,10 @@ class BaiBaoServiceImpl implements BaiBaoService
             $baiBao->pages = $validated['pages'];
             $baiBao->save();
             $listIdKeyword = [];
-            foreach ($validated['keywords'] as $keyword) {
-                $listIdKeyword[] = $keyword['id_keyword'];
+            if ($listKeyword != null) {
+                foreach ($validated['keywords'] as $keyword) {
+                    $listIdKeyword[] = $keyword['id_keyword'];
+                }
             }
             $baiBao->keyWords()->sync($listIdKeyword);
         });

@@ -408,6 +408,10 @@ class DeTaiServiceImpl implements DeTaiService
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
 
+            $donVi = !empty($validated['sanpham']['donvi']) ? $validated['sanpham']['donvi'] : null;
+            $toChucChuQuan = !empty($validated['tochucchuquan']) ? $validated['tochucchuquan'] : null;
+            $toChucHopTac = !empty($validated['tochuchoptac']) ? $validated['tochuchoptac'] : null;
+
             // Lọc ra những sanphamtacgia có id_tacgia = nul
             $filteredWithoutIdTacGia = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
@@ -419,19 +423,26 @@ class DeTaiServiceImpl implements DeTaiService
             });
 
             // check có nhận tài trợ và đơn vị tài trợ ngoài thì thêm mới vào hệ thống
-            if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
-                $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+            if ($donVi != null) {
+                if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
+                    $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+                }
             }
 
             // check đề tài ngoài trường và tổ chức chủ quản ngoài thì thêm mới vào hệ thống
-            if ($validated['tochucchuquan']['id_tochucchuquan'] == null && $validated['ngoaitruong']) {
-                $validated['tochucchuquan']['id_tochucchuquan'] = $this->keKhaiToChucChuQuan($validated['tochucchuquan']);
+            if ($toChucChuQuan != null) {
+                if ($validated['tochucchuquan']['id_tochucchuquan'] == null && $validated['ngoaitruong']) {
+                    $validated['tochucchuquan']['id_tochucchuquan'] = $this->keKhaiToChucChuQuan($validated['tochucchuquan']);
+                }
             }
 
 
+
             // check đề tài có phải đề tài hợp tác và tổ chức hơp tác ngoài thì thêm mới vào hệ thống
-            if ($validated['tochuchoptac']['id_tochuchoptac'] == null && $validated['detaihoptac']) {
-                $validated['tochuchoptac']['id_tochuchoptac'] = $this->keKhaiToChucHopTac($validated['tochuchoptac']);
+            if ($toChucHopTac) {
+                if ($validated['tochuchoptac']['id_tochuchoptac'] == null && $validated['detaihoptac']) {
+                    $validated['tochuchoptac']['id_tochuchoptac'] = $this->keKhaiToChucHopTac($validated['tochuchoptac']);
+                }
             }
 
 
@@ -517,7 +528,7 @@ class DeTaiServiceImpl implements DeTaiService
                 'id_loaisanpham' => $dmSanPhamDeTai->id,
                 'tongsotacgia' => $validated['sanpham']['tongsotacgia'],
                 'conhantaitro' => $validated['sanpham']['conhantaitro'],
-                'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['donvi']['id_donvi'] : null,
+                'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true && !empty($validated['sanpham']['donvi']['id_donvi']) ? $validated['sanpham']['donvi']['id_donvi'] : null,
                 'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null,
                 'ngaykekhai' => date("Y-m-d"),
                 'id_nguoikekhai' => auth('api')->user()->id,
@@ -530,10 +541,10 @@ class DeTaiServiceImpl implements DeTaiService
                 "ngaydangky" => date("Y-m-d"),
                 'ngoaitruong' => $validated['ngoaitruong'],
                 'truongchutri' => $validated['ngoaitruong'] == true ?  $validated['truongchutri'] : null,
-                'id_tochucchuquan' => $validated['ngoaitruong'] == true ? $validated['tochucchuquan']['id_tochucchuquan'] : null,
+                'id_tochucchuquan' => $validated['ngoaitruong'] == true && !empty($validated['tochucchuquan']['id_tochucchuquan']) ? $validated['tochucchuquan']['id_tochucchuquan'] : null,
                 'id_loaidetai' => $validated['ngoaitruong'] == false ? $validated['id_loaidetai'] : null,
                 'detaihoptac' => $validated['detaihoptac'],
-                'id_tochuchoptac' => $validated['detaihoptac'] == true ? $validated['tochuchoptac']['id_tochuchoptac'] : null,
+                'id_tochuchoptac' => $validated['detaihoptac'] == true && !empty($validated['tochuchoptac']['id_tochuchoptac']) ? $validated['tochuchoptac']['id_tochuchoptac'] : null,
                 'tylekinhphidonvihoptac' => $validated['detaihoptac'] == true ?  $validated['tylekinhphidonvihoptac'] : null,
                 'capdetai' => $validated['capdetai'],
             ]);
@@ -1450,20 +1461,30 @@ class DeTaiServiceImpl implements DeTaiService
         $validated = $request->validated();
         DB::transaction(function () use ($validated, $sanPham, $deTai) {
 
+            $donVi = !empty($validated['sanpham']['donvi']) ? $validated['sanpham']['donvi'] : null;
+            $toChucChuQuan = !empty($validated['tochucchuquan']) ? $validated['tochucchuquan'] : null;
+            $toChucHopTac = !empty($validated['tochuchoptac']) ? $validated['tochuchoptac'] : null;
+
             // check có nhận tài trợ và đơn vị tài trợ ngoài thì thêm mới vào hệ thống
-            if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
-                $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+            if ($donVi != null) {
+                if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
+                    $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+                }
             }
 
             // check đề tài ngoài trường và tổ chức chủ quản ngoài thì thêm mới vào hệ thống
-            if ($validated['tochucchuquan']['id_tochucchuquan'] == null && $validated['ngoaitruong']) {
-                $validated['tochucchuquan']['id_tochucchuquan'] = $this->keKhaiToChucChuQuan($validated['tochucchuquan']);
+            if ($toChucChuQuan != null) {
+                if ($validated['tochucchuquan']['id_tochucchuquan'] == null && $validated['ngoaitruong']) {
+                    $validated['tochucchuquan']['id_tochucchuquan'] = $this->keKhaiToChucChuQuan($validated['tochucchuquan']);
+                }
             }
 
 
             // check đề tài có phải đề tài hợp tác và tổ chức hơp tác ngoài thì thêm mới vào hệ thống
-            if ($validated['tochuchoptac']['id_tochuchoptac'] == null && $validated['detaihoptac']) {
-                $validated['tochuchoptac']['id_tochuchoptac'] = $this->keKhaiToChucHopTac($validated['tochuchoptac']);
+            if ($toChucHopTac != null) {
+                if ($validated['tochuchoptac']['id_tochuchoptac'] == null && $validated['detaihoptac']) {
+                    $validated['tochuchoptac']['id_tochuchoptac'] = $this->keKhaiToChucHopTac($validated['tochuchoptac']);
+                }
             }
 
 
@@ -1471,7 +1492,7 @@ class DeTaiServiceImpl implements DeTaiService
             $sanPham->tensanpham = $validated['sanpham']['tensanpham'];
             $sanPham->tongsotacgia = $validated['sanpham']['tongsotacgia'];
             $sanPham->conhantaitro = $validated['sanpham']['conhantaitro'];
-            $sanPham->id_donvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['donvi']['id_donvi'] : null;
+            $sanPham->id_donvitaitro = $validated['sanpham']['conhantaitro'] == true && !empty($validated['sanpham']['donvi']['id_donvi']) ? $validated['sanpham']['donvi']['id_donvi'] : null;
             $sanPham->chitietdonvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null;
             $sanPham->save();
 
@@ -1479,10 +1500,10 @@ class DeTaiServiceImpl implements DeTaiService
             $deTai->maso = $validated['maso'];
             $deTai->ngoaitruong = $validated['ngoaitruong'];
             $deTai->truongchutri = $validated['ngoaitruong'] == true ? $validated['truongchutri'] : null;
-            $deTai->id_tochucchuquan = $validated['ngoaitruong'] == true ? $validated['tochucchuquan']['id_tochucchuquan'] : null;
+            $deTai->id_tochucchuquan = $validated['ngoaitruong'] == true && !empty($validated['tochucchuquan']['id_tochucchuquan']) ? $validated['tochucchuquan']['id_tochucchuquan'] : null;
             $deTai->id_loaidetai = $validated['id_loaidetai'];
             $deTai->detaihoptac = $validated['detaihoptac'];
-            $deTai->id_tochuchoptac = $validated['detaihoptac'] == true ? $validated['tochuchoptac']['id_tochuchoptac'] : null;
+            $deTai->id_tochuchoptac = $validated['detaihoptac'] == true && !empty($validated['tochuchoptac']['id_tochuchoptac']) ? $validated['tochuchoptac']['id_tochuchoptac'] : null;
             $deTai->tylekinhphidonvihoptac = $validated['detaihoptac'] == true ? $validated['tylekinhphidonvihoptac'] : null;
             $deTai->capdetai = $validated['capdetai'];
             $deTai->save();

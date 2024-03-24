@@ -45,6 +45,6 @@ class EmailUniqueIfIdTacgiaNull implements Rule
      */
     public function message()
     {
-        return 'Trường :attribute đã tồn tại trên hệ thống.';
+        return 'Trường :attribute của tác giả kê khai đã tồn tại trên hệ thống.';
     }
 }
