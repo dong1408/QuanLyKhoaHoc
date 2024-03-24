@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests\Detai;
 
+use App\Rules\MatochucUniqueIfIdDonviNull;
+use App\Rules\MatochucUniqueIfIdTochucchuquanNull;
+use App\Rules\MatochucUniqueIfIdTochuchoptacNull;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
@@ -33,17 +36,24 @@ class UpdateDeTaiForUserRequest extends FormRequest
 
             // ======================== san pham ====================== //
             "sanpham.tensanpham" => [
-                "bail", "required",
-                Rule::unique('san_phams')->ignore(Route::input('id'), 'id')
+                "bail", "required", "string",
+                Rule::unique('san_phams', 'tensanpham')->ignore(Route::input('id'), 'id')
             ],
-
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.conhantaitro" => "bail|nullable|boolean",
-            "sanpham.id_donvitaitro" => [
+            "sanpham.donvi.id_donvi" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
+                Rule::exists("d_m_to_chucs", "id")
+            ],
+            "sanpham.donvi.matochuc" => [
+                "bail", "required", "string",
+                new MatochucUniqueIfIdDonviNull // với những đơn vị được kê khai thì cần phải check trường matochuc unique
+            ],
+            "sanpham.donvi.tentochuc" => [
+                "bail", "required", "string"
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
+            "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
 
 
             // =========== Thong tin chi tiet de tai ================ //            
@@ -53,18 +63,38 @@ class UpdateDeTaiForUserRequest extends FormRequest
             ],
             "ngoaitruong" => "bail|nullable|boolean",
             "truongchutri" => "bail|nullable|boolean",
-            "id_tochucchuquan" => [
+
+
+            "tochucchuquan" => "bail|nullable",
+            "tochucchuquan.id_tochucchuquan" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
+                Rule::exists("d_m_to_chucs", "id")
             ],
+            "tochucchuquan.matochuc" => [
+                "bail", "nullable", "string",
+                new MatochucUniqueIfIdTochucchuquanNull
+            ],
+            "tochucchuquan.tentochuc" => [
+                "bail", "nullable", "string"
+            ],
+
+
             "id_loaidetai" => [
                 "bail", "nullable", "integer",
                 Rule::exists('phan_loai_de_tais', 'id')
             ],
+
             "detaihoptac" => "bail|nullable|boolean",
-            "id_tochuchoptac" => [
+            "tochuchoptac.id_tochuchoptac" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
+                Rule::exists("d_m_to_chucs", "id")
+            ],
+            "tochuchoptac.matochuc" => [
+                "bail", "nullable", "string",
+                new MatochucUniqueIfIdTochuchoptacNull
+            ],
+            "tochuchoptac.tentochuc" => [
+                "bail", "nullable", "string"
             ],
             "tylekinhphidonvihoptac" => "bail|nullable|string",
             "capdetai" => "bail|nullable|string",
