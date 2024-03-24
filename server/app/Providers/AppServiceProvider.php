@@ -6,6 +6,8 @@ use App\Service\Auth\AuthService;
 use App\Service\Auth\AuthServiceImpl;
 use App\Service\BaiBao\BaiBaoService;
 use App\Service\BaiBao\BaiBaoServiceImpl;
+use App\Service\BaiBao\KeywordService;
+use App\Service\BaiBao\KeywordServiceImpl;
 use App\Service\DeTai\DeTaiService;
 use App\Service\DeTai\DeTaiServiceImpl;
 use App\Service\DeTai\PhanLoaiDeTaiService;
@@ -83,6 +85,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(HocHamHocViService::class, HocHamHocViServiceImpl::class);
         $this->app->bind(NgachVienChucService::class, NgachVienChucServiceImpl::class);
         $this->app->bind(PhanLoaiToChucService::class, PhanLoaiToChucServiceImpl::class);
+        $this->app->bind(KeywordService::class, KeywordServiceImpl::class);
     }
     /**
      * Bootstrap any application services.

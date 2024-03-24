@@ -420,7 +420,7 @@ class TapChiServiceImpl implements TapChiService
 
     public function themTapChiNgoai($array): TapChi
     {
-        $tapChi = TapChi::cretae([
+        $tapChi = TapChi::create([
             'name' => $array['name'],
             'issn' => $array['issn'],
             'eissn' => $array['eissn'],
