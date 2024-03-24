@@ -41,16 +41,18 @@ class UpdateBaiBaoForUserRequest extends FormRequest
             ],
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.conhantaitro" => "bail|nullable|boolean",
+
+            "sanpham.donvi" => "bail|nullable",
             "sanpham.donvi.id_donvi" => [
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
             "sanpham.donvi.matochuc" => [
-                "bail", "required", "string",
+                "bail", "required_with:sanpham.donvi", "string",
                 new MatochucUniqueIfIdDonviNull // với những đơn vị được kê khai thì cần phải check trường matochuc unique
             ],
             "sanpham.donvi.tentochuc" => [
-                "bail", "required", "string"
+                "bail", "required_with:sanpham.donvi", "string"
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
             "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
@@ -71,7 +73,7 @@ class UpdateBaiBaoForUserRequest extends FormRequest
                 Rule::exists("keywords", "id")
             ],
             "keywords.*.name" => [
-                "bail", "required", "string",
+                "bail", "required_with:keywords", "string",
                 new NameUniqueIfIdKeywordNull // với những keyword được kê khai thì cần phải check trường name unique            
             ],
 

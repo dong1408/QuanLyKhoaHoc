@@ -45,6 +45,6 @@ class NameUniqueIfIdKeywordNull implements Rule
      */
     public function message()
     {
-        return 'Keyword đã tồn tại trên hệ thống.';
+        return 'Keyword kê khai đã tồn tại trên hệ thống.';
     }
 }

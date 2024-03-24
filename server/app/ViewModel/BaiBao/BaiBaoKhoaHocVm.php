@@ -16,7 +16,9 @@ class BaiBaoKhoaHocVm
     public ?string $received;
     public ?string $accepted;
     public ?string $published;
-    public ?string $keywords;
+
+    public $keywords = array();
+
     //public ?TapChiVm $tapchi; // $id_tapchi
     public ?string $trangthairasoat;
     public ?string $tentapchi;

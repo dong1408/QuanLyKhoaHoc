@@ -647,7 +647,11 @@ class Convert
         $a->id = $sanPham->baiBao->id;
         $a->id_sanpham = $sanPham->id;
         $a->tensanpham = $sanPham->tensanpham;
-        $a->keywords = $sanPham->baiBao->keyword ?? null;
+
+        foreach ($sanPham->baiBao->keyWords as $keyword) {
+            $a->keywords[] = Convert::getKeywordVm($keyword);
+        }
+
         $a->tentapchi = $sanPham->baiBao->tapChi == null ? $a->tentapchi = null : $sanPham->baiBao->tapChi->name;
         $a->volume = $sanPham->baiBao->volume ?? null;
         $a->issue = $sanPham->baiBao->issue ?? null;
@@ -674,7 +678,7 @@ class Convert
         $a->accepted = $sanPham->baiBao->accepted ?? null;
         $a->published = $sanPham->baiBao->published ?? null;
         $a->abstract = $sanPham->baiBao->abstract ?? null;
-        $a->keywords = $sanPham->baiBao->keywords ?? null;
+        // $a->keywords = $sanPham->baiBao->keywords ?? null;
         if ($sanPham->baiBao->tapChi == null) {
             $a->tapchi = null;
         } else {
@@ -687,6 +691,10 @@ class Convert
         $a->deleted_at = $sanPham->deleted_at ?? null;
         $a->created_at = $sanPham->created_at;
         $a->updated_at = $sanPham->updated_at;
+
+        foreach ($sanPham->baiBao->keyWords as $keyword) {
+            $a->keywords[] = Convert::getKeywordVm($keyword);
+        }
 
         foreach ($sanPham->sanPhamsTacGias as $sanPhaMTacGia) {
             $a->sanpham_tacgias[] = Convert::getSanPhamTacGiaVm($sanPhaMTacGia);

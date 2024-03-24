@@ -41,19 +41,21 @@ class UpdateDeTaiForUserRequest extends FormRequest
             ],
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.conhantaitro" => "bail|nullable|boolean",
+
+            "sanpham.donvi" => "bail|nullable",
             "sanpham.donvi.id_donvi" => [
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
             "sanpham.donvi.matochuc" => [
-                "bail", "required", "string",
+                "bail", "required_with:sanpham.donvi", "string",
                 new MatochucUniqueIfIdDonviNull // với những đơn vị được kê khai thì cần phải check trường matochuc unique
             ],
             "sanpham.donvi.tentochuc" => [
-                "bail", "required", "string"
+                "bail", "required_with:sanpham.donvi", "string"
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
-            "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
+            // "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
 
 
             // =========== Thong tin chi tiet de tai ================ //            
@@ -71,11 +73,11 @@ class UpdateDeTaiForUserRequest extends FormRequest
                 Rule::exists("d_m_to_chucs", "id")
             ],
             "tochucchuquan.matochuc" => [
-                "bail", "nullable", "string",
+                "bail", "required_with:tochucchuquan", "string",
                 new MatochucUniqueIfIdTochucchuquanNull
             ],
             "tochucchuquan.tentochuc" => [
-                "bail", "nullable", "string"
+                "bail", "required_with:tochucchuquan", "string"
             ],
 
 
@@ -90,11 +92,11 @@ class UpdateDeTaiForUserRequest extends FormRequest
                 Rule::exists("d_m_to_chucs", "id")
             ],
             "tochuchoptac.matochuc" => [
-                "bail", "nullable", "string",
+                "bail", "required_with", "string",
                 new MatochucUniqueIfIdTochuchoptacNull
             ],
             "tochuchoptac.tentochuc" => [
-                "bail", "nullable", "string"
+                "bail", "required_with", "string"
             ],
             "tylekinhphidonvihoptac" => "bail|nullable|string",
             "capdetai" => "bail|nullable|string",

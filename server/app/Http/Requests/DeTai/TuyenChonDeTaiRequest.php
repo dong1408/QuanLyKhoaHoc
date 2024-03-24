@@ -35,7 +35,7 @@ class TuyenChonDeTaiRequest extends FormRequest
             ],
             // "lydo" => "bail|nullable|string"
             "lydo" => [
-                "bail",
+                "bail", "nullable",
                 // Nếu ketquatuyenchon là "Không đủ điều kiện", lydo không được null
                 Rule::requiredIf(function () {
                     return request()->ketquatuyenchon === "Không đủ điều kiện";
