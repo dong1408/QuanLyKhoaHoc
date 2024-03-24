@@ -64,7 +64,7 @@ Route::group([
     Route::get('users/{id}/role', [UserController::class, 'getRoleOfUser'])->can('user.update_role');
     //    Route::get('users/permission', [UserController::class, 'getPermissionOfUser'])->can('user.detail');
     Route::patch('users/password', [UserController::class, 'changePassword']);
-    Route::post('users', [UserController::class, 'registerUser'])->can('user.register');
+    Route::post('users', [UserController::class, 'registerUser']); //->can('user.register');
     Route::patch('users/{id}', [UserController::class, 'updateUser'])->can('user.update'); // admin + owner
     Route::patch('users/{id}/role', [UserController::class, 'updateRoleOfUser'])->can('user.update_role');
     Route::patch('users/{id}/delete', [UserController::class, 'deleteUser'])->can('user.delete');
@@ -97,7 +97,7 @@ Route::group([
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao']); //->can('baibao.add');
     Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham'])->can('baibao.update'); // admin + owner
     Route::patch('baibao/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBao'])->can('baibao.update'); // admin + owner
-    Route::patch('baibao/{id}/sanphamtacgia', [BaiBaoKhoaHocController::class, 'updateSanPhamTacGia'])->can('baibao.update'); // admin + owner
+    Route::patch('baibao/{id}/sanphamtacgia', [BaiBaoKhoaHocController::class, 'updateSanPhamTacGia']);//->can('baibao.update'); // admin + owner
     Route::patch('baibao/{id}/fileminhchung', [BaiBaoKhoaHocController::class, 'updateFileMinhChung'])->can('baibao.update'); // admin + owner
     Route::patch('baibao/{id}/trangthairasoat', [BaiBaoKhoaHocController::class, 'updateTrangThaiRaSoatBaiBao'])->can('baibao.status');
     Route::patch('baibao/{id}/delete', [BaiBaoKhoaHocController::class, 'deleteBaiBao'])->can('baibao.delete');
@@ -124,7 +124,7 @@ Route::group([
     Route::patch('detai/{id}/sanphamtacgia', [DeTaiController::class, 'updateSanPhamTacGia'])->can('detai.update'); // admin + owner
     Route::patch('detai/{id}/fileminhchung', [DeTaiController::class, 'updateFileMinhChung'])->can('detai.update'); // admin + owner
     Route::patch('detai/{id}/trangthairasoat', [DeTaiController::class, 'updateTrangThaiRaSoatDeTai']); //->can('detai.status');
-    Route::post('detai/{id}/tuyenchon', [DeTaiController::class, 'tuyenChonDeTai']);//->can('detai.status');
+    Route::post('detai/{id}/tuyenchon', [DeTaiController::class, 'tuyenChonDeTai']); //->can('detai.status');
     Route::post('detai/{id}/xetduyet', [DeTaiController::class, 'xetDuyetDeTai'])->can('detai.status');
     Route::post('detai/{id}/baocao', [DeTaiController::class, 'baoCaoTienDoDeTai'])->can('detai.status');
     Route::post('detai/{id}/nghiemthu', [DeTaiController::class, 'nghiemThuDeTai'])->can('detai.status');
