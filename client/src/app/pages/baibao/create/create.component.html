@@ -344,9 +344,9 @@
                                 </nz-form-item>
                                 <nz-form-item>
                                     <h4 class=""><span class="error">*</span> Học Hàm Học Vị</h4>
-                                    <nz-form-control [nzErrorTip]="hocham" nzHasFeedback>
+                                    <nz-form-control [nzErrorTip]="id_hochamhocvi" nzHasFeedback>
                                         <nz-select
-                                                formControlName="hocham"
+                                                formControlName="id_hochamhocvi"
                                                 nzShowSearch
                                                 nzPlaceHolder="Học Hàm Học Vị"
                                                 nzAllowClear
@@ -354,8 +354,8 @@
                                             <nz-option *ngFor="let data of hhhvs" nzLabel="{{data.tenhochamhocvi ?? 'Không Có'}}" [nzValue]="data.id"></nz-option>
                                         </nz-select>
                                     </nz-form-control>
-                                    <ng-template #hocham>
-                                        <small *ngIf="control.get('hocham')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                                    <ng-template #id_hochamhocvi>
+                                        <small *ngIf="control.get('id_hochamhocvi')?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
                                     </ng-template>
                                 </nz-form-item>
                             </ng-container>

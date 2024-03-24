@@ -155,19 +155,16 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             received:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator()
                 ])
             ],
             accepted:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator()
                 ])
             ],
             published:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator()
                 ])
             ],
             abstract:[
@@ -179,7 +176,6 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             keywords:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator()
                 ])
             ],
             volume:[
@@ -436,6 +432,22 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             return;
         }
         const data = form.value
+
+        // check kê khai trùng tổ chức
+
+        const isAvailable = this.keKhaiToChuc.some((item:any) => {
+            return item.matochuc.toLowerCase() === data.matochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
+        })
+
+        if(isAvailable){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Bạn đã kê khai tổ chức này trước đó'
+            )
+            return;
+        }
+
         this.keKhaiToChuc.push(data)
         this.tochucs.push(data)
         form.reset()
@@ -494,11 +506,10 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     Validators.required,
                 ])
             ],
-            hocham:[
+            id_hochamhocvi:[
                 null,
                 Validators.compose([
-                    Validators.required,
-                    noWhiteSpaceValidator()
+                    Validators.required
                 ])
             ],
             in_system:[
@@ -563,6 +574,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
 
         optionList$.subscribe(data => {
             this.dvTaiTros = data.data
+
+            this.dvTaiTros = [...this.keKhaiToChuc,...this.dvTaiTros]
             this.isGetTaiTro = false
         })
     }
@@ -635,17 +648,6 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     control.updateValueAndValidity({ onlySelf: true });
                 }
             })
-
-            // console.log(arrayForm.controls)
-
-            arrayForm.controls.forEach((formGroup:any) => {
-                Object.values(formGroup).forEach((control:any) =>{
-                    if(control && control.invalid){
-                        control.markAsDirty()
-                        control.updateValueAndValidity({ emitEvent: true });
-                    }
-                })
-            })
             return;
         }
         if(arrayForm.length <= 0){
@@ -679,7 +681,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                         id_tochuc:tochuc.id ?? null,
                         matochuc:tochuc.matochuc,
                         tentochuc:tochuc.tentochuc
-                    }
+                    },
+                    id_hochamhocvi:item.id_hochamhocvi
                 }
             }),
             fileminhchungsanpham:{
@@ -712,33 +715,31 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             pages:form.get('pages')?.value,
         }
 
-        console.log(data)
-        //
-        // this.isCreate = true
-        // this.baiBaoService.taoBaiBao(data)
-        //     .pipe(
-        //         takeUntil(this.destroy$)
-        //     ).subscribe({
-        //     next:(response) =>{
-        //         this.notificationService.create(
-        //             'success',
-        //             "Thành Công",
-        //             response.message
-        //         )
-        //         this.isCreate = false
-        //         const formArray = this.createForm.get('sanpham_tacgia') as FormArray
-        //         formArray.clear()
-        //         this.createForm.reset()
-        //     },
-        //     error:(error) => {
-        //         this.notificationService.create(
-        //             'error',
-        //             "Lỗi",
-        //             error
-        //         )
-        //         this.isCreate = false
-        //     }
-        // })
+        this.isCreate = true
+        this.baiBaoService.taoBaiBao(data)
+            .pipe(
+                takeUntil(this.destroy$)
+            ).subscribe({
+            next:(response) =>{
+                this.notificationService.create(
+                    'success',
+                    "Thành Công",
+                    response.message
+                )
+                this.isCreate = false
+                const formArray = this.createForm.get('sanpham_tacgia') as FormArray
+                formArray.clear()
+                this.createForm.reset()
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    "Lỗi",
+                    error
+                )
+                this.isCreate = false
+            }
+        })
     }
 
     onSelectUser(event:any){
@@ -766,7 +767,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     data.name,
                     Validators.compose([
                         Validators.required,
-                        noWhiteSpaceValidator
+                        noWhiteSpaceValidator()
                     ])
                 ],
                 thutu:[null],

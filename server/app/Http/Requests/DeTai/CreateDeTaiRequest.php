@@ -74,7 +74,12 @@ class CreateDeTaiRequest extends FormRequest
             "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
             "sanpham_tacgia.*.ngaysinh" => "bail|nullable|string",
             "sanpham_tacgia.*.dienthoai" => "bail|nullable|string",
-            "sanpham_tacgia.*.email" => "bail|required|email|unique:users,email",
+            "sanpham_tacgia.*.email" => [
+                "bail", "required", "string",
+                Rule::unique('users', 'email')->where(function ($query) {
+                    return request()->input('sanpham_tacgia.*.id_tacgia') === null;
+                })
+            ],
             "sanpham_tacgia.*.id_hochamhocvi" => [
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_hoc_ham_hoc_vis', 'id')
