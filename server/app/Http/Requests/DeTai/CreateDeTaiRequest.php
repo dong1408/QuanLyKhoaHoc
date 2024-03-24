@@ -34,17 +34,18 @@ class CreateDeTaiRequest extends FormRequest
             "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.conhantaitro" => "bail|nullable|boolean",
+
             "sanpham.donvi" => "bail|nullable",
             "sanpham.donvi.id_donvi" => [
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
             "sanpham.donvi.matochuc" => [
-                "bail", "nullable", "string",
+                "bail", "required_with:sanpham.donvi", "string",
                 new MatochucUniqueIfIdDonviNull // với những tạp chí được kê khai thì cần phải check trường matochuc unique
             ],
             "sanpham.donvi.tentochuc" => [
-                "bail", "nullable", "string"
+                "bail", "required_with:sanpham.donvi", "string"
             ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
 
@@ -61,11 +62,11 @@ class CreateDeTaiRequest extends FormRequest
                 Rule::exists("d_m_to_chucs", "id")
             ],
             "tochucchuquan.matochuc" => [
-                "bail", "nullable", "string",
+                "bail", "required_with:tochucchuquan", "string",
                 new MatochucUniqueIfIdTochucchuquanNull
             ],
             "tochucchuquan.tentochuc" => [
-                "bail", "nullable", "string"
+                "bail", "required_with:tochucchuquan", "string"
             ],
 
 
@@ -81,11 +82,11 @@ class CreateDeTaiRequest extends FormRequest
                 Rule::exists("d_m_to_chucs", "id")
             ],
             "tochuchoptac.matochuc" => [
-                "bail", "nullable", "string",
+                "bail", "required_with:tochuchoptac", "string",
                 new MatochucUniqueIfIdTochuchoptacNull
             ],
             "tochuchoptac.tentochuc" => [
-                "bail", "nullable", "string"
+                "bail", "required_with:tochuchoptac", "string"
             ],
             "tylekinhphidonvihoptac" => "bail|nullable|string",
             "capdetai" => "bail|nullable|string",
@@ -93,7 +94,7 @@ class CreateDeTaiRequest extends FormRequest
 
 
             // ================= san pham _ tac gia ================ //                
-            "sanpham_tacgia" => "bail|array",
+            "sanpham_tacgia" => "bail|required|array",
             "sanpham_tacgia.*.id_tacgia" => [
                 "bail", "nullable", "integer",
                 Rule::exists("users", "id")
@@ -116,6 +117,8 @@ class CreateDeTaiRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_hoc_ham_hoc_vis', 'id')
             ],
+
+            "sanpham_tacgia.*.tochuc" => "bail|required",
             "sanpham_tacgia.*.tochuc.id_tochuc" => [
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")

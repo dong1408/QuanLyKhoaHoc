@@ -90,7 +90,7 @@ Route::group([
     Route::get('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBaoForUser']);
     Route::patch('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBaoForUser']);
 
-    Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging'])->can('baibao.view'); // canview
+    Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging']); //->can('baibao.view'); // canview
     Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet'])->can('baibao.view'); // canview
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao']); //->can('baibao.add');
     Route::patch('baibao/{id}/sanpham', [BaiBaoKhoaHocController::class, 'updateSanPham'])->can('baibao.update'); // admin + owner
@@ -121,8 +121,8 @@ Route::group([
     Route::patch('detai/{id}', [DeTaiController::class, 'updateDeTai'])->can('detai.update'); // admin + owner
     Route::patch('detai/{id}/sanphamtacgia', [DeTaiController::class, 'updateSanPhamTacGia'])->can('detai.update'); // admin + owner
     Route::patch('detai/{id}/fileminhchung', [DeTaiController::class, 'updateFileMinhChung'])->can('detai.update'); // admin + owner
-    Route::patch('detai/{id}/trangthairasoat', [DeTaiController::class, 'updateTrangThaiRaSoatDeTai'])->can('detai.status');
-    Route::post('detai/{id}/tuyenchon', [DeTaiController::class, 'tuyenChonDeTai'])->can('detai.status');
+    Route::patch('detai/{id}/trangthairasoat', [DeTaiController::class, 'updateTrangThaiRaSoatDeTai']); //->can('detai.status');
+    Route::post('detai/{id}/tuyenchon', [DeTaiController::class, 'tuyenChonDeTai']);//->can('detai.status');
     Route::post('detai/{id}/xetduyet', [DeTaiController::class, 'xetDuyetDeTai'])->can('detai.status');
     Route::post('detai/{id}/baocao', [DeTaiController::class, 'baoCaoTienDoDeTai'])->can('detai.status');
     Route::post('detai/{id}/nghiemthu', [DeTaiController::class, 'nghiemThuDeTai'])->can('detai.status');
