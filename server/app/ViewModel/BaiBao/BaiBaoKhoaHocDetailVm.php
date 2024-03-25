@@ -25,6 +25,6 @@ class BaiBaoKhoaHocDetailVm
     public string $updated_at;
     public ?string $deleted_at;
 
-    public ?array $keywords;
+    public ?array $keywords = array();
     public $sanpham_tacgias = array();
 }

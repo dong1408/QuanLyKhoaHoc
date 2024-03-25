@@ -128,6 +128,75 @@
     </nz-modal>
 </div>
 
+<div>
+    <nz-modal
+            [nzVisible]="isOpenListToChucKeKhai"
+            nzTitle="Tổ Chức Đã Kê Khai"
+            nzOkText="OK"
+            (nzOnOk)="onOpenListToChucKeKhai()"
+            (nzOnCancel)="onOpenListToChucKeKhai()"
+    >
+        <ng-container *nzModalContent>
+            <ul nz-list [nzDataSource]="this.keKhaiToChuc" nzBordered nzSize="large">
+                <li *ngFor="let item of this.keKhaiToChuc" nz-list-item nzNoFlex>
+                  <ul nz-list-item-actions>
+                    <nz-list-item-action>
+                      <a (click)="onXoaToChucKeKhai(item.matochuc)">Xóa</a>
+                    </nz-list-item-action>
+                  </ul>
+                    {{item.tentochuc}}
+                </li>
+            </ul>
+        </ng-container>
+    </nz-modal>
+</div>
+
+<div>
+    <nz-modal
+            [nzVisible]="isOpenListTapChi"
+            nzTitle="Tạp Chí Đã Kê Khai"
+            nzOkText="OK"
+            (nzOnOk)="onOpenListTapChiKeKhai()"
+            (nzOnCancel)="onOpenListTapChiKeKhai()"
+    >
+        <ng-container *nzModalContent>
+            <ul nz-list [nzDataSource]="this.keKhaiTapChi" nzBordered nzSize="large">
+                <li *ngFor="let item of this.keKhaiTapChi" nz-list-item nzNoFlex>
+                    <ul nz-list-item-actions>
+                        <nz-list-item-action>
+                            <a (click)="onXoaTapChiKeKhai(item.name)">Xóa</a>
+                        </nz-list-item-action>
+                    </ul>
+                    {{item.name}}
+                </li>
+            </ul>
+        </ng-container>
+    </nz-modal>
+</div>
+
+<div>
+    <nz-modal
+            [nzVisible]="isOpenListKeyword"
+            nzTitle="Keyword Đã Kê Khai"
+            nzOkText="OK"
+            (nzOnOk)="onOpenListKeyword()"
+            (nzOnCancel)="onOpenListKeyword()"
+    >
+        <ng-container *nzModalContent>
+            <ul nz-list [nzDataSource]="this.keKhaiKeyword" nzBordered nzSize="large">
+                <li *ngFor="let item of this.keKhaiKeyword" nz-list-item nzNoFlex>
+                    <ul nz-list-item-actions>
+                        <nz-list-item-action>
+                            <a (click)="onXoaKeyword(item.name)">Xóa</a>
+                        </nz-list-item-action>
+                    </ul>
+                    {{item.name}}
+                </li>
+            </ul>
+        </ng-container>
+    </nz-modal>
+</div>
+
 <div class="tw-space-y-[16px]">
     <button nz-button nzType="primary" [routerLink]="['/admin/bai-bao']">
         <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
@@ -137,6 +206,30 @@
         <app-loading></app-loading>
     </ng-template>
     <ng-template #loaded>
+        <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
+            <button nz-button
+                    nzType="default"
+                    *ngIf="this.keKhaiToChuc.length > 0"
+                    (click)="onOpenListToChucKeKhai()"
+            >
+                <span nz-icon nzType="edit" nzTheme="outline"></span>
+                Tổ Chức Đã Kê Khai
+            </button>
+
+            <button nz-button nzType="default" *ngIf="this.keKhaiKeyword.length > 0"
+                    (click)="onOpenListKeyword()"
+            >
+                <span nz-icon nzType="edit" nzTheme="outline"></span>
+                Keyword Đã Kê Khai
+            </button>
+
+            <button nz-button nzType="default" *ngIf="this.keKhaiTapChi.length > 0"
+                    (click)="onOpenListTapChiKeKhai()"
+            >
+                <span nz-icon nzType="edit" nzTheme="outline"></span>
+                Tạp Chí Đã Kê Khai
+            </button>
+        </div>
         <div class="tw-mt-[30px] tw-space-y-[6px]">
             <form nz-form nzLayout="vertical" class="tw-space-y-[16px]" [formGroup]="createForm">
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">
@@ -175,10 +268,10 @@
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">
-                    <h3 class=""><span class="error">*</span> Đơn Vị Tài Trợ</h3>
-                    <nz-form-control [nzErrorTip]="id_donvitaitro" nzHasFeedback>
+                    <h3 class=""><span class="error">*</span> Đơn Vị Tài Trợ <span (click)="onOpenFormToChuc()" class="primary tw-cursor-pointer"> +Kê Khai Đơn Vị Tài Trợ Ngoài Hệ Thống</span></h3>
+                    <nz-form-control [nzErrorTip]="donvi" nzHasFeedback>
                         <nz-select
-                                formControlName="id_donvitaitro"
+                                formControlName="donvi"
                                 nzShowSearch  nzPlaceHolder="Đơn Vị Tài Trợ"
                                 nzAllowClear
                                 nzServerSearch
@@ -186,13 +279,13 @@
                                 [nzLoading]="isGetTaiTro"
                         >
                             <ng-container *ngFor="let data of dvTaiTros">
-                                <nz-option *ngIf="!isGetTaiTro" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                                <nz-option *ngIf="!isGetTaiTro" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data></nz-option>
                             </ng-container>
                             <nz-option *ngIf="isGetTaiTro" nzDisabled nzCustomContent>
                                 <span nz-icon nzType="loading" class="loading-icon"></span>
                                 Đang Tải Dữ Liệu...
                             </nz-option>
-                        <ng-template #id_donvitaitro let-control>
+                        <ng-template #donvi let-control>
                             <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
                         </ng-template>
                         </nz-select>

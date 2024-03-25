@@ -339,7 +339,11 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 tongsotacgia: form.get('tongsotacgia')?.value,
                 thoidiemcongbohoanthanh:  dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString())!!,
                 conhantaitro : form.get('conhantaitro')?.value ?? false,
-                id_donvitaitro :form.get('conhantaitro')?.value === true ? form.get('id_donvitaitro')?.value : null,
+                donvi :form.get('conhantaitro')?.value === true ? {
+                    id_donvi: form.get('donvi')?.value['id'] ?? null,
+                    matochuc: form.get('donvi')?.value['matochuc'],
+                    tentochuc: form.get('donvi')?.value['tentochuc']
+                } : null,
                 chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
             },
             sanpham_tacgia: form.get('sanpham_tacgia')?.value,
@@ -352,7 +356,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             accepted:form.get('accepted')?.value ? dateConvert(form.get('accepted')?.value.toString()) : null,
             published:form.get('published')?.value ? dateConvert(form.get('published')?.value.toString()) : null,
             abstract:form.get('abstract')?.value,
-            keyword:form.get('keywords')?.value,
+            keywords:form.get('keywords')?.value,
             tapchi:form.get('id_tapchi')?.value,
             volume:form.get('volume')?.value,
             issue:form.get('issue')?.value,

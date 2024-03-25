@@ -1,5 +1,5 @@
 import {DMSanPham} from "./dm-san-pham.type";
-import {ToChuc} from "../user-info/to-chuc.type";
+import {KeKhaiDonVi, ToChuc} from "../user-info/to-chuc.type";
 import {User} from "../user/user.type";
 import {FileMinhChung} from "./file-minh-chung.type";
 
@@ -18,7 +18,7 @@ export interface SanPham{
     donvitaitro?:ToChuc,
     chitietdonvitaitro?:string,
     ngaykekhai:string,
-    nguoikekhai?:User,
+    nguoikekhai:User,
     trangthairasoat:string,
     ngayrasoat?:string,
     nguoirasoat?:User,
@@ -29,7 +29,8 @@ export interface SanPham{
     thoidiemcongbohoanthanh?:string,
     minhchung?:FileMinhChung
     created_at:string,
-    updated_at:string
+    updated_at:string,
+    deleted_at?:string
 }
 
 
@@ -63,7 +64,7 @@ export interface TaoSanPham{
     tensanpham:string,
     tongsotacgia:number,
     conhantaitro:boolean | null,
-    id_donvitaitro:number | null,
+    donvi:KeKhaiDonVi | null,
     chitietdonvitaitro:string | null,
     thoidiemcongbohoanthanh?:string | null
 }

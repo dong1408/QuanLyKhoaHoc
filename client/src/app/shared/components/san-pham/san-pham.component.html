@@ -21,12 +21,12 @@
         </nz-descriptions-item>
     </ng-container>
     <nz-descriptions-item nzTitle="Tổng Số Tác Giả">{{sanpham.tongsotacgia}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Số Lần Đã Quy Đổi">{{sanpham.solandaquydoi}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Điểm Quy Đổi">{{sanpham.diemquydoi}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Giờ Quy Đổi">{{sanpham.gioquydoi}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Thông Tin Chi Tiết"> {{sanpham.thongtinchitiet}}
+    <nz-descriptions-item nzTitle="Số Lần Đã Quy Đổi">{{sanpham.solandaquydoi ?? 'Không Có'}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Điểm Quy Đổi">{{sanpham.diemquydoi ?? 'Không Có'}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Giờ Quy Đổi">{{sanpham.gioquydoi ?? 'Không Có'}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Thông Tin Chi Tiết"> {{sanpham.thongtinchitiet ?? 'Không Có'}}
     </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Cấp Sản Phẩm">{{sanpham.capsanpham}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Cấp Sản Phẩm">{{sanpham.capsanpham ?? 'Không Có'}}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Có Thông Tin Trường ?">{{sanpham.cothongtintruong
         === true ? 'Có' : 'Không'}}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Có Sử Dụng Email Trường ?">
@@ -68,11 +68,11 @@
     <nz-descriptions-item nzTitle="Ngày Kê Khai">{{sanpham.ngaykekhai}}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Người Kê Khai">
         <strong  > + Mã:
-        </strong>{{sanpham.nguoikekhai?.username ?? 'Không Có'}} <br>
+        </strong>{{sanpham.nguoikekhai.username}} <br>
         <strong  > + Tên:
-        </strong>{{sanpham.nguoikekhai?.name ?? 'Không Có'}} <br>
+        </strong>{{sanpham.nguoikekhai.name}} <br>
         <strong > + Email:
-        </strong>{{sanpham.nguoikekhai?.email ?? 'Không Có'}}
+        </strong>{{sanpham.nguoikekhai.email}}
     </nz-descriptions-item>
     <nz-descriptions-item nzTitle="File Minh Chứng">
         <ng-container *ngIf="sanpham.minhchung?.url"><nz-tag [nzColor]="'#76c5f0'"><a target="_blank"

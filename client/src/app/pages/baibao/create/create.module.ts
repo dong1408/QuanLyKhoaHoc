@@ -15,6 +15,8 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {PagingService} from "../../../core/services/paging.service";
 import {SharedModule} from "../../../shared/components/shared.module";
 import {NzModalModule} from "ng-zorro-antd/modal";
+import {NzPopconfirmModule} from "ng-zorro-antd/popconfirm";
+import {NzListModule} from "ng-zorro-antd/list";
 
 @NgModule({
     declarations:[
@@ -35,7 +37,9 @@ import {NzModalModule} from "ng-zorro-antd/modal";
         NzDividerModule,
         NzDatePickerModule,
         SharedModule,
-        NzModalModule
+        NzModalModule,
+        NzPopconfirmModule,
+        NzListModule
     ],
     exports:[
 

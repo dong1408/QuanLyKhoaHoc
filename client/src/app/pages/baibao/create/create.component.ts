@@ -14,10 +14,10 @@ import {
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
 import {User} from "../../../core/types/user/user.type";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
+import {KeKhaiToChuc, ToChuc} from "../../../core/types/user-info/to-chuc.type";
 import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {UserService} from "../../../core/services/user/user.service";
-import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
+import {KeKhaiTapChi, Magazine} from "../../../core/types/tapchi/tap-chi.type";
 import {TaoBaiTao} from "../../../core/types/baibao/bai-bao.type";
 import {dateConvert} from "../../../shared/commons/utilities";
 import {PagingService} from "../../../core/services/paging.service";
@@ -42,13 +42,13 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
     keKhaiKeyword:any = []
     keKhaiTapChi:any = []
 
-    tochucs:ToChuc[]
-    tapChis:Magazine[]
-    vaiTros:VaiTroTacGia[]
-    users:User[]
-    keywords:Keyword[]
-    dvTaiTros:ToChuc[]
-    hhhvs:HocHamHocVi[]
+    tochucs:ToChuc[] = []
+    tapChis:Magazine[] = []
+    vaiTros:VaiTroTacGia[] = []
+    users:User[] = []
+    keywords:Keyword[] = []
+    dvTaiTros:ToChuc[] = []
+    hhhvs:HocHamHocVi[] = []
 
     createForm:FormGroup
     tochucForm:FormGroup
@@ -75,6 +75,11 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
     isOpenFormToChuc:boolean = false
     isOpenFormTapChi:boolean = false
     isOpenFormKeyword:boolean = false
+
+
+    isOpenListToChucKeKhai:boolean = false
+    isOpenListKeyword:boolean = false
+    isOpenListTapChi:boolean = false
 
     constructor(
         private fb:FormBuilder,
@@ -126,7 +131,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     Validators.required
                 ])
             ],
-            id_donvitaitro:[
+            donvi:[
                 {
                     value:null,
                     disabled:true
@@ -291,13 +296,13 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             takeUntil(this.destroy$)
         ).subscribe(select => {
             if(select === true){
-                this.createForm.get("id_donvitaitro")?.enable()
+                this.createForm.get("donvi")?.enable()
                 this.createForm.get("chitietdonvitaitro")?.enable()
             }else{
                 this.createForm.get("chitietdonvitaitro")?.disable()
-                this.createForm.get("id_donvitaitro")?.disable()
+                this.createForm.get("donvi")?.disable()
                 this.createForm.get("chitietdonvitaitro")?.reset()
-                this.createForm.get("id_donvitaitro")?.reset()
+                this.createForm.get("donvi")?.reset()
             }
         })
 
@@ -340,9 +345,44 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         })
     }
 
+    onXoaToChucKeKhai(matochuc:string){
+        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.matochuc !== matochuc)
+        this.createForm.get("donvi")?.reset()
+        this.sanphamTacgiaControls.forEach((control) => {
+            if(control.get("in_system")?.value === false){
+                control.get("tochuc")?.reset()
+            }
+        })
+        this.dvTaiTros = this.dvTaiTros.filter((item:ToChuc) => item.matochuc !== matochuc)
+    }
+
+    onXoaTapChiKeKhai(tentapchi:string){
+        this.keKhaiTapChi = this.keKhaiTapChi.filter((item:KeKhaiTapChi) => item.name !== tentapchi)
+        this.createForm.get("tapchi")?.reset()
+        this.tapChis = this.tapChis.filter((item:Magazine) => item.name !== tentapchi)
+    }
+
+    onXoaKeyword(name:string){
+        this.keKhaiKeyword = this.keKhaiKeyword.filter((item:KeKhaiKeyword) => item.name !== name)
+        this.createForm.get("keywords")?.reset()
+        this.keywords = this.keywords.filter((item:Keyword) => item.name !== name)
+    }
+
     onOpenFormToChuc(){
         this.tochucForm.reset()
         this.isOpenFormToChuc = !this.isOpenFormToChuc
+    }
+
+    onOpenListToChucKeKhai(){
+        this.isOpenListToChucKeKhai = !this.isOpenListToChucKeKhai
+    }
+
+    onOpenListTapChiKeKhai(){
+        this.isOpenListTapChi = !this.isOpenListTapChi
+    }
+
+    onOpenListKeyword(){
+        this.isOpenListKeyword = !this.isOpenListKeyword
     }
 
     onOpenFormKeyword(){
@@ -372,6 +412,20 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             return;
         }
         const data = form.value
+
+        const isAvailable = this.keKhaiKeyword.some((item:KeKhaiKeyword) => {
+            return item.name.toLowerCase() === data.name.toLowerCase()
+        })
+
+        if(isAvailable){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Bạn đã kê khai keyword này trước đó'
+            )
+            return;
+        }
+
         this.keKhaiKeyword.push(data)
         this.keywords.push(data)
         form.reset()
@@ -402,6 +456,20 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             return;
         }
         const data = form.value
+
+        const isAvailable = this.keKhaiTapChi.some((item:KeKhaiTapChi) => {
+            return item.name.toLowerCase() === data.name.toLowerCase()
+        })
+
+        if(isAvailable){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Bạn đã kê khai tạp chí này trước đó'
+            )
+            return;
+        }
+
         this.keKhaiTapChi.push(data)
         this.tapChis.push(data)
         form.reset()
@@ -435,7 +503,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
 
         // check kê khai trùng tổ chức
 
-        const isAvailable = this.keKhaiToChuc.some((item:any) => {
+        const isAvailable = this.keKhaiToChuc.some((item:KeKhaiToChuc) => {
             return item.matochuc.toLowerCase() === data.matochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
         })
 
@@ -450,6 +518,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
 
         this.keKhaiToChuc.push(data)
         this.tochucs.push(data)
+        this.dvTaiTros.push(data)
+
         form.reset()
 
         this.notificationService.create(
@@ -665,7 +735,11 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 tongsotacgia: arrayForm.length,
                 thoidiemcongbohoanthanh:  dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString())!!,
                 conhantaitro : form.get('conhantaitro')?.value ?? false,
-                id_donvitaitro :form.get('conhantaitro')?.value === true ? form.get('id_donvitaitro')?.value : null,
+                donvi :form.get('conhantaitro')?.value === true ? {
+                    id_donvi: form.get('donvi')?.value['id'] ?? null,
+                    matochuc: form.get('donvi')?.value['matochuc'],
+                    tentochuc: form.get('donvi')?.value['tentochuc']
+                } : null,
                 chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
             },
             sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
@@ -682,7 +756,9 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                         matochuc:tochuc.matochuc,
                         tentochuc:tochuc.tentochuc
                     },
-                    id_hochamhocvi:item.id_hochamhocvi
+                    id_hochamhocvi:item.id_hochamhocvi,
+                    thutu:item.thutu ?? null,
+                    tyledonggop:item.tyledonggop ?? null
                 }
             }),
             fileminhchungsanpham:{
@@ -694,7 +770,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             accepted:form.get('accepted')?.value ? dateConvert(form.get('accepted')?.value.toString()) : null,
             published:form.get('published')?.value ? dateConvert(form.get('published')?.value.toString()) : null,
             abstract:form.get('abstract')?.value,
-            keyword:form.get('keywords')?.value !== null ? form.get('keywords')?.value.map((item:Keyword) => {
+            keywords:form.get('keywords')?.value !== null ? form.get('keywords')?.value.map((item:Keyword) => {
                 return {
                     id_keyword:item.id,
                     name:item.name

@@ -646,7 +646,7 @@ class BaiBaoServiceImpl implements BaiBaoService
 
         $sanPham->tensanpham = $validated['tensanpham'];
         //        $sanPham->id_loaisanpham = $validated['id_loaisanpham'];
-        $sanPham->tongsotacgia = $validated['tongsotacgia'];
+//        $sanPham->tongsotacgia = $validated['tongsotacgia'];
         $sanPham->solandaquydoi = $validated['solandaquydoi'];
         $sanPham->cosudungemailtruong = $validated['cosudungemailtruong'];
         $sanPham->cosudungemaildonvikhac = $validated['cosudungemaildonvikhac'];

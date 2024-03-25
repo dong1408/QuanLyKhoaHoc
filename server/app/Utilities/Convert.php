@@ -619,10 +619,14 @@ class Convert
         $a->id = $sanPhaMTacGia->id;
         $a->tacgia = Convert::getUserSimpleVm($sanPhaMTacGia->tacGia);
         $a->vaitrotacgia = Convert::getVaiTroTacGiaVm($sanPhaMTacGia->vaiTroTacGia);
-
+        $a->tochuc = $sanPhaMTacGia->tacGia->toChuc != null ? Convert::getToChucVm($sanPhaMTacGia->tacGia->toChuc) : null;
+        $a->hochamhocvi = $sanPhaMTacGia->tacGia->hocHamHocVi != null ? Convert::getHocHamHocViVm($sanPhaMTacGia->tacGia->hocHamHocVi) : null;
         $a->thutu = $sanPhaMTacGia->thutu ?? null;
         $a->tyledonggop = $sanPhaMTacGia->tyledonggop  ?? null;
         $a->created_at = $sanPhaMTacGia->created_at;
+        $a->email = $sanPhaMTacGia->tacGia->email;
+        $a->dienthoai = $sanPhaMTacGia->tacGia->dienthoai ?? null;
+        $a->ngaysinh = $sanPhaMTacGia->tacGia->ngaysinh ?? null;
         $a->updated_at = $sanPhaMTacGia->updated_at;
 
         return $a;
@@ -650,10 +654,6 @@ class Convert
         $a->id_sanpham = $sanPham->id;
         $a->tensanpham = $sanPham->tensanpham;
 
-        foreach ($sanPham->baiBao->keyWords as $keyword) {
-            $a->keywords[] = Convert::getKeywordVm($keyword);
-        }
-
         $a->tentapchi = $sanPham->baiBao->tapChi == null ? $a->tentapchi = null : $sanPham->baiBao->tapChi->name;
         $a->volume = $sanPham->baiBao->volume ?? null;
         $a->issue = $sanPham->baiBao->issue ?? null;
@@ -680,7 +680,6 @@ class Convert
         $a->accepted = $sanPham->baiBao->accepted ?? null;
         $a->published = $sanPham->baiBao->published ?? null;
         $a->abstract = $sanPham->baiBao->abstract ?? null;
-        // $a->keywords = $sanPham->baiBao->keywords ?? null;
         if ($sanPham->baiBao->tapChi == null) {
             $a->tapchi = null;
         } else {

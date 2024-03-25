@@ -1,6 +1,6 @@
 import {SanPham, TaoFileMinhChung, TaoSanPham} from "../sanpham/san-pham.type";
 import {SanPhamTacGia, TaoVaiTroTacGia} from "../sanpham/vai-tro-tac-gia.type";
-import {ToChuc} from "../user-info/to-chuc.type";
+import {KeKhaiChuQuan, KeKhaiHopTac, ToChuc} from "../user-info/to-chuc.type";
 import {PhanLoaiDeTai} from "./phan-loai-de-tai.type";
 
 
@@ -134,10 +134,10 @@ export interface TaoDeTai{
     maso:string,
     ngoaitruong:boolean | null,
     truongchutri:boolean | null,
-    id_tochucchuquan:number | null,
+    tochucchuquan:KeKhaiChuQuan | null,
     id_loaidetai:number | null,
     detaihoptac:boolean | null,
-    id_tochuchoptac:number|  null,
+    tochuchoptac:KeKhaiHopTac|  null,
     tylekinhphidonvihoptac:string | null,
     capdetai: string | null,
     sanpham_tacgia:TaoVaiTroTacGia[],

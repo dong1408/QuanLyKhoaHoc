@@ -25,3 +25,21 @@ export interface KeKhaiToChuc{
     matochuc:string,
     tentochuc:string
 }
+
+export interface KeKhaiDonVi{
+    id_donvi:number | null,
+    matochuc:string,
+    tentochuc:string
+}
+
+export interface KeKhaiChuQuan{
+    id_tochucchuquan:number | null,
+    matochuc:string,
+    tentochuc:string
+}
+
+export interface KeKhaiHopTac{
+    id_tochuchoptac:number | null,
+    matochuc:string,
+    tentochuc:string
+}

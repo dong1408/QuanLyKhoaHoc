@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {CapNhatBaiBao, ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
 import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {forkJoin, Subject, takeUntil} from "rxjs";
+import {BehaviorSubject, debounceTime, forkJoin, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -13,6 +13,8 @@ import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
 import {CapNhatSanPham} from "../../../core/types/sanpham/san-pham.type";
 import {dateConvert} from "../../../shared/commons/utilities";
+import {validValuesValidator} from "../../../shared/validators/valid-value.validator";
+import {ApiResponse} from "../../../core/types/api-response.type";
 
 @Component({
     selector:"app-baibao-sanpham-capnhat",
@@ -23,9 +25,15 @@ import {dateConvert} from "../../../shared/commons/utilities";
 export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
     id:number
     baibao:ChiTietBaiBao
-    tochucs:ToChuc[]
+    dvTaiTros:ToChuc[] = []
+    dvKhac:ToChuc[] = []
 
     isCapNhatLoading:boolean = false
+    isGetTaiTro:boolean = false
+    isGetDVKhac:boolean = false
+
+    searchTaiTro$ = new BehaviorSubject('');
+    searchDVKhac$ = new BehaviorSubject('');
 
     capNhatForm:FormGroup
 
@@ -61,49 +69,25 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
                     noWhiteSpaceValidator()
                 ])
             ],
-            tongsotacgia:[
-                0,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
             solandaquydoi:[
                 0,
                 Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
                 ])
             ],
             cosudungemailtruong:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             cosudungemaildonvikhac:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             cothongtintruong:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             cothongtindonvikhac:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             conhantaitro:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             chitietdonvitaitro:[
                 {
@@ -117,35 +101,31 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
             diemquydoi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
+                    noWhiteSpaceValidator()
                 ])
             ],
             gioquydoi:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator(),
-                    Validators.required
                 ])
             ],
             thongtinchitiet:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator(),
-                    Validators.required
                 ])
             ],
             capsanpham:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator(),
-                    Validators.required
+                    validValuesValidator(['Khoa','Cơ sở','Tỉnh','Bộ','Ngành','Nhà nước','Nước ngoài']),
                 ])
             ],
             thoidiemcongbohoanthanh:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
                     Validators.required
                 ])
             ],
@@ -170,7 +150,6 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
             ngaykekhai:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
                     Validators.required
                 ])
             ],
@@ -185,8 +164,8 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
             }else{
                 this.capNhatForm.get("chitietdonvitaitro")?.disable()
                 this.capNhatForm.get("id_donvitaitro")?.disable()
-                // this.capNhatForm.get("chitietdonvitaitro")?.reset()
-                // this.capNhatForm.get("id_donvitaitro")?.reset()
+                this.capNhatForm.get("chitietdonvitaitro")?.reset()
+                this.capNhatForm.get("id_donvitaitro")?.reset()
             }
         })
 
@@ -198,9 +177,12 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
                 this.capNhatForm.get("id_thongtinnoikhac")?.enable()
             }else{
                 this.capNhatForm.get("id_thongtinnoikhac")?.disable()
-                // this.capNhatForm.get("id_thongtinnoikhac")?.reset()
+                this.capNhatForm.get("id_thongtinnoikhac")?.reset()
             }
         })
+
+        this.onGetSearchDVKhac()
+        this.onGetSearchDVTaiTro()
 
         this.loadingService.startLoading()
 
@@ -217,11 +199,17 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
         ).subscribe({
             next:(response) => {
                 this.baibao = response.baibao
+                if(this.baibao.sanpham.donvitaitro){
+                    this.dvTaiTros = [...this.dvTaiTros,this.baibao.sanpham.donvitaitro]
+                }
+
+                if(this.baibao.sanpham.thongtinnoikhac){
+                    this.dvKhac = [...this.dvKhac,this.baibao.sanpham.thongtinnoikhac]
+                }
 
                 this.capNhatForm.patchValue({
                     tensanpham:this.baibao.sanpham.tensanpham,
-                    tongsotacgia:this.baibao.sanpham.tongsotacgia,
-                    solandaquydoi:this.baibao.sanpham.solandaquydoi,
+                    solandaquydoi:this.baibao.sanpham.solandaquydoi ?? 0,
                     cosudungemailtruong:this.baibao.sanpham.cosudungemailtruong ?? false,
                     cosudungemaildonvikhac:this.baibao.sanpham.cosudungemaildonvikhac ?? false,
                     cothongtintruong:this.baibao.sanpham.cothongtintruong ?? false,
@@ -231,10 +219,10 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
                     id_donvitaitro:this.baibao.sanpham.donvitaitro?.id ?? null,
                     chitietdonvitaitro:this.baibao.sanpham.chitietdonvitaitro ?? null,
                     ngaykekhai:this.baibao.sanpham.ngaykekhai,
-                    diemquydoi:this.baibao.sanpham.diemquydoi,
-                    gioquydoi:this.baibao.sanpham.gioquydoi,
-                    thongtinchitiet:this.baibao.sanpham.thongtinchitiet,
-                    capsanpham:this.baibao.sanpham.capsanpham,
+                    diemquydoi:this.baibao.sanpham.diemquydoi ?? null,
+                    gioquydoi:this.baibao.sanpham.gioquydoi ?? null,
+                    thongtinchitiet:this.baibao.sanpham.thongtinchitiet ?? null,
+                    capsanpham:this.baibao.sanpham.capsanpham ?? null,
                     thoidiemcongbohoanthanh:this.baibao.sanpham.thoidiemcongbohoanthanh
                 })
                 this.loadingService.stopLoading()
@@ -250,6 +238,46 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
                 return;
             }
         })
+    }
+
+    onGetSearchDVKhac(){
+        const listDVKhac = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchDVKhac$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listDVKhac))
+
+        optionList$.subscribe(data => {
+            this.dvKhac = data.data
+            this.isGetDVKhac = false
+        })
+    }
+
+    onGetSearchDVTaiTro(){
+        const listDVTraiTro = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchTaiTro$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listDVTraiTro))
+
+        optionList$.subscribe(data => {
+            this.dvTaiTros = data.data
+            this.isGetTaiTro = false
+        })
+    }
+
+    onSearchTaiTro(event:any){
+        if(event && event !== ""){
+            this.isGetTaiTro = true
+            this.searchTaiTro$.next(event)
+        }
+    }
+
+    onSearchDVKhac(event:any){
+        if(event && event !== ""){
+            this.isGetDVKhac = true
+            this.searchDVKhac$.next(event)
+        }
     }
 
     onCapNhatBaiBaoSanPham(){

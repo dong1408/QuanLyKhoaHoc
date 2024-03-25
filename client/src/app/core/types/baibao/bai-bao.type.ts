@@ -1,7 +1,7 @@
 import {SanPham, TaoFileMinhChung, TaoSanPham} from "../sanpham/san-pham.type";
 import {KeKhaiTapChi, Magazine} from "../tapchi/tap-chi.type";
 import {SanPhamTacGia, TaoVaiTroTacGia} from "../sanpham/vai-tro-tac-gia.type";
-import {KeKhaiKeyword} from "./keyword.type";
+import {KeKhaiKeyword, Keyword} from "./keyword.type";
 
 export interface BaiBao{
     id:number,
@@ -12,7 +12,6 @@ export interface BaiBao{
     received?:string,
     accepted?:string,
     published?:string,
-    keywords?:string,
     tentapchi:string,
     volume?:string,
     issue?:string,
@@ -21,7 +20,7 @@ export interface BaiBao{
     created_at:string,
     updated_at:string,
     deleted_at?:string,
-    trangthairasoat?:string
+    trangthairasoat?:string,
 
     isSoftDelete:boolean,
     isDelete:boolean,
@@ -37,7 +36,6 @@ export interface ChiTietBaiBao{
     received?:string,
     accepted?:string,
     published?:string,
-    keywords?:string,
     tapchi:Magazine,
     volume?:string,
     issue?:string,
@@ -47,7 +45,8 @@ export interface ChiTietBaiBao{
     updated_at:string
     deleted_at?:string,
     abstract?:string,
-    sanpham_tacgias:SanPhamTacGia[]
+    sanpham_tacgias:SanPhamTacGia[],
+    keywords:Keyword[] | null
 }
 
 
@@ -62,7 +61,7 @@ export interface TaoBaiTao{
     accepted:string  | null,
     published:string | null ,
     abstract:string | null,
-    keyword?:KeKhaiKeyword[],
+    keywords?:KeKhaiKeyword[],
     tapchi:KeKhaiTapChi,
     volume:string  | null,
     issue:string | null,

@@ -9,7 +9,18 @@
     </nz-descriptions-item>
     <nz-descriptions-item nzTitle="Accepted">{{baibao.accepted  ?? 'Không Có'}}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Published">{{baibao.published  ?? 'Không Có'}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Keywords">{{baibao.keywords  ?? 'Không Có'}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Keywords">
+        <ng-container *ngIf="baibao.keywords && baibao.keywords.length > 0; else noKeywords">
+    <span *ngFor="let keyword of baibao.keywords; let last = last">
+        {{ keyword.name }}
+        <ng-container *ngIf="!last">, </ng-container>
+            </span>
+        </ng-container>
+        <ng-template #noKeywords>
+            Không Có
+        </ng-template>
+
+    </nz-descriptions-item>
     <nz-descriptions-item nzTitle="Volume">{{baibao.volume  ?? 'Không Có'}}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Issue">{{baibao.issue  ?? 'Không Có'}}
     </nz-descriptions-item>

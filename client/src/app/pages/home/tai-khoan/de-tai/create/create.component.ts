@@ -398,7 +398,11 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 tensanpham: form.get('tensanpham')?.value,
                 tongsotacgia: form.get('tongsotacgia')?.value,
                 conhantaitro : form.get('conhantaitro')?.value ?? false,
-                id_donvitaitro :form.get('conhantaitro')?.value === true ? form.get('id_donvitaitro')?.value : null,
+                donvi :form.get('conhantaitro')?.value === true ? {
+                    id_donvi: form.get('donvi')?.value['id'] ?? null,
+                    matochuc: form.get('donvi')?.value['matochuc'],
+                    tentochuc: form.get('donvi')?.value['tentochuc']
+                } : null,
                 chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
             },
             sanpham_tacgia: form.get('sanpham_tacgia')?.value,
@@ -408,10 +412,18 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
             maso:form.get('maso')?.value,
             ngoaitruong:form.get('ngoaitruong')?.value ?? false,
             truongchutri: form.get('ngoaitruong')?.value === true ? form.get('truongchutri')?.value : null,
-            id_tochucchuquan : form.get('ngoaitruong')?.value === true ? form.get('id_tochucchuquan')?.value : null,
+            tochucchuquan : form.get('ngoaitruong')?.value === true ? {
+                id_tochucchuquan:form.get('tochucchuquan')?.value['id'] ?? null,
+                tentochuc: form.get('tochucchuquan')?.value['tentochuc'],
+                matochuc:form.get('tochucchuquan')?.value['matochuc']
+            } : null,
             id_loaidetai: form.get('ngoaitruong')?.value === false ? form.get('id_loaidetai')?.value : null,
             detaihoptac: form.get('detaihoptac')?.value ?? false,
-            id_tochuchoptac: form.get('detaihoptac')?.value === true ? form.get('id_tochuchoptac')?.value : null,
+            tochuchoptac: form.get('detaihoptac')?.value === true ? {
+                id_tochuchoptac:form.get('tochuchoptac')?.value['id'] ?? null,
+                tentochuc: form.get('tochuchoptac')?.value['tentochuc'],
+                matochuc:form.get('tochuchoptac')?.value['matochuc']
+            } : null,
             tylekinhphidonvihoptac: form.get('detaihoptac')?.value === true ? form.get('tylekinhphidonvihoptac')?.value : null,
             capdetai: form.get('capdetai')?.value ?? null
         }
