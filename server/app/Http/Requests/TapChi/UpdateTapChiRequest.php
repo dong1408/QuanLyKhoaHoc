@@ -57,12 +57,8 @@ class UpdateTapChiRequest extends FormRequest
                 Rule::exists('d_m_quoc_gias', 'id')
             ],
 
-            "dmphanloaitapchi" => "bail|nullable|array",
+
             "dmnganhtheohdgs" => "bail|nullable|array",
-            "dmphanloaitapchi.*" => [
-                "int",
-                Rule::exists('d_m_phan_loai_tap_chi', 'id')
-            ],
             "dmnganhtheohdgs.*" => [
                 "int",
                 Rule::exists('d_m_nganh_theo_hdgs', 'id')

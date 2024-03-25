@@ -227,9 +227,9 @@ class TapChiServiceImpl implements TapChiService
                 'trangthai' => $validated['trangthai'],
                 'id_nguoithem' => auth('api')->user()->id,
             ]);
-            //            if($validated['dmnganhtheohdgs'] != null){
-            //                $tapChi->dmNganhTheoHDGS()->attach($validated['dmnganhtheohdgs']);
-            //            }
+            if ($validated['dmnganhtheohdgs'] != null) {
+                $tapChi->dmNganhTheoHDGS()->attach($validated['dmnganhtheohdgs']);
+            }
         });
         $result = Convert::getTapChiVm($tapChi);
         return new ResponseSuccess("Thành công", $result);
@@ -286,7 +286,7 @@ class TapChiServiceImpl implements TapChiService
             $tapChi->id_address_city = $validated['id_address_city'];
             $tapChi->id_address_country = $validated['id_address_country'];
             $tapChi->save();
-            $tapChi->dmPhanLoaiTapChis()->sync($validated['dmphanloaitapchi']);
+            // $tapChi->dmPhanLoaiTapChis()->sync($validated['dmphanloaitapchi']);
             $tapChi->dmNganhTheoHDGS()->sync($validated['dmnganhtheohdgs']);
         });
         $result = Convert::getTapChiVm($tapChi);

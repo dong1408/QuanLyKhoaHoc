@@ -181,6 +181,12 @@ Route::group([
 
     // To Chuc
     Route::get('tochuc', [ToChucController::class, 'getAllToChuc']);
+    Route::get('tochuc/paging', [ToChucController::class, 'getToChucPaging']);
+    Route::post('tochuc', [ToChucController::class, 'createToChuc']);
+    Route::patch('tochuc/{id}', [ToChucController::class, 'updateToChuc']);
+    Route::delete('tochuc/{id}', [ToChucController::class, 'deleteToChuc']);
+    Route::get('tochuc/{id}', [ToChucController::class, 'getDetailToChuc']);
+
 
     // Chuyen Mon
     Route::get('chuyenmon', [ChuyenMonController::class, 'getAllChuyenMon']);
