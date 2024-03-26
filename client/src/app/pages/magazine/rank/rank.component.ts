@@ -61,7 +61,7 @@ export class RankComponent implements OnInit,OnDestroy{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/tap-chi"])
+                this.router.navigate(["/admin/tap-chi"])
                 return;
             }
         })
@@ -156,7 +156,7 @@ export class RankComponent implements OnInit,OnDestroy{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(["/tap-chi"])
+                this.router.navigate(["/admin/tap-chi"])
                 return
             }
         })
@@ -187,13 +187,21 @@ export class RankComponent implements OnInit,OnDestroy{
 
 
     onXepHangTapChi(){
-
-        if(this.formXepHang.invalid){
+        const form = this.formXepHang
+        if(form.invalid){
             this.notificationService.create(
                 'error',
                 'Lỗi',
                 'Vui lòng nhập đầy đủ dữ liệu'
             )
+
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
+
             return
         }
 
@@ -220,6 +228,8 @@ export class RankComponent implements OnInit,OnDestroy{
                     'Thành công',
                     response.message
                 )
+                this.formXepHang.reset()
+                this.isOpenForm = false
                 this.isUpdateLoading = false
             },
             error:(error) => {

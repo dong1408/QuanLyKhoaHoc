@@ -10,6 +10,16 @@
         <ng-container *nzModalContent>
             <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formBaoCao">
                 <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Tên Báo Cáo</h3>
+                    <nz-form-control [nzErrorTip]="tenbaocao" nzHasFeedback>
+                        <input nz-input placeholder="Kết Quả Xét"   type="text" formControlName="tenbaocao"/>
+                        <ng-template #tenbaocao let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Ngày Nộp Báo Cáo</h3>
                     <nz-form-control [nzErrorTip]="ngaynopbaocao" nzHasFeedback>
                         <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Nộp Báo Cáo" formControlName="ngaynopbaocao"></nz-date-picker>
@@ -30,7 +40,7 @@
                 <nz-form-item class="tw-w-full">
                     <h3 class="">Thời Gian Gia Hạn</h3>
                     <nz-form-control [nzErrorTip]="thoigiangiahan" nzHasFeedback>
-                        <input nz-input placeholder="Thời Gian Gia Hạn"  type="text" formControlName="thoigiangiahan"/>
+                        <input nz-input placeholder="Thời Gian Gia Hạn"  type="number" formControlName="thoigiangiahan"/>
                         <ng-template #thoigiangiahan let-control>
                             <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
                         </ng-template>

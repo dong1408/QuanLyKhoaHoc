@@ -1,5 +1,5 @@
 <div class="tw-space-y-[16px]">
-    <button nz-button nzType="primary" [routerLink]="['/tap-chi']">
+    <button nz-button nzType="primary" [routerLink]="['/admin/tap-chi']">
         <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
     </button>
     <h1 class="text-primary tw-text-5xl">CHI TIẾT TẠP CHÍ</h1>
@@ -13,15 +13,15 @@
                     <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
                     Cập Nhật
                 </button>
-                <button nz-button nzType="default" [routerLink]="['/tap-chi',this.id,'lich-su-cong-nhan']">
+                <button nz-button nzType="default" [routerLink]="['/admin/tap-chi',this.id,'lich-su-cong-nhan']">
                     <span nz-icon nzType="history" nzTheme="outline"></span>
                     Lịch Sử Công Nhận
                 </button>
-                <button nz-button nzType="default" [routerLink]="['/tap-chi',this.id,'lich-su-tinh-diem']">
+                <button nz-button nzType="default" [routerLink]="['/admin/tap-chi',this.id,'lich-su-tinh-diem']">
                     <span nz-icon nzType="history" nzTheme="outline"></span>
                     Lịch Sử Tính Điểm
                 </button>
-                <button nz-button nzType="default" [routerLink]="['/tap-chi',this.id,'lich-su-xep-hang']">
+                <button nz-button nzType="default" [routerLink]="['/admin/tap-chi',this.id,'lich-su-xep-hang']">
                     <span nz-icon nzType="history" nzTheme="outline"></span>
                     Lịch Sử Xếp Hạng
                 </button>
@@ -94,69 +94,66 @@
         </div>
         <div class="tw-space-y-[1rem]">
             <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
-                <h2 class="text-primary tw-text-3xl tw-text-center">Thông Tin Cơ Bản</h2>
-                <p><strong>Mã: </strong> {{magazine.id}}</p>
-                <p><strong>Tên Tạp Chí: </strong> {{magazine.name}}</p>
-                <p><strong>Trạng Thái: </strong>
-                    <span *ngIf="magazine?.trangthai === true" class="success">Đã Phê Duyệt</span>
-                    <span *ngIf="magazine?.trangthai === false" class="error">Chưa Phê Duyệt</span>
-                </p>
-                <p><strong>ISSN:</strong> {{magazine.issn}}</p>
-                <p><strong>PISSN:</strong> {{magazine.pissn}}</p>
-                <p><strong>EISSN:</strong> {{magazine.eissn}}</p>
-                <p><strong>Quốc Tế:</strong> {{magazine.quocte}}</p>
-                <p><strong>Địa Chỉ:</strong> {{magazine.address}}</p>
-                <p><strong>Người Thêm:</strong> <br>
-                    <strong class="tw-ml-[30px]"> + Mã: </strong>{{magazine.nguoithem?.username}} <br>
-                    <strong class="tw-ml-[30px]"> + Tên: </strong>{{magazine.nguoithem?.name}} <br>
-                    <strong class="tw-ml-[30px]"> + Email: </strong>{{magazine.nguoithem?.email}}
-                </p>
-            </div>
-            <div class="tw-my-[14px]">
-                <nz-divider ></nz-divider>
-            </div>
-            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
-                <h2 class="tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Đơn vị Chủ Quản</h2>
-                <ng-container *ngIf="magazine.donvichuquan">
-                    <p><strong>Mã Tổ Chức:</strong> {{magazine.donvichuquan.matochuc}}</p>
-                    <p><strong>Tên Tổ Chức:</strong> {{magazine.donvichuquan.tentochuc}}</p>
-                    <p><strong>Tên Tổ Chức [EN]:</strong> {{magazine.donvichuquan.tentochuc_en}}</p>
-                    <p><strong>Website:</strong> <a href="{{magazine.donvichuquan.website}}">Tại Đây</a></p>
-                    <p><strong>Số Điện Thoại:</strong> {{magazine.donvichuquan.dienthoai}}</p>
-                </ng-container>
-                <ng-container *ngIf="magazine.donvichuquan === null">
-                        <p><strong>Không Có</strong></p>
-                </ng-container>
-            </div>
-            <div class="tw-my-[14px]">
-                <nz-divider ></nz-divider>
-            </div>
-            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
-                <h2 class=" tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Tình Trạng Công Nhận Mới Nhất</h2>
-                <ng-container *ngIf="magazine.khongduoccongnhan">
-                    <app-recognize-card [recognize]="magazine.khongduoccongnhan"></app-recognize-card>
-                </ng-container>
-                <ng-container *ngIf="magazine.khongduoccongnhan === null">
-                    <p><strong>Không Có</strong></p>
-                </ng-container>
-            </div>
-            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
-                <h2 class=" tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Xếp Hạng Mới Nhất</h2>
-                <ng-container *ngIf="magazine.xephangtapchi">
-                    <app-magazine-rankcard [rank]="magazine.xephangtapchi"></app-magazine-rankcard>
-                </ng-container>
-                <ng-container *ngIf="magazine.khongduoccongnhan === null">
-                    <p><strong>Không Có</strong></p>
-                </ng-container>
-            </div>
-            <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
-                <h2 class=" tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Xếp Hạng Mới Nhất</h2>
-                <ng-container *ngIf="magazine.tinhdiemtapchi">
-                    <app-score-card [score]="magazine.tinhdiemtapchi"></app-score-card>
-                </ng-container>
-                <ng-container *ngIf="magazine.khongduoccongnhan === null">
-                    <p><strong>Không Có</strong></p>
-                </ng-container>
+                <h2 class="text-primary tw-text-3xl tw-text-center">Thông Tin Tạp Chí</h2>
+                <nz-descriptions [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }" nzBordered nzLayout="horizontal" class="tw-mt-[1rem]">
+                    <nz-descriptions-item nzTitle="Mã">{{magazine.id}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Tên Tạp Chí">{{magazine.name}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Trạng Thái">
+                        <span *ngIf="magazine?.trangthai === true" class="success">Đã Phê Duyệt</span>
+                        <span *ngIf="magazine?.trangthai === false" class="error">Chưa Phê Duyệt</span>
+                        <span *ngIf="magazine?.trangthai === null" class="error">Không Có</span>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="ISSN">{{magazine.issn ?? 'Không Có'}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="PISSN">{{magazine.pissn ?? 'Không Có'}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="EISSN">{{magazine.eissn ?? 'Không Có'}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Quốc Tế">{{magazine.quocte ? 'Quốc Tế' : 'Trong Nước'}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Địa Chỉ">{{magazine.address ?? 'Không Có'}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Người Thêm">
+                        <ng-container *ngIf="magazine.nguoithem">
+                            <strong> + Mã: </strong>{{magazine.nguoithem.username}} <br>
+                            <strong> + Tên: </strong>{{magazine.nguoithem.name}} <br>
+                            <strong> + Email: </strong>{{magazine.nguoithem.email}}
+                        </ng-container>
+                        <ng-container *ngIf="magazine.nguoithem === null">
+                            Không Có
+                        </ng-container>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Đơn Vị Chủ Quản">
+                        <ng-container *ngIf="magazine.donvichuquan">
+                            <p><strong>Mã Tổ Chức:</strong> {{magazine.donvichuquan.matochuc}}</p>
+                            <p><strong>Tên Tổ Chức:</strong> {{magazine.donvichuquan.tentochuc}}</p>
+                            <p><strong>Website:</strong> <a href="{{magazine.donvichuquan.website  ?? '#'}}">Tại Đây</a></p>
+                            <p><strong>Số Điện Thoại:</strong> {{magazine.donvichuquan.dienthoai  ?? 'Không Có'}}</p>
+                        </ng-container>
+                        <ng-container *ngIf="magazine.donvichuquan === null">
+                            Không Có
+                        </ng-container>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Tình Trạng Công Nhận Mới Nhất">
+                        <ng-container *ngIf="magazine.khongduoccongnhan">
+                            <app-recognize-card [recognize]="magazine.khongduoccongnhan"></app-recognize-card>
+                        </ng-container>
+                        <ng-container *ngIf="magazine.khongduoccongnhan === null">
+                            Không Có
+                        </ng-container>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Xếp Hạng Mới Nhất">
+                        <ng-container *ngIf="magazine.xephangtapchi">
+                            <app-magazine-rankcard [rank]="magazine.xephangtapchi"></app-magazine-rankcard>
+                        </ng-container>
+                        <ng-container *ngIf="magazine.khongduoccongnhan === null">
+                            Không Có
+                        </ng-container>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Tính Điểm Mới Nhất">
+                        <ng-container *ngIf="magazine.tinhdiemtapchi">
+                            <app-score-card [score]="magazine.tinhdiemtapchi"></app-score-card>
+                        </ng-container>
+                        <ng-container *ngIf="magazine.khongduoccongnhan === null">
+                            Không Có
+                        </ng-container>
+                    </nz-descriptions-item>
+                </nz-descriptions>
             </div>
         </div>
     </ng-template>

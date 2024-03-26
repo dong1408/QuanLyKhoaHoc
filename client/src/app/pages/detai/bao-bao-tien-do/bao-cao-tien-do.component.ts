@@ -24,7 +24,6 @@ export class BaoCaoTienDoComponent{
 
     isOpenForm:boolean = false
     isUpdateLoading:boolean = false
-    isPhanLoaiTapChiLoading:boolean = false
 
     formBaoCao: FormGroup
 
@@ -55,6 +54,13 @@ export class BaoCaoTienDoComponent{
         })
 
         this.formBaoCao = this.fb.group({
+            tenbaocao:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    Validators.required
+                ])
+            ],
             ngaynopbaocao:[
                 null,
                 Validators.compose([

@@ -20,20 +20,6 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full">
-                    <h3 class="">Loại Minh Chứng</h3>
-                    <nz-form-control [nzErrorTip]="loaiminhchung" nzHasFeedback>
-                    <textarea
-                            nz-input
-                            placeholder="Loại Minh Chứng"
-                            formControlName="loaiminhchung"
-                            [nzAutosize]="{ minRows: 3, maxRows: 10 }"
-                    ></textarea>
-                        <ng-template #loaiminhchung let-control>
-                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        </ng-template>
-                    </nz-form-control>
-                </nz-form-item>
             </form>
         </ng-container>
     </nz-modal>
@@ -142,39 +128,35 @@
                         nz-button
                         nzType="primary"
                         (click)="onOpenFormCapNhatMinhChung()"
+                        *ngIf="detai.trangthairasoat === AppConstant.TT_DANG_RA_SOAT"
                 >
                     <span nz-icon nzType="edit" nzTheme="outline"></span>
                     Cập Nhật File Minh Chứng
                 </button>
                 <button nz-button nzType="primary"
                         (click)="onOpenFormTacGia(true)"
+                        *ngIf="detai.trangthairasoat === AppConstant.TT_DANG_RA_SOAT"
                 >
                     <span nz-icon nzType="edit" nzTheme="outline"></span>
                     Cập Nhật Tác Giả
+                </button>
+                <button nz-button nzType="primary" [routerLink]="['cap-nhat']" *ngIf="detai.trangthairasoat === AppConstant.TT_DANG_RA_SOAT">
+                    <span nz-icon nzType="edit" nzTheme="outline"></span>
+                    Cập Nhật Đề Tài
                 </button>
             </div>
         </div>
         <div class="tw-space-y-[1rem]">
             <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
                 <h2 class="text-primary tw-text-3xl tw-text-center">Thông Tin Sản Phẩm</h2>
-                <div class="tw-space-x-[0.5rem] tw-text-right">
-                    <button nz-button nzType="primary" [routerLink]="['thong-tin-san-pham']">
-                        <span nz-icon nzType="edit" nzTheme="outline"></span>
-                        Cập Nhật
-                    </button>
-                </div>
+
                 <app-sanpham-component [sanpham]="detai.sanpham" [sanpham_tacgias]="detai.sanpham_tacgias"></app-sanpham-component>
                 <div class="tw-my-[14px]">
                     <nz-divider></nz-divider>
                 </div>
                 <div class="tw-mt-[5rem] tw-space-y-[0.4rem]">
                     <h2 class="tw-mt-[5rem] text-primary tw-text-3xl tw-text-center">Thông Tin Đề Tài</h2>
-                    <div class="tw-space-x-[0.5rem] tw-text-right">
-                        <button nz-button nzType="primary" [routerLink]="['thong-tin-de-tai']">
-                            <span nz-icon nzType="edit" nzTheme="outline"></span>
-                            Cập Nhật
-                        </button>
-                    </div>
+
                     <app-detai-component [detai]="detai"></app-detai-component>
                 </div>
                 <div class="tw-my-[14px]">

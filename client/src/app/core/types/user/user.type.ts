@@ -12,7 +12,9 @@ export interface User{
     id:number,
     name:string,
     username:string,
-    email:string
+    email:string,
+    tochuc:ToChuc,
+    hochamhocvi:HocHamHocVi
 }
 
 export interface Me{
@@ -82,7 +84,6 @@ export interface RegisterUser{
     email2:string | null,
     orchid:string | null,
     id_tochuc:number | null,
-    id_donvi:number | null,
     cohuu:boolean | null,
     keodai:boolean | null,
     dinhmucnghiavunckh:string | null,
@@ -99,14 +100,12 @@ export interface RegisterUser{
 
 export interface UpdateUser{
     name:string,
-    // username:string,
     email:string,
     ngaysinh:string | null,
     dienthoai:string | null,
     email2:string | null,
     orchid:string | null,
     id_tochuc:number | null,
-    id_donvi:number | null,
     cohuu:boolean | null,
     keodai:boolean | null,
     dinhmucnghiavunckh:string | null,

@@ -29,7 +29,7 @@ class CreateTapChiRequest extends FormRequest
             "issn" => "bail|nullable|string",
             "eissn" => "bail|nullable|string",
             "pissn" => "bail|nullable|string",
-            "website" => "bail|nullable|url",
+            "website" => "bail|nullable|string",
             "quocte" => "bail|nullable|boolean",
             "id_nhaxuatban" => [
                 "bail", "nullable", "integer",
@@ -48,7 +48,6 @@ class CreateTapChiRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_quoc_gias', 'id')
             ],
-            "trangthai" => "bail|nullable|boolean",
             "dmnganhtheohdgs" => "bail|nullable|array",
             "dmnganhtheohdgs.*" => [
                 "integer",

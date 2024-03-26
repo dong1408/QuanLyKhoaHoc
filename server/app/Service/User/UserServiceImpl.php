@@ -32,14 +32,15 @@ class UserServiceImpl implements UserService
     public function getAllUser(Request $request): ResponseSuccess
     {
         $keysearch = $request->query('search', "");
-
         $result = [];
-        $users = User::where('name', 'LIKE', '%' . $keysearch . '%')
-            ->orWhere('username', 'LIKE', '%' . $keysearch . '%')->get();
-        foreach ($users as $user) {
-            $result[] = Convert::getUserSimpleVm($user);
-        }
 
+        if (!empty($keysearch)) {
+            $users = User::where('name', 'LIKE', '%' . $keysearch . '%')
+                ->orWhere('username', 'LIKE', '%' . $keysearch . '%')->get();
+            foreach ($users as $user) {
+                $result[] = Convert::getUserSimpleVm($user);
+            }
+        }
         return new ResponseSuccess("Thành công", $result);
     }
 

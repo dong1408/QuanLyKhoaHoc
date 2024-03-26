@@ -16,7 +16,7 @@ class TwoRoleSimilarForOnePersonInDeTaiException extends Exception
                 400,
                 "Một người không thể có 2 vai trò giống nhau trong cùng một đề tài"
             ),
-            404
+            400
         );
     }
 }

@@ -15,6 +15,8 @@ import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import {SharedModule} from "../../../../../shared/components/shared.module";
 import {PagingService} from "../../../../../core/services/paging.service";
+import {NzListModule} from "ng-zorro-antd/list";
+import {NzModalModule} from "ng-zorro-antd/modal";
 
 @NgModule({
     declarations:[
@@ -34,7 +36,9 @@ import {PagingService} from "../../../../../core/services/paging.service";
         NzSelectModule,
         NzWaveModule,
         SharedModule,
-        NzCheckboxModule
+        NzCheckboxModule,
+        NzListModule,
+        NzModalModule
     ],
     exports:[
 

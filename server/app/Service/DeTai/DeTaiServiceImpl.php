@@ -8,6 +8,7 @@ use App\Exceptions\BaiBao\RoleOnlyHeldByOnePersonException;
 use App\Exceptions\BaiBao\TwoRoleSimilarForOnePersonException;
 use App\Exceptions\BaiBao\VaiTroOfBaiBaoException;
 use App\Exceptions\Delete\DeleteFailException;
+use App\Exceptions\DeTai\ChuDeTaiException;
 use App\Exceptions\DeTai\CreateDeTaiFailedException;
 use App\Exceptions\DeTai\DeTaiCanNotBaoCaoException;
 use App\Exceptions\DeTai\DeTaiCanNotNghiemThuException;
@@ -738,7 +739,7 @@ class DeTaiServiceImpl implements DeTaiService
 
         $sanPham->tensanpham = $validated['tensanpham'];
         //        $sanPham->id_loaisanpham = $validated['id_loaisanpham'];
-        $sanPham->tongsotacgia = $validated['tongsotacgia'];
+//        $sanPham->tongsotacgia = $validated['tongsotacgia'];
         $sanPham->solandaquydoi = $validated['solandaquydoi'];
         $sanPham->cosudungemailtruong = $validated['cosudungemailtruong'];
         $sanPham->cosudungemaildonvikhac = $validated['cosudungemaildonvikhac'];
@@ -1444,6 +1445,11 @@ class DeTaiServiceImpl implements DeTaiService
 
         // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
         $idUserCurent = auth('api')->user()->id;
+
+        if($sanPham->nguoiKeKhai->id != $idUserCurent){
+            throw new ChuDeTaiException();
+        }
+
         $userCurrent = User::find($idUserCurent);
         if ($deTai->sanPham->trangthairasoat == "Đã xác nhận") {
             if (!$userCurrent->hasPermission('detai.status')) {
@@ -1490,7 +1496,6 @@ class DeTaiServiceImpl implements DeTaiService
 
             // Update san pham
             $sanPham->tensanpham = $validated['sanpham']['tensanpham'];
-            $sanPham->tongsotacgia = $validated['sanpham']['tongsotacgia'];
             $sanPham->conhantaitro = $validated['sanpham']['conhantaitro'];
             $sanPham->id_donvitaitro = $validated['sanpham']['conhantaitro'] == true && !empty($validated['sanpham']['donvi']['id_donvi']) ? $validated['sanpham']['donvi']['id_donvi'] : null;
             $sanPham->chitietdonvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null;

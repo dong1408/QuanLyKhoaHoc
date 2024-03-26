@@ -277,6 +277,8 @@ class Convert
         $a->name = $user->name;
         $a->username = $user->username;
         $a->email = $user->email;
+        $a->ngaysinh = $user->ngaysinh ?? null;
+        $a->dienthoai = $user->dienthoai ?? null;
         $a->hochamhocvi = $user->hocHamHocVi == null ? null : Convert::getHocHamHocViVm($user->hocHamHocVi);
         $a->tochuc = $user->toChuc == null ? null : Convert::getToChucVm($user->toChuc);
 
@@ -617,10 +619,14 @@ class Convert
         $a->id = $sanPhaMTacGia->id;
         $a->tacgia = Convert::getUserSimpleVm($sanPhaMTacGia->tacGia);
         $a->vaitrotacgia = Convert::getVaiTroTacGiaVm($sanPhaMTacGia->vaiTroTacGia);
-
+        $a->tochuc = $sanPhaMTacGia->tacGia->toChuc != null ? Convert::getToChucVm($sanPhaMTacGia->tacGia->toChuc) : null;
+        $a->hochamhocvi = $sanPhaMTacGia->tacGia->hocHamHocVi != null ? Convert::getHocHamHocViVm($sanPhaMTacGia->tacGia->hocHamHocVi) : null;
         $a->thutu = $sanPhaMTacGia->thutu ?? null;
         $a->tyledonggop = $sanPhaMTacGia->tyledonggop  ?? null;
         $a->created_at = $sanPhaMTacGia->created_at;
+        $a->email = $sanPhaMTacGia->tacGia->email;
+        $a->dienthoai = $sanPhaMTacGia->tacGia->dienthoai ?? null;
+        $a->ngaysinh = $sanPhaMTacGia->tacGia->ngaysinh ?? null;
         $a->updated_at = $sanPhaMTacGia->updated_at;
 
         return $a;
@@ -648,10 +654,6 @@ class Convert
         $a->id_sanpham = $sanPham->id;
         $a->tensanpham = $sanPham->tensanpham;
 
-        foreach ($sanPham->baiBao->keyWords as $keyword) {
-            $a->keywords[] = Convert::getKeywordVm($keyword);
-        }
-
         $a->tentapchi = $sanPham->baiBao->tapChi == null ? $a->tentapchi = null : $sanPham->baiBao->tapChi->name;
         $a->volume = $sanPham->baiBao->volume ?? null;
         $a->issue = $sanPham->baiBao->issue ?? null;
@@ -678,7 +680,6 @@ class Convert
         $a->accepted = $sanPham->baiBao->accepted ?? null;
         $a->published = $sanPham->baiBao->published ?? null;
         $a->abstract = $sanPham->baiBao->abstract ?? null;
-        // $a->keywords = $sanPham->baiBao->keywords ?? null;
         if ($sanPham->baiBao->tapChi == null) {
             $a->tapchi = null;
         } else {
@@ -707,8 +708,10 @@ class Convert
         $a = new KeywordVm();
         $a->id = $keyword->id;
         $a->name = $keyword->name;
-        $a->created_at = $keyword->created_at;
-        $a->updated_at = $keyword->updated_at;
+        $a->created_at = $keyword->created_at ?? null;
+        $a->updated_at = $keyword->updated_at ?? null;
+
+        return $a;
     }
 
 
@@ -805,7 +808,7 @@ class Convert
     {
         $a = new BaoCaoTienDoVm();
         $a->id = $baoCaoTienDo->id;
-        $a->tenbaocao = $baoCaoTienDo->tenbaocao ?? null;
+        $a->tenbaocao = $baoCaoTienDo->tenbaocao;
         $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao ?? null;
         $a->ketquaxet = $baoCaoTienDo->ketquaxet ?? null;
         $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan ?? null;
@@ -817,7 +820,7 @@ class Convert
     {
         $a = new NghiemThuVm();
         $a->id = $nghiemThu->id;
-        $a->ngaynghiemthu = $nghiemThu->ngaynghiemhtu ?? null;
+        $a->ngaynghiemthu = $nghiemThu->ngaynghiemthu ?? null;
         $a->ketquanghiemthu = $nghiemThu->ketquanghiemthu ?? null;
         $a->ngaycongnhanhoanthanh = $nghiemThu->ngaycongnhanhoanthanh ?? null;
         $a->soqdcongnhanhoanthanh = $nghiemThu->soqdcongnhanhoanthanh ?? null;

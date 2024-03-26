@@ -34,8 +34,8 @@ class UpdateSanPhamRequest extends FormRequest
                 "bail", "required",
                 Rule::unique('san_phams')->ignore(Route::input('id'), 'id')
             ],
-            "tongsotacgia" => "bail|required|integer",
-            "solandaquydoi" => "bail|required|integer",
+//            "tongsotacgia" => "bail|required|integer",
+            "solandaquydoi" => "bail|nullable|integer",
             "cosudungemailtruong" => "bail|nullable|boolean",
             "cosudungemaildonvikhac" => "bail|nullable|boolean",
             "cothongtintruong" => "bail|nullable|boolean",
@@ -51,11 +51,11 @@ class UpdateSanPhamRequest extends FormRequest
             ],
             "chitietdonvitaitro" => "bail|nullable|string",
             "ngaykekhai" => "bail|required|string",
-            "diemquydoi" => "bail|required|string",
-            "gioquydoi" => "bail|required|string",
-            "thongtinchitiet" => "bail|required|string",
-            "capsanpham" => "bail|required|string",
-            "thoidiemcongbohoanthanh" => "bail|required|string",
+            "diemquydoi" => "bail|nullable|string",
+            "gioquydoi" => "bail|nullable|string",
+            "thongtinchitiet" => "bail|nullable|string",
+            "capsanpham" => "bail|nullable|string",
+            "thoidiemcongbohoanthanh" => "bail|nullable|string",
         ];
     }
 

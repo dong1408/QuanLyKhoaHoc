@@ -16,9 +16,18 @@
                         <nz-select
                                 formControlName="id_tapchi"
                                 nzShowSearch
+                                nzServerSearch
                                 nzPlaceHolder="Tạp Chí"
+                                (nzOnSearch)="onSearchTapChi($event)"
+                                [nzLoading]="isGetTapChi"
                         >
-                            <nz-option *ngFor="let data of this.tapchis" [nzLabel]="data.name ? data.name : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                            <ng-container *ngFor="let data of this.tapChis">
+                                <nz-option *ngIf="!isGetTapChi" [nzLabel]="data.name ? data.name : 'Không Có Tên'" [nzValue]=data></nz-option>
+                            </ng-container>
+                            <nz-option *ngIf="isGetTapChi" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Đang Tải Dữ Liệu...
+                            </nz-option>
                         </nz-select>
                         <ng-template #id_tapchi let-control>
                             <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
@@ -71,12 +80,27 @@
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">
-                    <h3 class="">Keywords</h3>
-                    <nz-form-control [nzErrorTip]="keywords" nzHasFeedback>
-                        <input nz-input placeholder="Keywords"  type="text" formControlName="keywords"/>
-                        <ng-template #keywords let-control>
-                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        </ng-template>
+                    <h3 class="">Keyword </h3>
+                    <nz-form-control nzHasFeedback>
+                        <nz-select
+                                formControlName="keywords"
+                                nzShowSearch
+                                nzAllowClear
+                                nzServerSearch
+                                nzPlaceHolder="Keywords"
+                                nzMode="multiple"
+                                (nzOnSearch)="onSearchKeyword($event)"
+                                [nzLoading]="isGetKeyword"
+                        >
+
+                            <nz-option *ngIf="isGetKeyword" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Đang Tải Dữ Liệu...
+                            </nz-option>
+                            <ng-container *ngFor="let data of this.keywords">
+                                <nz-option *ngIf="!isGetKeyword" [nzLabel]="data.name ? data.name : 'Không Có Tên'" [nzValue]=data></nz-option>
+                            </ng-container>
+                        </nz-select>
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">

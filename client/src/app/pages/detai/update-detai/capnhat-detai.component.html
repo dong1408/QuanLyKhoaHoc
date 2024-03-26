@@ -53,14 +53,23 @@
                     <nz-form-control [nzErrorTip]="id_tochucchuquan" nzHasFeedback>
                         <nz-select
                                 formControlName="id_tochucchuquan"
-                                nzShowSearch
-                                nzPlaceHolder="Tổ Chức Chủ Quản"
+                                nzShowSearch  nzPlaceHolder="Tổ Chức Chủ Quản"
+                                nzAllowClear
+                                nzServerSearch
+                                (nzOnSearch)="onSearchToChucChuQuan($event)"
+                                [nzLoading]="isGetChuQuan"
                         >
-                            <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                            <ng-container *ngFor="let data of tcChuQuan">
+                                <nz-option *ngIf="!isGetChuQuan" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                            </ng-container>
+                            <nz-option *ngIf="isGetChuQuan" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Đang Tải Dữ Liệu...
+                            </nz-option>
+                            <ng-template #id_tochucchuquan let-control>
+                                <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                            </ng-template>
                         </nz-select>
-                        <ng-template #id_tochucchuquan let-control>
-                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                        </ng-template>
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">
@@ -98,14 +107,23 @@
                     <nz-form-control [nzErrorTip]="id_tochuchoptac" nzHasFeedback>
                         <nz-select
                                 formControlName="id_tochuchoptac"
-                                nzShowSearch
-                                nzPlaceHolder="Tổ Chức Hợp Tác"
+                                nzShowSearch  nzPlaceHolder="Tổ Chức Hợp Tác"
+                                nzAllowClear
+                                nzServerSearch
+                                (nzOnSearch)="onSearchToChucHopTac($event)"
+                                [nzLoading]="isGetHopTac"
                         >
-                            <nz-option *ngFor="let data of this.tochucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                            <ng-container *ngFor="let data of tcHopTac">
+                                <nz-option *ngIf="!isGetHopTac" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                            </ng-container>
+                            <nz-option *ngIf="isGetHopTac" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Đang Tải Dữ Liệu...
+                            </nz-option>
+                            <ng-template #id_tochuchoptac let-control>
+                                <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                            </ng-template>
                         </nz-select>
-                        <ng-template #id_tochuchoptac let-control>
-                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                        </ng-template>
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">

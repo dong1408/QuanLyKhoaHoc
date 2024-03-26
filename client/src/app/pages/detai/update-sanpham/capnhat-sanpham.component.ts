@@ -1,12 +1,8 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {CapNhatBaiBao, ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
-import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {forkJoin, Subject, takeUntil} from "rxjs";
-import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
+import {BehaviorSubject, debounceTime, forkJoin, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
 import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
@@ -15,6 +11,8 @@ import {CapNhatSanPham} from "../../../core/types/sanpham/san-pham.type";
 import {dateConvert} from "../../../shared/commons/utilities";
 import {DeTaiService} from "../../../core/services/detai/de-tai.service";
 import {ChiTietDeTai} from "../../../core/types/detai/de-tai.type";
+import {validValuesValidator} from "../../../shared/validators/valid-value.validator";
+import {ApiResponse} from "../../../core/types/api-response.type";
 
 @Component({
     selector:"app-detai-sanpham-capnhat",
@@ -25,9 +23,16 @@ import {ChiTietDeTai} from "../../../core/types/detai/de-tai.type";
 export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
     id:number
     detai:ChiTietDeTai
-    tochucs:ToChuc[]
+
+    dvTaiTros:ToChuc[] = []
+    dvKhac:ToChuc[] = []
 
     isCapNhatLoading:boolean = false
+    isGetTaiTro:boolean = false
+    isGetDVKhac:boolean = false
+
+    searchTaiTro$ = new BehaviorSubject('');
+    searchDVKhac$ = new BehaviorSubject('');
 
     capNhatForm:FormGroup
 
@@ -55,13 +60,6 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
         })
 
         this.capNhatForm = this.fb.group({
-            ngaykekhai:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
             tensanpham:[
                 null,
                 Validators.compose([
@@ -69,49 +67,25 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
                     noWhiteSpaceValidator()
                 ])
             ],
-            tongsotacgia:[
-                0,
-                Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
-                ])
-            ],
             solandaquydoi:[
                 0,
                 Validators.compose([
-                    noWhiteSpaceValidator,
-                    Validators.required
                 ])
             ],
             cosudungemailtruong:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             cosudungemaildonvikhac:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             cothongtintruong:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             cothongtindonvikhac:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             conhantaitro:[
                 false,
-                Validators.compose([
-                    noWhiteSpaceValidator
-                ])
             ],
             chitietdonvitaitro:[
                 {
@@ -125,35 +99,31 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
             diemquydoi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator(),
-                    Validators.required
+                    noWhiteSpaceValidator()
                 ])
             ],
             gioquydoi:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator(),
-                    Validators.required
                 ])
             ],
             thongtinchitiet:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator(),
-                    Validators.required
                 ])
             ],
             capsanpham:[
                 null,
                 Validators.compose([
                     noWhiteSpaceValidator(),
-                    Validators.required
+                    validValuesValidator(['Khoa','Cơ sở','Tỉnh','Bộ','Ngành','Nhà nước','Nước ngoài']),
                 ])
             ],
             thoidiemcongbohoanthanh:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator,
                     Validators.required
                 ])
             ],
@@ -175,7 +145,12 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
                     Validators.required
                 ])
             ],
-
+            ngaykekhai:[
+                null,
+                Validators.compose([
+                    Validators.required
+                ])
+            ],
         })
         this.capNhatForm.get("conhantaitro")?.valueChanges.pipe(
             takeUntil(this.destroy$)
@@ -202,16 +177,17 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
             }
         })
 
+        this.onGetSearchDVKhac()
+        this.onGetSearchDVTaiTro()
+
         this.loadingService.startLoading()
 
         forkJoin([
                 this.deTaiService.getChiTietDeTai(this.id),
-                this.toChucService.getAllToChuc()
             ],
-            (dtResponse,tcResponse) => {
+            (dtResponse) => {
                 return {
                     detai:dtResponse.data,
-                    tochucs:tcResponse.data
                 }
             }
         ).pipe(
@@ -219,12 +195,17 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
         ).subscribe({
             next:(response) => {
                 this.detai = response.detai
-                this.tochucs = response.tochucs
+                if(this.detai.sanpham.donvitaitro){
+                    this.dvTaiTros = [...this.dvTaiTros,this.detai.sanpham.donvitaitro]
+                }
+
+                if(this.detai.sanpham.thongtinnoikhac){
+                    this.dvKhac = [...this.dvKhac,this.detai.sanpham.thongtinnoikhac]
+                }
 
                 this.capNhatForm.patchValue({
                     tensanpham:this.detai.sanpham.tensanpham,
-                    tongsotacgia:this.detai.sanpham.tongsotacgia,
-                    solandaquydoi:this.detai.sanpham.solandaquydoi,
+                    solandaquydoi:this.detai.sanpham.solandaquydoi ?? 0,
                     cosudungemailtruong:this.detai.sanpham.cosudungemailtruong ?? false,
                     cosudungemaildonvikhac:this.detai.sanpham.cosudungemaildonvikhac ?? false,
                     cothongtintruong:this.detai.sanpham.cothongtintruong ?? false,
@@ -234,13 +215,12 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
                     id_donvitaitro:this.detai.sanpham.donvitaitro?.id ?? null,
                     chitietdonvitaitro:this.detai.sanpham.chitietdonvitaitro ?? null,
                     ngaykekhai:this.detai.sanpham.ngaykekhai,
-                    diemquydoi:this.detai.sanpham.diemquydoi,
-                    gioquydoi:this.detai.sanpham.gioquydoi,
-                    thongtinchitiet:this.detai.sanpham.thongtinchitiet,
-                    capsanpham:this.detai.sanpham.capsanpham,
+                    diemquydoi:this.detai.sanpham.diemquydoi ?? null,
+                    gioquydoi:this.detai.sanpham.gioquydoi ?? null,
+                    thongtinchitiet:this.detai.sanpham.thongtinchitiet ?? null,
+                    capsanpham:this.detai.sanpham.capsanpham ?? null,
                     thoidiemcongbohoanthanh:this.detai.sanpham.thoidiemcongbohoanthanh
                 })
-                // console.log(response.detai)
                 this.loadingService.stopLoading()
             },
             error:(error) => {
@@ -254,6 +234,46 @@ export class CapNhatSanPhamDeTaiComponent implements OnInit,OnDestroy{
                 return;
             }
         })
+    }
+
+    onGetSearchDVKhac(){
+        const listDVKhac = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchDVKhac$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listDVKhac))
+
+        optionList$.subscribe(data => {
+            this.dvKhac = data.data
+            this.isGetDVKhac = false
+        })
+    }
+
+    onGetSearchDVTaiTro(){
+        const listDVTraiTro = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchTaiTro$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listDVTraiTro))
+
+        optionList$.subscribe(data => {
+            this.dvTaiTros = data.data
+            this.isGetTaiTro = false
+        })
+    }
+
+    onSearchTaiTro(event:any){
+        if(event && event !== ""){
+            this.isGetTaiTro = true
+            this.searchTaiTro$.next(event)
+        }
+    }
+
+    onSearchDVKhac(event:any){
+        if(event && event !== ""){
+            this.isGetDVKhac = true
+            this.searchDVKhac$.next(event)
+        }
     }
 
     onCapNhatDeTaiSanPham(){

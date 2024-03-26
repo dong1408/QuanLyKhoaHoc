@@ -5,6 +5,8 @@ namespace App\Http\Requests\SanPham;
 use App\Rules\EmailUniqueIfIdTacgiaNull;
 use App\Rules\MatochucUniqueIfIdTochucNull;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class UpdateSanPhamTacGiaRequest extends FormRequest
@@ -54,15 +56,46 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_hoc_ham_hoc_vis', 'id')
             ],
+            "sanpham_tacgia.*.tochuc" => [
+                'required_if:sanpham_tacgia.*.id_tacgia,null','bail','nullable'
+            ],
             "sanpham_tacgia.*.tochuc.id_tochuc" => [
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
             "sanpham_tacgia.*.tochuc.matochuc" => [
-                "bail", "required", "string",
-                new MatochucUniqueIfIdTochucNull
+                'required_if:sanpham_tacgia.*.id_tacgia,null',
+                "bail", "nullable", "string",
+                function ($attribute, $value, $fail) {
+                    $index = key($this->input('sanpham_tacgia'));
+
+                    // Truy xuất giá trị của chỉ số index cụ thể
+                    $idTacGia = $this->input("sanpham_tacgia.$index.id_tacgia");
+                    $idToChuc = $this->input("sanpham_tacgia.$index.tochuc.id_tochuc");
+                    if (is_null($idTacGia) && is_null($idToChuc)) {
+                        $exists = DB::table('d_m_to_chucs')
+                            ->where('matochuc', $value)
+                            ->exists();
+
+                        if ($exists) {
+                            $fail("Tổ chức với mã là '$value' đã tồn tại trong hệ thống.");
+                        }
+                    }
+                }
             ],
-            "sanpham_tacgia.*.tochuc.tentochuc" => "bail|required|string",
+            "sanpham_tacgia.*.tochuc.tentochuc" => "bail|nullable|string",
+
+
+//            "sanpham_tacgia.*.tochuc" => "bail|nullable",
+//            "sanpham_tacgia.*.tochuc.id_tochuc" => [
+//                "bail", "nullable", "integer",
+//                Rule::exists("d_m_to_chucs", "id")
+//            ],
+//            "sanpham_tacgia.*.tochuc.matochuc" => [
+//                "bail", "nullable", "string",
+//                Rule::unique("d_m_to_chucs", "matochuc")
+//            ],
+//            "sanpham_tacgia.*.tochuc.tentochuc" => "bail|nullable|string",
         ];
     }
 
@@ -78,7 +111,7 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
             "sanpham_tacgia.*.list_id_vaitro.*.exists" => "Vai trò tác giả không tồn tại trên hệ thống",
             'sanpham_tacgia.*.email.unique' => 'Email đã tồn tại trên hệ thống',
             'sanpham_tacgia.*.tochuc.id_tochuc.exists' => "Tổ chức không tồn tại trên hệ thống",
-            'sanpham_tacgia.*.tochuc.matochuc.unique' => "Mã tổ chức đã tồn tại trên hệ thống",
+            'sanpham_tacgia.*.tochuc.matochuc.unique' => "Tổ chức đã tồn tại trên hệ thống",
             "sanpham_tacgia.*.id_hochamhocvi.exists" => "Học hàm học vị không tồn tại trên hệ thống"
         ];
     }

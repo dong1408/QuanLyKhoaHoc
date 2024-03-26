@@ -14,6 +14,8 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {RouterLink} from "@angular/router";
 import {CapNhatDeTaiRoutingModule} from "./capnhat-detai-routing.module";
 import {SharedModule} from "../../../../../shared/components/shared.module";
+import {NzListModule} from "ng-zorro-antd/list";
+import {NzModalModule} from "ng-zorro-antd/modal";
 
 @NgModule({
     declarations:[
@@ -35,7 +37,9 @@ import {SharedModule} from "../../../../../shared/components/shared.module";
         ReactiveFormsModule,
         SharedModule,
         RouterLink,
-        CapNhatDeTaiRoutingModule
+        CapNhatDeTaiRoutingModule,
+        NzListModule,
+        NzModalModule
 
     ],
     exports:[

@@ -79,28 +79,25 @@
                 </nz-form-item>
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">
                     <h3 class="">Tổ Chức</h3>
-                    <nz-form-control  nzHasFeedback>
+                    <nz-form-control [nzErrorTip]="id_tochuc" nzHasFeedback>
                         <nz-select
-                                (ngModelChange)="onSelectToChuc($event)"
                                 formControlName="id_tochuc"
-                                nzAllowClear
                                 nzShowSearch  nzPlaceHolder="Tổ Chức"
-                        >
-                            <nz-option *ngFor="let data of this.toChucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
-                        </nz-select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
-                    <h3 class="">Đơn Vị</h3>
-                    <nz-form-control  nzHasFeedback>
-                        <nz-select
                                 nzAllowClear
-                                formControlName="id_donvi"
-                                nzShowSearch  nzPlaceHolder="Đơn Vị"
-                                [nzLoading]="isGetDonViLoading"
-                                [nzDisabled]="isGetDonViLoading"
+                                nzServerSearch
+                                (nzOnSearch)="onSearchToChuc($event)"
+                                [nzLoading]="isGetToChuc"
                         >
-                            <nz-option *ngFor="let data of this.donVis" [nzLabel]="data.tendonvi ? data.tendonvi : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                            <ng-container *ngFor="let data of tochucs">
+                                <nz-option *ngIf="!isGetToChuc" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                            </ng-container>
+                            <nz-option *ngIf="isGetToChuc" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Đang Tải Dữ Liệu...
+                            </nz-option>
+                            <ng-template #id_tochuc let-control>
+                                <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                            </ng-template>
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
@@ -141,7 +138,6 @@
                     <h3 class="">Đang Đi Học ?</h3>
                     <nz-form-control [nzErrorTip]="dangdihoc" nzHasFeedback>
                         <nz-select
-                                (ngModelChange)="onSelectNoHoc($event)"
                                 formControlName="dangdihoc"
                                 nzShowSearch
                                 nzAllowClear
@@ -157,14 +153,25 @@
                 </nz-form-item>
                 <nz-form-item class="tw-w-full lg:tw-w-[50%]">
                     <h3 class="">Nơi Học</h3>
-                    <nz-form-control  nzHasFeedback>
+                    <nz-form-control [nzErrorTip]="id_noihoc" nzHasFeedback>
                         <nz-select
                                 formControlName="id_noihoc"
-                                nzShowSearch
+                                nzShowSearch  nzPlaceHolder="Nơi Học"
                                 nzAllowClear
-                                nzPlaceHolder="Nơi Học"
+                                nzServerSearch
+                                (nzOnSearch)="onSearchNoiHoc($event)"
+                                [nzLoading]="isGetNoiHoc"
                         >
-                            <nz-option *ngFor="let data of this.toChucs" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                            <ng-container *ngFor="let data of noiHocs">
+                                <nz-option *ngIf="!isGetToChuc" [nzLabel]="data.tentochuc ? data.tentochuc : 'Không Có Tên'" [nzValue]=data.id></nz-option>
+                            </ng-container>
+                            <nz-option *ngIf="isGetNoiHoc" nzDisabled nzCustomContent>
+                                <span nz-icon nzType="loading" class="loading-icon"></span>
+                                Đang Tải Dữ Liệu...
+                            </nz-option>
+                            <ng-template #id_noihoc let-control>
+                                <small *ngIf="control.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                            </ng-template>
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
@@ -215,7 +222,6 @@
                     <h3 class="">Ngành Tính Điểm</h3>
                     <nz-form-control  nzHasFeedback>
                         <nz-select
-                                (ngModelChange)="onSelectNganhTinhDiem($event)"
                                 formControlName="id_nganhtinhdiem"
                                 nzShowSearch
                                 nzAllowClear

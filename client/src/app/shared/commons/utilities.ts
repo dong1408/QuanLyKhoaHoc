@@ -1,3 +1,5 @@
+import {SanPhamTacGia, SanPhamTacGiaMerged} from "../../core/types/sanpham/vai-tro-tac-gia.type";
+
 export const dateConvert = (date:string| null | undefined): string | null =>{
     if(date === null || date === undefined){
         return null;
@@ -12,4 +14,23 @@ export const dateConvert = (date:string| null | undefined): string | null =>{
     const formattedDateString = `${year}-${month}-${day}`;
 
     return formattedDateString;
+}
+
+
+export const mergedUsers = (data:SanPhamTacGia[]):SanPhamTacGiaMerged[] =>{
+    return data.reduce((acc:SanPhamTacGiaMerged[], curr) => {
+        // Kiểm tra xem đã có phần tử với 'id_user' tương tự trong acc hay chưa
+        const existingUser = acc.find(item => item.tacgia.id === curr.tacgia.id);
+        if (!existingUser) {
+            // Nếu không tìm thấy, thêm phần tử mới vào mảng kết quả
+            acc.push({
+                ...curr,
+                vaitrotacgia:[curr.vaitrotacgia]
+            });
+        } else {
+            // Nếu đã tồn tại, thêm giá trị 'vaitrotacgia' vào mảng tương ứng
+            existingUser.vaitrotacgia.push(curr.vaitrotacgia);
+        }
+        return acc;
+    }, []);
 }

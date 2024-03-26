@@ -8,10 +8,10 @@
             [nzOkLoading]="isCapNhatTinhDiem"
     >
         <ng-container *nzModalContent>
-            <form nz-form class="tw-space-y-[16px]" [formGroup]="formTinhDiem">
-                <div>
-                    <h3 class="tw-text-center">Ngành Tính Điểm</h3>
-                    <nz-form-control>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formTinhDiem">
+                <nz-form-item>
+                    <h3 class="tw-text-center"><span class="error">*</span> Ngành Tính Điểm</h3>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="id_nganhtinhdiem">
                         <nz-select
                                 (ngModelChange)="onSelectChange($event)"
                                 nzAllowClear
@@ -22,14 +22,14 @@
                         >
                             <nz-option *ngFor="let data of nganhTinhDiems" [nzValue]="data.id" [nzLabel]="data.tennganhtinhdiem ? data.tennganhtinhdiem : 'Không có tên'"></nz-option>
                         </nz-select>
-                        <ng-container *ngIf="formTinhDiem.controls?.['id_nganhtinhdiem']?.touched && formTinhDiem.controls?.['id_nganhtinhdiem']?.dirty">
-                            <small *ngIf="formTinhDiem.controls?.['id_nganhtinhdiem']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                        </ng-container>
+                        <ng-template #id_nganhtinhdiem let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
                     </nz-form-control>
-                </div>
-                <div>
-                    <h3 class="tw-text-center">Chuyên Ngành Tính Điểm</h3>
-                    <nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <h3 class="tw-text-center"><span class="error">*</span> Chuyên Ngành Tính Điểm</h3>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="id_chuyennganhtinhdiem">
                         <nz-select
                                 nzAllowClear
                                 nzPlaceHolder="Chuyên Ngành Tính Điểm"
@@ -39,50 +39,50 @@
                         >
                             <nz-option *ngFor="let data of chuyenNganhTinhDiems" [nzValue]="data.id" [nzLabel]="data.tenchuyennganh ? data.tenchuyennganh : 'Không có tên'"></nz-option>
                         </nz-select>
-                        <ng-container *ngIf="formTinhDiem.controls?.['id_chuyennganhtinhdiem']?.touched && formTinhDiem.controls?.['id_chuyennganhtinhdiem']?.dirty">
-                            <small *ngIf="formTinhDiem.controls?.['id_chuyennganhtinhdiem']?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
-                        </ng-container>
+                        <ng-template #id_chuyennganhtinhdiem let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
                     </nz-form-control>
-                </div>
-                <div>
+                </nz-form-item>
+                <nz-form-item>
                     <h3 class="tw-text-center">Điểm</h3>
-                    <nz-form-control>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="diem">
                         <input nz-input placeholder="Điểm"  type="text" formControlName="diem"/>
-                        <ng-container *ngIf="formTinhDiem.controls?.['diem']?.touched && formTinhDiem.controls?.['diem']?.dirty">
-                            <small *ngIf="formTinhDiem.controls?.['diem']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        </ng-container>
+                        <ng-template #diem let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
                     </nz-form-control>
-                </div>
-                <div>
+                </nz-form-item>
+                <nz-form-item>
                     <h3 class="tw-text-center">Năm Tính Điểm</h3>
-                    <nz-form-control>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="namtinhdiem">
                         <input nz-input placeholder="Năm Tính Điểm"  type="text" formControlName="namtinhdiem"/>
-                        <ng-container *ngIf="formTinhDiem.controls?.['diem']?.touched && formTinhDiem.controls?.['diem']?.dirty">
-                            <small *ngIf="formTinhDiem.controls?.['diem']?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
-                        </ng-container>
+                        <ng-template #namtinhdiem let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
                     </nz-form-control>
-                </div>
-                <div>
+                </nz-form-item>
+                <nz-form-item>
                     <h3 class="tw-text-center">Ghi Chú</h3>
-                    <nz-form-control>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="ghichu">
             <textarea
                     nz-input
                     placeholder="Ghi chú"
                     formControlName="ghichu"
                     [nzAutosize]="{ minRows: 3, maxRows: 6 }"
             ></textarea>
-                        <ng-container *ngIf="formTinhDiem.controls?.['ghichu']?.touched && formTinhDiem.controls?.['ghichu']?.dirty">
-                            <small *ngIf="formTinhDiem.controls?.['ghichu']?.errors?.['whitespace']" class="tw-ml-2 tw-text-red-600">Không được sử dụng dấu khoảng trắng</small>
-                        </ng-container>
+                        <ng-template #ghichu let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 tw-text-red-600">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
                     </nz-form-control>
-                </div>
+                </nz-form-item>
             </form>
         </ng-container>
     </nz-modal>
 </div>
 
 <div class="tw-space-y-[16px]">
-    <button nz-button nzType="primary" [routerLink]="['/tap-chi',this.id]">
+    <button nz-button nzType="primary" [routerLink]="['/admin/tap-chi',this.id]">
         <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
     </button>
     <h1 class="text-primary tw-text-5xl">LỊCH SỬ TÍNH ĐIỂM TẠP CHÍ</h1>
@@ -103,6 +103,9 @@
             <ng-container *ngIf="tinhDiemTapChis.length > 0">
                 <div>
                     <app-score-card *ngFor="let card of tinhDiemTapChis" [score]="card"></app-score-card>
+                    <div class="tw-my-[14px]">
+                        <nz-divider ></nz-divider>
+                    </div>
                 </div>
             </ng-container>
             <ng-container *ngIf="tinhDiemTapChis.length < 1">

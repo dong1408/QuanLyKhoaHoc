@@ -16,7 +16,7 @@ class DeTaiNotXacNhanException extends Exception
                 400,
                 "Đề tài cần được xác nhận trước"
             ),
-            404
+            400
         );
     }
 }

@@ -4,12 +4,12 @@ import {ApiResponse, PagingResponse} from "../../types/api-response.type";
 import {
     BaoCaoTienDo,
     BaoCaoTienDoDeTai,
-    CapNhatDeTai,
+    CapNhatDeTai, CapNhatDeTaiUser,
     ChiTietDeTai,
     DeTai, NghiemThu, NghiemThuDeTai,
     TaoDeTai,
     TuyenChon,
-    TuyenChonDeTai,
+    TuyenChonDeTai, XetDuyet,
     XetDuyetDeTai
 } from "../../types/detai/de-tai.type";
 import {environment} from "../../../../environments/environment";
@@ -87,6 +87,15 @@ export class DeTaiService{
         )
     }
 
+    capNhatDeTaiChoNguoiDung(id:number,data:CapNhatDeTaiUser){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/detai/public/${id}`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
     capNhatSanPham(id:number,data:CapNhatSanPham){
         return this.http.patch<ApiResponse<boolean>>(
             `${environment.apiUrl}/detai/${id}/sanpham`,
@@ -149,7 +158,7 @@ export class DeTaiService{
     }
 
     xetDuyetDeTai(id:number,data:XetDuyetDeTai){
-        return this.http.post<ApiResponse<XetDuyetDeTai>>(
+        return this.http.post<ApiResponse<XetDuyet>>(
             `${environment.apiUrl}/detai/${id}/xetduyet`,
             data
         ).pipe(

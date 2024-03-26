@@ -3,13 +3,16 @@ import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
-import {forkJoin, Subject, takeUntil} from "rxjs";
+import {BehaviorSubject, debounceTime, forkJoin, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {CapNhatBaiBao, ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Magazine} from "../../../core/types/tapchi/tap-chi.type";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
 import {dateConvert} from "../../../shared/commons/utilities";
+import {Keyword} from "../../../core/types/baibao/keyword.type";
+import {ApiResponse} from "../../../core/types/api-response.type";
+import {KeywordService} from "../../../core/services/baibao/keyword.service";
 
 @Component({
     selector:"app-baibao-capnhat",
@@ -20,13 +23,20 @@ import {dateConvert} from "../../../shared/commons/utilities";
 export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
     id:number
     baibao:ChiTietBaiBao
-    tapchis:Magazine[]
+    tapChis:Magazine[] = []
+    keywords:Keyword[] = []
 
     isCapNhatLoading:boolean = false
 
     capNhatForm:FormGroup
 
     destroy$ = new Subject<void>()
+
+    isGetTapChi:boolean = false
+    isGetKeyword:boolean = false
+
+    searchKeyword$ = new BehaviorSubject('');
+    searchTapChi$ = new BehaviorSubject('');
 
     constructor(
         private baiBaoService:BaiBaoService,
@@ -35,7 +45,8 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
         private tapChiService:TapChiService,
         private _router: ActivatedRoute,
         private router:Router,
-        private fb:FormBuilder
+        private fb:FormBuilder,
+        private keywordService:KeywordService
     ) {
     }
 
@@ -89,7 +100,7 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
             keywords:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator()
+
                 ])
             ],
             volume:[
@@ -119,23 +130,20 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
             id_tapchi:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator()
                 ])
             ],
-
-
         })
 
+        this.onGetSearchTapChi()
+        this.onGetSearchKeyword()
         this.loadingService.startLoading()
 
         forkJoin([
             this.baiBaoService.getChiTietBaiBao(this.id),
-            this.tapChiService.getAllTapChi()
         ],
-            (bbResponse,tcResponse) => {
+            (bbResponse) => {
                 return {
                     baibao:bbResponse.data,
-                    tapchis:tcResponse.data
                 }
             }
         ).pipe(
@@ -143,7 +151,10 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
         ).subscribe({
             next:(response) => {
                 this.baibao = response.baibao
-                this.tapchis = response.tapchis
+                this.tapChis = [...this.tapChis,this.baibao.tapchi]
+                if(this.baibao.keywords !== null){
+                    this.keywords = [...this.keywords,...this.baibao.keywords]
+                }
 
                 this.capNhatForm.patchValue({
                     doi:this.baibao.doi ?? null,
@@ -157,7 +168,7 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
                     issue:this.baibao.issue ?? null,
                     number:this.baibao.number ?? null,
                     pages:this.baibao.number ?? null,
-                    id_tapchi:this.baibao.tapchi.id
+                    id_tapchi:this.baibao.tapchi
                 })
                 this.loadingService.stopLoading()
             },
@@ -172,6 +183,46 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
                 return;
             }
         })
+    }
+
+    onGetSearchKeyword(){
+        const listKeyword = (keyword:string):Observable<ApiResponse<Keyword[]>> =>  this.keywordService.getAllKeyword(keyword)
+        const optionList$:Observable<ApiResponse<Keyword[]>> = this.searchKeyword$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listKeyword))
+
+        optionList$.subscribe(data => {
+            this.keywords = data.data
+            this.isGetKeyword = false
+        })
+    }
+
+    onSearchKeyword(event:any){
+        if(event && event !== ""){
+            this.isGetKeyword = true
+            this.searchKeyword$.next(event)
+        }
+    }
+
+    onGetSearchTapChi(){
+        const listTapChi = (keyword:string):Observable<ApiResponse<Magazine[]>> =>  this.tapChiService.getAllTapChi(keyword)
+        const optionList$:Observable<ApiResponse<Magazine[]>> = this.searchTapChi$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listTapChi))
+
+        optionList$.subscribe(data => {
+            this.tapChis = data.data
+            this.isGetTapChi = false
+        })
+    }
+
+    onSearchTapChi(event:any){
+        if(event && event !== ""){
+            this.isGetTapChi = true
+            this.searchTapChi$.next(event)
+        }
     }
 
     onCapNhatBaiBao(){
@@ -196,6 +247,20 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
             received:form.get('received')?.value ? dateConvert(form.get('received')?.value.toString()) : null,
             accepted:form.get('accepted')?.value ? dateConvert(form.get('accepted')?.value.toString()) : null,
             published:form.get('published')?.value ? dateConvert(form.get('published')?.value.toString()) : null,
+            tapchi:{
+                id_tapchi: form.get("id_tapchi")?.value['id'] ?? null,
+                name:form.get("id_tapchi")?.value['name'],
+                issn:form.get("id_tapchi")?.value['issn'] ?? null,
+                eissn:form.get("id_tapchi")?.value['eissn'] ?? null,
+                pissn:form.get("id_tapchi")?.value['pissn'] ?? null,
+                website:form.get("id_tapchi")?.value['website'] ?? null
+            },
+            keywords:form.get('keywords')?.value !== null ? form.get('keywords')?.value.map((item:Keyword) => {
+                return {
+                    id_keyword:item.id,
+                    name:item.name
+                }
+            }) : null,
         }
 
         this.isCapNhatLoading = true

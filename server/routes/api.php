@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BaiBao\KeywordController;
 use App\Http\Controllers\Admin\NhaXuatBan\NhaXuatBanController;
 use App\Http\Controllers\Admin\TapChi\NganhTheoHDGSController;
 use App\Http\Controllers\Admin\TapChi\PhanLoaiTapChiController;
@@ -83,7 +84,8 @@ Route::group([
     Route::post('permissions', [PermissionController::class, 'addPermission'])->can('role.add');
     Route::patch('permissions/{id}', [PermissionController::class, 'updatePermission'])->can('role.update');
 
-
+    // ============================== Keyword ================================= //
+    Route::get('keywords', [KeywordController::class, 'getAllKeyword']);
 
     // BaiBaoKhoaHocs
     Route::get('baibao/public', [BaiBaoKhoaHocController::class, 'getBaiBaoPagingForUser']);
@@ -155,7 +157,6 @@ Route::group([
     Route::get('tapchi/{id}/khongcongnhan', [TapChiController::class, 'getLichSuTapChiKhongCongNhan']);
     Route::get('tapchi/{id}/xephang', [TapChiController::class, 'getLichSuXepHangTapChi']);
     Route::get('tapchi/{id}/tinhdiem', [TapChiController::class, 'getLichSuTinhDiemTapChi']);
-    Route::get('tapchi/{id}/detail', [TapChiController::class, 'getDetailTapChi']);
     Route::post('tapchi', [TapChiController::class, 'createTapChi']);
     Route::patch('tapchi/{id}/trangthai', [TapChiController::class, 'updateTrangThaiTapChi']);
     Route::patch('tapchi/{id}', [TapChiController::class, 'updateTapChi']);
@@ -165,6 +166,7 @@ Route::group([
     Route::patch('tapchi/{id}/delete', [TapChiController::class, 'deleteTapChi']);
     Route::patch('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
     Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
+    Route::get('tapchi/{id}', [TapChiController::class, 'getDetailTapChi']);
 
 
 

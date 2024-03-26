@@ -81,12 +81,6 @@ export class ChiTietDeTaiComponent{
                     Validators.required,
                     noWhiteSpaceValidator()
                 ])
-            ],
-            loaiminhchung:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator()
-                ])
             ]
         })
 
@@ -217,7 +211,6 @@ export class ChiTietDeTaiComponent{
                 this.detai = response.data
                 this.formCapNhatFileMinhChung.patchValue({
                     url: this.detai.sanpham.minhchung?.url,
-                    loaiminhchung:this.detai.sanpham.minhchung?.loaiminhchung ?? null
                 })
 
                 this.initSanPhamTacGia(response.data.sanpham_tacgias)
@@ -260,7 +253,6 @@ export class ChiTietDeTaiComponent{
                 )
                 if (this.detai && this.detai.sanpham && this.detai.sanpham.minhchung) {
                     this.detai.sanpham.minhchung.url = data.url;
-                    this.detai.sanpham.minhchung.loaiminhchung = data.loaiminhchung ?? undefined
                 }
                 this.isOpenFormMinhChung = false
                 this.isCapNhatFileMinhChung = false
