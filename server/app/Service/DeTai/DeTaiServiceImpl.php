@@ -418,10 +418,15 @@ class DeTaiServiceImpl implements DeTaiService
                 return is_null($object['id_tacgia']);
             });
 
+
             // Lọc ra những to chuc tác giả có id_tacgia != nul
             $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
-                return is_null($object['tochuc']['id_tochuc']);
+                if (!is_null($object['tochuc'])) {
+                    return is_null($object['tochuc']['id_tochuc']);
+                }
             });
+
+
 
             // check có nhận tài trợ và đơn vị tài trợ ngoài thì thêm mới vào hệ thống
             if ($donVi != null) {
@@ -457,16 +462,16 @@ class DeTaiServiceImpl implements DeTaiService
             if (count($filteredWithoutIdToChuc) > 0) {
                 $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
             }
-
-
-            // add tổ chức cho tác giả
+            //            // add tổ chức cho tác giả
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {
                 $user = User::find($sanPhamTacGia['id_tacgia']);
                 if ($user == null) {
                     throw new UserNotFoundException();
                 }
-                $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
-                $user->save();
+                if ($sanPhamTacGia['tochuc'] && $sanPhamTacGia['tochuc']['id_tochuc']) {
+                    $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
+                    $user->save();
+                }
             }
 
 
@@ -623,17 +628,28 @@ class DeTaiServiceImpl implements DeTaiService
     }
 
 
+
     private function keKhaiToChuc($listSanPhamTacGia)
     {
         if (is_array($listSanPhamTacGia)) {
             // Lọc ra những sanphamtacgia co tổ chức cần thêm vào hệ thống
             $sanphamtacgiasWithIdTochucNull = array_filter($listSanPhamTacGia, function ($object) {
-                return is_null($object['tochuc']['id_tochuc']);
+                if (isset($object['tochuc']) && is_null($object['tochuc']['id_tochuc'])) {
+                    return $object;
+                }
+                //return is_null($object['tochuc']['id_tochuc']);
             });
 
             // Lojc ra những sanphamtacgia có những tổ chức không cần thêm (id_tochuc != null)
             $sanphamtacgiasWithIdTochucNotNull = array_filter($listSanPhamTacGia, function ($object) {
-                return !is_null($object['tochuc']['id_tochuc']);
+                if (isset($object['tochuc']) && !is_null($object['tochuc']['id_tochuc'])) {
+                    return $object;
+                }
+                if (is_null($object['tochuc'])) {
+                    return $object;
+                }
+                //                return !is_null($object['id_tacgia']) &&  !is_null($object['tochuc']) && !is_null($object['tochuc']['id_tochuc']);
+                //return !is_null($object['tochuc']['id_tochuc']);
             });
 
 
@@ -656,6 +672,10 @@ class DeTaiServiceImpl implements DeTaiService
         }
         return $listSanPhamTacGia;
     }
+
+
+
+
 
     private function keKhaiDonVi($donVi)
     {
@@ -739,7 +759,7 @@ class DeTaiServiceImpl implements DeTaiService
 
         $sanPham->tensanpham = $validated['tensanpham'];
         //        $sanPham->id_loaisanpham = $validated['id_loaisanpham'];
-//        $sanPham->tongsotacgia = $validated['tongsotacgia'];
+        //        $sanPham->tongsotacgia = $validated['tongsotacgia'];
         $sanPham->solandaquydoi = $validated['solandaquydoi'];
         $sanPham->cosudungemailtruong = $validated['cosudungemailtruong'];
         $sanPham->cosudungemaildonvikhac = $validated['cosudungemaildonvikhac'];
@@ -818,17 +838,6 @@ class DeTaiServiceImpl implements DeTaiService
             throw new DeTaiNotFoundException();
         }
 
-
-        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
-        $idUserCurent = auth('api')->user()->id;
-        $userCurrent = User::find($idUserCurent);
-        if ($sanPham->trangthairasoat == "Đã xác nhận") {
-            if (!$userCurrent->hasPermission('detai.status')) {
-                throw new UserNotHavePermissionException();
-            }
-        }
-
-
         // Check san pham trong trang thai softDelete thi khong cho chinh sua
         if ($sanPham->trashed()) {
             throw new DeTaiCanNotUpdateException();
@@ -857,7 +866,9 @@ class DeTaiServiceImpl implements DeTaiService
 
             // Lọc ra những to chuc tác giả có id_tacgia != nul
             $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
-                return is_null($object['tochuc']['id_tochuc']);
+                if (!is_null($object['tochuc'])) {
+                    return is_null($object['tochuc']['id_tochuc']);
+                }
             });
 
 
@@ -866,21 +877,23 @@ class DeTaiServiceImpl implements DeTaiService
                 $listSanPhamTacGia = $this->keKhaiTacGia($listSanPhamTacGia);
             }
 
+
             // check những tổ chức ngoài thì thêm vào hệ thống
             if (count($filteredWithoutIdToChuc) > 0) {
                 $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
             }
+            $test = $listSanPhamTacGia;
 
-
-
-            // add tổ chức cho tác giả
+            //            // add tổ chức cho tác giả
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {
                 $user = User::find($sanPhamTacGia['id_tacgia']);
                 if ($user == null) {
                     throw new UserNotFoundException();
                 }
-                $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
-                $user->save();
+                if ($sanPhamTacGia['tochuc'] && $sanPhamTacGia['tochuc']['id_tochuc']) {
+                    $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
+                    $user->save();
+                }
             }
 
 
@@ -888,7 +901,7 @@ class DeTaiServiceImpl implements DeTaiService
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {
                 foreach ($sanPhamTacGia['list_id_vaitro'] as $idvaitro) {
                     if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $idvaitro]])->first() == null) {
-                        throw new VaiTroOfBaiBaoException();
+                        throw new VaiTroOfDeTaiException();
                     }
                     $listIdTacGia[] = $sanPhamTacGia['id_tacgia'];
                     $listIdVaiTro[] = $idvaitro;
@@ -952,6 +965,10 @@ class DeTaiServiceImpl implements DeTaiService
                 ]);
                 $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
             }
+
+            // update so tac gia cho bai bao
+            $sanPham->tongsotacgia = count(array_unique($listIdTacGia));
+            $sanPham->save();
         });
         return new ResponseSuccess("Cập nhật tác giả thành công", $result);
     }
@@ -1446,7 +1463,7 @@ class DeTaiServiceImpl implements DeTaiService
         // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
         $idUserCurent = auth('api')->user()->id;
 
-        if($sanPham->nguoiKeKhai->id != $idUserCurent){
+        if ($sanPham->nguoiKeKhai->id != $idUserCurent) {
             throw new ChuDeTaiException();
         }
 

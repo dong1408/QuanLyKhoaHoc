@@ -38,4 +38,6 @@ class TapChiDetailVm
     public ?XepHangTapChiVm $xephangtapchi;
 
     public ?TinhDiemTapChiVm $tinhdiemtapchi;
+
+    public $hoidonggiaosus = [];
 }

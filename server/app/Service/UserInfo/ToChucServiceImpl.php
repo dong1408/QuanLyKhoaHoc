@@ -63,7 +63,7 @@ class ToChucServiceImpl implements ToChucService
             throw new ToChucNotFoundException();
         }
 
-        $result = Convert::getToChucVm($toChuc);
+        $result = Convert::getToChucDetailVm($toChuc);
         return new ResponseSuccess("Thành công", $result);
     }
 

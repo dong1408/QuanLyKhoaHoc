@@ -9,6 +9,7 @@ use App\Rules\MatochucUniqueIfIdTochuchoptacNull;
 use App\Rules\MatochucUniqueIfIdTochucNull;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class CreateDeTaiRequest extends FormRequest
 {
@@ -31,7 +32,8 @@ class CreateDeTaiRequest extends FormRequest
     {
         return [
             // ======================== san pham ====================== //
-            "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",
+
+            "sanpham.tensanpham" => "bail|required|string|unique:san_phams,tensanpham",
             "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.conhantaitro" => "bail|nullable|boolean",
 
@@ -118,14 +120,35 @@ class CreateDeTaiRequest extends FormRequest
                 Rule::exists('d_m_hoc_ham_hoc_vis', 'id')
             ],
 
-            "sanpham_tacgia.*.tochuc" => "bail|nullable",
+            "sanpham_tacgia.*.tochuc" => [
+                'required_if:sanpham_tacgia.*.id_tacgia,null', 'bail', 'nullable'
+            ],
             "sanpham_tacgia.*.tochuc.id_tochuc" => [
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
             "sanpham_tacgia.*.tochuc.matochuc" => [
+                'required_if:sanpham_tacgia.*.id_tacgia,null',
                 "bail", "nullable", "string",
-                Rule::unique("d_m_to_chucs", "matochuc")
+                function ($attribute, $value, $fail) {
+                    foreach ($this->input('sanpham_tacgia') as $index => $sanphamTacGia) {
+                        $idTacGia = $sanphamTacGia['id_tacgia'];
+                        $idToChuc = null;
+                        if ($sanphamTacGia['tochuc']) {
+                            $idToChuc = $sanphamTacGia['tochuc']['id_tochuc'];
+                        }
+
+                        if (is_null($idTacGia) && is_null($idToChuc)) {
+                            $exists = DB::table('d_m_to_chucs')
+                                ->where('matochuc', $sanphamTacGia['tochuc']['matochuc'])
+                                ->exists();
+
+                            if ($exists) {
+                                $fail("Tổ chức với mã là '{$sanphamTacGia['tochuc']['matochuc']}' đã tồn tại trong hệ thống.");
+                            }
+                        }
+                    }
+                }
             ],
             "sanpham_tacgia.*.tochuc.tentochuc" => "bail|nullable|string",
 
@@ -146,6 +169,8 @@ class CreateDeTaiRequest extends FormRequest
             //
             'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
             "sanpham.donvi.id_donvi.exists" => "Đơn vị tài trợ không tồn tại trên hệ thống",
+            "sanpham.donvi.matochuc.required_with" => "Yêu cầu nhập mã đơn vị",
+            "sanpham.donvi.tentochuc.required_with" => "Yêu cầu nhập tên đơn vị",
 
             'tochucchuquan.id_tochuchuquan.exists' => 'Thông tin tổ chức chủ quản không tồn tại trên hệ thống',
             'tochuchoptac.id_tochuchoptac.exists' => 'Thông tin tổ chức hợp tác không tồn tại trên hệ thống',
