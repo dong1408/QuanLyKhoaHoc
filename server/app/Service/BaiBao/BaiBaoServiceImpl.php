@@ -241,8 +241,11 @@ class BaiBaoServiceImpl implements BaiBaoService
 
             // Lọc ra những to chuc tác giả có id_tacgia != nul
             $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
-                return is_null($object['tochuc']['id_tochuc']);
+                if (!is_null($object['tochuc'])) {
+                    return is_null($object['tochuc']['id_tochuc']);
+                }
             });
+
 
             // Lọc ra  những keyword có id_keyword = null
             $filteredWithoutIdKeyword = [];
@@ -251,8 +254,6 @@ class BaiBaoServiceImpl implements BaiBaoService
                     return is_null($object['id_keyword']);
                 });
             }
-
-
 
             // check có nhận tài trợ và đơn vị tài trợ ngoài thì thêm mới vào hệ thống
             if ($donVi != null) {
@@ -302,12 +303,10 @@ class BaiBaoServiceImpl implements BaiBaoService
             }
 
 
-
             // check những tổ chức ngoài thì thêm vào hệ thống
             if (count($filteredWithoutIdToChuc) > 0) {
                 $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
             }
-
 
             // add tổ chức cho tác giả
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {
@@ -315,8 +314,10 @@ class BaiBaoServiceImpl implements BaiBaoService
                 if ($user == null) {
                     throw new UserNotFoundException();
                 }
-                $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
-                $user->save();
+                if ($sanPhamTacGia['tochuc'] && $sanPhamTacGia['tochuc']['id_tochuc']) {
+                    $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
+                    $user->save();
+                }
             }
 
 
@@ -493,7 +494,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         if (is_array($listSanPhamTacGia)) {
             // Lọc ra những sanphamtacgia co tổ chức cần thêm vào hệ thống
             $sanphamtacgiasWithIdTochucNull = array_filter($listSanPhamTacGia, function ($object) {
-                if (isset($object['tochuc']) && is_null($object['tochuc']['id_tochuc'])){
+                if (isset($object['tochuc']) && is_null($object['tochuc']['id_tochuc'])) {
                     return $object;
                 }
                 //return is_null($object['tochuc']['id_tochuc']);
@@ -501,13 +502,13 @@ class BaiBaoServiceImpl implements BaiBaoService
 
             // Lojc ra những sanphamtacgia có những tổ chức không cần thêm (id_tochuc != null)
             $sanphamtacgiasWithIdTochucNotNull = array_filter($listSanPhamTacGia, function ($object) {
-                if (isset($object['tochuc']) && !is_null($object['tochuc']['id_tochuc'])){
+                if (isset($object['tochuc']) && !is_null($object['tochuc']['id_tochuc'])) {
                     return $object;
                 }
-                if(is_null($object['tochuc'])){
+                if (is_null($object['tochuc'])) {
                     return $object;
                 }
-//                return !is_null($object['id_tacgia']) &&  !is_null($object['tochuc']) && !is_null($object['tochuc']['id_tochuc']);
+                //                return !is_null($object['id_tacgia']) &&  !is_null($object['tochuc']) && !is_null($object['tochuc']['id_tochuc']);
                 //return !is_null($object['tochuc']['id_tochuc']);
             });
 
@@ -556,7 +557,9 @@ class BaiBaoServiceImpl implements BaiBaoService
             'issn' => $tapChi['issn'],
             'eissn' => $tapChi['eissn'],
             'pissn' => $tapChi['pissn'],
-            'website' => $tapChi['website']
+            'website' => $tapChi['website'],
+            'trangthai' => 0,
+            'id_nguoithem' => auth('api')->user()->id
         ];
         $tapChi = $this->tapChiService->themTapChiNgoai($array);
         return $tapChi->id;
@@ -657,7 +660,7 @@ class BaiBaoServiceImpl implements BaiBaoService
 
         $sanPham->tensanpham = $validated['tensanpham'];
         //        $sanPham->id_loaisanpham = $validated['id_loaisanpham'];
-//        $sanPham->tongsotacgia = $validated['tongsotacgia'];
+        //        $sanPham->tongsotacgia = $validated['tongsotacgia'];
         $sanPham->solandaquydoi = $validated['solandaquydoi'];
         $sanPham->cosudungemailtruong = $validated['cosudungemailtruong'];
         $sanPham->cosudungemaildonvikhac = $validated['cosudungemaildonvikhac'];
@@ -756,19 +759,11 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
+
         // Check san pham trong trang thai softDelete thi khong cho chinh sua
         if ($sanPham->trashed()) {
             throw new BaiBaoCanNotUpdateException();
         }
-
-        // check bài báo đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
-        // $idUserCurent = auth('api')->user()->id;
-        // $userCurrent = User::find($idUserCurent);
-        // if ($sanPham->trangthairasoat == "Đã xác nhận") {
-        //     if (!$userCurrent->hasPermission('baibao.status')) {
-        //         throw new UserNotHavePermissionException();
-        //     }
-        // }
 
         // check đúng loại sản phẩm là bài báo khoa học
         if ($sanPham->dmSanPham->masanpham != 'baibaokhoahoc') {
@@ -777,7 +772,6 @@ class BaiBaoServiceImpl implements BaiBaoService
 
         $validated = $request->validated();
         $result = [];
-
 
         DB::transaction(function () use ($validated, &$sanPham, &$result) {
 
@@ -795,7 +789,7 @@ class BaiBaoServiceImpl implements BaiBaoService
 
             // Lọc ra những to chuc tác giả có id_tacgia != nul
             $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
-                if(!is_null($object['tochuc'])){
+                if (!is_null($object['tochuc'])) {
                     return is_null($object['tochuc']['id_tochuc']);
                 }
             });
@@ -812,13 +806,13 @@ class BaiBaoServiceImpl implements BaiBaoService
                 $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
             }
 
-//            // add tổ chức cho tác giả
+            //            // add tổ chức cho tác giả
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {
                 $user = User::find($sanPhamTacGia['id_tacgia']);
                 if ($user == null) {
                     throw new UserNotFoundException();
                 }
-                if($sanPhamTacGia['tochuc'] && $sanPhamTacGia['tochuc']['id_tochuc']){
+                if ($sanPhamTacGia['tochuc'] && $sanPhamTacGia['tochuc']['id_tochuc']) {
                     $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
                     $user->save();
                 }
@@ -876,6 +870,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             }
 
 
+
             // Kiểm tra nếu bài báo này kh có tác giả nào đảm nhiệm vai trò tác giả liên hệ
             // (có id =2) thì set vai trò đó cho người có vai trò tác giả đứng đầu (có id =1)
             if (!in_array($idVaiTroTacGiaLienHe, $listIdVaiTro)) {
@@ -898,6 +893,8 @@ class BaiBaoServiceImpl implements BaiBaoService
                 ]);
                 $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
             }
+            $sanPham->tongsotacgia = count(array_unique($listIdTacGia));
+            $sanPham->save();
         });
         return new ResponseSuccess("Cập nhật tác giả thành công", $result);
     }
@@ -1074,8 +1071,7 @@ class BaiBaoServiceImpl implements BaiBaoService
 
         // check bài báo đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
         $idUserCurent = auth('api')->user()->id;
-
-        if($sanPham->nguoiKeKhai->id != $idUserCurent){
+        if ($sanPham->nguoiKeKhai->id != $idUserCurent) {
             throw new ChuBaiBaoException();
         }
 
@@ -1153,7 +1149,7 @@ class BaiBaoServiceImpl implements BaiBaoService
 
             // update phần sản phẩm
             $sanPham->tensanpham = $validated['sanpham']['tensanpham'];
-//            $sanPham->tongsotacgia = $validated['sanpham']['tongsotacgia'];
+            //            $sanPham->tongsotacgia = $validated['sanpham']['tongsotacgia'];
             $sanPham->conhantaitro = $validated['sanpham']['conhantaitro'];
             $sanPham->id_donvitaitro = $validated['sanpham']['conhantaitro'] == true && !empty($validated['sanpham']['donvi']['id_donvi']) ? $validated['sanpham']['donvi']['id_donvi'] : null;
             $sanPham->chitietdonvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null;
