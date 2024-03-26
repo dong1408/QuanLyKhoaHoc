@@ -16,7 +16,7 @@ class KetQuaTuyenChonDeTaiException extends Exception
                 400,
                 "Kết quả tuyển chọn của đề tài phải là đủ điều kiện"
             ),
-            404
+            400
         );
     }
 }

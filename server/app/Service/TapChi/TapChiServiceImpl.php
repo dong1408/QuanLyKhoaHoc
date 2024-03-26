@@ -224,7 +224,7 @@ class TapChiServiceImpl implements TapChiService
                 'address' => $validated['address'],
                 'id_address_city' => $validated['id_address_city'],
                 'id_address_country' => $validated['id_address_country'],
-                'trangthai' => $validated['trangthai'],
+                'trangthai' => false,
                 'id_nguoithem' => auth('api')->user()->id,
             ]);
             if ($validated['dmnganhtheohdgs'] != null) {

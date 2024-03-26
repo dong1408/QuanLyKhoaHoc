@@ -1,6 +1,16 @@
 import {Component} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {combineLatest, debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil, tap} from "rxjs";
+import {
+    BehaviorSubject,
+    combineLatest,
+    debounceTime,
+    distinctUntilChanged,
+    Observable,
+    Subject,
+    switchMap,
+    takeUntil,
+    tap
+} from "rxjs";
 import {User} from "../../../core/types/user/user.type";
 import {CapNhatVaiTroTacGia, SanPhamTacGia, VaiTroTacGia} from "../../../core/types/sanpham/vai-tro-tac-gia.type";
 import {LoadingService} from "../../../core/services/loading.service";
@@ -15,7 +25,12 @@ import {CapNhatFileMinhChung} from "../../../core/types/sanpham/file-minh-chung.
 import {CapNhatTrangThaiSanPham, TrangThaiSanPham} from "../../../core/types/sanpham/san-pham.type";
 import {DeTaiService} from "../../../core/services/detai/de-tai.service";
 import {ChiTietDeTai, NghiemThuDeTai, TuyenChonDeTai, XetDuyetDeTai} from "../../../core/types/detai/de-tai.type";
-import {dateConvert} from "../../../shared/commons/utilities";
+import {dateConvert, mergedUsers} from "../../../shared/commons/utilities";
+import {HocHamHocVi} from "../../../core/types/user-info/hoc-ham-hoc-vi.type";
+import {KeKhaiToChuc, ToChuc} from "../../../core/types/user-info/to-chuc.type";
+import {ApiResponse} from "../../../core/types/api-response.type";
+import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
+import {HocHamHocViService} from "../../../core/services/user-info/hoc-ham-hoc-vi.service";
 
 @Component({
     selector:'app-detai-chitiet',
@@ -26,11 +41,14 @@ import {dateConvert} from "../../../shared/commons/utilities";
 export class ChiTietDeTaiComponent{
     id:number
 
+    keKhaiToChuc:any = []
+
     formCapNhatFileMinhChung:FormGroup
     formCapNhatTacGia:FormGroup
     formXetDuyet:FormGroup
     formNghiemThu:FormGroup
     formTuyenChon:FormGroup
+    tochucForm:FormGroup
 
     isOpenFormTuyenChon:boolean = false
     isTuyenChon:boolean = false
@@ -38,6 +56,9 @@ export class ChiTietDeTaiComponent{
     isXetDuyet:boolean = false
     isOpenFormNghiemThu:boolean = false
     isNghiemThu:boolean = false
+    isOpenFormToChuc:boolean = false
+    isOpenListToChucKeKhai:boolean = false
+
 
     isCapNhatFileMinhChung:boolean = false
     isOpenFormMinhChung:boolean = false
@@ -45,10 +66,15 @@ export class ChiTietDeTaiComponent{
     isOpenFormTacGia:boolean = false
     isGetUsers:boolean = false
     isGetVaiTro:boolean =false
+    isGetHocHamHocVi:boolean = false
 
-    search$:Observable<[string]>
 
-    private firstSearch:boolean = false
+    tochucs:ToChuc[] = []
+
+    isGetToChuc: boolean = false
+
+    searchToChuc$ = new BehaviorSubject('');
+    searchUser$ = new BehaviorSubject('');
 
     isRestore:boolean = false
     isForceDelete:boolean = false
@@ -57,8 +83,9 @@ export class ChiTietDeTaiComponent{
     isDelete:boolean = false
 
     detai:ChiTietDeTai
-    users:User[]
-    vaiTros:VaiTroTacGia[]
+    users:User[] = []
+    vaiTros:VaiTroTacGia[] = []
+    hhhvs:HocHamHocVi[] = []
 
     destroy$ = new Subject<void>()
     constructor(
@@ -71,7 +98,9 @@ export class ChiTietDeTaiComponent{
         private userService:UserService,
         private pagingService:PagingService,
         private vaiTroService:VaiTroService,
-        public AppConstant:ConstantsService
+        public AppConstant:ConstantsService,
+        private toChucService:ToChucService,
+        private hocHamHocViService:HocHamHocViService
     ) {
     }
 
@@ -177,6 +206,26 @@ export class ChiTietDeTaiComponent{
             ]
         })
 
+        this.tochucForm = this.fb.group({
+            id:[
+                null
+            ],
+            matochuc:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            tentochuc:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+        })
+
         this.formXetDuyet.get("ketquaxetduyet")?.valueChanges.pipe(
             takeUntil(this.destroy$)
         ).subscribe(select => {
@@ -213,7 +262,126 @@ export class ChiTietDeTaiComponent{
             }
         })
 
+        this.onGetSearchUser()
+        this.onGetSearchToChuc()
+
         this.getChiTietDeTai()
+    }
+
+    onKeKhaiToChuc(){
+        const form = this.tochucForm
+        if(form.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
+            )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
+            return;
+        }
+        const data = form.value
+
+        // check kê khai trùng tổ chức
+
+        const isAvailable = this.keKhaiToChuc.some((item:KeKhaiToChuc) => {
+            return item.matochuc.toLowerCase() === data.matochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
+        })
+
+        if(isAvailable){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Bạn đã kê khai tổ chức này trước đó'
+            )
+            return;
+        }
+
+        this.keKhaiToChuc.push(data)
+        this.tochucs.push(data)
+
+        form.reset()
+
+        this.notificationService.create(
+            'success',
+            'Thành Công',
+            'Kê khai tổ chức mới thành công, vui lòng chọn'
+        )
+
+        this.isOpenFormToChuc =false
+    }
+
+    onOpenFormToChuc(){
+        this.tochucForm.reset()
+        this.isOpenFormToChuc = !this.isOpenFormToChuc
+    }
+
+    onSearchToChuc(event:any){
+        if(event && event !== ""){
+            this.isGetToChuc = true
+            this.searchToChuc$.next(event)
+        }
+    }
+
+    onGetHHHV(){
+        this.isGetHocHamHocVi = true
+        this.hocHamHocViService.getAllHocHamHocVi()
+            .pipe(
+                takeUntil(this.destroy$)
+            ).subscribe({
+            next:(response) =>{
+                this.hhhvs = response.data
+                this.isGetHocHamHocVi = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isGetHocHamHocVi = false
+                this.isOpenFormTacGia = false
+            }
+        })
+    }
+
+    onOpenListToChucKeKhai(){
+        this.isOpenListToChucKeKhai = !this.isOpenListToChucKeKhai
+    }
+
+    onXoaToChucKeKhai(matochuc:string){
+        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.matochuc !== matochuc)
+        this.tochucs = this.tochucs.filter((item:ToChuc) => item.matochuc !== matochuc)
+        this.sanphamTacgiaControls.forEach((control) => {
+            if(control.get("in_system")?.value === false){
+                control.get("tochuc")?.reset()
+            }
+        })
+    }
+
+    getVaiTroTacGia(){
+        this.isGetVaiTro = true
+        this.vaiTroService.getVaiTroDeTai().pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) =>{
+                this.vaiTros = response.data
+                this.isGetVaiTro = false
+            },
+            error:(error) => {
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    error
+                )
+                this.isGetVaiTro = false
+                this.isOpenFormTacGia = false
+            }
+        })
     }
 
     onSelectUser(event:any){
@@ -234,45 +402,57 @@ export class ChiTietDeTaiComponent{
                 ],
                 thutu:[null],
                 tyledonggop:[null],
-                id_vaitro:[null]
+                list_id_vaitro:[null],
+                in_system:[
+                    true
+                ],
+                // tochuc:[
+                //     data.tochuc
+                // ],
+                email:[
+                    data.email
+                ]
             })
             formArray.push(control);
             this.formCapNhatTacGia.get("users")?.setValue(null)
         }
     }
 
-    getAllUser(){
-        this.isGetUsers = true
-        this.search$ = combineLatest([
-            this.pagingService.keyword$,
-        ]).pipe(
-            takeUntil(this.destroy$)
-        )
+    onGetSearchToChuc(){
+        const listToChuc = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchToChuc$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listToChuc))
 
-        this.search$.pipe(
-            takeUntil(this.destroy$),
-            tap(() => this.isGetUsers = true),
-            debounceTime(700),
-            distinctUntilChanged(),
-            switchMap(([ keyword]) => {
-                return this.userService.getAllUsers( keyword)
-            })
-        ).subscribe({
-            next:(response) => {
-                this.users = response.data
-                this.isGetUsers = false
-            },
-            error:(error) => {
-                this.notificationService.create(
-                    "error",
-                    "Lỗi",
-                    error
-                )
-                this.isGetUsers = false
-            }
+        optionList$.subscribe(data => {
+            this.tochucs = data.data
+
+            this.tochucs = [...this.keKhaiToChuc,...this.tochucs]
+            this.isGetToChuc = false
         })
     }
 
+
+    onSearchUser(event:any){
+        if(event && event !== ""){
+            this.isGetUsers = true
+            this.searchUser$.next(event)
+        }
+    }
+
+    onGetSearchUser(){
+        const listUser = (keyword:string):Observable<ApiResponse<User[]>> =>  this.userService.getAllUsers(keyword)
+        const optionList$:Observable<ApiResponse<User[]>> = this.searchUser$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listUser))
+
+        optionList$.subscribe(data => {
+            this.users = data.data
+            this.isGetUsers = false
+        })
+    }
     removeUser(index:number){
         (this.formCapNhatTacGia.get('sanpham_tacgia') as FormArray).removeAt(index);
     }
@@ -281,19 +461,6 @@ export class ChiTietDeTaiComponent{
         return (this.formCapNhatTacGia.get('sanpham_tacgia') as FormArray).controls;
     }
 
-    onSearchUser(event:any){
-        if(!this.firstSearch && event.length >= 3){
-            this.getAllUser()
-        }
-        if(event && event.length >= 3){
-            this.pagingService.updateKeyword(event)
-            this.firstSearch = true
-        }
-        if(event.length <= 0){
-            console.log("reset đi ?")
-            this.formCapNhatTacGia.get("users")?.reset()
-        }
-    }
 
     addGuestControls(){
         const control = this.fb.group({
@@ -307,7 +474,48 @@ export class ChiTietDeTaiComponent{
             ],
             thutu:[null],
             tyledonggop:[null],
-            id_vaitro:[null]
+            list_id_vaitro:[
+                null,
+                Validators.compose([
+                    Validators.required
+                ])
+            ],
+            ngaysinh:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                ])
+            ],
+            dienthoai:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator()
+                ])
+            ],
+            email:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                    noWhiteSpaceValidator(),
+                    Validators.email,
+                ])
+            ],
+            tochuc:[
+                null,
+                Validators.compose([
+                    Validators.required,
+                ])
+            ],
+            id_hochamhocvi:[
+                null,
+                Validators.compose([
+                    Validators.required
+                ])
+            ],
+            in_system:[
+                false
+            ]
         })
         const formArray = this.formCapNhatTacGia.get('sanpham_tacgia') as FormArray
         formArray.push(control)
@@ -334,6 +542,7 @@ export class ChiTietDeTaiComponent{
         if(isOpen){
             this.isOpenFormTacGia = isOpen
             this.getVaiTroTacGia()
+            this.onGetHHHV()
             const formArray = this.formCapNhatTacGia.get('sanpham_tacgia') as FormArray
             formArray.clear()
             this.initSanPhamTacGia(this.detai.sanpham_tacgias)
@@ -480,7 +689,27 @@ export class ChiTietDeTaiComponent{
             return;
         }
 
-        const data:CapNhatVaiTroTacGia = form.value
+        const data:CapNhatVaiTroTacGia = {
+            sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
+                let tochuc = item.tochuc
+                return {
+                    list_id_vaitro: item.list_id_vaitro,
+                    tentacgia: item.tentacgia,
+                    id_tacgia: item.id_tacgia ?? null,
+                    ngaysinh: item.ngaysinh !== null ? dateConvert(item.ngaysinh) : null,
+                    dienthoai: item.dienthoai ?? null,
+                    email: item.email,
+                    tochuc:{
+                        id_tochuc:tochuc.id ?? null,
+                        matochuc:tochuc.matochuc,
+                        tentochuc:tochuc.tentochuc
+                    },
+                    id_hochamhocvi:item.id_hochamhocvi ?? null,
+                    thutu:item.thutu ?? null,
+                    tyledonggop:item.tyledonggop ?? null
+                }
+            }),
+        }
         this.isCapNhatTacGia = true
         this.deTaiService.capNhatVaiTroTacGia(this.id,data)
             .pipe(
@@ -492,7 +721,6 @@ export class ChiTietDeTaiComponent{
                     'Thành Công',
                     response.message
                 )
-                console.log(response)
                 if (this.detai && this.detai.sanpham_tacgias) {
                     this.detai.sanpham_tacgias = response.data
                 }
@@ -565,31 +793,10 @@ export class ChiTietDeTaiComponent{
             }
         })
     }
-
-    getVaiTroTacGia(){
-        this.isGetVaiTro = true
-        this.vaiTroService.getVaiTroDeTai().pipe(
-            takeUntil(this.destroy$)
-        ).subscribe({
-            next:(response) =>{
-                this.vaiTros = response.data
-                this.isGetVaiTro = false
-            },
-            error:(error) => {
-                this.notificationService.create(
-                    'error',
-                    'Lỗi',
-                    error
-                )
-                this.isGetVaiTro = false
-                this.isOpenFormTacGia = false
-            }
-        })
-    }
-
     private initSanPhamTacGia(data:SanPhamTacGia[]){
         const formArray = this.formCapNhatTacGia.get('sanpham_tacgia') as FormArray
-        data.map((item:SanPhamTacGia) => {
+        const dataFiltered = mergedUsers(data)
+        dataFiltered.map((item:any) => {
             const control = this.fb.group({
                 id_tacgia:[item.tacgia.id],
                 tentacgia:[
@@ -601,7 +808,19 @@ export class ChiTietDeTaiComponent{
                 ],
                 thutu:[item.thutu ?? null],
                 tyledonggop:[item.tyledonggop ?? null],
-                id_vaitro:[item.vaitrotacgia.id]
+                list_id_vaitro:[[...item.vaitrotacgia.map((item:any) => item.id)]],
+                // tochuc:[
+                //     item.tochuc
+                // ],
+                // id_hochamhocvi:[
+                //     item.hochamhocvi !== null ? item.hochamhocvi.id : null
+                // ],
+                email:[
+                    item.email
+                ],
+                in_system:[
+                    true
+                ]
             })
             formArray.push(control);
         })

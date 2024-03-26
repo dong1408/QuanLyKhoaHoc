@@ -16,7 +16,7 @@ class TrungKeywordException extends Exception
                 400,
                 "Keyword bị trùng lặp"
             ),
-            404
+            400
         );
     }
 }

@@ -16,7 +16,7 @@ class BaiBaoNotHaveFirstAuthor extends Exception
                 400,
                 "Bài báo phải có ít nhất 1 tác giả đảm nhiệm vai trò tác giả đầu tiên"
             ),
-            404
+            400
         );
     }
 }

@@ -16,7 +16,7 @@ class KetQuaXetDuyetDeTaiException extends Exception
                 400,
                 "Kết quả xét duyệt của đề tài phải là đủ điều kiện"
             ),
-            404
+            400
         );
     }
 }

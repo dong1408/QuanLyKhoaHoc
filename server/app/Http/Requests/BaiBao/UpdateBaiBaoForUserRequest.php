@@ -39,7 +39,6 @@ class UpdateBaiBaoForUserRequest extends FormRequest
                 "bail", "required", "string",
                 Rule::unique('san_phams', 'tensanpham')->ignore(Route::input('id'), 'id')
             ],
-            "sanpham.tongsotacgia" => "bail|required|integer",
             "sanpham.conhantaitro" => "bail|nullable|boolean",
 
             "sanpham.donvi" => "bail|nullable",

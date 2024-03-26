@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Exceptions\BaiBao;
+namespace App\Exceptions\DeTai;
 
 use App\Utilities\ResponseError;
 use Exception;
 
 
-class CreateBaiBaoFailedException extends Exception
+class ChuDeTaiException extends Exception
 {
     public function render($request)
     {
@@ -14,7 +14,7 @@ class CreateBaiBaoFailedException extends Exception
             new ResponseError(
                 "BAD REQUEST",
                 400,
-                "Không tìm thấy danh mục sản phẩm của bài báo"
+                "Bạn không phải là người kê khai của đề tài này"
             ),
             400
         );

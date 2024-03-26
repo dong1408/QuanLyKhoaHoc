@@ -24,7 +24,6 @@ export class BaoCaoTienDoComponent{
 
     isOpenForm:boolean = false
     isUpdateLoading:boolean = false
-    isPhanLoaiTapChiLoading:boolean = false
 
     formBaoCao: FormGroup
 

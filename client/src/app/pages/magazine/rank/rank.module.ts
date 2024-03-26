@@ -14,6 +14,7 @@ import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzPaginationModule} from "ng-zorro-antd/pagination";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
+import {NzDividerModule} from "ng-zorro-antd/divider";
 
 @NgModule({
     declarations:[
@@ -34,6 +35,7 @@ import {NzWaveModule} from "ng-zorro-antd/core/wave";
         NzPaginationModule,
         NzSelectModule,
         NzWaveModule,
+        NzDividerModule,
     ],
     exports:[
 

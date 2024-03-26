@@ -1,7 +1,13 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiResponse, PagingResponse} from "../../types/api-response.type";
-import {BaiBao, CapNhatBaiBao, ChiTietBaiBao, TaoBaiTao} from "../../types/baibao/bai-bao.type";
+import {
+    BaiBao,
+    CapNhatBaiBao,
+    CapNhatBaiBaoUser,
+    ChiTietBaiBao,
+    TaoBaiTao
+} from "../../types/baibao/bai-bao.type";
 import {environment} from "../../../../environments/environment";
 import {catchError} from "rxjs";
 import {handleError} from "../../../shared/commons/handler-error-http";
@@ -122,6 +128,16 @@ export class BaiBaoService{
     capNhatTrangThaiSanPham(id:number,data:CapNhatTrangThaiSanPham){
         return this.http.patch<ApiResponse<boolean>>(
             `${environment.apiUrl}/baibao/${id}/trangthairasoat`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+
+    capNhatBaiBaoChoNguoiDung(id:number,data:CapNhatBaiBaoUser){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/baibao/public/${id}`,
             data
         ).pipe(
             catchError(handleError)

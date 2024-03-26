@@ -1,4 +1,4 @@
-import {SanPham, TaoFileMinhChung, TaoSanPham} from "../sanpham/san-pham.type";
+import {CapNhatSanPhamUser, SanPham, TaoFileMinhChung, TaoSanPham} from "../sanpham/san-pham.type";
 import {KeKhaiTapChi, Magazine} from "../tapchi/tap-chi.type";
 import {SanPhamTacGia, TaoVaiTroTacGia} from "../sanpham/vai-tro-tac-gia.type";
 import {KeKhaiKeyword, Keyword} from "./keyword.type";
@@ -83,4 +83,21 @@ export interface CapNhatBaiBao{
     issue:string | null,
     number:string | null,
     pages:string | null
+}
+
+
+export interface CapNhatBaiBaoUser{
+    sanpham:CapNhatSanPhamUser
+    doi:string  | null,
+    url:string  | null,
+    received:string  | null,
+    accepted:string  | null,
+    published:string | null ,
+    abstract:string | null,
+    volume:string  | null,
+    issue:string | null,
+    number:string | null,
+    pages:string | null,
+    keywords?:KeKhaiKeyword[],
+    tapchi:KeKhaiTapChi,
 }

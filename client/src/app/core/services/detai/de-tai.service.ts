@@ -4,7 +4,7 @@ import {ApiResponse, PagingResponse} from "../../types/api-response.type";
 import {
     BaoCaoTienDo,
     BaoCaoTienDoDeTai,
-    CapNhatDeTai,
+    CapNhatDeTai, CapNhatDeTaiUser,
     ChiTietDeTai,
     DeTai, NghiemThu, NghiemThuDeTai,
     TaoDeTai,
@@ -81,6 +81,15 @@ export class DeTaiService{
     capNhatDeTai(id:number,data:CapNhatDeTai){
         return this.http.patch<ApiResponse<boolean>>(
             `${environment.apiUrl}/detai/${id}`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    capNhatDeTaiChoNguoiDung(id:number,data:CapNhatDeTaiUser){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/detai/public/${id}`,
             data
         ).pipe(
             catchError(handleError)

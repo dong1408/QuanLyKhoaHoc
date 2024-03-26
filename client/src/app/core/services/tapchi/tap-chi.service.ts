@@ -27,7 +27,7 @@ export class TapChiService{
 
     getChiTietTapChi(id:number){
         return this.http.get<ApiResponse<ChiTietTapChi>>(
-            `${environment.apiUrl}/tapchi/${id}/detail`
+            `${environment.apiUrl}/tapchi/${id}`
         ).pipe(
             catchError(handleError)
         )

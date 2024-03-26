@@ -6,7 +6,7 @@ use App\Utilities\ResponseError;
 use Exception;
 
 
-class CreateBaiBaoFailedException extends Exception
+class ChuBaiBaoException extends Exception
 {
     public function render($request)
     {
@@ -14,7 +14,7 @@ class CreateBaiBaoFailedException extends Exception
             new ResponseError(
                 "BAD REQUEST",
                 400,
-                "Không tìm thấy danh mục sản phẩm của bài báo"
+                "Bạn không phải là người kê khai của bài báo này"
             ),
             400
         );

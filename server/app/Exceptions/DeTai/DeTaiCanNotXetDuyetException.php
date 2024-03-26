@@ -22,7 +22,7 @@ class DeTaiCanNotXetDuyetException extends Exception
                 400,
                 $this->getMessage()
             ),
-            404
+            400
         );
     }
 }

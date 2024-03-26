@@ -20,11 +20,11 @@ import {ApiResponse} from "../../../core/types/api-response.type";
 
 @Component({
     selector:"app-magazine-create",
-    templateUrl:'./create.component.html',
-    styleUrls:['./create.component.css']
+    templateUrl:'./update.component.html',
+    styleUrls:['./update.component.css']
 })
 
-export class MagazineCreateComponent implements OnInit,OnDestroy{
+export class MagazineUpdateComponent implements OnInit,OnDestroy{
 
     iscreateLoading:boolean = false
     isTinhThanhLoading:boolean = false

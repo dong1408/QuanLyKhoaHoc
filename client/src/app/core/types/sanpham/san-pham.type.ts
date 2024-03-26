@@ -69,6 +69,14 @@ export interface TaoSanPham{
     thoidiemcongbohoanthanh?:string | null
 }
 
+export interface CapNhatSanPhamUser{
+    tensanpham:string,
+    conhantaitro:boolean | null,
+    donvi:KeKhaiDonVi | null,
+    chitietdonvitaitro:string | null,
+    thoidiemcongbohoanthanh?:string | null
+}
+
 export interface TaoFileMinhChung{
     url:string
 }

@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ToChuc} from "../../../core/types/user-info/to-chuc.type";
-import {forkJoin, Subject, takeUntil} from "rxjs";
+import {BehaviorSubject, debounceTime, forkJoin, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {DeTaiService} from "../../../core/services/detai/de-tai.service";
@@ -13,6 +13,7 @@ import {PhanLoaiDeTai} from "../../../core/types/detai/phan-loai-de-tai.type";
 import {PhanLoaiDeTaiService} from "../../../core/services/detai/phan-loai-de-tai.service";
 import {CapNhatDeTai, ChiTietDeTai} from "../../../core/types/detai/de-tai.type";
 import {dateConvert} from "../../../shared/commons/utilities";
+import {ApiResponse} from "../../../core/types/api-response.type";
 
 @Component({
     selector:'app-detai-capnhat',
@@ -23,12 +24,18 @@ import {dateConvert} from "../../../shared/commons/utilities";
 export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
     id:number
     detai:ChiTietDeTai
-    tochucs:ToChuc[]
-    phanLoais:PhanLoaiDeTai[]
+    tcHopTac:ToChuc[] = []
+    tcChuQuan:ToChuc[]= []
+    phanLoais:PhanLoaiDeTai[] = []
 
     isCapNhatLoading:boolean = false
+    isGetChuQuan:boolean = false
+    isGetHopTac:boolean = false
 
     capNhatForm:FormGroup
+
+    searchChuQuan$ = new BehaviorSubject('');
+    searchHopTac$ = new BehaviorSubject('');
 
     destroy$ = new Subject<void>()
 
@@ -169,6 +176,9 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
             }
         })
 
+        this.onGetSearchToChucHopTac()
+        this.onGetSearchToChucChuQuan()
+
         this.loadingService.startLoading()
         forkJoin([
             this.phanLoaiDeTaiService.getPhanLoaiDeTai(),
@@ -184,6 +194,13 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
             next:(response) => {
                 this.phanLoais = response.listPL
                 this.detai = response.detai
+
+                if(this.detai.tochucchuquan){
+                    this.tcChuQuan = [...this.tcChuQuan,this.detai.tochucchuquan]
+                }
+                if(this.detai.tochuchoptac){
+                    this.tcHopTac = [...this.tcHopTac,this.detai.tochuchoptac]
+                }
 
                 this.capNhatForm.patchValue({
                     maso: this.detai.maso,
@@ -266,6 +283,48 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
                 this.isCapNhatLoading = false
             }
         })
+    }
+
+    onGetSearchToChucChuQuan(){
+        const listDVChuQuan = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchChuQuan$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listDVChuQuan))
+
+        optionList$.subscribe(data => {
+            this.tcChuQuan = data.data
+            this.isGetChuQuan = false
+        })
+    }
+
+    onSearchToChucChuQuan(event:any){
+        if(event && event !== ""){
+            this.isGetChuQuan = true
+            this.searchChuQuan$.next(event)
+        }
+    }
+
+    //Tổ Chức Hợp Tác
+
+    onGetSearchToChucHopTac(){
+        const listDVHopTac = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchHopTac$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listDVHopTac))
+
+        optionList$.subscribe(data => {
+            this.tcHopTac = data.data
+            this.isGetHopTac = false
+        })
+    }
+
+    onSearchToChucHopTac(event:any){
+        if(event && event !== ""){
+            this.isGetHopTac = true
+            this.searchHopTac$.next(event)
+        }
     }
 
     ngOnDestroy() {

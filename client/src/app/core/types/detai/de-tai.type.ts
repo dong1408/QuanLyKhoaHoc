@@ -1,4 +1,4 @@
-import {SanPham, TaoFileMinhChung, TaoSanPham} from "../sanpham/san-pham.type";
+import {CapNhatSanPhamUser, SanPham, TaoFileMinhChung, TaoSanPham} from "../sanpham/san-pham.type";
 import {SanPhamTacGia, TaoVaiTroTacGia} from "../sanpham/vai-tro-tac-gia.type";
 import {KeKhaiChuQuan, KeKhaiHopTac, ToChuc} from "../user-info/to-chuc.type";
 import {PhanLoaiDeTai} from "./phan-loai-de-tai.type";
@@ -42,7 +42,7 @@ export interface ChiTietDeTai{
     deleted_at?:string
     created_at:string,
     updated_at:string,
-    sanpham_tacgias:SanPhamTacGia[]
+    sanpham_tacgias:SanPhamTacGia[],
 
     //
     xetduyet?:XetDuyet,
@@ -53,8 +53,8 @@ export interface ChiTietDeTai{
 
 export interface BaoCaoTienDo{
     id:number,
-    tenbaobao:string,
-    ngaynopbaocao:string,
+    tenbaocao:string,
+    ngaynopbaocao?:string,
     ketquaxet?:string,
     thoigiangiahan?:number,
     created_at:string,
@@ -123,7 +123,7 @@ export interface NghiemThuDeTai{
 }
 
 export interface BaoCaoTienDoDeTai{
-    tenbaobao:string,
+    tenbaocao:string,
     ngaynopbaocao:string,
     ketquaxet:string | null,
     thoigiangiahan:number | null
@@ -157,3 +157,15 @@ export interface CapNhatDeTai{
     ngaydangky: string | null
 }
 
+export interface CapNhatDeTaiUser{
+    sanpham:CapNhatSanPhamUser,
+    maso:string,
+    ngoaitruong:boolean | null,
+    truongchutri:boolean | null,
+    tochuchoptac:KeKhaiHopTac|  null,
+    id_loaidetai:number | null,
+    detaihoptac:boolean | null,
+    tochucchuquan:KeKhaiChuQuan | null,
+    tylekinhphidonvihoptac:string | null,
+    capdetai: string | null,
+}

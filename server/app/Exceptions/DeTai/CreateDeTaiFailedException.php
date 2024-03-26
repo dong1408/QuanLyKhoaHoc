@@ -16,7 +16,7 @@ class CreateDeTaiFailedException extends Exception
                 400,
                 "Không tìm thấy danh mục sản phẩm của đề tài"
             ),
-            404
+            400
         );
     }
 }

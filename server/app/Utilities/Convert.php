@@ -808,7 +808,7 @@ class Convert
     {
         $a = new BaoCaoTienDoVm();
         $a->id = $baoCaoTienDo->id;
-        $a->tenbaocao = $baoCaoTienDo->tenbaocao ?? null;
+        $a->tenbaocao = $baoCaoTienDo->tenbaocao;
         $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao ?? null;
         $a->ketquaxet = $baoCaoTienDo->ketquaxet ?? null;
         $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan ?? null;
@@ -820,7 +820,7 @@ class Convert
     {
         $a = new NghiemThuVm();
         $a->id = $nghiemThu->id;
-        $a->ngaynghiemthu = $nghiemThu->ngaynghiemhtu ?? null;
+        $a->ngaynghiemthu = $nghiemThu->ngaynghiemthu ?? null;
         $a->ketquanghiemthu = $nghiemThu->ketquanghiemthu ?? null;
         $a->ngaycongnhanhoanthanh = $nghiemThu->ngaycongnhanhoanthanh ?? null;
         $a->soqdcongnhanhoanthanh = $nghiemThu->soqdcongnhanhoanthanh ?? null;

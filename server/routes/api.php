@@ -157,7 +157,6 @@ Route::group([
     Route::get('tapchi/{id}/khongcongnhan', [TapChiController::class, 'getLichSuTapChiKhongCongNhan']);
     Route::get('tapchi/{id}/xephang', [TapChiController::class, 'getLichSuXepHangTapChi']);
     Route::get('tapchi/{id}/tinhdiem', [TapChiController::class, 'getLichSuTinhDiemTapChi']);
-    Route::get('tapchi/{id}/detail', [TapChiController::class, 'getDetailTapChi']);
     Route::post('tapchi', [TapChiController::class, 'createTapChi']);
     Route::patch('tapchi/{id}/trangthai', [TapChiController::class, 'updateTrangThaiTapChi']);
     Route::patch('tapchi/{id}', [TapChiController::class, 'updateTapChi']);
@@ -167,6 +166,7 @@ Route::group([
     Route::patch('tapchi/{id}/delete', [TapChiController::class, 'deleteTapChi']);
     Route::patch('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
     Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
+    Route::get('tapchi/{id}', [TapChiController::class, 'getDetailTapChi']);
 
 
 

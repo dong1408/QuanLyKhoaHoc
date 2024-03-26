@@ -14,6 +14,7 @@ import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzTableModule} from "ng-zorro-antd/table";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {NzDividerModule} from "ng-zorro-antd/divider";
+import {NzDescriptionsModule} from "ng-zorro-antd/descriptions";
 
 @NgModule({
     declarations:[
@@ -34,6 +35,7 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
         NzTableModule,
         NzWaveModule,
         NzDividerModule,
+        NzDescriptionsModule,
     ],
     exports:[
 

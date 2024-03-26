@@ -12,6 +12,30 @@ export interface ToChuc{
     updated_at:string
 }
 
+export interface TaoToChuc{
+    matochuc:string,
+    tentochuc:string | null,
+    tentochuc_en:string | null,
+    website: string | null,
+    dienthoai: string | null,
+    address: string | null,
+    id_address_city: number | null,
+    id_address_country: number | null,
+    id_phanloaitochuc: number | null
+}
+
+export interface CapNhatToChuc{
+    matochuc:string,
+    tentochuc:string | null,
+    tentochuc_en:string | null,
+    website: string | null,
+    dienthoai: string | null,
+    address: string | null,
+    id_address_city: number | null,
+    id_address_country: number | null,
+    id_phanloaitochuc: number | null
+}
+
 export interface PhanLoaiToChuc{
     id:number,
     maloai:string,

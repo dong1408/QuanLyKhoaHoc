@@ -1,5 +1,4 @@
 import {Component} from "@angular/core";
-import {ChiTietTapChi, UpdateTrangThaiTapChi} from "../../../core/types/tapchi/tap-chi.type";
 import {
     BehaviorSubject,
     combineLatest,
@@ -13,10 +12,9 @@ import {
 } from "rxjs";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoadingService} from "../../../core/services/loading.service";
-import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {ActivatedRoute, Router} from "@angular/router";
-import {BaiBao, ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
+import {ChiTietBaiBao} from "../../../core/types/baibao/bai-bao.type";
 import {BaiBaoService} from "../../../core/services/baibao/bai-bao.service";
 import {CapNhatTrangThaiSanPham, TrangThaiSanPham} from "../../../core/types/sanpham/san-pham.type";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
@@ -55,7 +53,7 @@ export class ChiTietBaiBaoComponent{
     isGetToChuc: boolean = false
 
     searchToChuc$ = new BehaviorSubject('');
-
+    searchUser$ = new BehaviorSubject('');
 
     isCapNhatFileMinhChung:boolean = false
     isOpenFormMinhChung:boolean = false
@@ -67,7 +65,6 @@ export class ChiTietBaiBaoComponent{
     isOpenFormToChuc:boolean = false
     isOpenListToChucKeKhai:boolean = false
 
-    searchUser$ = new BehaviorSubject('');
 
     isRestore:boolean = false
     isForceDelete:boolean = false
@@ -215,6 +212,7 @@ export class ChiTietBaiBaoComponent{
 
     onXoaToChucKeKhai(matochuc:string){
         this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.matochuc !== matochuc)
+        this.tochucs = this.tochucs.filter((item:ToChuc) => item.matochuc !== matochuc)
         this.sanphamTacgiaControls.forEach((control) => {
             if(control.get("in_system")?.value === false){
                 control.get("tochuc")?.reset()
@@ -245,9 +243,9 @@ export class ChiTietBaiBaoComponent{
                 in_system:[
                     true
                 ],
-                tochuc:[
-                    data.tochuc
-                ],
+                // tochuc:[
+                //     data.tochuc
+                // ],
                 email:[
                     data.email
                 ]
@@ -544,7 +542,7 @@ export class ChiTietBaiBaoComponent{
 
         const data:CapNhatVaiTroTacGia = {
             sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
-                let tochuc = item.tochuc
+                let tochuc = item.tochuc ?? null
                 return {
                     list_id_vaitro: item.list_id_vaitro,
                     tentacgia: item.tentacgia,
@@ -552,19 +550,17 @@ export class ChiTietBaiBaoComponent{
                     ngaysinh: item.ngaysinh !== null ? dateConvert(item.ngaysinh) : null,
                     dienthoai: item.dienthoai ?? null,
                     email: item.email,
-                    tochuc:{
+                    tochuc: tochuc !== null ?{
                         id_tochuc:tochuc.id ?? null,
                         matochuc:tochuc.matochuc,
                         tentochuc:tochuc.tentochuc
-                    },
-                    id_hochamhocvi:item.id_hochamhocvi,
+                    } : null,
+                    id_hochamhocvi:item.id_hochamhocvi ?? null,
                     thutu:item.thutu ?? null,
                     tyledonggop:item.tyledonggop ?? null
                 }
             }),
         }
-
-
         this.isCapNhatTacGia = true
         this.baiBaoService.capNhatVaiTroTacGia(this.id,data)
             .pipe(
@@ -576,6 +572,7 @@ export class ChiTietBaiBaoComponent{
                     'Thành Công',
                     response.message
                 )
+                console.log(response)
                 if (this.baibao && this.baibao.sanpham_tacgias) {
                     this.baibao.sanpham_tacgias = response.data
                 }
@@ -687,13 +684,16 @@ export class ChiTietBaiBaoComponent{
                 tyledonggop:[item.tyledonggop ?? null],
                 list_id_vaitro:[[...item.vaitrotacgia.map((item:any) => item.id)]],
                 tochuc:[
-                    item.tochuc
+                    item.tochuc !== null ? item.tochuc : null
                 ],
                 id_hochamhocvi:[
-                    item.hochamhocvi.id
+                    item.hochamhocvi !== null ? item.hochamhocvi.id : null
                 ],
                 email:[
                     item.email
+                ],
+                in_system:[
+                    true
                 ]
             })
             formArray.push(control);

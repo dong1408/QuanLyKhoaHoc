@@ -39,19 +39,19 @@ import {HocHamHocVi} from "../../../core/types/user-info/hoc-ham-hoc-vi.type";
 })
 
 export class TaoDeTaiComponent implements OnInit,OnDestroy{
-    dvTaiTros:ToChuc[]
-    tcChuQuan:ToChuc[]
-    tcHopTac:ToChuc[]
-    tochucs:ToChuc[]
+    dvTaiTros:ToChuc[] = []
+    tcChuQuan:ToChuc[]= []
+    tcHopTac:ToChuc[]= []
+    tochucs:ToChuc[]= []
 
-    vaiTros:VaiTroTacGia[]
-    hhhvs:HocHamHocVi[]
-    phanLoais:PhanLoaiDeTai[]
+    vaiTros:VaiTroTacGia[]= []
+    hhhvs:HocHamHocVi[]= []
+    phanLoais:PhanLoaiDeTai[]= []
 
 
     keKhaiToChuc:any = []
 
-    users:User[]
+    users:User[]= []
 
     createForm:FormGroup
     tochucForm:FormGroup
@@ -715,9 +715,9 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 in_system:[
                     true
                 ],
-                tochuc:[
-                    data.tochuc
-                ],
+                // tochuc:[
+                //     data.tochuc
+                // ],
                 email:[
                     data.email
                 ]

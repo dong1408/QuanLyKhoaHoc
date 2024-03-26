@@ -1,11 +1,11 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {CapNhatSanPhamBaiBaoComponent} from "./capnhat-sanpham.component";
+import {MagazineUpdateComponent} from "./update.component";
 
 const routes:Routes = [
     {
         path:"",
-        component:CapNhatSanPhamBaiBaoComponent
+        component:MagazineUpdateComponent
     }
 ]
 
@@ -14,4 +14,4 @@ const routes:Routes = [
     exports:[RouterModule]
 })
 
-export class CapNhatSanPhamBaiBaoRoutingModule {}
+export class MagazineUpdateRoutingModule{}

@@ -1,11 +1,9 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {forkJoin, Subject, take, takeUntil} from "rxjs";
+import {BehaviorSubject, debounceTime, forkJoin, Observable, Subject, switchMap, take, takeUntil} from "rxjs";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {UserService} from "../../../core/services/user/user.service";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
 import {HocHamHocViService} from "../../../core/services/user-info/hoc-ham-hoc-vi.service";
-import {DonVi} from "../../../core/types/user-info/don-vi.type";
-import {DonViService} from "../../../core/services/user-info/don-vi.service";
 import {NganhTinhDiemService} from "../../../core/services/quydoi/nganh-tinh-diem.service";
 import {ChuyenNganhTinhDiemService} from "../../../core/services/quydoi/chuyen-nganh-tinh-diem.service";
 import {ChuyenMonService} from "../../../core/services/user-info/chuyen-mon.service";
@@ -27,6 +25,7 @@ import {Role} from "../../../core/types/roles/role.type";
 import {RegisterUser, UpdateUser, UserDetail} from "../../../core/types/user/user.type";
 import {dateConvert} from "../../../shared/commons/utilities";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ApiResponse} from "../../../core/types/api-response.type";
 
 @Component({
     selector:'app-user-update',
@@ -39,14 +38,18 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
 
     destroy$ = new Subject<void>()
 
-    isGetDonViLoading:boolean = false
     isGetChuyenNganhTinhDiemLoading:boolean = false
     isUpdate:boolean = false
 
     updateForm:FormGroup
 
-    toChucs:ToChuc[] = []
-    donVis:DonVi[] = []
+    isGetToChuc: boolean = false
+    isGetNoiHoc: boolean = false
+
+    searchToChuc$ = new BehaviorSubject('');
+    searchNoiHoc$ = new BehaviorSubject('');
+
+    tochucs:ToChuc[] = []
     noiHocs:ToChuc[] = []
     ngachVienChucs:NgachVienChuc[] = []
     quocTichs:QuocGia[] = []
@@ -63,7 +66,6 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
         private userService:UserService,
         private toChucService:ToChucService,
         private hocHamHocViService:HocHamHocViService,
-        private donViService:DonViService,
         private nganhTinhDiemService:NganhTinhDiemService,
         private chuyenNganhTinhDiemService:ChuyenNganhTinhDiemService,
         private chuyenMonService:ChuyenMonService,
@@ -138,9 +140,6 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
             id_tochuc:[
                 null,
             ],
-            id_donvi:[
-                null
-            ],
             cohuu:[
                 null,
             ],
@@ -161,7 +160,13 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
                 ])
             ],
             id_noihoc:[
-                null
+                {
+                    value:null,
+                    disabled:true
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             id_ngachvienchuc:[
                 null
@@ -183,6 +188,33 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
             ]
         })
 
+        this.updateForm.get("dangdihoc")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select !== null){
+                this.updateForm.get("id_noihoc")?.enable()
+            }else{
+                this.updateForm.get("id_noihoc")?.disable()
+                this.updateForm.get("id_noihoc")?.reset()
+            }
+        })
+
+        this.updateForm.get("id_nganhtinhdiem")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select !== null){
+                this.updateForm.get("id_chuyennganhtinhdiem")?.reset()
+                this.getChuyenNganhTinhDiem(select)
+                this.updateForm.get("id_chuyennganhtinhdiem")?.enable()
+            }else{
+                this.updateForm.get("id_chuyennganhtinhdiem")?.disable()
+                this.updateForm.get("id_chuyennganhtinhdiem")?.reset()
+            }
+        })
+
+        this.onGetSearchNoiHoc()
+        this.onGetSearchToChuc()
+
         this.loadingService.startLoading()
         forkJoin([
             this.hocHamHocViService.getAllHocHamHocVi(),
@@ -190,19 +222,15 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
             this.chuyenMonService.getAllChuyeMon(),
             this.quocGiaService.getAllQuocGia(),
             this.nganhTinhDiemService.getNganhTinhDiem(),
-            this.donViService.getAllDonVi(),
-            this.roleService.getAllRoles(),
             this.userService.getUserDetail(this.id),
             this.chuyenNganhTinhDiemService.getChuyenNganhTinhDiem()
-        ],(hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,dvResponse,rResponse,uResponse,cnResponse) => {
+        ],(hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,uResponse,cnResponse) => {
             return {
                 listHH: hhResponse.data,
                 listNVC: nvcResponse.data,
                 listCM: cmResponse.data,
                 listQG:qgResponse.data,
                 listNTD:ntdResponse.data,
-                listDV:dvResponse.data,
-                listR:rResponse.data,
                 user:uResponse.data,
                 listCN:cnResponse.data,
             }
@@ -213,32 +241,37 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
                 this.chuyenMons = response.listCM
                 this.quocTichs = response.listQG
                 this.nganhTinhDiem = response.listNTD
-                this.roles = response.listR
                 this.user = response.user
-                this.donVis = response.listDV
                 this.chuyenNganhTinhDiem = response.listCN
+
+                if(this.user.tochuc){
+                    this.tochucs = [...this.tochucs,this.user.tochuc]
+                }
+
+                if(this.user.noihoc){
+                    this.noiHocs = [...this.noiHocs,this.user.noihoc]
+                }
 
                 this.updateForm.patchValue({
                     username: this.user.username,
                     name: this.user.name,
                     email:this.user.email,
-                    ngaysinh:this.user.ngaysinh,
-                    dienthoai:this.user.dienthoai,
-                    email2:this.user.email2,
-                    orchid:this.user.orchid,
-                    id_tochuc:this.user.tochuc?.id,
-                    id_donvi:this.user.donvi?.id,
-                    cohuu:this.user.cohuu,
-                    keodai:this.user.keodai,
-                    dinhmucnghiavunckh:this.user.dinhmucnghiavunckh,
-                    dangdihoc:this.user.dangdihoc,
-                    id_noihoc:this.user.noihoc?.id,
-                    id_ngachvienchuc: this.user.ngachvienchuc?.id,
-                    id_quoctich: this.user.quoctich?.id,
-                    id_hochamhocvi: this.user.hochamhocvi?.id,
-                    id_chuyenmon: this.user.chuyenmon?.id,
-                    id_nganhtinhdiem: this.user.nganhtinhdiem?.id,
-                    id_chuyennganhtinhdiem: this.user.chuyennganhtinhdiem?.id
+                    ngaysinh:this.user.ngaysinh ?? null,
+                    dienthoai:this.user.dienthoai ?? null,
+                    email2:this.user.email2 ?? null,
+                    dangdihoc:this.user.dangdihoc ?? null,
+                    orchid:this.user.orchid ?? null,
+                    id_tochuc:this.user.tochuc?.id ?? null,
+                    id_noihoc:this.user.noihoc?.id ?? null,
+                    cohuu:this.user.cohuu ?? null,
+                    keodai:this.user.keodai ?? null,
+                    dinhmucnghiavunckh:this.user.dinhmucnghiavunckh ?? null,
+                    id_ngachvienchuc: this.user.ngachvienchuc?.id ?? null,
+                    id_quoctich: this.user.quoctich?.id ?? null,
+                    id_hochamhocvi: this.user.hochamhocvi?.id ?? null,
+                    id_chuyenmon: this.user.chuyenmon?.id ?? null,
+                    id_nganhtinhdiem: this.user.nganhtinhdiem?.id ?? null,
+                    id_chuyennganhtinhdiem: this.user.chuyennganhtinhdiem?.id ?? null
                 })
 
                 this.loadingService.stopLoading()
@@ -256,25 +289,46 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
         })
     }
 
-    getDonViByToChucId(id:number){
-        this.isGetDonViLoading = true
-        this.donViService.getAllByToChucId(id)
-            .pipe(
-                takeUntil(this.destroy$)
-            ).subscribe({
-            next:(response) => {
-                this.donVis = response.data
-                this.isGetDonViLoading = false
-            },
-            error:(error) => {
-                this.notificationService.create(
-                    'error',
-                    "Lỗi",
-                    error
-                )
-                this.isGetDonViLoading = false
-            }
+    onGetSearchToChuc(){
+        const listToChuc = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchToChuc$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listToChuc))
+
+        optionList$.subscribe(data => {
+            this.tochucs = data.data
+
+            this.isGetToChuc = false
         })
+    }
+
+    onSearchToChuc(event:any){
+        if(event && event !== ""){
+            this.isGetToChuc = true
+            this.searchToChuc$.next(event)
+        }
+    }
+
+    onGetSearchNoiHoc(){
+        const listNoiHoc = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchNoiHoc$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listNoiHoc))
+
+        optionList$.subscribe(data => {
+            this.noiHocs = data.data
+
+            this.isGetNoiHoc = false
+        })
+    }
+
+    onSearchNoiHoc(event:any){
+        if(event && event !== ""){
+            this.isGetNoiHoc = true
+            this.searchNoiHoc$.next(event)
+        }
     }
 
     getChuyenNganhTinhDiem(id:number){
@@ -296,42 +350,6 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
                 this.isGetChuyenNganhTinhDiemLoading = false
             }
         })
-    }
-
-    onSelectNganhTinhDiem(event:any){
-        if(typeof(event) === 'number'){
-            this.updateForm.controls?.['id_chuyennganhtinhdiem'].setValue(null)
-            this.getChuyenNganhTinhDiem(event)
-        }else{
-            this.chuyenNganhTinhDiem = []
-        }
-        if(!this.updateForm.controls?.['id_nganhtinhdiem'].value){
-            this.chuyenNganhTinhDiem = []
-        }
-    }
-
-    onSelectToChuc(event:any){
-        if(typeof(event) === 'number'){
-            this.updateForm.controls?.['id_donvi'].setValue(null)
-            this.getDonViByToChucId(event)
-        }else{
-            this.donVis = []
-        }
-        if(!this.updateForm.controls?.['id_donvi'].value){
-            this.donVis = []
-        }
-    }
-
-    onSelectNoHoc(event:any){
-        if(typeof(event) !== null || typeof(event) !== undefined){
-            this.updateForm.controls?.['id_noihoc'].enable()
-        }else{
-            this.updateForm.controls?.['id_noihoc'].disable()
-        }
-
-        if(!this.updateForm.controls?.['dangdihoc'].value){
-            this.updateForm.controls?.['id_noihoc'].disable()
-        }
     }
 
     onSubmit(){
@@ -356,14 +374,12 @@ export class UserUpdateComponent implements OnInit,OnDestroy{
 
         const data:UpdateUser = {
             name:form.get("name")?.value,
-            // username:form.get("username")?.value,
             email:form.get("email")?.value,
             ngaysinh: form.get("ngaysinh")?.value !== null ? dateConvert(form.get("ngaysinh")?.value.toString()) : null,
             dienthoai: form.get("dienthoai")?.value ?? null,
             orchid: form.get("orchid")?.value ?? null,
             email2: form.get("email2")?.value ?? null,
             id_tochuc: form.get("id_tochuc")?.value ?? null,
-            id_donvi:form.get("id_tochuc")?.value ?? null,
             cohuu: form.get("cohuu")?.value ?? false,
             keodai: form.get("keodai")?.value ?? false,
             dinhmucnghiavunckh: form.get("dinhmucnghiavunckh")?.value ?? null,

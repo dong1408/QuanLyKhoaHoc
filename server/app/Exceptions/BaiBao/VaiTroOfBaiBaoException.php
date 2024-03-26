@@ -16,7 +16,7 @@ class VaiTroOfBaiBaoException extends Exception
                 400,
                 "Các vai trò tác giả phải thuộc vai trò tác giả của bài báo"
             ),
-            404
+            400
         );
     }
 }

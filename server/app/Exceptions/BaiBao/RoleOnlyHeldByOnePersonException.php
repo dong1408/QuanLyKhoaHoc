@@ -16,7 +16,7 @@ class RoleOnlyHeldByOnePersonException extends Exception
                 400,
                 "Vai trò tác giả đứng đầu hoặc vai trò tác giả liên hệ chỉ một người được đảm nhiệm"
             ),
-            404
+            400
         );
     }
 }

@@ -16,7 +16,7 @@ class DeTaiNotHaveChuNhiemException extends Exception
                 400,
                 "Đề tài phải có ít nhất 1 tác giả đảm nhiệm vai trò chủ nhiệm đề tài"
             ),
-            404
+            400
         );
     }
 }

@@ -10,6 +10,7 @@ import {NzFormModule} from "ng-zorro-antd/form";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzSelectModule} from "ng-zorro-antd/select";
+import {SharedModule} from "../../../shared/components/shared.module";
 
 @NgModule({
     declarations:[
@@ -26,7 +27,8 @@ import {NzSelectModule} from "ng-zorro-antd/select";
         NzGridModule,
         NzInputModule,
         NzSelectModule,
-        FormsModule
+        FormsModule,
+        SharedModule
     ],
     exports:[
 

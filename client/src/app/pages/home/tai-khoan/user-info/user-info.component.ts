@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {forkJoin, Subject, takeUntil} from "rxjs";
+import {BehaviorSubject, debounceTime, forkJoin, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ToChuc} from "../../../../core/types/user-info/to-chuc.type";
 import {DonVi} from "../../../../core/types/user-info/don-vi.type";
@@ -26,6 +26,7 @@ import {noWhiteSpaceValidator} from "../../../../shared/validators/no-white-spac
 import {validValuesValidator} from "../../../../shared/validators/valid-value.validator";
 import {dateConvert} from "../../../../shared/commons/utilities";
 import {passwordsMatch} from "../../../../shared/validators/password-smatch.validator";
+import {ApiResponse} from "../../../../core/types/api-response.type";
 
 @Component({
     selector:"app-taikhoan-userinfo",
@@ -46,9 +47,17 @@ export class UserInfoComponent{
     updateForm:FormGroup
     formChangePassword:FormGroup
 
+    isGetToChuc: boolean = false
+    isGetNoiHoc: boolean = false
+
+    searchToChuc$ = new BehaviorSubject('');
+    searchNoiHoc$ = new BehaviorSubject('');
+
+    tochucs:ToChuc[] = []
+    noiHocs:ToChuc[] = []
+
     toChucs:ToChuc[] = []
     donVis:DonVi[] = []
-    noiHocs:ToChuc[] = []
     ngachVienChucs:NgachVienChuc[] = []
     quocTichs:QuocGia[] = []
     hocHams:HocHamHocVi[] = []
@@ -125,9 +134,6 @@ export class UserInfoComponent{
             id_tochuc:[
                 null,
             ],
-            id_donvi:[
-                null
-            ],
             cohuu:[
                 null,
             ],
@@ -196,6 +202,33 @@ export class UserInfoComponent{
             validators: passwordsMatch('password','password_confirmation')
         })
 
+        this.updateForm.get("dangdihoc")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select !== null){
+                this.updateForm.get("id_noihoc")?.enable()
+            }else{
+                this.updateForm.get("id_noihoc")?.disable()
+                this.updateForm.get("id_noihoc")?.reset()
+            }
+        })
+
+        this.updateForm.get("id_nganhtinhdiem")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select !== null){
+                this.updateForm.get("id_chuyennganhtinhdiem")?.reset()
+                this.getChuyenNganhTinhDiem(select)
+                this.updateForm.get("id_chuyennganhtinhdiem")?.enable()
+            }else{
+                this.updateForm.get("id_chuyennganhtinhdiem")?.disable()
+                this.updateForm.get("id_chuyennganhtinhdiem")?.reset()
+            }
+        })
+
+        this.onGetSearchNoiHoc()
+        this.onGetSearchToChuc()
+
         this.loadingService.startLoading()
         forkJoin([
             this.hocHamHocViService.getAllHocHamHocVi(),
@@ -203,17 +236,15 @@ export class UserInfoComponent{
             this.chuyenMonService.getAllChuyeMon(),
             this.quocGiaService.getAllQuocGia(),
             this.nganhTinhDiemService.getNganhTinhDiem(),
-            this.donViService.getAllDonVi(),
             this.userService.getUserInfo(),
             this.chuyenNganhTinhDiemService.getChuyenNganhTinhDiem()
-        ],(hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,dvResponse,uResponse,cnResponse) => {
+        ],(hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,uResponse,cnResponse) => {
             return {
                 listHH: hhResponse.data,
                 listNVC: nvcResponse.data,
                 listCM: cmResponse.data,
                 listQG:qgResponse.data,
                 listNTD:ntdResponse.data,
-                listDV:dvResponse.data,
                 user:uResponse.data,
                 listCN:cnResponse.data,
             }
@@ -225,30 +256,36 @@ export class UserInfoComponent{
                 this.quocTichs = response.listQG
                 this.nganhTinhDiem = response.listNTD
                 this.user = response.user
-                this.donVis = response.listDV
                 this.chuyenNganhTinhDiem = response.listCN
+
+                if(this.user.tochuc){
+                    this.tochucs = [...this.tochucs,this.user.tochuc]
+                }
+
+                if(this.user.noihoc){
+                    this.noiHocs = [...this.noiHocs,this.user.noihoc]
+                }
 
                 this.updateForm.patchValue({
                     username: this.user.username,
                     name: this.user.name,
                     email:this.user.email,
-                    ngaysinh:this.user.ngaysinh,
-                    dienthoai:this.user.dienthoai,
-                    email2:this.user.email2,
-                    orchid:this.user.orchid,
-                    id_tochuc:this.user.tochuc?.id,
-                    id_donvi:this.user.donvi?.id,
-                    cohuu:this.user.cohuu,
-                    keodai:this.user.keodai,
-                    dinhmucnghiavunckh:this.user.dinhmucnghiavunckh,
-                    dangdihoc:this.user.dangdihoc,
-                    id_noihoc:this.user.noihoc?.id,
-                    id_ngachvienchuc: this.user.ngachvienchuc?.id,
-                    id_quoctich: this.user.quoctich?.id,
-                    id_hochamhocvi: this.user.hochamhocvi?.id,
-                    id_chuyenmon: this.user.chuyenmon?.id,
-                    id_nganhtinhdiem: this.user.nganhtinhdiem?.id,
-                    id_chuyennganhtinhdiem: this.user.chuyennganhtinhdiem?.id
+                    ngaysinh:this.user.ngaysinh ?? null,
+                    dienthoai:this.user.dienthoai ?? null,
+                    email2:this.user.email2 ?? null,
+                    dangdihoc:this.user.dangdihoc ?? null,
+                    orchid:this.user.orchid ?? null,
+                    id_tochuc:this.user.tochuc?.id ?? null,
+                    id_noihoc:this.user.noihoc?.id ?? null,
+                    cohuu:this.user.cohuu ?? null,
+                    keodai:this.user.keodai ?? null,
+                    dinhmucnghiavunckh:this.user.dinhmucnghiavunckh ?? null,
+                    id_ngachvienchuc: this.user.ngachvienchuc?.id ?? null,
+                    id_quoctich: this.user.quoctich?.id ?? null,
+                    id_hochamhocvi: this.user.hochamhocvi?.id ?? null,
+                    id_chuyenmon: this.user.chuyenmon?.id ?? null,
+                    id_nganhtinhdiem: this.user.nganhtinhdiem?.id ?? null,
+                    id_chuyennganhtinhdiem: this.user.chuyennganhtinhdiem?.id ?? null
                 })
 
                 this.loadingService.stopLoading()
@@ -307,39 +344,45 @@ export class UserInfoComponent{
         })
     }
 
-    onSelectNganhTinhDiem(event:any){
-        if(typeof(event) === 'number'){
-            this.updateForm.controls?.['id_chuyennganhtinhdiem'].setValue(null)
-            this.getChuyenNganhTinhDiem(event)
-        }else{
-            this.chuyenNganhTinhDiem = []
-        }
-        if(!this.updateForm.controls?.['id_nganhtinhdiem'].value){
-            this.chuyenNganhTinhDiem = []
+    onGetSearchToChuc(){
+        const listToChuc = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchToChuc$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listToChuc))
+
+        optionList$.subscribe(data => {
+            this.tochucs = data.data
+
+            this.isGetToChuc = false
+        })
+    }
+
+    onSearchToChuc(event:any){
+        if(event && event !== ""){
+            this.isGetToChuc = true
+            this.searchToChuc$.next(event)
         }
     }
 
-    onSelectToChuc(event:any){
-        if(typeof(event) === 'number'){
-            this.updateForm.controls?.['id_donvi'].setValue(null)
-            this.getDonViByToChucId(event)
-        }else{
-            this.donVis = []
-        }
-        if(!this.updateForm.controls?.['id_donvi'].value){
-            this.donVis = []
-        }
+    onGetSearchNoiHoc(){
+        const listNoiHoc = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchNoiHoc$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listNoiHoc))
+
+        optionList$.subscribe(data => {
+            this.noiHocs = data.data
+
+            this.isGetNoiHoc = false
+        })
     }
 
-    onSelectNoHoc(event:any){
-        if(typeof(event) !== null || typeof(event) !== undefined){
-            this.updateForm.controls?.['id_noihoc'].enable()
-        }else{
-            this.updateForm.controls?.['id_noihoc'].disable()
-        }
-
-        if(!this.updateForm.controls?.['dangdihoc'].value){
-            this.updateForm.controls?.['id_noihoc'].disable()
+    onSearchNoiHoc(event:any){
+        if(event && event !== ""){
+            this.isGetNoiHoc = true
+            this.searchNoiHoc$.next(event)
         }
     }
 
@@ -372,7 +415,6 @@ export class UserInfoComponent{
             orchid: form.get("orchid")?.value ?? null,
             email2: form.get("email2")?.value ?? null,
             id_tochuc: form.get("id_tochuc")?.value ?? null,
-            id_donvi:form.get("id_tochuc")?.value ?? null,
             cohuu: form.get("cohuu")?.value ?? false,
             keodai: form.get("keodai")?.value ?? false,
             dinhmucnghiavunckh: form.get("dinhmucnghiavunckh")?.value ?? null,
@@ -443,6 +485,7 @@ export class UserInfoComponent{
                     "Thành Công",
                     response.message
                 )
+                form.reset()
                 this.changePasswordLoading = false
             },
             error:(response) => {

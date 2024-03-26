@@ -58,6 +58,15 @@
             [nzOkLoading]="isCapNhatTacGia"
     >
         <ng-container *nzModalContent>
+            <button nz-button
+                    nzType="default"
+                    *ngIf="this.keKhaiToChuc.length > 0"
+                    (click)="onOpenListToChucKeKhai()"
+                    class="tw-mb-[1rem]"
+            >
+                <span nz-icon nzType="edit" nzTheme="outline"></span>
+                Tổ Chức Đã Kê Khai
+            </button>
             <form nzLayout="vertical" nz-form class="tw-space-y-[5px]" [formGroup]="formCapNhatTacGia">
                 <div >
                     <h3 class=""><span class="error">*</span> Tác Giả <span (click)="addGuestControls()" class="primary tw-cursor-pointer"> +Thêm Tác Giả Ngoài Hệ Thống</span></h3>
