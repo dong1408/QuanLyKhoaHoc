@@ -779,9 +779,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $result = [];
 
 
-        $test = [];
-
-        DB::transaction(function () use ($validated, &$sanPham, &$result,&$test) {
+        DB::transaction(function () use ($validated, &$sanPham, &$result) {
 
             $listIdTacGia = [];
             $listIdVaiTro = [];
@@ -813,7 +811,6 @@ class BaiBaoServiceImpl implements BaiBaoService
             if (count($filteredWithoutIdToChuc) > 0) {
                 $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
             }
-            $test = $listSanPhamTacGia;
 
 //            // add tổ chức cho tác giả
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {

@@ -852,9 +852,6 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 in_system:[
                     true
                 ],
-                // tochuc:[
-                //     data.tochuc
-                // ],
                 email:[
                     data.email
                 ]

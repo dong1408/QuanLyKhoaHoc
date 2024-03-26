@@ -9,7 +9,11 @@ export interface ToChuc{
     website?:string,
     dienthoai?:string,
     created_at:string,
-    updated_at:string
+    updated_at:string,
+
+
+    //
+    isDelete:boolean
 }
 
 export interface TaoToChuc{
@@ -34,6 +38,18 @@ export interface CapNhatToChuc{
     id_address_city: number | null,
     id_address_country: number | null,
     id_phanloaitochuc: number | null
+}
+
+export interface ChiTietToChuc{
+    id:number,
+    matochuc:string,
+    tentochuc?:string,
+    tentochuc_en?:string,
+    website?:string,
+    dienthoai?:string,
+
+    created_at:string,
+    updated_at:string
 }
 
 export interface PhanLoaiToChuc{

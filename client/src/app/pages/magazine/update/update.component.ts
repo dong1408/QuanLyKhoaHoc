@@ -227,10 +227,11 @@ export class MagazineUpdateComponent implements OnInit,OnDestroy{
 
 
     onSelectChange(event:any){
+        this.tinhThanhs = []
+        this.createForm.get("id_address_city")?.reset()
         if(typeof(event) !== "number"){
             return;
         }
-        this.tinhThanhs = []
         this.isTinhThanhLoading = true
         this.tinhThanhService.getAllTinhThanhByQuocGia(event).pipe(
             takeUntil(this.destroy$)
