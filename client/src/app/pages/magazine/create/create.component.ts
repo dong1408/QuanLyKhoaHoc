@@ -195,7 +195,7 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
             id_nhaxuatban: form.get("id_nhaxuatban")?.value ?? null,
             id_donvichuquan : form.get("id_donvichuquan")?.value ?? null,
             address: form.get("address")?.value ?? null,
-            id_address_city: form.get("id_adress_city")?.value ?? null,
+            id_address_city: form.get("id_address_city")?.value ?? null,
             id_address_country: form.get("id_address_country")?.value ?? null,
             dmnganhtheohdgs: form.get("dmnganhtheohdgs")?.value ?? null
         }

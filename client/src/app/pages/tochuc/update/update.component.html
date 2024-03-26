@@ -97,7 +97,7 @@
                                 [nzDisabled]="this.isTinhThanhLoading"
 
                         >
-                            <nz-option *ngFor="let data of this.tinhThanhs" [nzValue]="data" [nzLabel]="data.tentinhthanh ? data.tentinhthanh : 'Không có tên'"></nz-option>
+                            <nz-option *ngFor="let data of this.tinhThanhs" [nzValue]="data.id" [nzLabel]="data.tentinhthanh ? data.tentinhthanh : 'Không có tên'"></nz-option>
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>

@@ -79,6 +79,12 @@ export class TaoToChucComponent implements OnInit,OnDestroy{
                     noWhiteSpaceValidator()
                 ])
             ],
+            dienthoai:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator()
+                ])
+            ],
             id_address_city:[
                 null
             ],

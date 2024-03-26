@@ -130,16 +130,20 @@ export class CapNhatToChucComponent implements OnInit,OnDestroy{
                 this.plToChuc = response.listPLTC
                 this.tochuc = response.tochuc
 
+                if(this.tochuc.addresscity){
+                    this.tinhThanhs = [...this.tinhThanhs,this.tochuc.addresscity]
+                }
+
                 this.createForm.patchValue({
                     matochuc: this.tochuc.matochuc,
                     tentochuc:this.tochuc.tentochuc,
                     tentochuc_en:this.tochuc.tentochuc_en ?? null,
                     website: this.tochuc.website ?? null,
                     dienthoai: this.tochuc.dienthoai ?? null,
-                    // address : this.tochuc.address ?? null,
-                    // id_address_city: this.tochuc,
-                    // id_address_country: this.tochuc,
-                    // id_phanloaitochuc: this.tochuc,
+                    address : this.tochuc.address ?? null,
+                    id_address_city: this.tochuc.addresscity?.id ?? null,
+                    id_address_country: this.tochuc.addresscountry?.id ?? null ,
+                    id_phanloaitochuc: this.tochuc.phanloaitochuc?.id ?? null,
                 })
 
                 this.loadingService.stopLoading()
@@ -212,7 +216,7 @@ export class CapNhatToChucComponent implements OnInit,OnDestroy{
 
         this.isCreate = true
 
-        this.toChucService.taoToChuc(data)
+        this.toChucService.capNhatToChuc(this.id,data)
             .pipe(
                 takeUntil(this.destroy$)
             ).subscribe({
@@ -222,8 +226,6 @@ export class CapNhatToChucComponent implements OnInit,OnDestroy{
                     'Thành Công',
                     response.message
                 )
-
-                this.createForm.reset()
                 this.isCreate = false
             },
             error:(error) =>{
@@ -232,7 +234,6 @@ export class CapNhatToChucComponent implements OnInit,OnDestroy{
                     'Lỗi',
                     error
                 )
-                this.createForm.reset()
                 this.isCreate = false
             }
         })

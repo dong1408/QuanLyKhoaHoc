@@ -9,7 +9,7 @@
     <ng-template #loaded>
         <div class="tw-mt-[15] tw-flex tw-flex-col tw-gap-[6px]">
             <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
-                <button nz-button nzType="primary">
+                <button nz-button nzType="primary" [routerLink]="['/admin/tap-chi',this.id,'cap-nhat']">
                     <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
                     Cập Nhật
                 </button>

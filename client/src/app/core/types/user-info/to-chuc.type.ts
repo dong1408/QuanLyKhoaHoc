@@ -47,6 +47,10 @@ export interface ChiTietToChuc{
     tentochuc_en?:string,
     website?:string,
     dienthoai?:string,
+    addresscity?:TinhThanh,
+    addresscountry?:QuocGia,
+    phanloaitochuc?:PhanLoaiToChuc,
+    address?:string
 
     created_at:string,
     updated_at:string

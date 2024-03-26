@@ -14,17 +14,21 @@ import {TinhThanhService} from "../../../core/services/user-info/tinh-thanh.serv
 import {QuocGiaService} from "../../../core/services/user-info/quoc-gia.service";
 import {NhaXuatBan} from "../../../core/types/nhaxuatban/nha-xuat-ban.type";
 import {NhaXuatBanService} from "../../../core/services/nhaxuatban/nha-xuat-ban.service";
-import {CreateTapChi} from "../../../core/types/tapchi/tap-chi.type";
+import {ChiTietTapChi, CreateTapChi, UpdateTapChi} from "../../../core/types/tapchi/tap-chi.type";
 import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {ApiResponse} from "../../../core/types/api-response.type";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
-    selector:"app-magazine-create",
+    selector:"app-magazine-update",
     templateUrl:'./update.component.html',
     styleUrls:['./update.component.css']
 })
 
 export class MagazineUpdateComponent implements OnInit,OnDestroy{
+    id:number
+
+    tapchi:ChiTietTapChi
 
     iscreateLoading:boolean = false
     isTinhThanhLoading:boolean = false
@@ -52,11 +56,23 @@ export class MagazineUpdateComponent implements OnInit,OnDestroy{
         private tinhThanhService:TinhThanhService,
         private quocGiaService:QuocGiaService,
         private nhaXuatBanService:NhaXuatBanService,
-        private tapChiService:TapChiService
+        private tapChiService:TapChiService,
+        private _router:ActivatedRoute,
+        private router:Router
     ) {
     }
 
     ngOnInit() {
+
+        this._router.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+            if(parseInt(params.get("id") as string)){
+                this.id = parseInt(params.get("id") as string)
+            }else{
+                this.router.navigate(["/admin/tap-chi"])
+                return;
+            }
+        })
+
         this.createForm = this.fb.group({
             name:[
                 null,
@@ -121,15 +137,15 @@ export class MagazineUpdateComponent implements OnInit,OnDestroy{
         this.loadingService.startLoading()
         forkJoin([
             this.hoiDongGiaoSuService.getAllHDGS(),
-            this.tinhThanhService.getAllTinhThanh(),
             this.quocGiaService.getAllQuocGia(),
-            this.nhaXuatBanService.getAllNhaXuatBan()
-        ],(gsResponse,ttResponse,qgResponse,nxbResponse) => {
+            this.nhaXuatBanService.getAllNhaXuatBan(),
+            this.tapChiService.getChiTietTapChi(this.id)
+        ],(gsResponse,qgResponse,nxbResponse,tacResponse) => {
             return {
                 listGS: gsResponse.data,
-                listTT: ttResponse.data,
                 listQG: qgResponse.data,
-                listNXB: nxbResponse.data
+                listNXB: nxbResponse.data,
+                tapchi:tacResponse.data
             }
         }).pipe(
             takeUntil(this.destroy$)
@@ -137,8 +153,32 @@ export class MagazineUpdateComponent implements OnInit,OnDestroy{
             next:(response) => {
                 this.hoiDongGiaoSus = response.listGS
                 this.quocGias = response.listQG
-                this.tinhThanhs = response.listTT
                 this.nhaXuatBans = response.listNXB
+                this.tapchi = response.tapchi
+
+                if(this.tapchi.donvichuquan){
+                    this.tochucs = [...this.tochucs,this.tapchi.donvichuquan]
+                }
+
+                if(this.tapchi.addresscity){
+                    this.tinhThanhs = [...this.tinhThanhs,this.tapchi.addresscity]
+                }
+
+                this.createForm.patchValue({
+                    name: this.tapchi.name,
+                    issn: this.tapchi.issn ?? null,
+                    eissn: this.tapchi.eissn ?? null,
+                    pissn: this.tapchi.pissn ?? null,
+                    website: this.tapchi.website ?? null,
+                    quocte: this.tapchi.quocte ?? null,
+                    address: this.tapchi.address ?? null,
+                    id_nhaxuatban: this.tapchi.nhaxuatban?.id ?? null,
+                    id_donvichuquan: this.tapchi.donvichuquan?.id ?? null,
+                    id_address_city: this.tapchi.addresscity?.id ?? null,
+                    id_address_country:this.tapchi.addresscountry?.id ?? null,
+                    dmnganhtheohdgs: this.tapchi.hoidonggiaosus?.map(item => item.id)
+                })
+
                 this.loadingService.stopLoading()
             },
             error:(error) =>{
@@ -185,7 +225,7 @@ export class MagazineUpdateComponent implements OnInit,OnDestroy{
             return;
         }
 
-        const data:CreateTapChi = {
+        const data:UpdateTapChi = {
             name: form.get("name")?.value,
             issn: form.get("issn")?.value ?? null,
             eissn: form.get("eissn")?.value ?? null,
@@ -195,13 +235,13 @@ export class MagazineUpdateComponent implements OnInit,OnDestroy{
             id_nhaxuatban: form.get("id_nhaxuatban")?.value ?? null,
             id_donvichuquan : form.get("id_donvichuquan")?.value ?? null,
             address: form.get("address")?.value ?? null,
-            id_address_city: form.get("id_adress_city")?.value ?? null,
+            id_address_city: form.get("id_address_city")?.value ?? null,
             id_address_country: form.get("id_address_country")?.value ?? null,
             dmnganhtheohdgs: form.get("dmnganhtheohdgs")?.value ?? null
         }
 
         this.iscreateLoading = true
-        this.tapChiService.createTapChi(data).pipe(
+        this.tapChiService.updateTapChi(this.id,data).pipe(
             takeUntil(this.destroy$)
         ).subscribe({
             next:(response) =>{
@@ -211,7 +251,6 @@ export class MagazineUpdateComponent implements OnInit,OnDestroy{
                     response.message
                 )
                 this.iscreateLoading = false
-                this.createForm.reset()
             },
             error:(error) =>{
                 this.notificationService.create(
