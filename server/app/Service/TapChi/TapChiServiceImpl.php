@@ -425,7 +425,9 @@ class TapChiServiceImpl implements TapChiService
             'issn' => $array['issn'],
             'eissn' => $array['eissn'],
             'pissn' => $array['pissn'],
-            'website' => $array['website']
+            'website' => $array['website'],
+            'trangthai' => $array['trangthai'],
+            'id_nguoithem' => $array['id_nguoithem']
         ]);
         return $tapChi;
     }

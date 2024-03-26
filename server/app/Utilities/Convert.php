@@ -82,6 +82,7 @@ use App\ViewModel\UserInfo\QuocGiaDetailVm;
 use App\ViewModel\UserInfo\QuocGiaVm;
 use App\ViewModel\UserInfo\TinhThanhDetailVm;
 use App\ViewModel\UserInfo\TinhThanhVm;
+use App\ViewModel\UserInfo\ToChucDetailVm;
 use App\ViewModel\UserInfo\ToChucVm;
 use Illuminate\Database\Console\Migrations\StatusCommand;
 use Illuminate\Database\Eloquent\Collection;
@@ -170,6 +171,17 @@ class Convert
         } else {
             $a->tinhdiemtapchi = Convert::getTinhDIemTapChiVm($tapChi->tinhDiemTapChis()->latest()->first());
         }
+
+
+        if (!empty($tapChi->dmNganhTheoHDGS)) {
+            foreach ($tapChi->dmNganhTheoHDGS as $dMNganhTheoHSGS) {
+                $a->hoidonggiaosus[] = Convert::getNganhTheoHDGSVm($dMNganhTheoHSGS);
+            }
+        } else {
+            $a->hoidonggiaosus = null;
+        }
+
+
 
         return $a;
     }
@@ -362,12 +374,33 @@ class Convert
         $a = new ToChucVm();
         $a->id = $dMToChuc->id;
         $a->tentochuc = $dMToChuc->tentochuc ?? null;
-        $a->created_at = $dMToChuc->created_at ?? null;
+        $a->created_at = $dMToChuc->created_at;
         $a->dienthoai = $dMToChuc->dienthoai ?? null;
-        $a->matochuc = $dMToChuc->matochuc ?? null;
+        $a->matochuc = $dMToChuc->matochuc;
         $a->tentochuc_en = $dMToChuc->tentochuc_en ?? null;
-        $a->updated_at = $dMToChuc->updated_at ?? null;
+        $a->updated_at = $dMToChuc->updated_at;
         $a->website = $dMToChuc->website ?? null;
+        return $a;
+    }
+
+
+    public static function getToChucDetailVm(DMToChuc $dMToChuc)
+    {
+        $a = new ToChucDetailVm();
+        $a->id = $dMToChuc->id;
+        $a->matochuc = $dMToChuc->matochuc;
+        $a->tentochuc = $dMToChuc->tentochuc ?? null;
+        $a->tentochuc_en = $dMToChuc->tentochuc_en ?? null;
+        $a->website = $dMToChuc->website ?? null;
+        $a->dienthoai = $dMToChuc->dienthoai ?? null;
+        $a->address = $dMToChuc->address ?? null;
+
+        $a->addresscity = $dMToChuc->tinhThanh == null ? null : Convert::getTinhThanhVm($dMToChuc->tinhThanh);
+        $a->addresscountry = $dMToChuc->quocGia == null ? null : Convert::getQuocGiaVm($dMToChuc->quocGia);
+        $a->phanloaitochuc = $dMToChuc->phanLoaiToChuc == null ? null : Convert::getPhanLoaiToChucVm($dMToChuc->phanLoaiToChuc);
+
+        $a->created_at = $dMToChuc->created_at;
+        $a->updated_at = $dMToChuc->updated_at;
         return $a;
     }
 
