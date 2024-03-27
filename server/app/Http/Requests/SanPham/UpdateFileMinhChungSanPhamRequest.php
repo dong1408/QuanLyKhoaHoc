@@ -29,7 +29,7 @@ class UpdateFileMinhChungSanPhamRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "url" => "bail|required|string",
+            "file" => "bail|required|file|mimes:jpeg,png,pdf,docx|max:10280",
         ];
     }
 
