@@ -55,6 +55,14 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
 
+        if ($exception instanceof \Google_Exception) { //Có lỗi xảy ra trong quá trình tải file, vui lòng thử lại sau
+            return response()->json(new ResponseError("BAD REQUEST", 400,$exception->getMessage() ),400);
+        }
+
+        if ($exception instanceof \Google_Service_Exception) {
+            return response()->json(new ResponseError("BAD REQUEST", 400, $exception->getMessage() ),400);
+        }
+
         // User khong co quyen truy cap
         if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
             return response()->json(new ResponseError("Forbidden", 403, "Bạn không có quyền thực hiện thao tác này"),403);

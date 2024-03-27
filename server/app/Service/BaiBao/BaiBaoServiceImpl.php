@@ -36,6 +36,7 @@ use App\Models\SanPham\SanPhamTacGia;
 use App\Models\TapChi\TapChi;
 use App\Models\User;
 use App\Models\UserInfo\DMToChuc;
+use App\Service\GoogleDrive\GoogleDriveService;
 use App\Service\TapChi\TapChiService;
 use App\Service\User\UserService;
 use App\Service\UserInfo\ToChucService;
@@ -53,13 +54,21 @@ class BaiBaoServiceImpl implements BaiBaoService
     private TapChiService $tapChiService;
     private ToChucService $toChucService;
     private KeywordService $keywordService;
+    private GoogleDriveService $googleDriveService;
 
-    public function __construct(UserService $userService, TapChiService $tapChiService, ToChucService $toChucService, KeywordService $keywordService)
+    public function __construct(
+        UserService $userService,
+        TapChiService $tapChiService,
+        ToChucService $toChucService,
+        KeywordService $keywordService,
+        GoogleDriveService $googleDriveService
+    )
     {
         $this->userService = $userService;
         $this->tapChiService = $tapChiService;
         $this->toChucService = $toChucService;
         $this->keywordService = $keywordService;
+        $this->googleDriveService = $googleDriveService;
     }
 
     public function getBaiBaoPaging(Request $request): ResponseSuccess
@@ -928,9 +937,10 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
 
         $validated = $request->validated();
-        $fileMinhChung->url = $validated['url'];
-        $fileMinhChung->save();
-        $result = Convert::getFileMinhChungSanPhamVm($fileMinhChung);
+        $result =  $this->googleDriveService->uploadFile($request->file('file'));
+//        $fileMinhChung->url = $validated['url'];
+//        $fileMinhChung->save();
+//        $result = Convert::getFileMinhChungSanPhamVm($fileMinhChung);
         return new ResponseSuccess("Cập nhật file minh chứng thành công", $result);
     }
 
