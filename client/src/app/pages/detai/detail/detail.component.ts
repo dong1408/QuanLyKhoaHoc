@@ -691,7 +691,7 @@ export class ChiTietDeTaiComponent{
 
         const data:CapNhatVaiTroTacGia = {
             sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
-                let tochuc = item.tochuc
+                let tochuc = item.tochuc ?? null
                 return {
                     list_id_vaitro: item.list_id_vaitro,
                     tentacgia: item.tentacgia,
@@ -699,11 +699,11 @@ export class ChiTietDeTaiComponent{
                     ngaysinh: item.ngaysinh !== null ? dateConvert(item.ngaysinh) : null,
                     dienthoai: item.dienthoai ?? null,
                     email: item.email,
-                    tochuc:{
+                    tochuc: tochuc !== null ?{
                         id_tochuc:tochuc.id ?? null,
                         matochuc:tochuc.matochuc,
                         tentochuc:tochuc.tentochuc
-                    },
+                    } : null,
                     id_hochamhocvi:item.id_hochamhocvi ?? null,
                     thutu:item.thutu ?? null,
                     tyledonggop:item.tyledonggop ?? null

@@ -79,7 +79,7 @@
         </div>
         <div class="tw-mt-[30px] tw-space-y-[6px]">
             <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="createForm">
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Tên Sản Phẩm</h3>
                     <nz-form-control [nzErrorTip]="tensanpham" nzHasFeedback>
                         <input nz-input placeholder="Tên Sản Phẩm"  type="text" formControlName="tensanpham"/>
@@ -89,7 +89,7 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class="">Có Nhận Tài Trợ ?</h3>
                     <nz-form-control>
                         <nz-select
@@ -102,7 +102,7 @@
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Đơn Vị Tài Trợ <span (click)="onOpenFormToChuc()" class="primary tw-cursor-pointer"> +Kê Khai Đơn Vị Tài Trợ Ngoài Hệ Thống</span></h3>
                     <nz-form-control [nzErrorTip]="donvi" nzHasFeedback>
                         <nz-select
@@ -126,7 +126,7 @@
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class="">Chi Tiết Đơn Vị Tài Trợ</h3>
                     <nz-form-control [nzErrorTip]="chitietdonvitaitro" nzHasFeedback>
                     <textarea
@@ -140,7 +140,7 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Đường Dẫn File Minh Chứng</h3>
                     <nz-form-control [nzErrorTip]="url_minhchung" nzHasFeedback>
                         <input nz-input placeholder="Đường Dẫn File Minh Chứng"  type="text" formControlName="url_minhchung"/>
@@ -151,7 +151,7 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Tác Giả <span (click)="addGuestControls()" class="primary tw-cursor-pointer"> +Thêm Tác Giả Ngoài Hệ Thống</span></h3>
                     <nz-form-control>
                         <nz-select
@@ -173,7 +173,7 @@
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
-                <div class="tw-w-full lg:tw-w-[50%]" formArrayName="sanpham_tacgia">
+                <div class="tw-w-full" formArrayName="sanpham_tacgia">
                     <div *ngFor="let control of sanphamTacgiaControls;let i = index">
                         <div [formGroupName]="i" class="">
                             <div class="tw-flex tw-items-center tw-gap-[0.5rem]">
@@ -304,7 +304,7 @@
                     </div>
                 </div>
 
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Mã Số</h3>
                     <nz-form-control [nzErrorTip]="maso" nzHasFeedback>
                         <input nz-input placeholder="Mã Số"  type="text" formControlName="maso"/>
@@ -314,7 +314,7 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class="">Đề Tài Ngoài Trường ?</h3>
                     <nz-form-control>
                         <nz-select
@@ -327,7 +327,7 @@
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Đề Tài Ngoài Trường Do Trường Chủ Trì ?</h3>
                     <nz-form-control [nzErrorTip]="truongchutri" nzHasFeedback>
                         <nz-select
@@ -342,7 +342,7 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Tổ Chức Chủ Quản <span (click)="onOpenFormToChuc()" class="primary tw-cursor-pointer"> +Kê Khai Tổ Chức Chủ Quản Ngoài Hệ Thống</span></h3>
                     <nz-form-control [nzErrorTip]="tochucchuquan" nzHasFeedback>
                         <nz-select
@@ -366,7 +366,7 @@
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Loại Đề Tài</h3>
                     <nz-form-control [nzErrorTip]="id_loaidetai" nzHasFeedback>
                         <nz-select
@@ -381,7 +381,7 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class="">Đề Tài Hợp Tác ?</h3>
                     <nz-form-control [nzErrorTip]="detaihoptac" nzHasFeedback>
                         <nz-select
@@ -396,7 +396,7 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Tổ Chức Hợp Tác <span (click)="onOpenFormToChuc()" class="primary tw-cursor-pointer"> +Kê Khai Tổ Chức Hợp Tác Ngoài Hệ Thống</span></h3>
                     <nz-form-control [nzErrorTip]="tochuchoptac" nzHasFeedback>
                         <nz-select
@@ -420,7 +420,7 @@
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Tỷ Lệ Kinh Phí Đơn Vị Hợp Tác</h3>
                     <nz-form-control [nzErrorTip]="tylekinhphidonvihoptac" nzHasFeedback>
                         <input nz-input placeholder="Tỷ Lệ Kinh Phí Hợp Tác"  type="text" formControlName="tylekinhphidonvihoptac"/>
@@ -430,7 +430,7 @@
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item class="tw-w-full lg:tw-w-[50%]">
+                <nz-form-item class="tw-w-full">
                     <h3 class="">Cấp Đề Tài</h3>
                     <nz-form-control [nzErrorTip]="capdetai" nzHasFeedback>
                         <input nz-input placeholder="Cấp Đề Tài"  type="text" formControlName="capdetai"/>

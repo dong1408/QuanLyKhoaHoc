@@ -606,7 +606,7 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
             },
             sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
-                let tochuc = item.tochuc
+                let tochuc = item.tochuc ?? null
                 return {
                     list_id_vaitro: item.list_id_vaitro,
                     tentacgia: item.tentacgia,
@@ -614,12 +614,12 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                     ngaysinh: item.ngaysinh !== null ? dateConvert(item.ngaysinh) : null,
                     dienthoai: item.dienthoai ?? null,
                     email: item.email,
-                    tochuc:{
+                    tochuc: tochuc !== null ?{
                         id_tochuc:tochuc.id ?? null,
                         matochuc:tochuc.matochuc,
                         tentochuc:tochuc.tentochuc
-                    },
-                    id_hochamhocvi:item.id_hochamhocvi,
+                    } : null,
+                    id_hochamhocvi:item.id_hochamhocvi ?? null,
                     thutu:item.thutu ?? null,
                     tyledonggop:item.tyledonggop ?? null
                 }
