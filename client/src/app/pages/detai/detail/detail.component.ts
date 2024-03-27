@@ -809,12 +809,12 @@ export class ChiTietDeTaiComponent{
                 thutu:[item.thutu ?? null],
                 tyledonggop:[item.tyledonggop ?? null],
                 list_id_vaitro:[[...item.vaitrotacgia.map((item:any) => item.id)]],
-                // tochuc:[
-                //     item.tochuc
-                // ],
-                // id_hochamhocvi:[
-                //     item.hochamhocvi !== null ? item.hochamhocvi.id : null
-                // ],
+                tochuc:[
+                    item.tochuc !== null ? item.tochuc : null
+                ],
+                id_hochamhocvi:[
+                    item.hochamhocvi !== null ? item.hochamhocvi.id : null
+                ],
                 email:[
                     item.email
                 ],

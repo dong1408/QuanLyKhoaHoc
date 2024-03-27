@@ -7,6 +7,7 @@ import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.v
 import {NhaXuatBan} from "../nhaxuatban/nha-xuat-ban.type";
 import {TinhThanh} from "../user-info/tinh-thanh.type";
 import {QuocGia} from "../user-info/quoc-gia.type";
+import {HoiDongGiaoSu} from "./hoi-dong-giao-su.type";
 
 export interface Magazine{
     id:number,
@@ -46,8 +47,8 @@ export interface ChiTietTapChi{
     address?:string,
     trangthai:boolean,
     nhaxuatban?:NhaXuatBan,
-    addresscity:TinhThanh,
-    addresscountry:QuocGia,
+    addresscity?:TinhThanh,
+    addresscountry?:QuocGia,
     created_at:string,
     updated_at:string,
     deleted_at?:string,
@@ -55,6 +56,7 @@ export interface ChiTietTapChi{
     pissn?:string,
     eissn?:string,
     nguoithem?:User,
+    hoidonggiaosus?:HoiDongGiaoSu[],
     khongduoccongnhan?:MagazineRecognize,
     xephangtapchi?:XepHangTapChi,
     tinhdiemtapchi?:TinhDiemTapChi,
@@ -126,8 +128,7 @@ export interface UpdateTapChi{
     id_donvichuquan?:number,
     address?:string,
     id_address_city?:number,
-    id_adress_country?:number,
-    dmphanloaitapchi?:Array<number>,
+    id_address_country?:number,
     dmnganhtheohdgs?:Array<number>
 }
 

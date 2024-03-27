@@ -243,9 +243,6 @@ export class ChiTietBaiBaoComponent{
                 in_system:[
                     true
                 ],
-                // tochuc:[
-                //     data.tochuc
-                // ],
                 email:[
                     data.email
                 ]
@@ -572,7 +569,6 @@ export class ChiTietBaiBaoComponent{
                     'Thành Công',
                     response.message
                 )
-                console.log(response)
                 if (this.baibao && this.baibao.sanpham_tacgias) {
                     this.baibao.sanpham_tacgias = response.data
                 }

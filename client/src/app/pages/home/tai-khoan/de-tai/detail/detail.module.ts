@@ -16,6 +16,7 @@ import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {SharedModule} from "../../../../../shared/components/shared.module";
 import {PagingService} from "../../../../../core/services/paging.service";
+import {NzListModule} from "ng-zorro-antd/list";
 
 @NgModule({
     declarations:[
@@ -37,6 +38,7 @@ import {PagingService} from "../../../../../core/services/paging.service";
         NzWaveModule,
         SharedModule,
         NzDatePickerModule,
+        NzListModule,
     ],
     exports:[
 

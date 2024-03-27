@@ -111,6 +111,66 @@
     </nz-modal>
 </div>
 
+<div>
+    <nz-modal
+            [nzVisible]="isOpenListToChucKeKhai"
+            nzTitle="Tổ Chức Đã Kê Khai"
+            nzOkText="OK"
+            (nzOnOk)="onOpenListToChucKeKhai()"
+            (nzOnCancel)="onOpenListToChucKeKhai()"
+    >
+        <ng-container *nzModalContent>
+            <ul nz-list [nzDataSource]="this.keKhaiToChuc" nzBordered nzSize="large">
+                <li *ngFor="let item of this.keKhaiToChuc" nz-list-item nzNoFlex>
+                    <ul nz-list-item-actions>
+                        <nz-list-item-action>
+                            <a (click)="onXoaToChucKeKhai(item.matochuc)">Xóa</a>
+                        </nz-list-item-action>
+                    </ul>
+                    {{item.tentochuc}}
+                </li>
+            </ul>
+        </ng-container>
+    </nz-modal>
+</div>
+
+<div>
+    <nz-modal
+            [nzVisible]="isOpenFormToChuc"
+            nzTitle="Kê Khai Tổ Chức"
+            nzOkText="Lưu"
+            (nzOnOk)="onKeKhaiToChuc()"
+            (nzOnCancel)="onOpenFormToChuc()"
+    >
+        <ng-container *nzModalContent>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="tochucForm">
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Tên Tổ Chức</h3>
+                    <nz-form-control [nzErrorTip]="tentochuc" nzHasFeedback>
+                        <input nz-input placeholder="Tên Tổ Chức"  type="text" formControlName="tentochuc"/>
+
+                        <ng-template #tentochuc let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Mã Tổ Chức</h3>
+                    <nz-form-control [nzErrorTip]="matochuc" nzHasFeedback>
+                        <input nz-input placeholder="Mã Tổ Chức"  type="text" formControlName="matochuc"/>
+
+                        <ng-template #matochuc let-control>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
 <div class="tw-space-y-[16px]">
     <button nz-button nzType="primary" [routerLink]="['/home/tai-khoan/san-pham/bai-bao']">
         <span nz-icon nzType="arrow-left" nzTheme="outline"></span>

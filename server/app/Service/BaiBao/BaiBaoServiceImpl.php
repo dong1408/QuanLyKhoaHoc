@@ -773,9 +773,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $validated = $request->validated();
         $result = [];
 
-        DB::transaction(function () use ($validated, &$sanPham, &$result, &$test) {
-
-            
+        DB::transaction(function () use ($validated, &$sanPham, &$result) {
 
             $listIdTacGia = [];
             $listIdVaiTro = [];
@@ -871,7 +869,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 throw new RoleOnlyHeldByOnePersonException();
             }
 
-            
+
 
             // Kiểm tra nếu bài báo này kh có tác giả nào đảm nhiệm vai trò tác giả liên hệ
             // (có id =2) thì set vai trò đó cho người có vai trò tác giả đứng đầu (có id =1)
@@ -894,7 +892,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                     'tyledonggop' => $tyLeDongGop
                 ]);
                 $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
-            }        
+            }
             $sanPham->tongsotacgia = count(array_unique($listIdTacGia));
             $sanPham->save();
         });
