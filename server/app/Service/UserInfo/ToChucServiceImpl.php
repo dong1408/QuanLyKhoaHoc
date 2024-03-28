@@ -72,7 +72,6 @@ class ToChucServiceImpl implements ToChucService
     public function themToChucNgoai($array): DMToChuc
     {
         $toChuc = DMToChuc::create([
-            'matochuc' => $array['matochuc'],
             'tentochuc' => $array['tentochuc']
         ]);
         return $toChuc;

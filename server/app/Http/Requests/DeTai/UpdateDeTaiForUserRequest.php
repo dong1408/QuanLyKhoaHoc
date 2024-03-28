@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Detai;
+namespace App\Http\Requests\DeTai;
 
 use App\Rules\MatochucUniqueIfIdDonviNull;
 use App\Rules\MatochucUniqueIfIdTochucchuquanNull;
@@ -46,13 +46,13 @@ class UpdateDeTaiForUserRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
-            "sanpham.donvi.matochuc" => [
+            "sanpham.donvi.tentochuc" => [
                 "bail", "required_with:sanpham.donvi", "string",
                 new MatochucUniqueIfIdDonviNull // với những đơn vị được kê khai thì cần phải check trường matochuc unique
             ],
-            "sanpham.donvi.tentochuc" => [
-                "bail", "required_with:sanpham.donvi", "string"
-            ],
+            // "sanpham.donvi.tentochuc" => [
+            //     "bail", "required_with:sanpham.donvi", "string"
+            // ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
             // "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
 
@@ -71,13 +71,13 @@ class UpdateDeTaiForUserRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
-            "tochucchuquan.matochuc" => [
+            "tochucchuquan.tentochuc" => [
                 "bail", "required_with:tochucchuquan", "string",
                 new MatochucUniqueIfIdTochucchuquanNull
             ],
-            "tochucchuquan.tentochuc" => [
-                "bail", "required_with:tochucchuquan", "string"
-            ],
+            // "tochucchuquan.tentochuc" => [
+            //     "bail", "required_with:tochucchuquan", "string"
+            // ],
 
 
             "id_loaidetai" => [
@@ -90,13 +90,13 @@ class UpdateDeTaiForUserRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
-            "tochuchoptac.matochuc" => [
+            "tochuchoptac.tentochuc" => [
                 "bail", "required_with", "string",
                 new MatochucUniqueIfIdTochuchoptacNull
             ],
-            "tochuchoptac.tentochuc" => [
-                "bail", "required_with", "string"
-            ],
+            // "tochuchoptac.tentochuc" => [
+            //     "bail", "required_with", "string"
+            // ],
             "tylekinhphidonvihoptac" => "bail|nullable|string",
             "capdetai" => "bail|nullable|string",
         ];

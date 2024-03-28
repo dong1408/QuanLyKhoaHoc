@@ -63,7 +63,31 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
-            "sanpham_tacgia.*.tochuc.matochuc" => [
+            // "sanpham_tacgia.*.tochuc.matochuc" => [
+            //     'required_if:sanpham_tacgia.*.id_tacgia,null',
+            //     "bail", "nullable", "string",
+            //     function ($attribute, $value, $fail) {
+            //         foreach ($this->input('sanpham_tacgia') as $index => $sanphamTacGia) {
+            //             $idTacGia = $sanphamTacGia['id_tacgia'];
+            //             $idToChuc = null;
+            //             if ($sanphamTacGia['tochuc']) {
+            //                 $idToChuc = $sanphamTacGia['tochuc']['id_tochuc'];
+            //             }
+
+            //             if (is_null($idTacGia) && is_null($idToChuc)) {
+            //                 $exists = DB::table('d_m_to_chucs')
+            //                     ->where('matochuc', $sanphamTacGia['tochuc']['matochuc'])
+            //                     ->exists();
+
+            //                 if ($exists) {
+            //                     $fail("Tổ chức với mã là '{$sanphamTacGia['tochuc']['matochuc']}' đã tồn tại trong hệ thống.");
+            //                 }
+            //             }
+            //         }
+            //     }
+            // ],
+
+            "sanpham_tacgia.*.tochuc.tentochuc" => [
                 'required_if:sanpham_tacgia.*.id_tacgia,null',
                 "bail", "nullable", "string",
                 function ($attribute, $value, $fail) {
@@ -76,29 +100,17 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
 
                         if (is_null($idTacGia) && is_null($idToChuc)) {
                             $exists = DB::table('d_m_to_chucs')
-                                ->where('matochuc', $sanphamTacGia['tochuc']['matochuc'])
+                                ->where('tentochuc', $sanphamTacGia['tochuc']['tentochuc'])
                                 ->exists();
 
                             if ($exists) {
-                                $fail("Tổ chức với mã là '{$sanphamTacGia['tochuc']['matochuc']}' đã tồn tại trong hệ thống.");
+                                $fail("Tổ chức với tên là '{$sanphamTacGia['tochuc']['tentochuc']}' đã tồn tại trong hệ thống.");
                             }
                         }
                     }
                 }
             ],
-            "sanpham_tacgia.*.tochuc.tentochuc" => "bail|nullable|string",
 
-
-            //            "sanpham_tacgia.*.tochuc" => "bail|nullable",
-            //            "sanpham_tacgia.*.tochuc.id_tochuc" => [
-            //                "bail", "nullable", "integer",
-            //                Rule::exists("d_m_to_chucs", "id")
-            //            ],
-            //            "sanpham_tacgia.*.tochuc.matochuc" => [
-            //                "bail", "nullable", "string",
-            //                Rule::unique("d_m_to_chucs", "matochuc")
-            //            ],
-            //            "sanpham_tacgia.*.tochuc.tentochuc" => "bail|nullable|string",
         ];
     }
 

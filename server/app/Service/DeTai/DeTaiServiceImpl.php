@@ -2,10 +2,6 @@
 
 namespace App\Service\DeTai;
 
-use App\Exceptions\BaiBao\BaiBaoNotHaveFirstAuthor;
-use App\Exceptions\BaiBao\CreateBaiBaoFailedException;
-use App\Exceptions\BaiBao\RoleOnlyHeldByOnePersonException;
-use App\Exceptions\BaiBao\TwoRoleSimilarForOnePersonException;
 use App\Exceptions\BaiBao\VaiTroOfBaiBaoException;
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\DeTai\ChuDeTaiException;
@@ -29,13 +25,13 @@ use App\Exceptions\SanPham\LoaiSanPhamWrongException;
 use App\Exceptions\SanPham\UpdateTrangThaiRaSoatException;
 use App\Exceptions\User\UserNotFoundException;
 use App\Exceptions\User\UserNotHavePermissionException;
-use App\Http\Requests\Detai\BaoCaoTienDoDeTaiRequest;
-use App\Http\Requests\Detai\CreateDeTaiRequest;
-use App\Http\Requests\Detai\NghiemThuDeTaiRequest;
-use App\Http\Requests\Detai\TuyenChonDeTaiRequest;
-use App\Http\Requests\Detai\UpdateDeTaiForUserRequest;
-use App\Http\Requests\Detai\UpdateDeTaiRequest;
-use App\Http\Requests\Detai\XetDuyetDeTaiRequest;
+use App\Http\Requests\DeTai\BaoCaoTienDoDeTaiRequest;
+use App\Http\Requests\DeTai\CreateDeTaiRequest;
+use App\Http\Requests\DeTai\NghiemThuDeTaiRequest;
+use App\Http\Requests\DeTai\TuyenChonDeTaiRequest;
+use App\Http\Requests\DeTai\UpdateDeTaiForUserRequest;
+use App\Http\Requests\DeTai\UpdateDeTaiRequest;
+use App\Http\Requests\DeTai\XetDuyetDeTaiRequest;
 use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
@@ -54,6 +50,7 @@ use App\Models\SanPham\SanPhamTacGia;
 use App\Models\User;
 use App\Models\UserInfo\DMToChuc;
 use App\Service\DeTai\DeTaiService;
+use App\Service\GoogleDrive\GoogleDriveService;
 use App\Service\User\UserService;
 use App\Service\UserInfo\ToChucService;
 use App\Utilities\Convert;
@@ -68,11 +65,13 @@ class DeTaiServiceImpl implements DeTaiService
 
     private UserService $userService;
     private ToChucService $toChucService;
+    private GoogleDriveService $googleDriveService;
 
-    public function __construct(UserService $userService, ToChucService $toChucService)
+    public function __construct(UserService $userService, ToChucService $toChucService, GoogleDriveService $googleDriveService)
     {
         $this->userService = $userService;
         $this->toChucService = $toChucService;
+        $this->googleDriveService = $googleDriveService;
     }
 
 
@@ -402,7 +401,7 @@ class DeTaiServiceImpl implements DeTaiService
         $deTai = new DeTai();
         $sanPham = new SanPham();
 
-        DB::transaction(function () use ($validated, &$deTai, &$sanPham) {
+        DB::transaction(function () use ($validated, &$deTai, &$sanPham, &$request) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
@@ -555,9 +554,11 @@ class DeTaiServiceImpl implements DeTaiService
                 'capdetai' => $validated['capdetai'],
             ]);
 
+            $url_file = $this->googleDriveService->uploadFile($request->file('url_file'));
+
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
-                'url' => $validated['fileminhchungsanpham']['url'],
+                'url' => $url_file,
             ]);
 
             for ($i = 0; $i < count($listIdTacGia); $i++) {
@@ -655,10 +656,9 @@ class DeTaiServiceImpl implements DeTaiService
 
 
             foreach ($sanphamtacgiasWithIdTochucNull as $key => $item) {
-                $toChucFind = DMToChuc::where('matochuc', $item['tochuc']['matochuc'])->get()->first();
+                $toChucFind = DMToChuc::where('tentochuc', $item['tochuc']['tentochuc'])->get()->first();
                 if ($toChucFind == null) {
                     $array = [
-                        'matochuc' => $item['tochuc']['matochuc'],
                         'tentochuc' => $item['tochuc']['tentochuc'],
                     ];
                     $toChuc = $this->toChucService->themToChucNgoai($array);
@@ -693,10 +693,9 @@ class DeTaiServiceImpl implements DeTaiService
 
     private function keKhaiToChucChuQuan($toChucChuQuan)
     {
-        $toChucChuQuanFind = DMToChuc::where('matochuc', $toChucChuQuan['matochuc'])->get()->first();
+        $toChucChuQuanFind = DMToChuc::where('tentochuc', $toChucChuQuan['tentochuc'])->get()->first();
         if ($toChucChuQuanFind == null) {
             $array = [
-                'matochuc' => $toChucChuQuan['matochuc'],
                 'tentochuc' => $toChucChuQuan['tentochuc'],
             ];
             $toChucChuQuanMd = $this->toChucService->themToChucNgoai($array);
@@ -708,10 +707,9 @@ class DeTaiServiceImpl implements DeTaiService
 
     private function keKhaiToChucHopTac($toChucHopTac)
     {
-        $toChucHopTacFind = DMToChuc::where('matochuc', $toChucHopTac['matochuc'])->get()->first();
+        $toChucHopTacFind = DMToChuc::where('tentochuc', $toChucHopTac['tentochuc'])->get()->first();
         if ($toChucHopTacFind == null) {
             $array = [
-                'matochuc' => $toChucHopTac['matochuc'],
                 'tentochuc' => $toChucHopTac['tentochuc'],
             ];
             $toChucHopTacMd = $this->toChucService->themToChucNgoai($array);
@@ -1001,10 +999,10 @@ class DeTaiServiceImpl implements DeTaiService
             throw new LoaiSanPhamWrongException("Sản phẩm không phải đề tài");
         }
 
-        $validated = $request->validated();
-        $fileMinhChung->url = $validated['url'];
+        $result =  $this->googleDriveService->uploadFile($request->file('file'));
+        $fileMinhChung->url = $result;
         $fileMinhChung->save();
-        $result = Convert::getFileMinhChungSanPhamVm($fileMinhChung);
+
         return new ResponseSuccess("Cập nhật file minh chứng thành công", $result);
     }
 
