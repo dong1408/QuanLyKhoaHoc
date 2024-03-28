@@ -62,30 +62,7 @@ class UpdateSanPhamTacGiaRequest extends FormRequest
             "sanpham_tacgia.*.tochuc.id_tochuc" => [
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
-            ],
-            // "sanpham_tacgia.*.tochuc.matochuc" => [
-            //     'required_if:sanpham_tacgia.*.id_tacgia,null',
-            //     "bail", "nullable", "string",
-            //     function ($attribute, $value, $fail) {
-            //         foreach ($this->input('sanpham_tacgia') as $index => $sanphamTacGia) {
-            //             $idTacGia = $sanphamTacGia['id_tacgia'];
-            //             $idToChuc = null;
-            //             if ($sanphamTacGia['tochuc']) {
-            //                 $idToChuc = $sanphamTacGia['tochuc']['id_tochuc'];
-            //             }
-
-            //             if (is_null($idTacGia) && is_null($idToChuc)) {
-            //                 $exists = DB::table('d_m_to_chucs')
-            //                     ->where('matochuc', $sanphamTacGia['tochuc']['matochuc'])
-            //                     ->exists();
-
-            //                 if ($exists) {
-            //                     $fail("Tổ chức với mã là '{$sanphamTacGia['tochuc']['matochuc']}' đã tồn tại trong hệ thống.");
-            //                 }
-            //             }
-            //         }
-            //     }
-            // ],
+            ],           
 
             "sanpham_tacgia.*.tochuc.tentochuc" => [
                 'required_if:sanpham_tacgia.*.id_tacgia,null',

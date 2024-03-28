@@ -419,7 +419,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             }
             $baiBao->keyWords()->attach($listIdKeyword);
 
-            $url_file = $this->googleDriveService->uploadFile($request->file('url_file'));
+            $url_file = $this->googleDriveService->uploadFile($request->file('file'));
 
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
@@ -545,10 +545,9 @@ class BaiBaoServiceImpl implements BaiBaoService
 
     private function keKhaiDonVi($donVi)
     {
-        $donViFind = DMToChuc::where('matochuc', $donVi['matochuc'])->get()->first();
+        $donViFind = DMToChuc::where('tentochuc', $donVi['tentochuc'])->get()->first();
         if ($donViFind == null) {
             $array = [
-                'matochuc' => $donVi['matochuc'],
                 'tentochuc' => $donVi['tentochuc'],
             ];
             $donViTaiTro = $this->toChucService->themToChucNgoai($array);
@@ -936,11 +935,11 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
         }
 
-        $result =  $this->googleDriveService->uploadFile($request->file('url_file'));
-        $fileMinhChung->url = $result;
+        $url_file =  $this->googleDriveService->uploadFile($request->file('file'));
+        $fileMinhChung->url = $url_file;
         $fileMinhChung->save();
 
-        return new ResponseSuccess("Cập nhật file minh chứng thành công", $result);
+        return new ResponseSuccess("Cập nhật file minh chứng thành công", $url_file);
     }
 
 

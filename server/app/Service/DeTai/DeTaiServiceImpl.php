@@ -554,7 +554,7 @@ class DeTaiServiceImpl implements DeTaiService
                 'capdetai' => $validated['capdetai'],
             ]);
 
-            $url_file = $this->googleDriveService->uploadFile($request->file('url_file'));
+            $url_file = $this->googleDriveService->uploadFile($request->file('file'));
 
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
@@ -999,11 +999,11 @@ class DeTaiServiceImpl implements DeTaiService
             throw new LoaiSanPhamWrongException("Sản phẩm không phải đề tài");
         }
 
-        $result =  $this->googleDriveService->uploadFile($request->file('file'));
-        $fileMinhChung->url = $result;
+        $url_file =  $this->googleDriveService->uploadFile($request->file('file'));
+        $fileMinhChung->url = $url_file;
         $fileMinhChung->save();
 
-        return new ResponseSuccess("Cập nhật file minh chứng thành công", $result);
+        return new ResponseSuccess("Cập nhật file minh chứng thành công", $url_file);
     }
 
 
