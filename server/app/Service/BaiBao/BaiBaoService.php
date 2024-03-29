@@ -9,6 +9,7 @@ use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
+use App\Http\Requests\SanPham\UploadFileMinhChungRequest;
 use App\Utilities\ResponseSuccess;
 use Illuminate\Http\Request;
 
@@ -31,4 +32,5 @@ interface BaiBaoService
     public function getBaiBaoKeKhai(Request $request): ResponseSuccess;
     public function getBaiBaoThamGia(Request $request): ResponseSuccess;
     public function updateBaiBaoForUser(UpdateBaiBaoForUserRequest $request, int $id): ResponseSuccess;
+    public function UploadFileMinhChung(UploadFileMinhChungRequest $request):ResponseSuccess;
 }

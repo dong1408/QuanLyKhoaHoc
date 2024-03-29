@@ -3,6 +3,8 @@
 namespace App\Service\GoogleDrive;
 
 use App\Exceptions\Google\KhongTimThayFolderException;
+use App\Utilities\Convert;
+use App\ViewModel\Google\FileVm;
 use Exception;
 use Google\Service\Drive\DriveFile;
 use Google\Service\Drive\Permission;
@@ -33,7 +35,7 @@ class GoogleDriveServiceImpl implements GoogleDriveService
      * @throws \Google\Service\Exception
      * @throws KhongTimThayFolderException
      */
-    public function uploadFile(UploadedFile $file): string
+    public function uploadFile(UploadedFile $file): FileVm
     {
         $folderId = env("FOLDER_ID");
 
@@ -65,7 +67,14 @@ class GoogleDriveServiceImpl implements GoogleDriveService
 
         $this->client->permissions->create($fileId, $permission, ['fields' => 'id']);
 
-        return $uploadFile->webViewLink;
+        return Convert::getFileVm($uploadFile->id,$uploadFile->webViewLink);
     }
 
+    /**
+     * @throws \Google\Service\Exception
+     */
+    public function deleteFile(string $idFile): void
+    {
+        $this->client->files->delete($idFile);
+    }
 }

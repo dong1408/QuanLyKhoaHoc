@@ -13,7 +13,7 @@ import {catchError} from "rxjs";
 import {handleError} from "../../../shared/commons/handler-error-http";
 import {CapNhatSanPham, CapNhatTrangThaiSanPham} from "../../types/sanpham/san-pham.type";
 import {CapNhatVaiTroTacGia, SanPhamTacGia} from "../../types/sanpham/vai-tro-tac-gia.type";
-import {CapNhatFileMinhChung} from "../../types/sanpham/file-minh-chung.type";
+import {CapNhatFileMinhChung, FileVm} from "../../types/sanpham/file-minh-chung.type";
 
 @Injectable({
     providedIn:"root"
@@ -116,9 +116,18 @@ export class BaiBaoService{
         )
     }
 
-    capNhatFileMinhChung(id:number,data:CapNhatFileMinhChung){
-        return this.http.patch<ApiResponse<boolean>>(
+    capNhatFileMinhChung(id:number,data:FormData){
+        return this.http.post<ApiResponse<string>>(
             `${environment.apiUrl}/baibao/${id}/fileminhchung`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    uploadFileMinhChung(data:FormData){
+        return this.http.post<ApiResponse<FileVm>>(
+            `${environment.apiUrl}/baibao/fileminhchung`,
             data
         ).pipe(
             catchError(handleError)

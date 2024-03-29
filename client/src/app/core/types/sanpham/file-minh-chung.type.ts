@@ -6,5 +6,11 @@ export interface FileMinhChung{
 }
 
 export interface CapNhatFileMinhChung{
-    url:string
+    file:File
+}
+
+
+export interface FileVm{
+    file_id:string,
+    link_view:string
 }

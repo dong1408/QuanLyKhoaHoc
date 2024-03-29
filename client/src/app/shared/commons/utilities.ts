@@ -1,3 +1,4 @@
+import {NzUploadChangeParam, NzUploadFile} from "ng-zorro-antd/upload";
 import {SanPhamTacGia, SanPhamTacGiaMerged} from "../../core/types/sanpham/vai-tro-tac-gia.type";
 
 export const dateConvert = (date:string| null | undefined): string | null =>{
@@ -33,4 +34,33 @@ export const mergedUsers = (data:SanPhamTacGia[]):SanPhamTacGiaMerged[] =>{
         }
         return acc;
     }, []);
+}
+
+export const convertToFormData = (data:any, formData: FormData, prefix = ''):FormData => {
+    for (const key in data) {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+            const value = data[key];
+
+            // Xây dựng tên trường dữ liệu
+            const fieldName = prefix ? `${prefix}[${key}]` : key;
+
+            if (key === 'fileminhchungsanpham[file]') {
+                // Xử lý trường hợp đặc biệt
+                formData.append(fieldName, value);
+            }
+            else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                // Nếu giá trị là một đối tượng, tiếp tục đệ quy
+                convertToFormData(value, formData, fieldName);
+            } else if (Array.isArray(value)) {
+                // Nếu giá trị là một mảng, duyệt qua từng phần tử và thêm vào FormData
+                value.forEach((item: any, index: number) => {
+                    convertToFormData({ [index]: item }, formData, fieldName);
+                });
+            } else {
+                // Nếu giá trị không phải là đối tượng, thêm vào FormData
+                formData.append(fieldName, value);
+            }
+        }
+    }
+    return formData
 }

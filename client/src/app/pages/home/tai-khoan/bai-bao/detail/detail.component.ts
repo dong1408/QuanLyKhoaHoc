@@ -4,7 +4,7 @@ import {
     combineLatest,
     debounceTime,
     distinctUntilChanged,
-    Observable,
+    Observable, Observer,
     Subject,
     switchMap,
     takeUntil,
@@ -31,6 +31,7 @@ import {CapNhatTrangThaiSanPham, TrangThaiSanPham} from "../../../../../core/typ
 import {ToChucService} from "../../../../../core/services/user-info/to-chuc.service";
 import {HocHamHocViService} from "../../../../../core/services/user-info/hoc-ham-hoc-vi.service";
 import {HocHamHocVi} from "../../../../../core/types/user-info/hoc-ham-hoc-vi.type";
+import {NzUploadFile} from "ng-zorro-antd/upload";
 
 @Component({
     selector:"app-taikhoan-baibao-chitiet",
@@ -40,6 +41,8 @@ import {HocHamHocVi} from "../../../../../core/types/user-info/hoc-ham-hoc-vi.ty
 
 export class ChiTietBaiBaoComponent{
     id:number
+
+    fileList:NzUploadFile[] = []
 
     keKhaiToChuc:any = []
 
@@ -106,13 +109,6 @@ export class ChiTietBaiBaoComponent{
             id:[
                 null
             ],
-            matochuc:[
-                null,
-                Validators.compose([
-                    Validators.required,
-                    noWhiteSpaceValidator()
-                ])
-            ],
             tentochuc:[
                 null,
                 Validators.compose([
@@ -130,11 +126,10 @@ export class ChiTietBaiBaoComponent{
         })
 
         this.formCapNhatFileMinhChung = this.fb.group({
-            url:[
+            file:[
                 null,
                 Validators.compose([
                     Validators.required,
-                    noWhiteSpaceValidator()
                 ])
             ]
         })
@@ -165,7 +160,7 @@ export class ChiTietBaiBaoComponent{
         // check kê khai trùng tổ chức
 
         const isAvailable = this.keKhaiToChuc.some((item:KeKhaiToChuc) => {
-            return item.matochuc.toLowerCase() === data.matochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
+            return item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
         })
 
         if(isAvailable){
@@ -207,9 +202,9 @@ export class ChiTietBaiBaoComponent{
         this.isOpenListToChucKeKhai = !this.isOpenListToChucKeKhai
     }
 
-    onXoaToChucKeKhai(matochuc:string){
-        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.matochuc !== matochuc)
-        this.tochucs = this.tochucs.filter((item:ToChuc) => item.matochuc !== matochuc)
+    onXoaToChucKeKhai(tentochuc:string){
+        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.tentochuc !== tentochuc)
+        this.tochucs = this.tochucs.filter((item:ToChuc) => item.tentochuc !== tentochuc)
         this.sanphamTacgiaControls.forEach((control) => {
             if(control.get("in_system")?.value === false){
                 control.get("tochuc")?.reset()
@@ -433,8 +428,12 @@ export class ChiTietBaiBaoComponent{
             return;
         }
         const data:CapNhatFileMinhChung = this.formCapNhatFileMinhChung.value;
+
+        const formData = new FormData()
+        formData.append("file",data.file)
+
         this.isCapNhatFileMinhChung = true;
-        this.baiBaoService.capNhatFileMinhChung(this.id,data)
+        this.baiBaoService.capNhatFileMinhChung(this.id,formData)
             .pipe(
                 takeUntil(this.destroy$)
             ).subscribe({
@@ -446,7 +445,7 @@ export class ChiTietBaiBaoComponent{
 
                 )
                 if (this.baibao && this.baibao.sanpham && this.baibao.sanpham.minhchung) {
-                    this.baibao.sanpham.minhchung.url = data.url;
+                    this.baibao.sanpham.minhchung.url = response.data;
                 }
                 this.isOpenFormMinhChung = false
                 this.isCapNhatFileMinhChung = false
@@ -496,7 +495,6 @@ export class ChiTietBaiBaoComponent{
                     email: item.email,
                     tochuc: tochuc !== null ?{
                         id_tochuc:tochuc.id ?? null,
-                        matochuc:tochuc.matochuc,
                         tentochuc:tochuc.tentochuc
                     } : null,
                     id_hochamhocvi:item.id_hochamhocvi ?? null,
@@ -586,6 +584,58 @@ export class ChiTietBaiBaoComponent{
             formArray.push(control);
         })
     }
+    beforeUpload = (file: NzUploadFile):Observable<boolean> =>
+        new Observable((observer: Observer<boolean>) => {
+            file.status = "uploading"
+            const extension = file.name.split('.').pop()?.toLowerCase();
+
+            const isTypeSuccess = extension === 'docx' || extension === 'pdf' || file.type! === 'image/jpeg' || file.type! === 'image/png'
+
+            if(!isTypeSuccess){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Chỉ chấp nhận các file .docx, .pdf, jpeg, png'
+                )
+                observer.complete
+                return;
+            }
+
+            const isLessThan10MB = file.size! / 1024 / 1024 <= 10;
+
+            if(!isLessThan10MB){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Chỉ chấp nhận file nhỏ hơn 10MB'
+                )
+                file.status = "error"
+                observer.complete();
+                return;
+            }
+
+            if(this.fileList.length >= 1){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Chỉ được upload 1 file'
+                )
+                file.status = "error"
+                observer.complete();
+                return;
+            }
+
+            observer.next(false);
+            this.fileList = this.fileList.concat(file)
+            this.formCapNhatFileMinhChung.patchValue({
+                file: file
+            })
+            file.status = "success"
+            observer.complete();
+        })
+
+
+
     ngOnDestroy() {
         this.destroy$.next()
         this.destroy$.complete()

@@ -6,8 +6,8 @@ import {
     combineLatest,
     debounceTime,
     distinctUntilChanged,
-    forkJoin,
-    Observable,
+    forkJoin, mergeMap,
+    Observable, Observer,
     Subject,
     switchMap,
     takeUntil,
@@ -32,6 +32,7 @@ import {KeKhaiKeyword, Keyword} from "../../../../../core/types/baibao/keyword.t
 import {HocHamHocVi} from "../../../../../core/types/user-info/hoc-ham-hoc-vi.type";
 import {KeywordService} from "../../../../../core/services/baibao/keyword.service";
 import {HocHamHocViService} from "../../../../../core/services/user-info/hoc-ham-hoc-vi.service";
+import {NzUploadFile} from "ng-zorro-antd/upload";
 
 @Component({
     selector:"app-taikhoan-baibao-create",
@@ -40,6 +41,9 @@ import {HocHamHocViService} from "../../../../../core/services/user-info/hoc-ham
 })
 
 export class BaiBaoCreateComponent implements OnInit,OnDestroy{
+
+    fileList:NzUploadFile[] = []
+
     keKhaiToChuc:any = []
     keKhaiKeyword:any = []
     keKhaiTapChi:any = []
@@ -215,10 +219,9 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     Validators.required
                 ])
             ],
-            url_minhchung:[
+            file:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ]
@@ -227,13 +230,6 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         this.tochucForm = this.fb.group({
             id:[
                 null
-            ],
-            matochuc:[
-                null,
-                Validators.compose([
-                    Validators.required,
-                    noWhiteSpaceValidator()
-                ])
             ],
             tentochuc:[
                 null,
@@ -347,15 +343,15 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         })
     }
 
-    onXoaToChucKeKhai(matochuc:string){
-        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.matochuc !== matochuc)
+    onXoaToChucKeKhai(tentochuc:string){
+        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.tentochuc !== tentochuc)
         this.createForm.get("donvi")?.reset()
         this.sanphamTacgiaControls.forEach((control) => {
             if(control.get("in_system")?.value === false){
                 control.get("tochuc")?.reset()
             }
         })
-        this.dvTaiTros = this.dvTaiTros.filter((item:ToChuc) => item.matochuc !== matochuc)
+        this.dvTaiTros = this.dvTaiTros.filter((item:ToChuc) => item.tentochuc !== tentochuc)
     }
 
     onXoaTapChiKeKhai(tentapchi:string){
@@ -506,7 +502,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         // check kê khai trùng tổ chức
 
         const isAvailable = this.keKhaiToChuc.some((item:KeKhaiToChuc) => {
-            return item.matochuc.toLowerCase() === data.matochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
+            return item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
         })
 
         if(isAvailable){
@@ -731,73 +727,78 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             return;
         }
 
-        const data:TaoBaiTao = {
-            sanpham:{
-                tensanpham: form.get('tensanpham')?.value,
-                tongsotacgia: arrayForm.length,
-                thoidiemcongbohoanthanh:  dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString())!!,
-                conhantaitro : form.get('conhantaitro')?.value ?? false,
-                donvi :form.get('conhantaitro')?.value === true ? {
-                    id_donvi: form.get('donvi')?.value['id'] ?? null,
-                    matochuc: form.get('donvi')?.value['matochuc'],
-                    tentochuc: form.get('donvi')?.value['tentochuc']
-                } : null,
-                chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
-            },
-            sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
-                let tochuc = item.tochuc ?? null
-                return {
-                    list_id_vaitro: item.list_id_vaitro,
-                    tentacgia: item.tentacgia,
-                    id_tacgia: item.id_tacgia ?? null,
-                    ngaysinh: item.ngaysinh !== null ? dateConvert(item.ngaysinh) : null,
-                    dienthoai: item.dienthoai ?? null,
-                    email: item.email,
-                    tochuc: tochuc !== null ?{
-                        id_tochuc:tochuc.id ?? null,
-                        matochuc:tochuc.matochuc,
-                        tentochuc:tochuc.tentochuc
-                    } : null,
-                    id_hochamhocvi:item.id_hochamhocvi ?? null,
-                    thutu:item.thutu ?? null,
-                    tyledonggop:item.tyledonggop ?? null
-                }
-            }),
-            fileminhchungsanpham:{
-                url:form.get('url_minhchung')?.value,
-            },
-            doi:form.get('doi')?.value,
-            url:form.get('url')?.value,
-            received:form.get('received')?.value ? dateConvert(form.get('received')?.value.toString()) : null,
-            accepted:form.get('accepted')?.value ? dateConvert(form.get('accepted')?.value.toString()) : null,
-            published:form.get('published')?.value ? dateConvert(form.get('published')?.value.toString()) : null,
-            abstract:form.get('abstract')?.value,
-            keywords:form.get('keywords')?.value !== null ? form.get('keywords')?.value.map((item:Keyword) => {
-                return {
-                    id_keyword:item.id,
-                    name:item.name
-                }
-            }) : null,
-
-            tapchi:{
-                id_tapchi: form.get("id_tapchi")?.value['id'] ?? null,
-                name:form.get("id_tapchi")?.value['name'],
-                issn:form.get("id_tapchi")?.value['issn'] ?? null,
-                eissn:form.get("id_tapchi")?.value['eissn'] ?? null,
-                pissn:form.get("id_tapchi")?.value['pissn'] ?? null,
-                website:form.get("id_tapchi")?.value['website'] ?? null
-            },
-            volume:form.get('volume')?.value ?? null,
-            issue:form.get('issue')?.value ?? null,
-            number:form.get('number')?.value ?? null,
-            pages:form.get('pages')?.value ?? null,
-        }
-
         this.isCreate = true
-        this.baiBaoService.taoBaiBao(data)
-            .pipe(
-                takeUntil(this.destroy$)
-            ).subscribe({
+        const formData = new FormData()
+        formData.append("file",form.get('file')?.value)
+
+        this.baiBaoService.uploadFileMinhChung(formData).pipe(
+            takeUntil(this.destroy$),
+            mergeMap(response =>{
+
+                const data:TaoBaiTao = {
+                    sanpham:{
+                        tensanpham: form.get('tensanpham')?.value,
+                        tongsotacgia: arrayForm.length,
+                        thoidiemcongbohoanthanh:  dateConvert(form.get('thoidiemcongbohoanthanh')?.value.toString())!!,
+                        conhantaitro : form.get('conhantaitro')?.value ?? false,
+                        donvi :form.get('conhantaitro')?.value === true ? {
+                            id_donvi: form.get('donvi')?.value['id'] ?? null,
+                            tentochuc: form.get('donvi')?.value['tentochuc']
+                        } : null,
+                        chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
+                    },
+                    sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
+                        let tochuc = item.tochuc ?? null
+                        return {
+                            list_id_vaitro: item.list_id_vaitro,
+                            tentacgia: item.tentacgia,
+                            id_tacgia: item.id_tacgia ?? null,
+                            ngaysinh: item.ngaysinh !== null ? dateConvert(item.ngaysinh) : null,
+                            dienthoai: item.dienthoai ?? null,
+                            email: item.email,
+                            tochuc: tochuc !== null ?{
+                                id_tochuc:tochuc.id ?? null,
+                                tentochuc:tochuc.tentochuc
+                            } : null,
+                            id_hochamhocvi:item.id_hochamhocvi ?? null,
+                            thutu:item.thutu ?? null,
+                            tyledonggop:item.tyledonggop ?? null
+                        }
+                    }),
+                    fileminhchungsanpham:{
+                        file: response.data.link_view,
+                        id_file: response.data.file_id
+                    },
+                    doi:form.get('doi')?.value,
+                    url:form.get('url')?.value,
+                    received:form.get('received')?.value ? dateConvert(form.get('received')?.value.toString()) : null,
+                    accepted:form.get('accepted')?.value ? dateConvert(form.get('accepted')?.value.toString()) : null,
+                    published:form.get('published')?.value ? dateConvert(form.get('published')?.value.toString()) : null,
+                    abstract:form.get('abstract')?.value,
+                    keywords:form.get('keywords')?.value !== null ? form.get('keywords')?.value.map((item:Keyword) => {
+                        return {
+                            id_keyword:item.id,
+                            name:item.name
+                        }
+                    }) : null,
+
+                    tapchi:{
+                        id_tapchi: form.get("id_tapchi")?.value['id'] ?? null,
+                        name:form.get("id_tapchi")?.value['name'],
+                        issn:form.get("id_tapchi")?.value['issn'] ?? null,
+                        eissn:form.get("id_tapchi")?.value['eissn'] ?? null,
+                        pissn:form.get("id_tapchi")?.value['pissn'] ?? null,
+                        website:form.get("id_tapchi")?.value['website'] ?? null
+                    },
+                    volume:form.get('volume')?.value,
+                    issue:form.get('issue')?.value,
+                    number:form.get('number')?.value,
+                    pages:form.get('pages')?.value,
+                }
+
+                return this.baiBaoService.taoBaiBao(data)
+            })
+        ).subscribe({
             next:(response) =>{
                 this.notificationService.create(
                     'success',
@@ -807,6 +808,10 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 this.isCreate = false
                 const formArray = this.createForm.get('sanpham_tacgia') as FormArray
                 formArray.clear()
+                this.keKhaiTapChi.clear()
+                this.keKhaiKeyword.clear()
+                this.keKhaiToChuc.clear()
+                this.fileList = []
                 this.createForm.reset()
             },
             error:(error) => {
@@ -871,6 +876,55 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         return (this.createForm.get('sanpham_tacgia') as FormArray).controls;
     }
 
+    beforeUpload = (file: NzUploadFile):Observable<boolean> =>
+        new Observable((observer: Observer<boolean>) => {
+            file.status = "uploading"
+            const extension = file.name.split('.').pop()?.toLowerCase();
+
+            const isTypeSuccess = extension === 'docx' || extension === 'pdf' || file.type! === 'image/jpeg' || file.type! === 'image/png'
+
+            if(!isTypeSuccess){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Chỉ chấp nhận các file .docx, .pdf, jpeg, png'
+                )
+                observer.complete
+                return;
+            }
+
+            const isLessThan10MB = file.size! / 1024 / 1024 <= 10;
+
+            if(!isLessThan10MB){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Chỉ chấp nhận file nhỏ hơn 10MB'
+                )
+                file.status = "error"
+                observer.complete();
+                return;
+            }
+
+            if(this.fileList.length >= 1){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Chỉ được upload 1 file'
+                )
+                file.status = "error"
+                observer.complete();
+                return;
+            }
+
+            observer.next(false);
+            this.fileList = this.fileList.concat(file)
+            this.createForm.patchValue({
+                file: file
+            })
+            file.status = "success"
+            observer.complete();
+        })
 
     ngOnDestroy() {
         this.destroy$.next()

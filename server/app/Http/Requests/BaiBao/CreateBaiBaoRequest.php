@@ -45,9 +45,6 @@ class CreateBaiBaoRequest extends FormRequest
                 "bail", "required_with:sanpham.donvi", "string",
                 new MatochucUniqueIfIdDonviNull // với những tạp chí được kê khai thì cần phải check trường matochuc unique
             ],
-            // "sanpham.donvi.tentochuc" => [
-            //     "bail", "required_with:sanpham.donvi", "string"
-            // ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
             "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
 
@@ -150,7 +147,8 @@ class CreateBaiBaoRequest extends FormRequest
             ],
 
             // file minh chung san pham
-            "fileminhchungsanpham.file" => "bail|required|file|mimes:jpeg,png,pdf,docx|max:10280",
+            "fileminhchungsanpham.file" => "bail|required|string",
+            "fileminhchungsanpham.id_file" => "bail|required|string",
 
         ];
     }

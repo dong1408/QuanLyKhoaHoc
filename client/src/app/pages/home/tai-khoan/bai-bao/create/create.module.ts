@@ -16,6 +16,7 @@ import {SharedModule} from "../../../../../shared/components/shared.module";
 import {PagingService} from "../../../../../core/services/paging.service";
 import {NzListModule} from "ng-zorro-antd/list";
 import {NzModalModule} from "ng-zorro-antd/modal";
+import {NzUploadModule} from "ng-zorro-antd/upload";
 
 @NgModule({
     declarations:[
@@ -37,7 +38,8 @@ import {NzModalModule} from "ng-zorro-antd/modal";
         NzDatePickerModule,
         SharedModule,
         NzListModule,
-        NzModalModule
+        NzModalModule,
+        NzUploadModule
     ],
     exports:[
 

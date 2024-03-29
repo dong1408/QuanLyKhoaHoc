@@ -78,5 +78,6 @@ export interface CapNhatSanPhamUser{
 }
 
 export interface TaoFileMinhChung{
-    url:string
+    id_file:string,
+    file:string
 }

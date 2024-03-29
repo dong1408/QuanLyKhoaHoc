@@ -46,6 +46,7 @@ use App\ViewModel\DeTai\NghiemThuVm;
 use App\ViewModel\DeTai\PhanLoaiDeTaiVm;
 use App\ViewModel\DeTai\TuyenChonVm;
 use App\ViewModel\DeTai\XetDuyetVm;
+use App\ViewModel\Google\FileVm;
 use App\ViewModel\NhaXuatBan\NhaXuatBanVm;
 use App\ViewModel\QuyDoi\ChuyenNganhTinhDiemVm;
 use App\ViewModel\QuyDoi\NganhTinhDiemVm;
@@ -938,6 +939,16 @@ class Convert
         $a->quocte = $nhaXuatBan->quocte;
         $a->isbn = $nhaXuatBan->isbn;
         $a->website = $nhaXuatBan->website;
+        return $a;
+    }
+
+
+    // ========================= GOOLE FILE ============================= //
+    public static function getFileVm(string $fileId,string $link_view)
+    {
+        $a = new FileVm();
+        $a->file_id = $fileId;
+        $a->link_view = $link_view;
         return $a;
     }
 }
