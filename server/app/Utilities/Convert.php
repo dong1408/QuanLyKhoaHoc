@@ -373,10 +373,10 @@ class Convert
     {
         $a = new ToChucVm();
         $a->id = $dMToChuc->id;
-        $a->tentochuc = $dMToChuc->tentochuc ?? null;
+        $a->tentochuc = $dMToChuc->tentochuc;
         $a->created_at = $dMToChuc->created_at;
         $a->dienthoai = $dMToChuc->dienthoai ?? null;
-        $a->matochuc = $dMToChuc->matochuc;
+        $a->matochuc = $dMToChuc->matochuc ?? null;
         $a->tentochuc_en = $dMToChuc->tentochuc_en ?? null;
         $a->updated_at = $dMToChuc->updated_at;
         $a->website = $dMToChuc->website ?? null;
@@ -388,8 +388,8 @@ class Convert
     {
         $a = new ToChucDetailVm();
         $a->id = $dMToChuc->id;
-        $a->matochuc = $dMToChuc->matochuc;
-        $a->tentochuc = $dMToChuc->tentochuc ?? null;
+        $a->matochuc = $dMToChuc->matochuc??null;
+        $a->tentochuc = $dMToChuc->tentochuc;
         $a->tentochuc_en = $dMToChuc->tentochuc_en ?? null;
         $a->website = $dMToChuc->website ?? null;
         $a->dienthoai = $dMToChuc->dienthoai ?? null;

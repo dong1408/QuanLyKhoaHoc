@@ -62,8 +62,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         ToChucService $toChucService,
         KeywordService $keywordService,
         GoogleDriveService $googleDriveService
-    )
-    {
+    ) {
         $this->userService = $userService;
         $this->tapChiService = $tapChiService;
         $this->toChucService = $toChucService;
@@ -232,7 +231,7 @@ class BaiBaoServiceImpl implements BaiBaoService
         $sanPham = new SanPham();
 
 
-        DB::transaction(function () use ($validated, &$baiBao, &$sanPham) {
+        DB::transaction(function () use ($validated, &$baiBao, &$sanPham, &$request) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
@@ -420,9 +419,11 @@ class BaiBaoServiceImpl implements BaiBaoService
             }
             $baiBao->keyWords()->attach($listIdKeyword);
 
+            $url_file = $this->googleDriveService->uploadFile($request->file('file'));
+
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
-                'url' => $validated['fileminhchungsanpham']['url'],
+                'url' => $url_file,
             ]);
 
             // Kiểm tra nếu bài báo này kh có tác giả nào đảm nhiệm vai trò tác giả liên hệ
@@ -524,10 +525,9 @@ class BaiBaoServiceImpl implements BaiBaoService
 
 
             foreach ($sanphamtacgiasWithIdTochucNull as $key => $item) {
-                $toChucFind = DMToChuc::where('matochuc', $item['tochuc']['matochuc'])->get()->first();
+                $toChucFind = DMToChuc::where('tentochuc', $item['tochuc']['tentochuc'])->get()->first();
                 if ($toChucFind == null) {
                     $array = [
-                        'matochuc' => $item['tochuc']['matochuc'],
                         'tentochuc' => $item['tochuc']['tentochuc'],
                     ];
                     $toChuc = $this->toChucService->themToChucNgoai($array);
@@ -545,10 +545,9 @@ class BaiBaoServiceImpl implements BaiBaoService
 
     private function keKhaiDonVi($donVi)
     {
-        $donViFind = DMToChuc::where('matochuc', $donVi['matochuc'])->get()->first();
+        $donViFind = DMToChuc::where('tentochuc', $donVi['tentochuc'])->get()->first();
         if ($donViFind == null) {
             $array = [
-                'matochuc' => $donVi['matochuc'],
                 'tentochuc' => $donVi['tentochuc'],
             ];
             $donViTaiTro = $this->toChucService->themToChucNgoai($array);
@@ -936,12 +935,11 @@ class BaiBaoServiceImpl implements BaiBaoService
             throw new LoaiSanPhamWrongException("Sản phẩm không phải bài báo khoa học");
         }
 
-        $validated = $request->validated();
-        $result =  $this->googleDriveService->uploadFile($request->file('file'));
-//        $fileMinhChung->url = $validated['url'];
-//        $fileMinhChung->save();
-//        $result = Convert::getFileMinhChungSanPhamVm($fileMinhChung);
-        return new ResponseSuccess("Cập nhật file minh chứng thành công", $result);
+        $url_file =  $this->googleDriveService->uploadFile($request->file('file'));
+        $fileMinhChung->url = $url_file;
+        $fileMinhChung->save();
+
+        return new ResponseSuccess("Cập nhật file minh chứng thành công", $url_file);
     }
 
 

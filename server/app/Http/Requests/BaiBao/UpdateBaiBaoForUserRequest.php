@@ -46,13 +46,13 @@ class UpdateBaiBaoForUserRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists("d_m_to_chucs", "id")
             ],
-            "sanpham.donvi.matochuc" => [
+            "sanpham.donvi.tentochuc" => [
                 "bail", "required_with:sanpham.donvi", "string",
                 new MatochucUniqueIfIdDonviNull // với những đơn vị được kê khai thì cần phải check trường matochuc unique
             ],
-            "sanpham.donvi.tentochuc" => [
-                "bail", "required_with:sanpham.donvi", "string"
-            ],
+            // "sanpham.donvi.tentochuc" => [
+            //     "bail", "required_with:sanpham.donvi", "string"
+            // ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
             "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
 

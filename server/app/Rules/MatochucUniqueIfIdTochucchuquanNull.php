@@ -32,7 +32,7 @@ class MatochucUniqueIfIdTochucchuquanNull implements Rule
         if ($id_tochucchuquan == null) {
             // Kiểm tra tính duy nhất của 'matochuc' khi 'id_tochucchuquan' là null
             return !DB::table('d_m_to_chucs')
-                ->where('matochuc', $value)
+                ->where('tentochuc', $value)
                 ->exists();
         }
 
