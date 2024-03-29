@@ -220,6 +220,18 @@ export class ChiTietBaiBaoComponent{
         else{
             const data:User = event;
             const formArray = this.formCapNhatTacGia.get('sanpham_tacgia') as FormArray
+            const isUserAvailable = formArray.value.some((item:any) => {
+                return item.id_tacgia === data.id
+            })
+            if(isUserAvailable){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Vui lòng không chọn 2 tác giả giống nhau'
+                )
+                this.formCapNhatTacGia.get("users")?.setValue(null)
+                return;
+            }
             const control = this.fb.group({
                 id_tacgia:[data.id],
                 tentacgia:[
@@ -241,6 +253,11 @@ export class ChiTietBaiBaoComponent{
             })
             formArray.push(control);
             this.formCapNhatTacGia.get("users")?.setValue(null)
+            this.notificationService.create(
+                'success',
+                'Thành Công',
+                'Chọn tác giả thành công'
+            )
         }
     }
 
@@ -283,6 +300,11 @@ export class ChiTietBaiBaoComponent{
 
     removeUser(index:number){
         (this.formCapNhatTacGia.get('sanpham_tacgia') as FormArray).removeAt(index);
+        this.notificationService.create(
+            'success',
+            'Thành Công',
+            'Xóa thành công'
+        )
     }
 
     get sanphamTacgiaControls() {
@@ -347,6 +369,11 @@ export class ChiTietBaiBaoComponent{
         })
         const formArray = this.formCapNhatTacGia.get('sanpham_tacgia') as FormArray
         formArray.push(control)
+        this.notificationService.create(
+            'success',
+            'Thành Công',
+            'Chọn tác giả ngoài hệ thống thành công'
+        )
 
     }
 

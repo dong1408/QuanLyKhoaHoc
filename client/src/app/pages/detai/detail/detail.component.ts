@@ -385,6 +385,18 @@ export class ChiTietDeTaiComponent{
         else{
             const data:User = event;
             const formArray = this.formCapNhatTacGia.get('sanpham_tacgia') as FormArray
+            const isUserAvailable = formArray.value.some((item:any) => {
+                return item.id_tacgia === data.id
+            })
+            if(isUserAvailable){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Vui lòng không chọn 2 tác giả giống nhau'
+                )
+                this.formCapNhatTacGia.get("users")?.setValue(null)
+                return;
+            }
             const control = this.fb.group({
                 id_tacgia:[data.id],
                 tentacgia:[
