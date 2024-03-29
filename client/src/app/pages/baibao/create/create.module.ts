@@ -17,6 +17,7 @@ import {SharedModule} from "../../../shared/components/shared.module";
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzPopconfirmModule} from "ng-zorro-antd/popconfirm";
 import {NzListModule} from "ng-zorro-antd/list";
+import {NzUploadModule} from "ng-zorro-antd/upload";
 
 @NgModule({
     declarations:[
@@ -39,7 +40,8 @@ import {NzListModule} from "ng-zorro-antd/list";
         SharedModule,
         NzModalModule,
         NzPopconfirmModule,
-        NzListModule
+        NzListModule,
+        NzUploadModule
     ],
     exports:[
 

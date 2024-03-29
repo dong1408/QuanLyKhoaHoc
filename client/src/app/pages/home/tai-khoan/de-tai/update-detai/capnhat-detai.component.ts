@@ -186,13 +186,6 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
             id:[
                 null
             ],
-            matochuc:[
-                null,
-                Validators.compose([
-                    Validators.required,
-                    noWhiteSpaceValidator()
-                ])
-            ],
             tentochuc:[
                 null,
                 Validators.compose([
@@ -328,14 +321,14 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
     onOpenListToChucKeKhai(){
         this.isOpenListToChucKeKhai = !this.isOpenListToChucKeKhai
     }
-    onXoaToChucKeKhai(matochuc:string){
-        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.matochuc !== matochuc)
+    onXoaToChucKeKhai(tentochuc:string){
+        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.tentochuc !== tentochuc)
         this.capNhatForm.get("tochucchuquan")?.reset()
         this.capNhatForm.get("donvi")?.reset()
         this.capNhatForm.get("tochuchoptac")?.reset()
-        this.dvTaiTros = this.dvTaiTros.filter((item:ToChuc) => item.matochuc !== matochuc)
-        this.tcChuQuan = this.tcChuQuan.filter((item:ToChuc) => item.matochuc !== matochuc)
-        this.tcHopTac = this.tcHopTac.filter((item:ToChuc) => item.matochuc !== matochuc)
+        this.dvTaiTros = this.dvTaiTros.filter((item:ToChuc) => item.tentochuc !== tentochuc)
+        this.tcChuQuan = this.tcChuQuan.filter((item:ToChuc) => item.tentochuc !== tentochuc)
+        this.tcHopTac = this.tcHopTac.filter((item:ToChuc) => item.tentochuc !== tentochuc)
     }
 
     onOpenFormToChuc(){
@@ -364,7 +357,7 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
         // check kê khai trùng tổ chức
 
         const isAvailable = this.keKhaiToChuc.some((item:any) => {
-            return item.matochuc.toLowerCase() === data.matochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
+            return item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
         })
 
         if(isAvailable){
@@ -509,7 +502,6 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
                 conhantaitro : form.get('conhantaitro')?.value ?? false,
                 donvi :form.get('conhantaitro')?.value === true ? {
                     id_donvi: form.get('donvi')?.value['id'] ?? null,
-                    matochuc: form.get('donvi')?.value['matochuc'],
                     tentochuc: form.get('donvi')?.value['tentochuc']
                 } : null,
                 chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
@@ -524,12 +516,10 @@ export class CapNhatDeTaiComponent implements OnInit,OnDestroy{
             tochucchuquan : form.get('ngoaitruong')?.value === true ? {
                 id_tochucchuquan:form.get('tochucchuquan')?.value['id'] ?? null,
                 tentochuc: form.get('tochucchuquan')?.value['tentochuc'],
-                matochuc:form.get('tochucchuquan')?.value['matochuc']
             } : null,
             tochuchoptac: form.get('detaihoptac')?.value === true ? {
                 id_tochuchoptac:form.get('tochuchoptac')?.value['id'] ?? null,
                 tentochuc: form.get('tochuchoptac')?.value['tentochuc'],
-                matochuc:form.get('tochuchoptac')?.value['matochuc']
             } : null,
         }
 

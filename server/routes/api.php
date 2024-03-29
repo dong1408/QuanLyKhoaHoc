@@ -92,6 +92,7 @@ Route::group([
     Route::get('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'getDetailBaiBaoForUser']);
     Route::patch('baibao/public/{id}', [BaiBaoKhoaHocController::class, 'updateBaiBaoForUser']);
 
+    Route::post('baibao/fileminhchung', [BaiBaoKhoaHocController::class, 'uploadFileMinhChung'])->can('baibao.add');
     Route::get('baibao', [BaiBaoKhoaHocController::class, 'getBaiBaoPaging'])->can('baibao.view'); // canview
     Route::get('baibao/choduyet', [BaiBaoKhoaHocController::class, 'getBaiBaoChoDuyet'])->can('baibao.view'); // canview
     Route::post('baibao', [BaiBaoKhoaHocController::class, 'createBaiBao'])->can('baibao.add');
@@ -116,6 +117,7 @@ Route::group([
     Route::patch('detai/public/{id}', [DeTaiController::class, 'updateDeTaiForUser']);
 
 
+    Route::post('detai/fileminhchung', [DeTaiController::class, 'uploadFileMinhChung'])->can('detai.add');
     Route::get('detai', [DeTaiController::class, 'getDeTaiPaging'])->can('detai.view');
     Route::get('detai/choduyet', [DeTaiController::class, 'getDeTaiChoDuyet'])->can('detai.view');
     Route::post('detai', [DeTaiController::class, 'createDetai'])->can('detai.add');

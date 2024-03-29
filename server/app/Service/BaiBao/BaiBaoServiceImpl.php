@@ -25,6 +25,7 @@ use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
+use App\Http\Requests\SanPham\UploadFileMinhChungRequest;
 use App\Models\BaiBao\BaiBaoKhoaHoc;
 use App\Models\BaiBao\Keyword;
 use App\Models\FileMinhChungSanPham;
@@ -305,6 +306,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 $valueCounts = array_count_values($listIdKeyword);
                 foreach ($valueCounts as $count) {
                     if ($count > 1) {
+                        $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                         throw new TrungKeywordException();
                     }
                 }
@@ -320,6 +322,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {
                 $user = User::find($sanPhamTacGia['id_tacgia']);
                 if ($user == null) {
+                    $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                     throw new UserNotFoundException();
                 }
                 if ($sanPhamTacGia['tochuc'] && $sanPhamTacGia['tochuc']['id_tochuc']) {
@@ -333,6 +336,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {
                 foreach ($sanPhamTacGia['list_id_vaitro'] as $idvaitro) {
                     if (DMVaiTroTacGia::where([['role', '=', 'baibao'], ['id', '=', $idvaitro]])->first() == null) {
+                        $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                         throw new VaiTroOfBaiBaoException();
                     }
                     $listIdTacGia[] = $sanPhamTacGia['id_tacgia'];
@@ -353,6 +357,7 @@ class BaiBaoServiceImpl implements BaiBaoService
                 }
             }
             if (!$flag) {
+                $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                 throw new BaiBaoNotHaveFirstAuthor();
             }
 
@@ -360,6 +365,7 @@ class BaiBaoServiceImpl implements BaiBaoService
             for ($i = 0; $i < count($listIdTacGia) - 1; $i++) {
                 for ($z = $i + 1; $z < count($listIdVaiTro); $z++) {
                     if (($listIdTacGia[$i] == $listIdTacGia[$z]) && ($listIdVaiTro[$i] == $listIdVaiTro[$z])) {
+                        $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                         throw new TwoRoleSimilarForOnePersonException();
                     }
                 }
@@ -376,11 +382,13 @@ class BaiBaoServiceImpl implements BaiBaoService
                 }
             }
             if ((isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaDauTien] >= 2) || (isset(array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe]) && array_count_values($listIdVaiTro)[$idVaiTroTacGiaLienHe] >= 2)) {
+                $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                 throw new RoleOnlyHeldByOnePersonException();
             }
 
             $dmSanPhamBaiBao = DMSanPham::where('masanpham', 'baibaokhoahoc')->first();
             if ($dmSanPhamBaiBao == null) {
+                $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                 throw new CreateBaiBaoFailedException();
             }
 
@@ -419,11 +427,9 @@ class BaiBaoServiceImpl implements BaiBaoService
             }
             $baiBao->keyWords()->attach($listIdKeyword);
 
-            $url_file = $this->googleDriveService->uploadFile($request->file('file'));
-
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
-                'url' => $url_file,
+                'url' => $validated['fileminhchungsanpham']['file'],
             ]);
 
             // Kiểm tra nếu bài báo này kh có tác giả nào đảm nhiệm vai trò tác giả liên hệ
@@ -936,10 +942,10 @@ class BaiBaoServiceImpl implements BaiBaoService
         }
 
         $url_file =  $this->googleDriveService->uploadFile($request->file('file'));
-        $fileMinhChung->url = $url_file;
+        $fileMinhChung->url = $url_file->link_view;
         $fileMinhChung->save();
 
-        return new ResponseSuccess("Cập nhật file minh chứng thành công", $url_file);
+        return new ResponseSuccess("Cập nhật file minh chứng thành công", $url_file->link_view);
     }
 
 
@@ -1186,5 +1192,10 @@ class BaiBaoServiceImpl implements BaiBaoService
             $baiBao->keyWords()->sync($listIdKeyword);
         });
         return new ResponseSuccess("Cập nhật bài báo thành công", true);
+    }
+
+    public function UploadFileMinhChung(UploadFileMinhChungRequest $request):ResponseSuccess{
+        $result = $this->googleDriveService->uploadFile($request->file('file'));
+        return new ResponseSuccess("Upload file minh chứng thành công",$result);
     }
 }

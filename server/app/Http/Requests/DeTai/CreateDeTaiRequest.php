@@ -153,7 +153,8 @@ class CreateDeTaiRequest extends FormRequest
             ],
 
             // file minh chung san pham
-            "fileminhchungsanpham.file" => "bail|required|file|mimes:jpeg,png,pdf,docx|max:10280",
+            "fileminhchungsanpham.file" => "bail|required|string",
+            "fileminhchungsanpham.id_file" => "bail|required|string",
         ];
     }
 

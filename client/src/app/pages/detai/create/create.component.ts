@@ -8,8 +8,8 @@ import {
     combineLatest,
     debounceTime,
     distinctUntilChanged,
-    forkJoin,
-    Observable,
+    forkJoin, mergeMap,
+    Observable, Observer,
     Subject,
     switchMap,
     takeUntil,
@@ -31,6 +31,7 @@ import {dateConvert} from "../../../shared/commons/utilities";
 import {ApiResponse} from "../../../core/types/api-response.type";
 import {HocHamHocViService} from "../../../core/services/user-info/hoc-ham-hoc-vi.service";
 import {HocHamHocVi} from "../../../core/types/user-info/hoc-ham-hoc-vi.type";
+import {NzUploadFile} from "ng-zorro-antd/upload";
 
 @Component({
     selector:'app-detai-create',
@@ -39,6 +40,9 @@ import {HocHamHocVi} from "../../../core/types/user-info/hoc-ham-hoc-vi.type";
 })
 
 export class TaoDeTaiComponent implements OnInit,OnDestroy{
+
+    fileList:NzUploadFile[] = []
+
     dvTaiTros:ToChuc[] = []
     tcChuQuan:ToChuc[]= []
     tcHopTac:ToChuc[]= []
@@ -209,10 +213,9 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                     noWhiteSpaceValidator()
                 ])
             ],
-            url_minhchung:[
+            file:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ]
@@ -222,13 +225,6 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
         this.tochucForm = this.fb.group({
             id:[
                 null
-            ],
-            matochuc:[
-                null,
-                Validators.compose([
-                    Validators.required,
-                    noWhiteSpaceValidator()
-                ])
             ],
             tentochuc:[
                 null,
@@ -336,8 +332,8 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
     onOpenListToChucKeKhai(){
         this.isOpenListToChucKeKhai = !this.isOpenListToChucKeKhai
     }
-    onXoaToChucKeKhai(matochuc:string){
-        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.matochuc !== matochuc)
+    onXoaToChucKeKhai(tentochuc:string){
+        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.tentochuc !== tentochuc)
         this.createForm.get("tochucchuquan")?.reset()
         this.createForm.get("donvi")?.reset()
         this.createForm.get("tochuchoptac")?.reset()
@@ -346,9 +342,9 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 control.get("tochuc")?.reset()
             }
         })
-        this.dvTaiTros = this.dvTaiTros.filter((item:ToChuc) => item.matochuc !== matochuc)
-        this.tcChuQuan = this.tcChuQuan.filter((item:ToChuc) => item.matochuc !== matochuc)
-        this.tcHopTac = this.tcHopTac.filter((item:ToChuc) => item.matochuc !== matochuc)
+        this.dvTaiTros = this.dvTaiTros.filter((item:ToChuc) => item.tentochuc !== tentochuc)
+        this.tcChuQuan = this.tcChuQuan.filter((item:ToChuc) => item.tentochuc !== tentochuc)
+        this.tcHopTac = this.tcHopTac.filter((item:ToChuc) => item.tentochuc !== tentochuc)
     }
 
     onOpenFormToChuc(){
@@ -377,7 +373,7 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
         // check kê khai trùng tổ chức
 
         const isAvailable = this.keKhaiToChuc.some((item:any) => {
-            return item.matochuc.toLowerCase() === data.matochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
+            return item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
         })
 
         if(isAvailable){
@@ -613,64 +609,75 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
             return;
         }
 
-        const data:TaoDeTai = {
-            sanpham:{
-                tensanpham: form.get('tensanpham')?.value,
-                tongsotacgia: arrayForm.length,
-                conhantaitro : form.get('conhantaitro')?.value ?? false,
-                donvi :form.get('conhantaitro')?.value === true ? {
-                    id_donvi: form.get('donvi')?.value['id'] ?? null,
-                    matochuc: form.get('donvi')?.value['matochuc'],
-                    tentochuc: form.get('donvi')?.value['tentochuc']
-                } : null,
-                chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
-            },
-            sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
-                let tochuc = item.tochuc ?? null
-                return {
-                    list_id_vaitro: item.list_id_vaitro,
-                    tentacgia: item.tentacgia,
-                    id_tacgia: item.id_tacgia ?? null,
-                    ngaysinh: item.ngaysinh !== null ? dateConvert(item.ngaysinh) : null,
-                    dienthoai: item.dienthoai ?? null,
-                    email: item.email,
-                    tochuc: tochuc !== null ?{
-                        id_tochuc:tochuc.id ?? null,
-                        matochuc:tochuc.matochuc,
-                        tentochuc:tochuc.tentochuc
-                    } : null,
-                    id_hochamhocvi:item.id_hochamhocvi ?? null,
-                    thutu:item.thutu ?? null,
-                    tyledonggop:item.tyledonggop ?? null
-                }
-            }),
-            fileminhchungsanpham:{
-                url:form.get('url_minhchung')?.value
-            },
-            maso:form.get('maso')?.value,
-            ngoaitruong:form.get('ngoaitruong')?.value ?? false,
-            truongchutri: form.get('ngoaitruong')?.value === true ? form.get('truongchutri')?.value : null,
-            tochucchuquan : form.get('ngoaitruong')?.value === true ? {
-                id_tochucchuquan:form.get('tochucchuquan')?.value['id'] ?? null,
-                tentochuc: form.get('tochucchuquan')?.value['tentochuc'],
-                matochuc:form.get('tochucchuquan')?.value['matochuc']
-            } : null,
-            id_loaidetai: form.get('ngoaitruong')?.value === false ? form.get('id_loaidetai')?.value : null,
-            detaihoptac: form.get('detaihoptac')?.value ?? false,
-            tochuchoptac: form.get('detaihoptac')?.value === true ? {
-                id_tochuchoptac:form.get('tochuchoptac')?.value['id'] ?? null,
-                tentochuc: form.get('tochuchoptac')?.value['tentochuc'],
-                matochuc:form.get('tochuchoptac')?.value['matochuc']
-            } : null,
-            tylekinhphidonvihoptac: form.get('detaihoptac')?.value === true ? form.get('tylekinhphidonvihoptac')?.value : null,
-            capdetai: form.get('capdetai')?.value ?? null
+        if(this.fileList.length <= 0){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng chọn file cần upload'
+            )
+            return;
         }
 
         this.isCreate = true
-        this.deTaiService.taoDeTai(data)
-            .pipe(
-                takeUntil(this.destroy$)
-            ).subscribe({
+        const formData = new FormData()
+        formData.append("file",form.get('file')?.value)
+
+        this.deTaiService.uploadFileMinhChung(formData).pipe(
+            takeUntil(this.destroy$),
+            mergeMap(response => {
+                const data:TaoDeTai = {
+                    sanpham:{
+                        tensanpham: form.get('tensanpham')?.value,
+                        tongsotacgia: arrayForm.length,
+                        conhantaitro : form.get('conhantaitro')?.value ?? false,
+                        donvi :form.get('conhantaitro')?.value === true ? {
+                            id_donvi: form.get('donvi')?.value['id'] ?? null,
+                            tentochuc: form.get('donvi')?.value['tentochuc']
+                        } : null,
+                        chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null
+                    },
+                    sanpham_tacgia: form.get('sanpham_tacgia')?.value.map((item:any) => {
+                        let tochuc = item.tochuc ?? null
+                        return {
+                            list_id_vaitro: item.list_id_vaitro,
+                            tentacgia: item.tentacgia,
+                            id_tacgia: item.id_tacgia ?? null,
+                            ngaysinh: item.ngaysinh !== null ? dateConvert(item.ngaysinh) : null,
+                            dienthoai: item.dienthoai ?? null,
+                            email: item.email,
+                            tochuc: tochuc !== null ?{
+                                id_tochuc:tochuc.id ?? null,
+                                tentochuc:tochuc.tentochuc
+                            } : null,
+                            id_hochamhocvi:item.id_hochamhocvi ?? null,
+                            thutu:item.thutu ?? null,
+                            tyledonggop:item.tyledonggop ?? null
+                        }
+                    }),
+                    fileminhchungsanpham:{
+                        file: response.data.link_view,
+                        id_file: response.data.file_id
+                    },
+                    maso:form.get('maso')?.value,
+                    ngoaitruong:form.get('ngoaitruong')?.value ?? false,
+                    truongchutri: form.get('ngoaitruong')?.value === true ? form.get('truongchutri')?.value : null,
+                    tochucchuquan : form.get('ngoaitruong')?.value === true ? {
+                        id_tochucchuquan:form.get('tochucchuquan')?.value['id'] ?? null,
+                        tentochuc: form.get('tochucchuquan')?.value['tentochuc'],
+                    } : null,
+                    id_loaidetai: form.get('ngoaitruong')?.value === false ? form.get('id_loaidetai')?.value : null,
+                    detaihoptac: form.get('detaihoptac')?.value ?? false,
+                    tochuchoptac: form.get('detaihoptac')?.value === true ? {
+                        id_tochuchoptac:form.get('tochuchoptac')?.value['id'] ?? null,
+                        tentochuc: form.get('tochuchoptac')?.value['tentochuc'],
+                    } : null,
+                    tylekinhphidonvihoptac: form.get('detaihoptac')?.value === true ? form.get('tylekinhphidonvihoptac')?.value : null,
+                    capdetai: form.get('capdetai')?.value ?? null
+                }
+
+                return this.deTaiService.taoDeTai(data)
+            })
+        ).subscribe({
             next:(response) =>{
                 this.notificationService.create(
                     'success',
@@ -680,6 +687,7 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 this.isCreate = false
                 const formArray = this.createForm.get('sanpham_tacgia') as FormArray
                 formArray.clear()
+                this.keKhaiToChuc.clear()
                 this.createForm.reset()
             },
             error:(error) =>{
@@ -732,6 +740,55 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
         return (this.createForm.get('sanpham_tacgia') as FormArray).controls;
     }
 
+    beforeUpload = (file: NzUploadFile):Observable<boolean> =>
+        new Observable((observer: Observer<boolean>) => {
+            file.status = "uploading"
+            const extension = file.name.split('.').pop()?.toLowerCase();
+
+            const isTypeSuccess = extension === 'docx' || extension === 'pdf' || file.type! === 'image/jpeg' || file.type! === 'image/png'
+
+            if(!isTypeSuccess){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Chỉ chấp nhận các file .docx, .pdf, jpeg, png'
+                )
+                observer.complete
+                return;
+            }
+
+            const isLessThan10MB = file.size! / 1024 / 1024 <= 10;
+
+            if(!isLessThan10MB){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Chỉ chấp nhận file nhỏ hơn 10MB'
+                )
+                file.status = "error"
+                observer.complete();
+                return;
+            }
+
+            if(this.fileList.length >= 1){
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Chỉ được upload 1 file'
+                )
+                file.status = "error"
+                observer.complete();
+                return;
+            }
+
+            observer.next(false);
+            this.fileList = this.fileList.concat(file)
+            this.createForm.patchValue({
+                file: file
+            })
+            file.status = "success"
+            observer.complete();
+        })
 
     ngOnDestroy() {
         this.destroy$.next()

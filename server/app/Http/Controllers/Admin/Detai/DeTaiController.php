@@ -14,6 +14,7 @@ use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
+use App\Http\Requests\SanPham\UploadFileMinhChungRequest;
 use App\Service\DeTai\DeTaiService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -158,6 +159,12 @@ class DeTaiController extends Controller
     public function updateDeTaiForUser(UpdateDeTaiForUserRequest $request, int $id): Response
     {
         $result = $this->deTaiService->updateDeTaiForUser($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function uploadFileMinhChung(UploadFileMinhChungRequest $request): Response
+    {
+        $result = $this->deTaiService->UploadFileMinhChung($request);
         return response()->json($result, 200);
     }
 }

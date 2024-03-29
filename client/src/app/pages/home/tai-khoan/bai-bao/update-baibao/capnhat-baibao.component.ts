@@ -211,13 +211,6 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
             id:[
                 null
             ],
-            matochuc:[
-                null,
-                Validators.compose([
-                    Validators.required,
-                    noWhiteSpaceValidator()
-                ])
-            ],
             tentochuc:[
                 null,
                 Validators.compose([
@@ -379,10 +372,10 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
         })
     }
 
-    onXoaToChucKeKhai(matochuc:string){
-        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.matochuc !== matochuc)
+    onXoaToChucKeKhai(tentochuc:string){
+        this.keKhaiToChuc = this.keKhaiToChuc.filter((item:KeKhaiToChuc) => item.tentochuc !== tentochuc)
         this.capNhatForm.get("donvi")?.reset()
-        this.dvTaiTros = this.dvTaiTros.filter((item:ToChuc) => item.matochuc !== matochuc)
+        this.dvTaiTros = this.dvTaiTros.filter((item:ToChuc) => item.tentochuc !== tentochuc)
     }
 
     onXoaTapChiKeKhai(tentapchi:string){
@@ -533,7 +526,7 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
         // check kê khai trùng tổ chức
 
         const isAvailable = this.keKhaiToChuc.some((item:KeKhaiToChuc) => {
-            return item.matochuc.toLowerCase() === data.matochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
+            return item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase() || item.tentochuc.toLowerCase() === data.tentochuc.toLowerCase()
         })
 
         if(isAvailable){
@@ -675,7 +668,6 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
                 conhantaitro : form.get('conhantaitro')?.value ?? false,
                 donvi :form.get('conhantaitro')?.value === true ? {
                     id_donvi: form.get('donvi')?.value['id'] ?? null,
-                    matochuc: form.get('donvi')?.value['matochuc'],
                     tentochuc: form.get('donvi')?.value['tentochuc']
                 } : null,
                 chitietdonvitaitro: form.get('conhantaitro')?.value === true ? form.get('chitietdonvitaitro')?.value : null

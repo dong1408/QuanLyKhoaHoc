@@ -36,6 +36,7 @@ use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
+use App\Http\Requests\SanPham\UploadFileMinhChungRequest;
 use App\Models\DeTai\BaoCaoTienDo;
 use App\Models\DeTai\DeTai;
 use App\Models\DeTai\NghiemThu;
@@ -465,6 +466,7 @@ class DeTaiServiceImpl implements DeTaiService
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {
                 $user = User::find($sanPhamTacGia['id_tacgia']);
                 if ($user == null) {
+                    $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                     throw new UserNotFoundException();
                 }
                 if ($sanPhamTacGia['tochuc'] && $sanPhamTacGia['tochuc']['id_tochuc']) {
@@ -478,6 +480,7 @@ class DeTaiServiceImpl implements DeTaiService
             foreach ($listSanPhamTacGia as $sanPhamTacGia) {
                 foreach ($sanPhamTacGia['list_id_vaitro'] as $idvaitro) {
                     if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $idvaitro]])->first() == null) {
+                        $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                         throw new VaiTroOfBaiBaoException();
                     }
                     $listIdTacGia[] = $sanPhamTacGia['id_tacgia'];
@@ -499,6 +502,7 @@ class DeTaiServiceImpl implements DeTaiService
                 }
             }
             if (!$flag) {
+                $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                 throw new DeTaiNotHaveChuNhiemException();
             }
 
@@ -506,6 +510,7 @@ class DeTaiServiceImpl implements DeTaiService
             for ($i = 0; $i < count($listIdTacGia) - 1; $i++) {
                 for ($z = $i + 1; $z < count($listIdVaiTro); $z++) {
                     if (($listIdTacGia[$i] == $listIdTacGia[$z]) && ($listIdVaiTro[$i] == $listIdVaiTro[$z])) {
+                        $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                         throw new TwoRoleSimilarForOnePersonInDeTaiException();
                     }
                 }
@@ -519,11 +524,13 @@ class DeTaiServiceImpl implements DeTaiService
                 }
             }
             if (isset(array_count_values($listIdVaiTro)[$idVaiTroChuNhiem]) && array_count_values($listIdVaiTro)[$idVaiTroChuNhiem] >= 2) {
+                $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                 throw new RoleOnlyHeldByOnePersonInDeTaiException();
             }
 
             $dmSanPhamDeTai = DMSanPham::where('masanpham', 'detai')->first();
             if ($dmSanPhamDeTai == null) {
+                $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                 throw new CreateDeTaiFailedException();
             }
 
@@ -554,11 +561,11 @@ class DeTaiServiceImpl implements DeTaiService
                 'capdetai' => $validated['capdetai'],
             ]);
 
-            $url_file = $this->googleDriveService->uploadFile($request->file('file'));
+
 
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
-                'url' => $url_file,
+                'url' => $validated['fileminhchungsanpham']['file'],
             ]);
 
             for ($i = 0; $i < count($listIdTacGia); $i++) {
@@ -1000,10 +1007,10 @@ class DeTaiServiceImpl implements DeTaiService
         }
 
         $url_file =  $this->googleDriveService->uploadFile($request->file('file'));
-        $fileMinhChung->url = $url_file;
+        $fileMinhChung->url = $url_file->link_view;
         $fileMinhChung->save();
 
-        return new ResponseSuccess("Cập nhật file minh chứng thành công", $url_file);
+        return new ResponseSuccess("Cập nhật file minh chứng thành công", $url_file->link_view);
     }
 
 
@@ -1529,5 +1536,10 @@ class DeTaiServiceImpl implements DeTaiService
             $deTai->save();
         });
         return new ResponseSuccess("Cập nhật đề tài thành công", true);
+    }
+
+    public function UploadFileMinhChung(UploadFileMinhChungRequest $request):ResponseSuccess{
+        $result = $this->googleDriveService->uploadFile($request->file('file'));
+        return new ResponseSuccess("Upload file minh chứng thành công",$result);
     }
 }

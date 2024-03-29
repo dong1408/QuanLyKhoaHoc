@@ -13,6 +13,7 @@ use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
+use App\Http\Requests\SanPham\UploadFileMinhChungRequest;
 use App\Utilities\ResponseSuccess;
 use Illuminate\Http\Request;
 
@@ -40,4 +41,5 @@ interface DeTaiService
     public function getDeTaiKeKhai(Request $request): ResponseSuccess;
     public function getDeTaiThamGia(Request $request): ResponseSuccess;
     public function updateDeTaiForUser(UpdateDeTaiForUserRequest $request, int $id): ResponseSuccess;
+    public function UploadFileMinhChung(UploadFileMinhChungRequest $request):ResponseSuccess;
 }
