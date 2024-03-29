@@ -26,4 +26,7 @@ interface UserService
     public function forceDeleteUser(int $id): ResponseSuccess;
     public function changePassword(ChangePasswordRequest $request): ResponseSuccess;
     public function themTacGiaNgoai($array): User;
+
+    public function import(Request $request);
+    public function export();
 }

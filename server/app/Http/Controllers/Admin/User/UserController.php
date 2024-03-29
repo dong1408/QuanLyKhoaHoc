@@ -106,4 +106,14 @@ class UserController extends Controller
         $result = $this->userService->changePassword($request);
         return response()->json($result, 200);
     }
+
+
+
+    public function import(Request $request){
+        return $this->userService->import($request);        
+    }
+
+    public function export(){
+        return $this->userService->export();
+    }
 }

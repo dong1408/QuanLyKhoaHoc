@@ -70,7 +70,12 @@ Route::group([
     Route::patch('users/{id}/delete', [UserController::class, 'deleteUser'])->can('user.delete');
     Route::patch('users/{id}/restore', [UserController::class, 'restoreUser'])->can('user.delete');
     Route::delete('users/{id}/force', [UserController::class, 'forceDeleteUser'])->can('user.delete');
-    Route::get('users/{id}', [UserController::class, 'getUserDetail'])->can('user.update'); // dùng cho admin
+    // Route::post('users/import', [UserController::class, 'import']);
+    Route::match(['post','get'],'users/import', [UserController::class, 'import']);
+    Route::get('users/export', [UserController::class, 'export']);
+    Route::get('users/{id}', [UserController::class, 'getUserDetail'])->can('user.update'); // dùng cho admin    
+
+
 
     // Role
     Route::get('roles', [RoleController::class, 'getAllRole'])->can("role.view");
