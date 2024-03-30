@@ -51,13 +51,12 @@ class ImportUser implements ToModel, WithHeadingRow, SkipsOnError
 
         $this->successRecords[] = array_merge($row, ['kết quả' => '']);
 
-
         return new User([
             'name' => (string) $row['name'],
             'username' => (string) $row['username'],
             'email' => (string) $row['email'],
             'ngaysinh' => (string) $row['ngaysinh'],
-            'password' => Hash::make((string) $row['ngaysinh'])
+            'password' => Hash::make((string) str_replace('-', '', $row['ngaysinh']))
         ]);
     }
 
