@@ -353,7 +353,7 @@ class UserServiceImpl implements UserService
 
     public function import(Request $request)
     {
-        $this->excelService->import($request);
+        return $this->excelService->import($request);
     }
 
     public function export()

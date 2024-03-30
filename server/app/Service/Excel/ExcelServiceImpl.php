@@ -13,16 +13,12 @@ class ExcelServiceImpl implements ExcelService
 {
     public function import(Request $request)
     {
-        // Excel::import(new ImportUser, $request->file('file')->store('file'));
-
-        $data = [
-            ['name' => 'John Doe', 'email' => 'john@example.com'],
-            ['name' => 'Jane Smith', 'email' => 'jane@example.com'],
-            // Các dòng dữ liệu khác
-        ];
-        return Excel::download(new ExportUser, 'users.xlsx');
-        // return Excel::download(new DataExport($data), 'abc.xlsx');
-        
+        $import = new ImportUser();
+        Excel::import($import, $request->file('file'));
+        $dataSucess = $import->getSuccessRecords();
+        $dataFail = $import->getFailedRecords();
+        $result = array_merge($dataFail, $dataSucess);
+        return Excel::download(new DataExport($result), 'result.xlsx');
     }
 
     public function export()
