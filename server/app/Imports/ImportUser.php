@@ -32,15 +32,16 @@ class ImportUser implements ToModel, WithHeadingRow, SkipsOnError
         $validator = Validator::make($row, [
             'name' => 'bail|required|string',
             'username' => 'bail|required|unique:users,username',
-            'email' => 'bail|required|string|unique:users,email',
+            'email' => 'bail|required|email|unique:users,email',
             'ngaysinh' => 'bail|nullable|date_format:d-m-Y',
-        ],[
-            'name.required' => '',
-            'username.required' => '',
+        ], [
+            'name.required' => 'không được bỏ trống trường name',
+            'username.required' => 'không được bỏ trống trường username',
             'username.unique' => 'username đã tồn tại trên hệ thống',
             'email.required' => 'trường email là bắt buộc',
-            'email.unique' => 'email đã tồn tại trên hệ thống', 
-            'ngaysinh.date_format' => 'Ngày sinh phải theo định dạng dd-MM-yy'           
+            'email.email' => 'email không đúng định dạng',
+            'email.unique' => 'email đã tồn tại trên hệ thống',
+            'ngaysinh.date_format' => 'Ngày sinh phải theo định dạng dd-MM-yy'
         ]);
 
         if ($validator->fails()) {
@@ -56,7 +57,7 @@ class ImportUser implements ToModel, WithHeadingRow, SkipsOnError
             'username' => (string) $row['username'],
             'email' => (string) $row['email'],
             'ngaysinh' => (string) $row['ngaysinh'],
-            'password' => Hash::make(env('SGU_2024'))
+            'password' => Hash::make((string) $row['ngaysinh'])
         ]);
     }
 
