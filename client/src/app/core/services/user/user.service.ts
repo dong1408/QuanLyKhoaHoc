@@ -135,7 +135,7 @@ export class UserService{
     }
 
     importUsers(data:FormData){
-        return this.http.post<ApiResponse<boolean>>(
+        return this.http.post<Blob>(
             `${environment.apiUrl}/users/import`,
             data
         ).pipe(

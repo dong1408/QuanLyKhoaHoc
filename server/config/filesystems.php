@@ -36,9 +36,9 @@ return [
             'throw' => false,
         ],
 
-        'real_public' => [
+        'import' => [
             'driver' => 'local',
-            'root' => public_path(),
+            'root' => storage_path('app/uploads'),
             'url' => env('APP_URL'),
             'visibility' => 'public',
         ],
