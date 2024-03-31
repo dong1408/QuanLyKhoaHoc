@@ -29,7 +29,7 @@ class UpdateFileMinhChungSanPhamRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "file" => "bail|required|file|mimes:jpeg,png,pdf,docx|max:10280",
+            "file" => "bail|required|file|mimes:pdf,docx|max:20560",
         ];
     }
 
@@ -40,6 +40,9 @@ class UpdateFileMinhChungSanPhamRequest extends FormRequest
             'integer' => 'Trường :attribute phải là một số',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
+            'file' => 'Trường :attribute phải là file',
+            'mimes' => 'Chỉ nhận các loại file: :values',
+            'max' => 'Dung lượng file phải < 20MB',
         ];
     }
 

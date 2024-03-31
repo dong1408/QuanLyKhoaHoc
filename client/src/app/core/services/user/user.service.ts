@@ -133,4 +133,13 @@ export class UserService{
             catchError(handleError)
         )
     }
+
+    importUsers(data:FormData){
+        return this.http.post<ApiResponse<boolean>>(
+            `${environment.apiUrl}/users/import`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
 }

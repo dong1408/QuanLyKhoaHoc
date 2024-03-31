@@ -27,6 +27,8 @@ export class UpdateRoleComponent implements OnInit,OnDestroy{
     baibao_permissions:Permission[] = []
     role_permissions:Permission[] = []
     permissions:Permission[] = []
+    tapchi_permissions:Permission[] = []
+    tochuc_permissions:Permission[] = []
 
     createForm:FormGroup
 
@@ -88,6 +90,12 @@ export class UpdateRoleComponent implements OnInit,OnDestroy{
             ],
             role_id:[
                 []
+            ],
+            tapchi_id:[
+                []
+            ],
+            tochuc_id:[
+                []
             ]
         })
 
@@ -119,12 +127,20 @@ export class UpdateRoleComponent implements OnInit,OnDestroy{
                     if(item.prefixSlug === "baibao"){
                         this.baibao_permissions= item.permissions
                     }
+                    if(item.prefixSlug === "tapchi"){
+                        this.tapchi_permissions = item.permissions
+                    }
+                    if(item.prefixSlug === "tochuc"){
+                        this.tochuc_permissions = item.permissions
+                    }
                 })
 
                 let detai:Array<number> = []
                 let nguoidung:Array<number> = []
                 let baibao:Array<number> = []
                 let role:Array<number> = []
+                let tapchi:Array<number> = []
+                let tochuc:Array<number> = []
 
                 response.role.permissions.forEach(item => {
                     if(item.prefixSlug === "detai"){
@@ -139,6 +155,12 @@ export class UpdateRoleComponent implements OnInit,OnDestroy{
                     if(item.prefixSlug === "baibao"){
                         baibao= item.permissions.map(i => i.id)
                     }
+                    if(item.prefixSlug === "tapchi"){
+                        tapchi= item.permissions.map(i => i.id)
+                    }
+                    if(item.prefixSlug === "tochuc"){
+                        tochuc= item.permissions.map(i => i.id)
+                    }
                 })
 
                 this.createForm.patchValue({
@@ -148,7 +170,9 @@ export class UpdateRoleComponent implements OnInit,OnDestroy{
                     detai_id:detai,
                     baibao_id:baibao,
                     nguoidung_id:nguoidung,
-                    role_id:role
+                    role_id:role,
+                    tapchi_id:tapchi,
+                    tochuc_id:tochuc
                 })
 
                 this.loadingService.stopLoading()

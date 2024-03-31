@@ -30,6 +30,7 @@ import {HocHamHocViService} from "../../../core/services/user-info/hoc-ham-hoc-v
 import {dateConvert, mergedUsers} from "../../../shared/commons/utilities";
 import {NzUploadFile} from "ng-zorro-antd/upload";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {validateFileUpload} from "../../../shared/validators/file-upload.validator";
 
 @Component({
     selector:"app-baibao-chitiet",
@@ -732,41 +733,10 @@ export class ChiTietBaiBaoComponent{
 
     beforeUpload = (file: NzUploadFile):Observable<boolean> =>
         new Observable((observer: Observer<boolean>) => {
-            file.status = "uploading"
-            const extension = file.name.split('.').pop()?.toLowerCase();
+            const errorMessage = validateFileUpload(file,this.fileList)
 
-            const isTypeSuccess = extension === 'docx' || extension === 'pdf' || file.type! === 'image/jpeg' || file.type! === 'image/png'
-
-            if(!isTypeSuccess){
-                this.notificationService.create(
-                    'error',
-                    'Lỗi',
-                    'Chỉ chấp nhận các file .docx, .pdf, jpeg, png'
-                )
-                observer.complete
-                return;
-            }
-
-            const isLessThan10MB = file.size! / 1024 / 1024 <= 10;
-
-            if(!isLessThan10MB){
-                this.notificationService.create(
-                    'error',
-                    'Lỗi',
-                    'Chỉ chấp nhận file nhỏ hơn 10MB'
-                )
-                file.status = "error"
-                observer.complete();
-                return;
-            }
-
-            if(this.fileList.length >= 1){
-                this.notificationService.create(
-                    'error',
-                    'Lỗi',
-                    'Chỉ được upload 1 file'
-                )
-                file.status = "error"
+            if (errorMessage) {
+                this.notificationService.create('error', 'Lỗi', errorMessage);
                 observer.complete();
                 return;
             }
