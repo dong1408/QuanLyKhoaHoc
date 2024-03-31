@@ -12,6 +12,8 @@ use App\Service\DeTai\DeTaiService;
 use App\Service\DeTai\DeTaiServiceImpl;
 use App\Service\DeTai\PhanLoaiDeTaiService;
 use App\Service\DeTai\PhanLoaiDeTaiServiceImpl;
+use App\Service\Excel\ExcelService;
+use App\Service\Excel\ExcelServiceImpl;
 use App\Service\GoogleDrive\GoogleDriveService;
 use App\Service\GoogleDrive\GoogleDriveServiceImpl;
 use App\Service\NhaXuatBan\NhaXuatBanService;
@@ -89,6 +91,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PhanLoaiToChucService::class, PhanLoaiToChucServiceImpl::class);
         $this->app->bind(KeywordService::class, KeywordServiceImpl::class);
         $this->app->bind(GoogleDriveService::class, GoogleDriveServiceImpl::class);
+        $this->app->bind(ExcelService::class, ExcelServiceImpl::class);
     }
     /**
      * Bootstrap any application services.

@@ -16,6 +16,7 @@ use App\Http\Requests\User\UpdateRoleOfUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Service\Excel\ExcelService;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
@@ -28,6 +29,13 @@ use Illuminate\Support\Facades\DB;
 
 class UserServiceImpl implements UserService
 {
+
+    private ExcelService $excelService;
+
+    public function __construct(ExcelService $excelService)
+    {
+        $this->excelService = $excelService;
+    }
 
     public function getAllUser(Request $request): ResponseSuccess
     {
@@ -340,5 +348,16 @@ class UserServiceImpl implements UserService
             'id_hochamhocvi' => $array['id_hochamhocvi']
         ]);
         return $user;
+    }
+
+
+    public function import(Request $request)
+    {
+        return $this->excelService->import($request);
+    }
+
+    public function export()
+    {
+        return $this->excelService->export();
     }
 }
