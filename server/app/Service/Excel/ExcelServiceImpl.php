@@ -2,6 +2,7 @@
 
 namespace App\Service\Excel;
 
+use App\Exceptions\Excel\ValidateFileException;
 use App\Exports\DataExport;
 use App\Exports\ExportUser;
 use App\Imports\ImportUser;
@@ -13,6 +14,10 @@ class ExcelServiceImpl implements ExcelService
 {
     public function import(Request $request)
     {
+        $file = $request->file('file');
+        if ($file->getClientOriginalExtension() != 'xlsx') {
+            throw new ValidateFileException();
+        }
         $import = new ImportUser();
         Excel::import($import, $request->file('file'));
         $dataSucess = $import->getSuccessRecords();
