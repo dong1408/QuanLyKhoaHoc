@@ -586,6 +586,12 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         })
         const formArray = this.createForm.get('sanpham_tacgia') as FormArray
         formArray.push(control)
+
+        this.notificationService.create(
+            'success',
+            'Thành Công',
+            'Chọn tác giả ngoài hệ thống thành công'
+        )
     }
 
     onGetSearchUser(){
@@ -865,11 +871,21 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
             })
             formArray.push(control);
             this.createForm.get("users")?.setValue(null)
+            this.notificationService.create(
+                'success',
+                'Thành Công',
+                'Chọn tác giả thành công'
+            )
         }
     }
 
     removeUser(index:number){
         (this.createForm.get('sanpham_tacgia') as FormArray).removeAt(index);
+        this.notificationService.create(
+            'success',
+            'Thành Công',
+            'Xóa thành công'
+        )
     }
 
     get sanphamTacgiaControls() {
