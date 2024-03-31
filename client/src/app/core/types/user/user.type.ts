@@ -122,3 +122,7 @@ export interface UpdateUser{
 export interface UpdateRole{
     roles_id:Array<number>
 }
+
+export interface ImportUser{
+    file:File
+}

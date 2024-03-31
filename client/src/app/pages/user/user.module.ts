@@ -15,6 +15,7 @@ import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {NzFormModule} from "ng-zorro-antd/form";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzModalModule} from "ng-zorro-antd/modal";
+import {NzUploadModule} from "ng-zorro-antd/upload";
 
 @NgModule({
     declarations:[
@@ -35,7 +36,8 @@ import {NzModalModule} from "ng-zorro-antd/modal";
         ReactiveFormsModule,
         NzFormModule,
         NzGridModule,
-        NzModalModule
+        NzModalModule,
+        NzUploadModule
     ],
     providers:[
         PagingService

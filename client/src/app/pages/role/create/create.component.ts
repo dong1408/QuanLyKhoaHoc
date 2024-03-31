@@ -24,6 +24,8 @@ export class CreateRoleComponent implements OnInit,OnDestroy{
     detai_permissions:Permission[] = []
     nguoidung_permissions:Permission[] = []
     baibao_permissions:Permission[] = []
+    tapchi_permissions:Permission[] = []
+    tochuc_permissions:Permission[] = []
     role_permissions:Permission[] = []
     permissions:Permission[] = []
 
@@ -76,6 +78,12 @@ export class CreateRoleComponent implements OnInit,OnDestroy{
             ],
             role_id:[
                 []
+            ],
+            tapchi_id:[
+                []
+            ],
+            tochuc_id:[
+                []
             ]
         })
 
@@ -104,6 +112,12 @@ export class CreateRoleComponent implements OnInit,OnDestroy{
                         }
                         if(item.prefixSlug === "permission"){
                             this.permissions = item.permissions
+                        }
+                        if(item.prefixSlug === "tapchi"){
+                            this.tapchi_permissions = item.permissions
+                        }
+                        if(item.prefixSlug === "tochuc"){
+                            this.tochuc_permissions = item.permissions
                         }
                     })
 
@@ -146,6 +160,8 @@ export class CreateRoleComponent implements OnInit,OnDestroy{
             ...form.get("nguoidung_id")?.value,
             ...form.get("baibao_id")?.value,
             ...form.get("role_id")?.value,
+            ...form.get("tapchi_id")?.value,
+            ...form.get("tochuc_id")?.value
         ]
 
         if(permission_id.length <= 0){
@@ -164,7 +180,6 @@ export class CreateRoleComponent implements OnInit,OnDestroy{
             description : form.get("description")?.value ?? null
         }
 
-        console.log(data)
         this.isCreate = true
         this.roleService.createRole(data)
             .pipe(

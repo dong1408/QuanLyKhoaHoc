@@ -25,7 +25,7 @@ class UploadFileMinhChungRequest extends FormRequest
     public function rules()
     {
         return [
-            "file" => "bail|required|file|mimes:jpeg,png,pdf,docx|max:10280",
+            "file" => "bail|required|file|mimes:pdf,docx|max:20560",
         ];
     }
 
@@ -35,7 +35,7 @@ class UploadFileMinhChungRequest extends FormRequest
             'required' => 'Trường :attribute là bắt buộc',
             'file' => 'Trường :attribute phải là file',
             'mimes' => 'Chỉ nhận các loại file : :values',
-            'max' => 'Dung lượng file phải < 10BM',
+            'max' => 'Dung lượng file phải < 20MB',
         ];
     }
 }

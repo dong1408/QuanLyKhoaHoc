@@ -97,6 +97,42 @@
                     </nz-form-control>
                 </nz-form-item>
 
+                <nz-form-item *ngIf="tapchi_permissions.length > 0" class="tw-w-full lg:tw-w-[50%]">
+                    <h4 class="">Quyền Về Tạp Chí</h4>
+                    <nz-form-control [nzErrorTip]="tapchi_id" nzHasFeedback>
+                        <nz-select
+                                nzAllowClear
+                                nzShowSearch
+                                nzPlaceHolder="Tạp Chí"
+                                nzMode="multiple"
+                                formControlName="tapchi_id"
+                        >
+                            <nz-option *ngFor="let item of tapchi_permissions" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+                        </nz-select>
+                        <ng-template #tapchi_id let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item *ngIf="tochuc_permissions.length > 0" class="tw-w-full lg:tw-w-[50%]">
+                    <h4 class="">Quyền Về Tổ Chức</h4>
+                    <nz-form-control [nzErrorTip]="tochuc_id" nzHasFeedback>
+                        <nz-select
+                                nzAllowClear
+                                nzShowSearch
+                                nzPlaceHolder="Tổ Chức"
+                                nzMode="multiple"
+                                formControlName="tochuc_id"
+                        >
+                            <nz-option *ngFor="let item of tochuc_permissions" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
+                        </nz-select>
+                        <ng-template #tochuc_id let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+
                 <nz-form-item *ngIf="role_permissions.length > 0" class="tw-w-full lg:tw-w-[50%]">
                     <h4 class="">Quyền Về Vai Trò</h4>
                     <nz-form-control [nzErrorTip]="permission_id" nzHasFeedback>

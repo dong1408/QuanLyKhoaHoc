@@ -7,16 +7,19 @@ import {
     combineLatest,
     debounceTime,
     distinctUntilChanged,
-    Observable,
+    Observable, Observer,
     Subject,
     switchMap,
     takeUntil,
     tap
 } from "rxjs";
-import {UpdateRole, UserVm} from "../../core/types/user/user.type";
+import {ImportUser, UpdateRole, UserVm} from "../../core/types/user/user.type";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Role} from "../../core/types/roles/role.type";
 import {RoleService} from "../../core/services/roles/role.service";
+import {NzUploadFile} from "ng-zorro-antd/upload";
+import {validateFileImport, validateFileUpload} from "../../shared/validators/file-upload.validator";
+import {CapNhatFileMinhChung} from "../../core/types/sanpham/file-minh-chung.type";
 
 @Component({
     selector:'app-user-component',
@@ -28,6 +31,10 @@ export class UserComponent implements OnInit,OnDestroy{
     isTableLoading:boolean = false
     isOpenFormUpdateRole: boolean = false
     isGetRoleOfCurrentuser:boolean = false
+    isOpenFormImport:boolean = false
+    isImport:boolean = false
+
+    fileList:NzUploadFile[] = []
 
     currentUserId:number | null
 
@@ -42,6 +49,7 @@ export class UserComponent implements OnInit,OnDestroy{
     destroy$ = new Subject<void>()
     formAction: FormGroup
     formUpdateRole:FormGroup
+    formImport:FormGroup
 
     totalPage:number
 
@@ -72,8 +80,69 @@ export class UserComponent implements OnInit,OnDestroy{
                 ])
             ]
         })
+
+        this.formImport = this.fb.group({
+            file:[
+                null,
+                Validators.compose([
+                    Validators.required
+                ])
+            ]
+        })
+
         this.getAllRoles()
         this.getAllUser()
+    }
+
+    onImport(){
+        if(this.formImport.invalid){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng điền đúng yêu cầu của form'
+            )
+            return;
+        }
+        if(this.fileList.length <= 0){
+            this.notificationService.create(
+                'error',
+                'Lỗi',
+                'Vui lòng chọn file cần upload'
+            )
+            return;
+        }
+
+        const data:ImportUser = this.formImport.value;
+
+        const formData = new FormData()
+        formData.append("file",data.file)
+        this.isImport = true;
+        this.userService.importUsers(formData).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe({
+            next:(response) =>{
+                this.notificationService.create(
+                    'success',
+                    'Thành Công',
+                    'Import thành công'
+                )
+
+                this.getAllUser()
+                this.isImport = false
+            },
+            error:(error) =>{
+                this.notificationService.create(
+                    'error',
+                    'Lỗi',
+                    'Có lỗi trong quá trình import, vui lòng thử lại sau'
+                )
+                this.isImport = false
+            }
+        })
+    }
+
+    onOpenFormImport(){
+        this.isOpenFormImport = !this.isOpenFormImport
     }
 
     onCloseFormUpdateRole(){
@@ -328,6 +397,25 @@ export class UserComponent implements OnInit,OnDestroy{
             }
         })
     }
+
+    beforeUpload = (file: NzUploadFile):Observable<boolean> =>
+        new Observable((observer: Observer<boolean>) => {
+            const errorMessage = validateFileImport(file,this.fileList)
+
+            if (errorMessage) {
+                this.notificationService.create('error', 'Lỗi', errorMessage);
+                observer.complete();
+                return;
+            }
+
+            observer.next(false);
+            this.fileList = this.fileList.concat(file)
+            this.formImport.patchValue({
+                file: file
+            })
+            file.status = "success"
+            observer.complete();
+        })
 
     ngOnDestroy() {
         this.destroy$.next()
