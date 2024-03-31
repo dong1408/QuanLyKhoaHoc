@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Exceptions\Excel\FormatFileException;
 use App\Exports\DataExport;
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -12,6 +13,7 @@ use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Illuminate\Support\Collection;
 use Throwable;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\ToCollection;
 
 class ImportUser implements ToModel, WithHeadingRow, SkipsOnError
 {

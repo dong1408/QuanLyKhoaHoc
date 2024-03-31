@@ -4,6 +4,7 @@ namespace App\Service\TapChi;
 
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\InvalidValueException;
+use App\Exceptions\TapChi\TapChiCanNotUpdateException;
 use App\Exceptions\TapChi\TapChiNotFoundException;
 use App\Exceptions\TapChi\TinhDiemTapChiException;
 use App\Exceptions\TapChi\UpdateKhongCongNhanException;
@@ -271,6 +272,11 @@ class TapChiServiceImpl implements TapChiService
             throw new TapChiNotFoundException();
         }
 
+        // kiem tra tap chi trong trang thai soft delete thi khong cho chinh sua
+        if ($tapChi->trashed()) {
+            throw new TapChiCanNotUpdateException();
+        }
+
         $validated = $request->validated();
 
         DB::transaction(function () use ($validated, &$tapChi) {
@@ -297,9 +303,14 @@ class TapChiServiceImpl implements TapChiService
     public function updateKhongCongNhanTapChi(UpdateTapChiKhongCongNhanRequest $request, int $id): ResponseSuccess
     {
 
-        $tapChi = TapChi::find($id);
+        $tapChi = TapChi::withTrashed()->find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
+        }
+
+        // kiem tra tap chi trong trang thai soft delete thi khong cho chinh sua
+        if ($tapChi->trashed()) {
+            throw new TapChiCanNotUpdateException();
         }
 
         $validated = $request->validated();
@@ -322,9 +333,14 @@ class TapChiServiceImpl implements TapChiService
 
     public function updateXepHangTapChi(UpdateXepHangTapChiRequest $request, int $id): ResponseSuccess
     {
-        $tapChi = TapChi::find($id);
+        $tapChi = TapChi::withTrashed()->find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
+        }
+
+        // kiem tra tap chi trong trang thai soft delete thi khong cho chinh sua
+        if ($tapChi->trashed()) {
+            throw new TapChiCanNotUpdateException();
         }
 
         $validated = $request->validated();
@@ -354,9 +370,14 @@ class TapChiServiceImpl implements TapChiService
 
     public function updateTinhDiemTapChi(UpdateTinhDiemTapChiRequest $request, int $id): ResponseSuccess
     {
-        $tapChi = TapChi::find($id);
+        $tapChi = TapChi::withTrashed()->find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
+        }
+
+        // kiem tra tap chi trong trang thai soft delete thi khong cho chinh sua
+        if ($tapChi->trashed()) {
+            throw new TapChiCanNotUpdateException();
         }
 
         $validated = $request->validated();
