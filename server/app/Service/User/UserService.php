@@ -28,5 +28,6 @@ interface UserService
     public function themTacGiaNgoai($array): User;
 
     public function import(Request $request);
+    public function exportFileResult(Request $request);
     public function export();
 }

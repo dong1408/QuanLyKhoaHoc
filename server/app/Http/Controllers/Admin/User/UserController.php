@@ -109,12 +109,22 @@ class UserController extends Controller
 
 
 
-    public function import(Request $request){
+    public function import(Request $request)
+    {
         $result = $this->userService->import($request);
         return $result;
     }
 
-    public function export(){
+
+    public function exportFileResult(Request $request)
+    {
+        $result = $this->userService->exportFileResult($request);
+        return $result;
+    }
+
+
+    public function export()
+    {
         return $this->userService->export();
     }
 }
