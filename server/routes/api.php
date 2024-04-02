@@ -71,7 +71,7 @@ Route::group([
     Route::patch('users/{id}/restore', [UserController::class, 'restoreUser'])->can('user.delete');
     Route::delete('users/{id}/force', [UserController::class, 'forceDeleteUser'])->can('user.delete');
     Route::post('users/import', [UserController::class, 'import'])->can('user.register');
-    Route::get('users/export', [UserController::class, 'exportFileResult']);
+    Route::get('users/export', [UserController::class, 'exportFileResult'])->can('user.register');
     Route::get('users/{id}', [UserController::class, 'getUserDetail'])->can('user.update'); // dùng cho admin    
 
 

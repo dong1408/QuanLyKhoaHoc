@@ -6,7 +6,7 @@ import {
     BehaviorSubject,
     combineLatest,
     debounceTime,
-    distinctUntilChanged,
+    distinctUntilChanged, mergeMap,
     Observable, Observer,
     Subject,
     switchMap,
@@ -118,19 +118,39 @@ export class UserComponent implements OnInit,OnDestroy{
         formData.append("file",data.file)
         this.isImport = true;
         this.userService.importUsers(formData).pipe(
-            takeUntil(this.destroy$)
+            takeUntil(this.destroy$),
+            mergeMap(response => {
+                return this.userService.getFileResult(response)
+            })
         ).subscribe({
             next:(response) =>{
+
+                const blob = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+
+
+                var downloadURL = window.URL.createObjectURL(blob);
+                var link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = "result_import.xlsx";
+                link.click();
+
+                window.URL.revokeObjectURL(downloadURL)
+
+                this.isOpenFormImport = false
+                this.fileList = []
+                this.formImport.reset()
                 this.notificationService.create(
                     'success',
                     'Thành Công',
                     'Import thành công'
                 )
 
-                this.getAllUser()
                 this.isImport = false
+
+
             },
             error:(error) =>{
+                console.log(error)
                 this.notificationService.create(
                     'error',
                     'Lỗi',

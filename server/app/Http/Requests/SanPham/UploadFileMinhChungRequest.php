@@ -25,7 +25,7 @@ class UploadFileMinhChungRequest extends FormRequest
     public function rules()
     {
         return [
-            "file" => "bail|required|file|mimes:pdf,docx|max:20560",
+            "file" => "bail|required|file|mimes:pdf,docx,xlsx,xls|max:20560",
         ];
     }
 

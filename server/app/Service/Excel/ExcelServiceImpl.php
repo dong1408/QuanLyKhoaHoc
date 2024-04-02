@@ -2,6 +2,7 @@
 
 namespace App\Service\Excel;
 
+use App\Exceptions\Excel\CannotReturnResultFileException;
 use App\Exceptions\Excel\FileNotFoundException;
 use App\Exceptions\Excel\FormatFileException;
 use App\Exceptions\Excel\ValidateFileException;
@@ -50,10 +51,12 @@ class ExcelServiceImpl implements ExcelService
         $dataFail = $import->getFailedRecords();
         $result = array_merge($dataFail, $dataSucess);
         // Tạo tên file duy nhất
-        $filename = 'import_result_' . $this->generateUniqueString() . '.xlsx';
+        $filename = 'import_result_' . $this->generateUniqueString();
         // Lưu file vào hệ thống
-        Excel::store(new DataExport($result), $filename, "import");
-        // return Excel::download(new DataExport($result), 'result.xlsx');
+        $isSave = Excel::store(new DataExport($result), $filename . '.xlsx', "import");
+        if(!$isSave){
+            throw new CannotReturnResultFileException();
+        }
         return response()->json($filename, 200);
     }
 
@@ -79,7 +82,7 @@ class ExcelServiceImpl implements ExcelService
     }
 
 
-    private function generateUniqueString($length = 10)
+    private function generateUniqueString($length = 10):string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $randomString = '';
