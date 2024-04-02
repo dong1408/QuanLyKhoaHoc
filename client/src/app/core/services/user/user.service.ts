@@ -135,11 +135,17 @@ export class UserService{
     }
 
     importUsers(data:FormData){
-        return this.http.post<Blob>(
+        return this.http.post<string>(
             `${environment.apiUrl}/users/import`,
             data
         ).pipe(
             catchError(handleError)
+        )
+    }
+
+    getFileResult(key:string){
+        return this.http.get<any>(
+            `${environment.apiUrl}/users/export?key=${key}`,{ responseType: 'blob' as 'json' }
         )
     }
 }

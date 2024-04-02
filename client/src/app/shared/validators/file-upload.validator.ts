@@ -24,10 +24,10 @@ export const validateFileUpload = (file:NzUploadFile,fileList:NzUploadFile[]):st
     file.status = "uploading";
     const extension = file.name.split('.').pop()?.toLowerCase();
 
-    const isTypeSuccess = extension === 'docx' || extension === 'pdf';
+    const isTypeSuccess = extension === 'docx' || extension === 'pdf' || extension === 'xlsx' || extension === 'xls';
 
     if (!isTypeSuccess) {
-        return 'Chỉ chấp nhận các file .docx, .pdf';
+        return 'Chỉ chấp nhận các file .docx, .pdf, .xlsx, .xls';
     }
 
     const isLessThan20MB = file.size! / 1024 / 1024 <= 20;
