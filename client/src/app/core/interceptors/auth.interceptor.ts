@@ -5,7 +5,6 @@ import { environment } from "src/environments/environment";
 import {LocalStorageService} from "../services/local-storage.service";
 import {AuthService} from "../services/user/auth.service";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "../../shared/commons/constants";
-import {Token} from "../types/user/auth.type";
 
 @Injectable({
     providedIn:"root"
@@ -59,7 +58,6 @@ export class AuthInterceptor implements HttpInterceptor{
             if (refreshToken) {
                 return this.authService.getAccessToken().pipe(
                     concatMap((response: any) => {
-                        console.log("abcadsasd lỗi chỗ interceptor")
                         this.isRetry = false
                         this.localStorageService.set(ACCESS_TOKEN, response.data.accessToken)
                         return next.handle(this.addTokenToHeader(request, response.data.accessToken))
