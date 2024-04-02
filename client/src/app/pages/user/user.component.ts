@@ -119,9 +119,9 @@ export class UserComponent implements OnInit,OnDestroy{
         this.isImport = true;
         this.userService.importUsers(formData).pipe(
             takeUntil(this.destroy$),
-            mergeMap(response => {
-                return this.userService.getFileResult(response)
-            })
+            // mergeMap(response => {
+            //     return this.userService.getFileResult(response)
+            // })
         ).subscribe({
             next:(response) =>{
 
