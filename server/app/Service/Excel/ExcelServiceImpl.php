@@ -32,9 +32,10 @@ class ExcelServiceImpl implements ExcelService
         $spreadsheet = IOFactory::load($filePath);
         $worksheet = $spreadsheet->getActiveSheet();
         // Lấy tiêu đề cột từ hàng đầu tiên của tệp Excel
-        $headerRow = $worksheet->getRowIterator()->current();
+        $headerRow = $worksheet->getRowIterator()->current()->getCellIterator();
         $headerData = [];
-        foreach ($headerRow->getCellIterator() as $cell) {
+
+        foreach ($headerRow as $cell) {
             $value = $cell->getValue();
             if (!is_null($value) && trim($value) !== '') {
                 $headerData[] = $value;
@@ -50,14 +51,17 @@ class ExcelServiceImpl implements ExcelService
         $dataSucess = $import->getSuccessRecords();
         $dataFail = $import->getFailedRecords();
         $result = array_merge($dataFail, $dataSucess);
-        // Tạo tên file duy nhất
-        $filename = 'import_result_' . $this->generateUniqueString();
-        // Lưu file vào hệ thống
-        $isSave = Excel::store(new DataExport($result), $filename . '.xlsx', "import");
-        if(!$isSave){
-            throw new CannotReturnResultFileException();
-        }
-        return response()->json($filename, 200);
+
+        return Excel::download(new DataExport($result), 'result.xlsx');
+
+        // // Tạo tên file duy nhất
+        // $filename = 'import_result_' . $this->generateUniqueString();
+        // // Lưu file vào hệ thống
+        // $isSave = Excel::store(new DataExport($result), $filename . '.xlsx', "import");
+        // if (!$isSave) {
+        //     throw new CannotReturnResultFileException();
+        // }
+        // return response()->json($filename, 200);
     }
 
 
@@ -82,7 +86,7 @@ class ExcelServiceImpl implements ExcelService
     }
 
 
-    private function generateUniqueString($length = 10):string
+    private function generateUniqueString($length = 10): string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $randomString = '';
