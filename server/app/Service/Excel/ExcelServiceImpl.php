@@ -2,12 +2,14 @@
 
 namespace App\Service\Excel;
 
+use App\Exceptions\Excel\FileNotFoundException;
 use App\Exceptions\Excel\FormatFileException;
 use App\Exceptions\Excel\ValidateFileException;
 use App\Exports\DataExport;
 use App\Exports\ExportUser;
 use App\Imports\ImportUser;
 use App\Utilities\ResponseSuccess;
+use Google\Service\CloudRetail\GoogleCloudRetailV2RuleForceReturnFacetActionFacetPositionAdjustment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
@@ -40,20 +42,61 @@ class ExcelServiceImpl implements ExcelService
         // Kiểm tra xem tiêu đề cột có đúng không
         $expectedHeaders = ['name', 'username', 'email', 'ngaysinh'];
         if ($headerData !== $expectedHeaders) {
-            // Nếu không đúng, throw lỗi
             throw new FormatFileException();
         }
-
         $import = new ImportUser();
         Excel::import($import, $request->file('file'));
         $dataSucess = $import->getSuccessRecords();
         $dataFail = $import->getFailedRecords();
         $result = array_merge($dataFail, $dataSucess);
-        return Excel::download(new DataExport($result), 'result.xlsx');
+        // Tạo tên file duy nhất
+        $filename = 'import_result_' . $this->generateUniqueString() . '.xlsx';
+        // Lưu file vào hệ thống
+        Excel::store(new DataExport($result), $filename, "import");
+        // return Excel::download(new DataExport($result), 'result.xlsx');
+        return response()->json($filename, 200);
+    }
+
+
+
+    public function exportFileResult(Request $request)
+    {
+        $directory = storage_path('app\\uploads');
+        $filename = $request->query('key', "");
+        $filePath = $directory . DIRECTORY_SEPARATOR . $filename . '.xlsx';
+
+        if (file_exists($filePath)) {
+            // return response()->file($filePath);
+            return response()->download($filePath, 'result.xlsx')->deleteFileAfterSend(true);
+        } else {
+            throw new FileNotFoundException();
+        }
     }
 
     public function export()
     {
         return Excel::download(new ExportUser, 'users.xlsx');
+    }
+
+
+    private function generateUniqueString($length = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        $max = strlen($characters) - 1;
+
+        // Generate a random string
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[mt_rand(0, $max)];
+        }
+
+        // Add a unique identifier to ensure uniqueness
+        $uniqueId = uniqid();
+        $uniqueString = $randomString . $uniqueId;
+
+        // Trim the string to the desired length
+        $uniqueString = substr($uniqueString, 0, $length);
+
+        return $uniqueString;
     }
 }
