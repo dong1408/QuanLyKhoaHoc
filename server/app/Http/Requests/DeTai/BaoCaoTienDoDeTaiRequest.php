@@ -32,7 +32,7 @@ class BaoCaoTienDoDeTaiRequest extends FormRequest
             ],
             "tenbaocao" => "bail|required|string",
             "ngaynopbaocao" => "bail|required|string",
-            "ketquaxet" => "bail|nullable|string",
+            "ketquaxet" => "bail|required|string",
             "thoigiangiahan" => "bail|nullable|integer",
         ];
     }

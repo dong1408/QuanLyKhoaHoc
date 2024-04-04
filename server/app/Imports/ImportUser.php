@@ -51,7 +51,7 @@ class ImportUser implements ToModel, WithHeadingRow, SkipsOnError
             return null;
         }
 
-        $this->successRecords[] = array_merge($row, ['kết quả' => '']);
+        $this->successRecords[] = array_merge($row, ['kết quả' => 'Thành công']);
 
         return new User([
             'name' => (string) $row['name'],
