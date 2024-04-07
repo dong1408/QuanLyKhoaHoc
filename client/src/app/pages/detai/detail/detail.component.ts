@@ -257,6 +257,21 @@ export class ChiTietDeTaiComponent{
             }
         })
 
+        this.formNghiemThu.get("ketquanghiemthu")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select === this.AppConstant.TT_DETAI_SUCCESS){
+                this.formXetDuyet.get("ngaycongnhanhoanthanh")?.enable()
+                this.formXetDuyet.get("soqdcongnhanhoanthanh")?.enable()
+            }else {
+                this.formXetDuyet.get("ngaycongnhanhoanthanh")?.reset()
+                this.formXetDuyet.get("soqdcongnhanhoanthanh")?.reset()
+
+                this.formXetDuyet.get("ngaycongnhanhoanthanh")?.disable()
+                this.formXetDuyet.get("soqdcongnhanhoanthanh")?.disable()
+            }
+        })
+
         this.onGetSearchUser()
         this.onGetSearchToChuc()
 
