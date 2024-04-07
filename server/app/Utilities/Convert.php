@@ -844,7 +844,7 @@ class Convert
         $a->id = $baoCaoTienDo->id;
         $a->tenbaocao = $baoCaoTienDo->tenbaocao;
         $a->ngaynopbaocao = $baoCaoTienDo->ngaynopbaocao ?? null;
-        $a->ketquaxet = $baoCaoTienDo->ketquaxet ?? null;
+        $a->ketquaxet = $baoCaoTienDo->ketquaxet;
         $a->thoigiangiahan = $baoCaoTienDo->thoigiangiahan ?? null;
         $a->created_at = $baoCaoTienDo->created_at ?? null;
         $a->updated_at = $baoCaoTienDo->updated_at ?? null;

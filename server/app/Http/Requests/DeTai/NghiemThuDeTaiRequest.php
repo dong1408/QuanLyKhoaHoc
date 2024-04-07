@@ -45,7 +45,8 @@ class NghiemThuDeTaiRequest extends FormRequest
             'required' => 'Trường :attribute là bắt buộc',
             'integer' => 'Trường :attribute phải là một số',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
-            'id.exists' => 'Sản phẩm không tồn tại trên hệ thống'
+            'id.exists' => 'Sản phẩm không tồn tại trên hệ thống',
+            'in' => 'Trường :attribute phải là một trong các giá trị :values',
         ];
     }
 
