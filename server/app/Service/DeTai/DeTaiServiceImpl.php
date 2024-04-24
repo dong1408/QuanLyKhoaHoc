@@ -2,12 +2,9 @@
 
 namespace App\Service\DeTai;
 
-use App\Exceptions\BaiBao\BaiBaoNotHaveFirstAuthor;
-use App\Exceptions\BaiBao\CreateBaiBaoFailedException;
-use App\Exceptions\BaiBao\RoleOnlyHeldByOnePersonException;
-use App\Exceptions\BaiBao\TwoRoleSimilarForOnePersonException;
 use App\Exceptions\BaiBao\VaiTroOfBaiBaoException;
 use App\Exceptions\Delete\DeleteFailException;
+use App\Exceptions\DeTai\ChuDeTaiException;
 use App\Exceptions\DeTai\CreateDeTaiFailedException;
 use App\Exceptions\DeTai\DeTaiCanNotBaoCaoException;
 use App\Exceptions\DeTai\DeTaiCanNotNghiemThuException;
@@ -26,16 +23,20 @@ use App\Exceptions\InvalidValueException;
 use App\Exceptions\SanPham\FileMinhChungNotFoundException;
 use App\Exceptions\SanPham\LoaiSanPhamWrongException;
 use App\Exceptions\SanPham\UpdateTrangThaiRaSoatException;
-use App\Http\Requests\Detai\BaoCaoTienDoDeTaiRequest;
-use App\Http\Requests\Detai\CreateDeTaiRequest;
-use App\Http\Requests\Detai\NghiemThuDeTaiRequest;
-use App\Http\Requests\Detai\TuyenChonDeTaiRequest;
-use App\Http\Requests\Detai\UpdateDeTaiRequest;
-use App\Http\Requests\Detai\XetDuyetDeTaiRequest;
+use App\Exceptions\User\UserNotFoundException;
+use App\Exceptions\User\UserNotHavePermissionException;
+use App\Http\Requests\DeTai\BaoCaoTienDoDeTaiRequest;
+use App\Http\Requests\DeTai\CreateDeTaiRequest;
+use App\Http\Requests\DeTai\NghiemThuDeTaiRequest;
+use App\Http\Requests\DeTai\TuyenChonDeTaiRequest;
+use App\Http\Requests\DeTai\UpdateDeTaiForUserRequest;
+use App\Http\Requests\DeTai\UpdateDeTaiRequest;
+use App\Http\Requests\DeTai\XetDuyetDeTaiRequest;
 use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
+use App\Http\Requests\SanPham\UploadFileMinhChungRequest;
 use App\Models\DeTai\BaoCaoTienDo;
 use App\Models\DeTai\DeTai;
 use App\Models\DeTai\NghiemThu;
@@ -48,7 +49,11 @@ use App\Models\SanPham\DMVaiTroTacGia;
 use App\Models\SanPham\SanPham;
 use App\Models\SanPham\SanPhamTacGia;
 use App\Models\User;
+use App\Models\UserInfo\DMToChuc;
 use App\Service\DeTai\DeTaiService;
+use App\Service\GoogleDrive\GoogleDriveService;
+use App\Service\User\UserService;
+use App\Service\UserInfo\ToChucService;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
@@ -58,6 +63,19 @@ use Illuminate\Support\Facades\Hash;
 
 class DeTaiServiceImpl implements DeTaiService
 {
+
+    private UserService $userService;
+    private ToChucService $toChucService;
+    private GoogleDriveService $googleDriveService;
+
+    public function __construct(UserService $userService, ToChucService $toChucService, GoogleDriveService $googleDriveService)
+    {
+        $this->userService = $userService;
+        $this->toChucService = $toChucService;
+        $this->googleDriveService = $googleDriveService;
+    }
+
+
     public function getDeTaiPaging(Request $request): ResponseSuccess
     {
         $page = $request->query('page', 1);
@@ -362,7 +380,7 @@ class DeTaiServiceImpl implements DeTaiService
             throw new DeTaiNotFoundException();
         }
 
-        if($sanPham->trangthairasoat == "Đang rà soát"){
+        if ($sanPham->trangthairasoat == "Đang rà soát") {
             throw new DeTaiNotFoundException();
         }
 
@@ -384,62 +402,94 @@ class DeTaiServiceImpl implements DeTaiService
         $deTai = new DeTai();
         $sanPham = new SanPham();
 
-        DB::transaction(function () use ($validated, &$deTai, &$sanPham) {
+        DB::transaction(function () use ($validated, &$deTai, &$sanPham, &$request) {
             $listIdTacGia = [];
             $listIdVaiTro = [];
             $thuTus = [];
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
 
-            $newListSanPhamTacGia = [];
+            $donVi = !empty($validated['sanpham']['donvi']) ? $validated['sanpham']['donvi'] : null;
+            $toChucChuQuan = !empty($validated['tochucchuquan']) ? $validated['tochucchuquan'] : null;
+            $toChucHopTac = !empty($validated['tochuchoptac']) ? $validated['tochuchoptac'] : null;
 
-            $filteredWithId = array_filter($listSanPhamTacGia, function ($object) {
-                return !is_null($object['id_tacgia']);
-            });
-            $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
+            // Lọc ra những sanphamtacgia có id_tacgia = nul
+            $filteredWithoutIdTacGia = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
             });
-            if (count($filteredWithoutId) > 0) {
-                $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
-                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
-                foreach ($listObjectUnique as  $item) {
-                    $randomId = $this->randomUnique();
-                    $user = User::create([
-                        'username' => env('SGU_2024') . $randomId,
-                        'password' => Hash::make(env('SGU_2024')),
-                        'name' => $item['tentacgia'],
-                        'email' => env('SGU_2024') . $randomId . "@gmail.com"
-                    ]);
-                    $user->roles()->attach($idRoleGuest);
-                    $newData[] = [
-                        'id_tacgia' => $user->id,
-                        'id_vaitro' => $item['id_vaitro'],
-                        'thutu' => $item['thutu'],
-                        'tyledonggop' => $item['tyledonggop'],
-                        'duplicates' => $item['duplicates'],
-                    ];
+
+
+            // Lọc ra những to chuc tác giả có id_tacgia != nul
+            $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
+                if (!is_null($object['tochuc'])) {
+                    return is_null($object['tochuc']['id_tochuc']);
                 }
-                foreach ($newData as $item) {
-                    foreach ($item["duplicates"] as $duplicate) {
-                        $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+            });
+
+
+
+            // check có nhận tài trợ và đơn vị tài trợ ngoài thì thêm mới vào hệ thống
+            if ($donVi != null) {
+                if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
+                    $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+                }
+            }
+
+            // check đề tài ngoài trường và tổ chức chủ quản ngoài thì thêm mới vào hệ thống
+            if ($toChucChuQuan != null) {
+                if ($validated['tochucchuquan']['id_tochucchuquan'] == null && $validated['ngoaitruong']) {
+                    $validated['tochucchuquan']['id_tochucchuquan'] = $this->keKhaiToChucChuQuan($validated['tochucchuquan']);
+                }
+            }
+
+
+
+            // check đề tài có phải đề tài hợp tác và tổ chức hơp tác ngoài thì thêm mới vào hệ thống
+            if ($toChucHopTac) {
+                if ($validated['tochuchoptac']['id_tochuchoptac'] == null && $validated['detaihoptac']) {
+                    $validated['tochuchoptac']['id_tochuchoptac'] = $this->keKhaiToChucHopTac($validated['tochuchoptac']);
+                }
+            }
+
+
+            // check những tác giả ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdTacGia) > 0) {
+                $listSanPhamTacGia = $this->keKhaiTacGia($listSanPhamTacGia);
+            }
+
+
+            // check những tổ chức ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdToChuc) > 0) {
+                $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
+            }
+            //            // add tổ chức cho tác giả
+            foreach ($listSanPhamTacGia as $sanPhamTacGia) {
+                $user = User::find($sanPhamTacGia['id_tacgia']);
+                if ($user == null) {
+                    $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
+                    throw new UserNotFoundException();
+                }
+                if ($sanPhamTacGia['tochuc'] && $sanPhamTacGia['tochuc']['id_tochuc']) {
+                    $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
+                    $user->save();
+                }
+            }
+
+
+            // Kiểm tra các vai trò tác giả phải là vai trò tác giả của đề tài 
+            foreach ($listSanPhamTacGia as $sanPhamTacGia) {
+                foreach ($sanPhamTacGia['list_id_vaitro'] as $idvaitro) {
+                    if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $idvaitro]])->first() == null) {
+                        $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
+                        throw new VaiTroOfBaiBaoException();
                     }
+                    $listIdTacGia[] = $sanPhamTacGia['id_tacgia'];
+                    $listIdVaiTro[] = $idvaitro;
+                    $thuTus[] = $sanPhamTacGia['thutu'];
+                    $tyLeDongGops[] = $sanPhamTacGia['tyledonggop'];
                 }
-                $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
-            } else {
-                $newListSanPhamTacGia = $filteredWithId;
             }
 
-
-
-            for ($i = 0; $i < count($newListSanPhamTacGia); $i++) {
-                if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $newListSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
-                    throw new VaiTroOfDeTaiException();
-                }
-                $listIdTacGia[] = $newListSanPhamTacGia[$i]['id_tacgia'];
-                $listIdVaiTro[] = $newListSanPhamTacGia[$i]['id_vaitro'];
-                $thuTus[] = $newListSanPhamTacGia[$i]['thutu'] == null ? null : $newListSanPhamTacGia[$i]['thutu'];
-                $tyLeDongGops[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
-            }
 
             $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
 
@@ -452,6 +502,7 @@ class DeTaiServiceImpl implements DeTaiService
                 }
             }
             if (!$flag) {
+                $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                 throw new DeTaiNotHaveChuNhiemException();
             }
 
@@ -459,6 +510,7 @@ class DeTaiServiceImpl implements DeTaiService
             for ($i = 0; $i < count($listIdTacGia) - 1; $i++) {
                 for ($z = $i + 1; $z < count($listIdVaiTro); $z++) {
                     if (($listIdTacGia[$i] == $listIdTacGia[$z]) && ($listIdVaiTro[$i] == $listIdVaiTro[$z])) {
+                        $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                         throw new TwoRoleSimilarForOnePersonInDeTaiException();
                     }
                 }
@@ -472,11 +524,13 @@ class DeTaiServiceImpl implements DeTaiService
                 }
             }
             if (isset(array_count_values($listIdVaiTro)[$idVaiTroChuNhiem]) && array_count_values($listIdVaiTro)[$idVaiTroChuNhiem] >= 2) {
+                $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                 throw new RoleOnlyHeldByOnePersonInDeTaiException();
             }
 
             $dmSanPhamDeTai = DMSanPham::where('masanpham', 'detai')->first();
             if ($dmSanPhamDeTai == null) {
+                $this->googleDriveService->deleteFile($validated['fileminhchungsanpham']['id_file']);
                 throw new CreateDeTaiFailedException();
             }
 
@@ -485,45 +539,33 @@ class DeTaiServiceImpl implements DeTaiService
                 'tensanpham' => $validated['sanpham']['tensanpham'],
                 'id_loaisanpham' => $dmSanPhamDeTai->id,
                 'tongsotacgia' => $validated['sanpham']['tongsotacgia'],
-                'solandaquydoi' => $validated['sanpham']['solandaquydoi'],
-                'cosudungemailtruong' => $validated['sanpham']['cosudungemailtruong'],
-                'cosudungemaildonvikhac' => $validated['sanpham']['cosudungemaildonvikhac'],
-                'cothongtintruong' => $validated['sanpham']['cothongtintruong'],
-                'cothongtindonvikhac' => $validated['sanpham']['cothongtindonvikhac'],
-                'id_thongtinnoikhac' =>  $validated['sanpham']['cothongtindonvikhac'] == true ? $validated['sanpham']['id_thongtinnoikhac'] : null,
                 'conhantaitro' => $validated['sanpham']['conhantaitro'],
-                'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['id_donvitaitro'] : null,
+                'id_donvitaitro' => $validated['sanpham']['conhantaitro'] == true && !empty($validated['sanpham']['donvi']['id_donvi']) ? $validated['sanpham']['donvi']['id_donvi'] : null,
                 'chitietdonvitaitro' => $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null,
                 'ngaykekhai' => date("Y-m-d"),
                 'id_nguoikekhai' => auth('api')->user()->id,
                 'trangthairasoat' => "Đang rà soát",
-                'ngayrasoat' => null,
-                'id_nguoirasoat' => null,
-                'diemquydoi' => $validated['sanpham']['diemquydoi'],
-                'gioquydoi' => $validated['sanpham']['gioquydoi'],
-                'thongtinchitiet' => $validated['sanpham']['thongtinchitiet'],
-                'capsanpham' => $validated['sanpham']['capsanpham'],
-                'thoidiemcongbohoanthanh' => $validated['sanpham']['thoidiemcongbohoanthanh']
             ]);
 
             $deTai = DeTai::create([
                 'id_sanpham' => $sanPham->id,
-                "ngaydangky" => date("Y-m-d"),
                 'maso' => $validated['maso'],
+                "ngaydangky" => date("Y-m-d"),
                 'ngoaitruong' => $validated['ngoaitruong'],
                 'truongchutri' => $validated['ngoaitruong'] == true ?  $validated['truongchutri'] : null,
-                'id_tochucchuquan' => $validated['ngoaitruong'] == true ? $validated['id_tochucchuquan'] : null,
+                'id_tochucchuquan' => $validated['ngoaitruong'] == true && !empty($validated['tochucchuquan']['id_tochucchuquan']) ? $validated['tochucchuquan']['id_tochucchuquan'] : null,
                 'id_loaidetai' => $validated['ngoaitruong'] == false ? $validated['id_loaidetai'] : null,
                 'detaihoptac' => $validated['detaihoptac'],
-                'id_tochuchoptac' => $validated['detaihoptac'] == true ? $validated['id_tochuchoptac'] : null,
+                'id_tochuchoptac' => $validated['detaihoptac'] == true && !empty($validated['tochuchoptac']['id_tochuchoptac']) ? $validated['tochuchoptac']['id_tochuchoptac'] : null,
                 'tylekinhphidonvihoptac' => $validated['detaihoptac'] == true ?  $validated['tylekinhphidonvihoptac'] : null,
                 'capdetai' => $validated['capdetai'],
             ]);
 
+
+
             FileMinhChungSanPham::create([
                 'id_sanpham' => $sanPham->id,
-                'loaiminhchung' => $validated['fileminhchungsanpham']['loaiminhchung'],
-                'url' => $validated['fileminhchungsanpham']['url'],
+                'url' => $validated['fileminhchungsanpham']['file'],
             ]);
 
             for ($i = 0; $i < count($listIdTacGia); $i++) {
@@ -543,7 +585,144 @@ class DeTaiServiceImpl implements DeTaiService
         });
 
         $result = Convert::getDeTaiVm($sanPham);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Đăng ký đề tài thành công", $result);
+    }
+
+
+    private function keKhaiTacGia($listSanPhamTacGia)
+    {
+        if (is_array($listSanPhamTacGia)) {
+
+            // Lọc ra những tác giả cần thêm vào hệ thống (những id_tacgia = null)
+            $tacGiaMois = array_filter($listSanPhamTacGia, function ($object) {
+                return is_null($object['id_tacgia']);
+            });
+
+            // Lọc ra những tác giả kh cần kê khai
+            $tacGiaOlds = array_filter($listSanPhamTacGia, function ($object) {
+                return !is_null($object['id_tacgia']);
+            });
+
+            // Lọc ra những tác giả kê khai giống nhau (giống email)  thì thông báo lỗi
+            // $listTacGiaSame = $this->filterUniqueAndDuplicates($tacGiaMois, 'email');
+            // if (count($listTacGiaSame) > 0) {
+            // }
+
+            $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
+            foreach ($tacGiaMois as $key => $item) {
+                $userFind = User::where('email', $item['email'])->get()->first();
+                if ($userFind == null) {
+                    $randomId = $this->randomUnique();
+                    $array = [
+                        'username' => env('SGU_2024') . $randomId,
+                        'password' => Hash::make(env('SGU_2024')),
+                        'name' => $item['tentacgia'],
+                        'ngaysinh' => $item['ngaysinh'],
+                        'dienthoai' => $item['dienthoai'],
+                        'email' => $item['email'],
+                        'id_hochamhocvi' => $item['id_hochamhocvi']
+                    ];
+                    $user = $this->userService->themTacGiaNgoai($array);
+                    $user->roles()->attach($idRoleGuest);
+                    $tacGiaMois[$key]['id_tacgia'] = $user->id;
+                } else {
+                    $tacGiaMois[$key]['id_tacgia'] = $userFind->id;
+                }
+            }
+
+            $listSanPhamTacGia = array_merge($tacGiaMois, $tacGiaOlds);
+        }
+        return $listSanPhamTacGia;
+    }
+
+
+
+    private function keKhaiToChuc($listSanPhamTacGia)
+    {
+        if (is_array($listSanPhamTacGia)) {
+            // Lọc ra những sanphamtacgia co tổ chức cần thêm vào hệ thống
+            $sanphamtacgiasWithIdTochucNull = array_filter($listSanPhamTacGia, function ($object) {
+                if (isset($object['tochuc']) && is_null($object['tochuc']['id_tochuc'])) {
+                    return $object;
+                }
+                //return is_null($object['tochuc']['id_tochuc']);
+            });
+
+            // Lojc ra những sanphamtacgia có những tổ chức không cần thêm (id_tochuc != null)
+            $sanphamtacgiasWithIdTochucNotNull = array_filter($listSanPhamTacGia, function ($object) {
+                if (isset($object['tochuc']) && !is_null($object['tochuc']['id_tochuc'])) {
+                    return $object;
+                }
+                if (is_null($object['tochuc'])) {
+                    return $object;
+                }
+                //                return !is_null($object['id_tacgia']) &&  !is_null($object['tochuc']) && !is_null($object['tochuc']['id_tochuc']);
+                //return !is_null($object['tochuc']['id_tochuc']);
+            });
+
+
+
+            foreach ($sanphamtacgiasWithIdTochucNull as $key => $item) {
+                $toChucFind = DMToChuc::where('tentochuc', $item['tochuc']['tentochuc'])->get()->first();
+                if ($toChucFind == null) {
+                    $array = [
+                        'tentochuc' => $item['tochuc']['tentochuc'],
+                    ];
+                    $toChuc = $this->toChucService->themToChucNgoai($array);
+                    $sanphamtacgiasWithIdTochucNull[$key]['tochuc']['id_tochuc'] = $toChuc->id;
+                } else {
+                    $sanphamtacgiasWithIdTochucNull[$key]['tochuc']['id_tochuc'] = $toChucFind->id;
+                }
+            }
+
+            $listSanPhamTacGia = array_merge($sanphamtacgiasWithIdTochucNull, $sanphamtacgiasWithIdTochucNotNull);
+        }
+        return $listSanPhamTacGia;
+    }
+
+
+
+
+
+    private function keKhaiDonVi($donVi)
+    {
+        $donViFind = DMToChuc::where('matochuc', $donVi['matochuc'])->get()->first();
+        if ($donViFind == null) {
+            $array = [
+                'matochuc' => $donVi['matochuc'],
+                'tentochuc' => $donVi['tentochuc'],
+            ];
+            $donViTaiTro = $this->toChucService->themToChucNgoai($array);
+            return $donViTaiTro->id;
+        }
+        return $donViFind->id;
+    }
+
+    private function keKhaiToChucChuQuan($toChucChuQuan)
+    {
+        $toChucChuQuanFind = DMToChuc::where('tentochuc', $toChucChuQuan['tentochuc'])->get()->first();
+        if ($toChucChuQuanFind == null) {
+            $array = [
+                'tentochuc' => $toChucChuQuan['tentochuc'],
+            ];
+            $toChucChuQuanMd = $this->toChucService->themToChucNgoai($array);
+            return $toChucChuQuanMd->id;
+        }
+        return $toChucChuQuanFind->id;
+    }
+
+
+    private function keKhaiToChucHopTac($toChucHopTac)
+    {
+        $toChucHopTacFind = DMToChuc::where('tentochuc', $toChucHopTac['tentochuc'])->get()->first();
+        if ($toChucHopTacFind == null) {
+            $array = [
+                'tentochuc' => $toChucHopTac['tentochuc'],
+            ];
+            $toChucHopTacMd = $this->toChucService->themToChucNgoai($array);
+            return $toChucHopTacMd->id;
+        }
+        return $toChucHopTacFind->id;
     }
 
 
@@ -560,6 +739,16 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
         // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
         if ($sanPham->trashed()) {
             throw new DeTaiCanNotUpdateException();
@@ -575,7 +764,7 @@ class DeTaiServiceImpl implements DeTaiService
 
         $sanPham->tensanpham = $validated['tensanpham'];
         //        $sanPham->id_loaisanpham = $validated['id_loaisanpham'];
-        $sanPham->tongsotacgia = $validated['tongsotacgia'];
+        //        $sanPham->tongsotacgia = $validated['tongsotacgia'];
         $sanPham->solandaquydoi = $validated['solandaquydoi'];
         $sanPham->cosudungemailtruong = $validated['cosudungemailtruong'];
         $sanPham->cosudungemaildonvikhac = $validated['cosudungemaildonvikhac'];
@@ -592,7 +781,7 @@ class DeTaiServiceImpl implements DeTaiService
         $sanPham->capsanpham = $validated['capsanpham'];
         $sanPham->thoidiemcongbohoanthanh = $validated['thoidiemcongbohoanthanh'];
         $sanPham->save();
-        return new ResponseSuccess("Cập nhật thành công", true);
+        return new ResponseSuccess("Cập nhật sản phẩm thành công", true);
     }
 
 
@@ -606,6 +795,16 @@ class DeTaiServiceImpl implements DeTaiService
         if ($deTai == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($deTai->sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
         // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
         if ($deTai->sanPham == null) {
             throw new DeTaiCanNotUpdateException();
@@ -629,7 +828,7 @@ class DeTaiServiceImpl implements DeTaiService
         $deTai->tylekinhphidonvihoptac = $validated['detaihoptac'] == true ? $validated['tylekinhphidonvihoptac'] : null;
         $deTai->capdetai = $validated['capdetai'];
         $deTai->save();
-        return new ResponseSuccess("Cập nhật thành công", true);
+        return new ResponseSuccess("Cập nhật đề tài thành công", true);
     }
 
 
@@ -643,6 +842,7 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
         // Check san pham trong trang thai softDelete thi khong cho chinh sua
         if ($sanPham->trashed()) {
             throw new DeTaiCanNotUpdateException();
@@ -664,55 +864,57 @@ class DeTaiServiceImpl implements DeTaiService
             $tyLeDongGops = [];
             $listSanPhamTacGia = $validated['sanpham_tacgia'];
 
-            $newListSanPhamTacGia = [];
-
-            $filteredWithId = array_filter($listSanPhamTacGia, function ($object) {
-                return !is_null($object['id_tacgia']);
-            });
-            $filteredWithoutId = array_filter($listSanPhamTacGia, function ($object) {
+            // Lọc ra những sanphamtacgia có id_tacgia = nul
+            $filteredWithoutIdTacGia = array_filter($listSanPhamTacGia, function ($object) {
                 return is_null($object['id_tacgia']);
             });
-            if (count($filteredWithoutId) > 0) {
-                $listObjectUnique = $this->filterUniqueAndDuplicates($filteredWithoutId, 'tentacgia');
-                $idRoleGuest = Role::where('mavaitro', 'guest')->first()->id;
-                foreach ($listObjectUnique as  $item) {
-                    $randomId = $this->randomUnique();
-                    $user = User::create([
-                        'username' => env('SGU_2024') . $randomId,
-                        'password' => Hash::make(env('SGU_2024')),
-                        'name' => $item['tentacgia'],
-                        'email' => env('SGU_2024') . $randomId . "@gmail.com"
-                    ]);
-                    $user->roles()->attach($idRoleGuest);
-                    $newData[] = [
-                        'id_tacgia' => $user->id,
-                        'id_vaitro' => $item['id_vaitro'],
-                        'thutu' => $item['thutu'],
-                        'tyledonggop' => $item['tyledonggop'],
-                        'duplicates' => $item['duplicates'],
-                    ];
+
+            // Lọc ra những to chuc tác giả có id_tacgia != nul
+            $filteredWithoutIdToChuc = array_filter($listSanPhamTacGia, function ($object) {
+                if (!is_null($object['tochuc'])) {
+                    return is_null($object['tochuc']['id_tochuc']);
                 }
-                foreach ($newData as $item) {
-                    foreach ($item["duplicates"] as $duplicate) {
-                        $filteredWithoutId[$duplicate]['id_tacgia'] = $item['id_tacgia'];
+            });
+
+
+            // check những tác giả ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdTacGia) > 0) {
+                $listSanPhamTacGia = $this->keKhaiTacGia($listSanPhamTacGia);
+            }
+
+
+            // check những tổ chức ngoài thì thêm vào hệ thống
+            if (count($filteredWithoutIdToChuc) > 0) {
+                $listSanPhamTacGia = $this->keKhaiToChuc($listSanPhamTacGia);
+            }
+            $test = $listSanPhamTacGia;
+
+            //            // add tổ chức cho tác giả
+            foreach ($listSanPhamTacGia as $sanPhamTacGia) {
+                $user = User::find($sanPhamTacGia['id_tacgia']);
+                if ($user == null) {
+                    throw new UserNotFoundException();
+                }
+                if ($sanPhamTacGia['tochuc'] && $sanPhamTacGia['tochuc']['id_tochuc']) {
+                    $user->id_tochuc = $sanPhamTacGia['tochuc']['id_tochuc'];
+                    $user->save();
+                }
+            }
+
+
+            // Kiểm tra các vai trò tác giả phải là vai trò tác giả của đề tài 
+            foreach ($listSanPhamTacGia as $sanPhamTacGia) {
+                foreach ($sanPhamTacGia['list_id_vaitro'] as $idvaitro) {
+                    if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $idvaitro]])->first() == null) {
+                        throw new VaiTroOfDeTaiException();
                     }
+                    $listIdTacGia[] = $sanPhamTacGia['id_tacgia'];
+                    $listIdVaiTro[] = $idvaitro;
+                    $thuTus[] = $sanPhamTacGia['thutu'];
+                    $tyLeDongGops[] = $sanPhamTacGia['tyledonggop'];
                 }
-                $newListSanPhamTacGia = array_merge($filteredWithId, $filteredWithoutId);
-            } else {
-                $newListSanPhamTacGia = $filteredWithId;
             }
 
-
-
-            for ($i = 0; $i < count($newListSanPhamTacGia); $i++) {
-                if (DMVaiTroTacGia::where([['role', '=', 'detai'], ['id', '=', $newListSanPhamTacGia[$i]['id_vaitro']]])->first() == null) {
-                    throw new VaiTroOfDeTaiException();
-                }
-                $listIdTacGia[] = $newListSanPhamTacGia[$i]['id_tacgia'];
-                $listIdVaiTro[] = $newListSanPhamTacGia[$i]['id_vaitro'];
-                $thuTus[] = $newListSanPhamTacGia[$i]['thutu'] == null ? null : $newListSanPhamTacGia[$i]['thutu'];
-                $tyLeDongGops[] = $newListSanPhamTacGia[$i]['tyledonggop'] == null ? null : $newListSanPhamTacGia[$i]['tyledonggop'];
-            }
 
             $vaiTros = DMVaiTroTacGia::whereIn('id', $listIdVaiTro)->get();
 
@@ -768,8 +970,12 @@ class DeTaiServiceImpl implements DeTaiService
                 ]);
                 $result[] = Convert::getSanPhamTacGiaVm($sanPhamTacGia);
             }
+
+            // update so tac gia cho bai bao
+            $sanPham->tongsotacgia = count(array_unique($listIdTacGia));
+            $sanPham->save();
         });
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật tác giả thành công", $result);
     }
 
 
@@ -786,17 +992,25 @@ class DeTaiServiceImpl implements DeTaiService
             throw new DeTaiCanNotUpdateException();
         }
 
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($fileMinhChung->sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
         // check đúng loại sản phẩm là đề tài
         if ($fileMinhChung->sanPham->dmSanPham->masanpham != 'detai') {
             throw new LoaiSanPhamWrongException("Sản phẩm không phải đề tài");
         }
 
-        $validated = $request->validated();
-        $fileMinhChung->loaiminhchung = $validated['loaiminhchung'];
-        $fileMinhChung->url = $validated['url'];
+        $url_file =  $this->googleDriveService->uploadFile($request->file('file'));
+        $fileMinhChung->url = $url_file->link_view;
         $fileMinhChung->save();
-        $result = Convert::getFileMinhChungSanPhamVm($fileMinhChung);
-        return new ResponseSuccess("Thành công", $result);
+
+        return new ResponseSuccess("Cập nhật file minh chứng thành công", $url_file->link_view);
     }
 
 
@@ -825,7 +1039,7 @@ class DeTaiServiceImpl implements DeTaiService
         $sanPham->id_nguoirasoat = auth('api')->user()->id;
         $sanPham->ngayrasoat = date("Y-m-d H:i:s");
         $sanPham->save();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Cập nhật trạng thái thành công", true);
     }
 
     public function tuyenChonDeTai(TuyenChonDeTaiRequest $request, int $id): ResponseSuccess
@@ -860,11 +1074,11 @@ class DeTaiServiceImpl implements DeTaiService
         $tuyenChon = TuyenChon::create([
             'id_sanpham' => $sanPham->id,
             'ketquatuyenchon' => $validated['ketquatuyenchon'],
-            'lydo' => $validated['lydo']
+            'lydo' =>  $validated['lydo']
         ]);
 
         $result = Convert::getTuyenChonVm($tuyenChon);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Tuyển chọn đề tài thành công", $result);
     }
 
 
@@ -914,13 +1128,13 @@ class DeTaiServiceImpl implements DeTaiService
             'id_sanpham' => $sanPham->id,
             'ngayxetduyet' => $validated['ngayxetduyet'],
             'ketquaxetduyet' => $validated['ketquaxetduyet'],
-            'sohopdong' => $validated['sohopdong'],
-            'ngaykyhopdong' => $validated['ngaykyhopdong'],
-            'thoihanhopdong' => $validated['thoihanhopdong'],
-            'kinhphi' => $validated['kinhphi']
+            'sohopdong' => $validated['ketquaxetduyet'] == "Đủ điều kiện" ? $validated['sohopdong'] : null,
+            'ngaykyhopdong' => $validated['ketquaxetduyet'] == "Đủ điều kiện" ? $validated['ngaykyhopdong'] : null,
+            'thoihanhopdong' => $validated['ketquaxetduyet'] == "Đủ điều kiện" ? $validated['thoihanhopdong'] : null,
+            'kinhphi' => $validated['ketquaxetduyet'] == "Đủ điều kiện" ? $validated['kinhphi'] : null
         ]);
         $result = Convert::getXetDuyetVm($xetDuyet);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Xét duyệt đề tài thành công", $result);
     }
 
 
@@ -969,12 +1183,13 @@ class DeTaiServiceImpl implements DeTaiService
         $validated = $request->validated();
         $baoCao = BaoCaoTienDo::create([
             'id_sanpham' => $sanPham->id,
+            'tenbaocao' => $validated['tenbaocao'],
             'ngaynopbaocao' => $validated['ngaynopbaocao'],
             'ketquaxet' => $validated['ketquaxet'],
             'thoigiangiahan' => $validated['thoigiangiahan'],
         ]);
         $result = Convert::getBaoCaoTienDoVm($baoCao);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Báo cáo tiến độ đề tài thành công", $result);
     }
 
 
@@ -1023,15 +1238,13 @@ class DeTaiServiceImpl implements DeTaiService
         $validated = $request->validated();
         $nghiemThu = NghiemThu::create([
             'id_sanpham' => $sanPham->id,
-            'hoidongnghiemthu' => $validated['hoidongnghiemthu'],
             'ngaynghiemthu' => $validated['ngaynghiemthu'],
             'ketquanghiemthu' => $validated['ketquanghiemthu'],
-            'ngaycongnhanhoanthanh' => $validated['ngaycongnhanhoanthanh'],
-            'soqdcongnhanhoanthanh' => $validated['soqdcongnhanhoanthanh'],
-            'thoigiangiahan' => $validated['thoigiangiahan'],
+            'ngaycongnhanhoanthanh' => $validated['ketquanghiemthu'] == "Đủ điều kiện" ? $validated['ngaycongnhanhoanthanh'] : null,
+            'soqdcongnhanhoanthanh' => $validated['ketquanghiemthu'] == "Đủ điều kiện" ? $validated['soqdcongnhanhoanthanh'] : null,
         ]);
         $result = Convert::getNghiemThuVm($nghiemThu);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Nghiệm thu đề tài thành công", $result);
     }
 
 
@@ -1070,10 +1283,27 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // Kiểm tra nếu đề tài đã nghiệm thu thì chỉ có sp admin mới được phép xóa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        $flag = false;
+        if (!empty(NghiemThu::where('id_sanpham', $id_sanpham)->first())) {
+            foreach ($userCurrent->roles as $role) {
+                if ($role->mavaitro == 'super_admin') {
+                    $flag = true;
+                }
+            }
+        }
+        if (!$flag) {
+            throw new UserNotHavePermissionException();
+        }
+
+
         if (!$sanPham->delete()) {
             throw new DeleteFailException();
         }
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa đề tài thành công", true);
     }
 
     public function restoreDeTai(int $id): ResponseSuccess
@@ -1086,8 +1316,24 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // Kiểm tra nếu đề tài đã nghiệm thu thì chỉ có sp admin mới được khôi phục
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        $flag = false;
+        if (!empty(NghiemThu::where('id_sanpham', $id_sanpham)->first())) {
+            foreach ($userCurrent->roles as $role) {
+                if ($role->mavaitro == 'super_admin') {
+                    $flag = true;
+                }
+            }
+        }
+        if (!$flag) {
+            throw new UserNotHavePermissionException();
+        }
+
         SanPham::onlyTrashed()->where('id', $id_sanpham)->restore();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Hoàn tác đề tài thành công", true);
     }
 
     public function forceDeleteDeTai(int $id): ResponseSuccess
@@ -1100,8 +1346,24 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham == null) {
             throw new DeTaiNotFoundException();
         }
+
+        // Kiểm tra nếu đề tài đã nghiệm thu thì chỉ có sp admin mới được phép xóa hẳn
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        $flag = false;
+        if (!empty(NghiemThu::where('id_sanpham', $id_sanpham)->first())) {
+            foreach ($userCurrent->roles as $role) {
+                if ($role->mavaitro == 'super_admin') {
+                    $flag = true;
+                }
+            }
+        }
+        if (!$flag) {
+            throw new UserNotHavePermissionException();
+        }
+
         SanPham::onlyTrashed()->where('id', $id_sanpham)->forceDelete();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa đề tài thành công", true);
     }
 
     private function randomUnique()
@@ -1140,10 +1402,6 @@ class DeTaiServiceImpl implements DeTaiService
         }
         return $resultArray;
     }
-
-
-
-
 
     public function getDeTaiKeKhai(Request $request): ResponseSuccess
     {
@@ -1185,5 +1443,103 @@ class DeTaiServiceImpl implements DeTaiService
         }
         $pagingResponse = new PagingResponse($sanPhams->lastPage(), $sanPhams->total(), $result);
         return new ResponseSuccess("Thành công", $pagingResponse);
+    }
+
+
+
+    public function updateDeTaiForUser(UpdateDeTaiForUserRequest $request, int $id): ResponseSuccess
+    {
+        $id_sanpham = (int) $id;
+        if (!is_int($id_sanpham)) {
+            throw new InvalidValueException();
+        }
+        $deTai = DeTai::where('id_sanpham', $id_sanpham)->first();
+        $sanPham = SanPham::find($id_sanpham);
+        if ($deTai == null || $sanPham == null) {
+            throw new DeTaiNotFoundException();
+        }
+
+
+        // Check san pham bài báo trong trạng thái softDelete thì không cho chỉnh sửa
+        if ($sanPham->trashed()) {
+            throw new DeTaiCanNotUpdateException();
+        }
+
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+
+        if ($sanPham->nguoiKeKhai->id != $idUserCurent) {
+            throw new ChuDeTaiException();
+        }
+
+        $userCurrent = User::find($idUserCurent);
+        if ($deTai->sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new UserNotHavePermissionException();
+            }
+        }
+
+
+        // check đúng loại sản phẩm là đề tài
+        if ($sanPham->dmSanPham->masanpham != 'detai') {
+            throw new LoaiSanPhamWrongException("Sản phẩm không phải đề tài");
+        }
+
+        // Update khi không còn lỗi
+        $validated = $request->validated();
+        DB::transaction(function () use ($validated, $sanPham, $deTai) {
+
+            $donVi = !empty($validated['sanpham']['donvi']) ? $validated['sanpham']['donvi'] : null;
+            $toChucChuQuan = !empty($validated['tochucchuquan']) ? $validated['tochucchuquan'] : null;
+            $toChucHopTac = !empty($validated['tochuchoptac']) ? $validated['tochuchoptac'] : null;
+
+            // check có nhận tài trợ và đơn vị tài trợ ngoài thì thêm mới vào hệ thống
+            if ($donVi != null) {
+                if ($validated['sanpham']['donvi']['id_donvi'] == null && $validated['sanpham']['conhantaitro']) {
+                    $validated['sanpham']['donvi']['id_donvi'] = $this->keKhaiDonVi($validated['sanpham']['donvi']);
+                }
+            }
+
+            // check đề tài ngoài trường và tổ chức chủ quản ngoài thì thêm mới vào hệ thống
+            if ($toChucChuQuan != null) {
+                if ($validated['tochucchuquan']['id_tochucchuquan'] == null && $validated['ngoaitruong']) {
+                    $validated['tochucchuquan']['id_tochucchuquan'] = $this->keKhaiToChucChuQuan($validated['tochucchuquan']);
+                }
+            }
+
+
+            // check đề tài có phải đề tài hợp tác và tổ chức hơp tác ngoài thì thêm mới vào hệ thống
+            if ($toChucHopTac != null) {
+                if ($validated['tochuchoptac']['id_tochuchoptac'] == null && $validated['detaihoptac']) {
+                    $validated['tochuchoptac']['id_tochuchoptac'] = $this->keKhaiToChucHopTac($validated['tochuchoptac']);
+                }
+            }
+
+
+            // Update san pham
+            $sanPham->tensanpham = $validated['sanpham']['tensanpham'];
+            $sanPham->conhantaitro = $validated['sanpham']['conhantaitro'];
+            $sanPham->id_donvitaitro = $validated['sanpham']['conhantaitro'] == true && !empty($validated['sanpham']['donvi']['id_donvi']) ? $validated['sanpham']['donvi']['id_donvi'] : null;
+            $sanPham->chitietdonvitaitro = $validated['sanpham']['conhantaitro'] == true ? $validated['sanpham']['chitietdonvitaitro'] : null;
+            $sanPham->save();
+
+            // Update de tai
+            $deTai->maso = $validated['maso'];
+            $deTai->ngoaitruong = $validated['ngoaitruong'];
+            $deTai->truongchutri = $validated['ngoaitruong'] == true ? $validated['truongchutri'] : null;
+            $deTai->id_tochucchuquan = $validated['ngoaitruong'] == true && !empty($validated['tochucchuquan']['id_tochucchuquan']) ? $validated['tochucchuquan']['id_tochucchuquan'] : null;
+            $deTai->id_loaidetai = $validated['id_loaidetai'];
+            $deTai->detaihoptac = $validated['detaihoptac'];
+            $deTai->id_tochuchoptac = $validated['detaihoptac'] == true && !empty($validated['tochuchoptac']['id_tochuchoptac']) ? $validated['tochuchoptac']['id_tochuchoptac'] : null;
+            $deTai->tylekinhphidonvihoptac = $validated['detaihoptac'] == true ? $validated['tylekinhphidonvihoptac'] : null;
+            $deTai->capdetai = $validated['capdetai'];
+            $deTai->save();
+        });
+        return new ResponseSuccess("Cập nhật đề tài thành công", true);
+    }
+
+    public function UploadFileMinhChung(UploadFileMinhChungRequest $request):ResponseSuccess{
+        $result = $this->googleDriveService->uploadFile($request->file('file'));
+        return new ResponseSuccess("Upload file minh chứng thành công",$result);
     }
 }

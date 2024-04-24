@@ -17,6 +17,7 @@ class BaoCaoTienDo extends Model
         'ngaynopbaocao',
         'ketquaxet',
         'thoigiangiahan',
+        'tenbaocao'
     ];
 
     // relation 1-1,  inverse to san_pham

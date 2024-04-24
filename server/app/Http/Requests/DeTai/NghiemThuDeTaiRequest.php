@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Detai;
+namespace App\Http\Requests\DeTai;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -29,12 +29,13 @@ class NghiemThuDeTaiRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
-            "hoidongnghiemthu" => "bail|required|string",
             "ngaynghiemthu" => "bail|nullable|string",
-            "ketquanghiemthu" => "bail|nullable|string",
+            "ketquanghiemthu" => [
+                "bail", "nullable", "string",
+                Rule::in(["Đủ điều kiện", "Không đủ điều kiện"])
+            ],
             "ngaycongnhanhoanthanh" => "bail|nullable|string",
             "soqdcongnhanhoanthanh" => "bail|nullable|string",
-            "thoigiangiahan" => "bail|nullable|string",
         ];
     }
 
@@ -44,7 +45,8 @@ class NghiemThuDeTaiRequest extends FormRequest
             'required' => 'Trường :attribute là bắt buộc',
             'integer' => 'Trường :attribute phải là một số',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
-            'id.exists' => 'Sản phẩm không tồn tại trên hệ thống'
+            'id.exists' => 'Sản phẩm không tồn tại trên hệ thống',
+            'in' => 'Trường :attribute phải là một trong các giá trị :values',
         ];
     }
 

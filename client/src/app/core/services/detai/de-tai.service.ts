@@ -4,21 +4,20 @@ import {ApiResponse, PagingResponse} from "../../types/api-response.type";
 import {
     BaoCaoTienDo,
     BaoCaoTienDoDeTai,
-    CapNhatDeTai,
+    CapNhatDeTai, CapNhatDeTaiUser,
     ChiTietDeTai,
     DeTai, NghiemThu, NghiemThuDeTai,
     TaoDeTai,
     TuyenChon,
-    TuyenChonDeTai,
+    TuyenChonDeTai, XetDuyet,
     XetDuyetDeTai
 } from "../../types/detai/de-tai.type";
 import {environment} from "../../../../environments/environment";
 import {catchError} from "rxjs";
 import {handleError} from "../../../shared/commons/handler-error-http";
-import {BaiBao, CapNhatBaiBao, ChiTietBaiBao, TaoBaiTao} from "../../types/baibao/bai-bao.type";
 import {CapNhatSanPham, CapNhatTrangThaiSanPham} from "../../types/sanpham/san-pham.type";
 import {CapNhatVaiTroTacGia, SanPhamTacGia} from "../../types/sanpham/vai-tro-tac-gia.type";
-import {CapNhatFileMinhChung} from "../../types/sanpham/file-minh-chung.type";
+import {CapNhatFileMinhChung, FileVm} from "../../types/sanpham/file-minh-chung.type";
 
 @Injectable({
     providedIn:"root"
@@ -45,6 +44,22 @@ export class DeTaiService{
         )
     }
 
+    getDeTaiThamGia(page:number,keyword:string,sortby:string){
+        return this.http.get<ApiResponse<PagingResponse<DeTai[]>>>(
+            `${environment.apiUrl}/detai/thamgia?page=${page}&search=${keyword}&sortby=${sortby}`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    getDeTaiKeKhai(page:number,keyword:string,sortby:string){
+        return this.http.get<ApiResponse<PagingResponse<DeTai[]>>>(
+            `${environment.apiUrl}/detai/kekhai?page=${page}&search=${keyword}&sortby=${sortby}`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
     getChiTietDeTai(id:number){
         return this.http.get<ApiResponse<ChiTietDeTai>>(
             `${environment.apiUrl}/detai/${id}`
@@ -65,6 +80,15 @@ export class DeTaiService{
     capNhatDeTai(id:number,data:CapNhatDeTai){
         return this.http.patch<ApiResponse<boolean>>(
             `${environment.apiUrl}/detai/${id}`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    capNhatDeTaiChoNguoiDung(id:number,data:CapNhatDeTaiUser){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/detai/public/${id}`,
             data
         ).pipe(
             catchError(handleError)
@@ -105,8 +129,8 @@ export class DeTaiService{
         )
     }
 
-    capNhatFileMinhChung(id:number,data:CapNhatFileMinhChung){
-        return this.http.patch<ApiResponse<boolean>>(
+    capNhatFileMinhChung(id:number,data:FormData){
+        return this.http.post<ApiResponse<string>>(
             `${environment.apiUrl}/detai/${id}/fileminhchung`,
             data
         ).pipe(
@@ -133,7 +157,7 @@ export class DeTaiService{
     }
 
     xetDuyetDeTai(id:number,data:XetDuyetDeTai){
-        return this.http.post<ApiResponse<XetDuyetDeTai>>(
+        return this.http.post<ApiResponse<XetDuyet>>(
             `${environment.apiUrl}/detai/${id}/xetduyet`,
             data
         ).pipe(
@@ -162,6 +186,15 @@ export class DeTaiService{
     getLichSuBaoCaoDeTai(id:number,pageIndex:number){
         return this.http.get<ApiResponse<PagingResponse<BaoCaoTienDo[]>>>(
             `${environment.apiUrl}/detai/${id}/lichsubaocao?page=${pageIndex}`
+        )
+    }
+
+    uploadFileMinhChung(data:FormData){
+        return this.http.post<ApiResponse<FileVm>>(
+            `${environment.apiUrl}/detai/fileminhchung`,
+            data
+        ).pipe(
+            catchError(handleError)
         )
     }
 }

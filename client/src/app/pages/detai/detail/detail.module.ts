@@ -16,6 +16,8 @@ import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {SharedModule} from "../../../shared/components/shared.module";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {NzListModule} from "ng-zorro-antd/list";
+import {NzUploadModule} from "ng-zorro-antd/upload";
 
 @NgModule({
     declarations:[
@@ -36,7 +38,9 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
         NzSelectModule,
         NzWaveModule,
         SharedModule,
-        NzDatePickerModule
+        NzDatePickerModule,
+        NzListModule,
+        NzUploadModule
     ],
     exports:[
 

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_loaisanpham');
             $table->foreign('id_loaisanpham')->references('id')->on('d_m_san_phams')->onDelete('cascade');
             $table->integer('tongsotacgia')->default(0);
-            $table->integer('solandaquydoi')->default(0);
+            $table->integer('solandaquydoi')->nullable()->default(0);
             //Có sử dụng mail trường không
             $table->boolean('cosudungemailtruong')->nullable()->default(0);
             //Có sử dụng mail đơn vị khác không
@@ -44,14 +44,14 @@ return new class extends Migration
             $table->string('ngayrasoat')->nullable();
             $table->unsignedBigInteger('id_nguoirasoat')->nullable();
             $table->foreign('id_nguoirasoat')->references('id')->on('users')->onDelete('cascade');
-            $table->string('diemquydoi');
-            $table->string('gioquydoi');
+            $table->string('diemquydoi')->nullable();
+            $table->string('gioquydoi')->nullable();
 
             //Năm 2023, cần 2 trường thông tin dưới đây để import cho dễ
             //Sau này GV nhập chi tiết rồi
-            $table->string('thongtinchitiet');
-            $table->string('capsanpham');
-            $table->string('thoidiemcongbohoanthanh');
+            $table->string('thongtinchitiet')->nullable();
+            $table->string('capsanpham')->nullable();
+            $table->string('thoidiemcongbohoanthanh')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

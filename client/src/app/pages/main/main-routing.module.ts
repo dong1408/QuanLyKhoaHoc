@@ -23,6 +23,10 @@ const routes: Routes = [
         loadChildren: () => import('../magazine/magazine-waiting/waiting.module').then(m => m.MagazineWaitingModule)
       },
       {
+        path:`tap-chi/:id/cap-nhat`,
+        loadChildren: () => import('../magazine/update/update.module').then(m => m.MagazineUpdateModule)
+      },
+      {
         path:`tap-chi/:id/lich-su-cong-nhan`,
         loadChildren: () => import('../magazine/recognize/recognize.module').then(m => m.RecognizeModule)
       },
@@ -113,6 +117,20 @@ const routes: Routes = [
       {
         path:"vai-tro/:id/cap-nhat-vai-tro",
         loadChildren:() => import('../role/update/update.module').then(m => m.UpdateRoleModule)
+      },
+
+      {
+        path:"to-chuc",
+        loadChildren:() => import('../tochuc/tochuc.module').then(m => m.ToChucModule)
+      },
+
+      {
+        path:"to-chuc/tao-moi",
+        loadChildren:() => import('../tochuc/create/create.module').then(m => m.TaoToChucModule)
+      },
+      {
+        path:"to-chuc/:id",
+        loadChildren:() => import('../tochuc/update/update.module').then(m => m.CapNhatToChucModule)
       },
     ]
   },

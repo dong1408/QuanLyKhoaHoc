@@ -16,6 +16,7 @@ use App\Http\Requests\User\UpdateRoleOfUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Service\Excel\ExcelService;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
@@ -29,17 +30,25 @@ use Illuminate\Support\Facades\DB;
 class UserServiceImpl implements UserService
 {
 
+    private ExcelService $excelService;
+
+    public function __construct(ExcelService $excelService)
+    {
+        $this->excelService = $excelService;
+    }
+
     public function getAllUser(Request $request): ResponseSuccess
     {
         $keysearch = $request->query('search', "");
-
         $result = [];
-        $users = User::where('name', 'LIKE', '%' . $keysearch . '%')
-            ->orWhere('username', 'LIKE', '%' . $keysearch . '%')->get();
-        foreach ($users as $user) {
-            $result[] = Convert::getUserSimpleVm($user);
-        }
 
+        if (!empty($keysearch)) {
+            $users = User::where('name', 'LIKE', '%' . $keysearch . '%')
+                ->orWhere('username', 'LIKE', '%' . $keysearch . '%')->get();
+            foreach ($users as $user) {
+                $result[] = Convert::getUserSimpleVm($user);
+            }
+        }
         return new ResponseSuccess("Thành công", $result);
     }
 
@@ -129,6 +138,18 @@ class UserServiceImpl implements UserService
     }
 
 
+    public function getUserInfo(): ResponseSuccess
+    {
+        $idUser = auth('api')->user()->id;
+        $user = User::find($idUser);
+        if ($user == null) {
+            throw new UserNotFoundException();
+        }
+        $result = Convert::getUserInfoVm($user);
+        return new ResponseSuccess("Thành công", $result);
+    }
+
+
 
 
 
@@ -149,7 +170,6 @@ class UserServiceImpl implements UserService
                 'email2' => $validated['email2'],
                 'orchid' => $validated['orchid'],
                 'id_tochuc' => $validated['id_tochuc'],
-                'id_donvi' => $validated['id_donvi'],
                 'cohuu' => $validated['cohuu'],
                 'keodai' => $validated['keodai'],
                 'dinhmucnghiavunckh' => $validated['dinhmucnghiavunckh'],
@@ -166,7 +186,7 @@ class UserServiceImpl implements UserService
         });
 
         //        $result = Convert::getUserDetailVm($user);
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Tạo người dùng thành công", true);
     }
 
     public function updateUser(UpdateUserRequest $request, int $id): ResponseSuccess
@@ -190,7 +210,6 @@ class UserServiceImpl implements UserService
             $user->email2 = $validated['email2'];
             $user->orchid = $validated['orchid'];
             $user->id_tochuc = $validated['id_tochuc'];
-            $user->id_donvi = $validated['id_donvi'];
             $user->cohuu = $validated['cohuu'];
             $user->keodai = $validated['keodai'];
             $user->dinhmucnghiavunckh = $validated['dinhmucnghiavunckh'];
@@ -205,7 +224,7 @@ class UserServiceImpl implements UserService
             $user->save();
         });
         $result = Convert::getUserDetailVm($user);
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật thông tin thành công", $result);
     }
 
     public function updateRoleOfUser(UpdateRoleOfUserRequest $request, int $id): ResponseSuccess
@@ -239,7 +258,7 @@ class UserServiceImpl implements UserService
             $result[] = Convert::getRoleVm($role);
         }
 
-        return new ResponseSuccess("Thành công", $result);
+        return new ResponseSuccess("Cập nhật vai trò thành công", $result);
     }
 
 
@@ -266,7 +285,7 @@ class UserServiceImpl implements UserService
             throw new NotAllowDeleteUserIsSuperadminException();
         }
         $user->delete();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa người dùng thành công", true);
     }
 
     public function restoreUser(int $id): ResponseSuccess
@@ -280,7 +299,7 @@ class UserServiceImpl implements UserService
             throw new UserNotFoundException();
         }
         User::onlyTrashed()->where('id', $userId)->restore();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Hoàn tác thành công", true);
     }
 
     public function forceDeleteUser(int $id): ResponseSuccess
@@ -294,7 +313,7 @@ class UserServiceImpl implements UserService
             throw new UserNotFoundException();
         }
         User::onlyTrashed()->where('id', $userId)->forceDelete();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Xóa người dùng thành công", true);
     }
 
 
@@ -313,6 +332,37 @@ class UserServiceImpl implements UserService
         $user->password = Hash::make($validated['password']);
         $user->changed = 1;
         $user->save();
-        return new ResponseSuccess("Thành công", true);
+        return new ResponseSuccess("Đổi mật khẩu thành công", true);
+    }
+
+
+    public function themTacGiaNgoai($array): User
+    {
+        $user = User::create([
+            'username' => $array['username'],
+            'password' => $array['password'],
+            'name' => $array['name'],
+            'ngaysinh' => $array['ngaysinh'],
+            'dienthoai' => $array['dienthoai'],
+            'email' => $array['email'],
+            'id_hochamhocvi' => $array['id_hochamhocvi']
+        ]);
+        return $user;
+    }
+
+
+    public function import(Request $request)
+    {
+        return $this->excelService->import($request);
+    }
+
+    public function exportFileResult(Request $request)
+    {
+        return $this->excelService->exportFileResult($request);
+    }
+
+    public function export()
+    {
+        return $this->excelService->export();
     }
 }

@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('tenvaitro')->unique();
             $table->string('mota')->nullable();
             $table->string('tenvaitro_en')->nullable();
-
+            $table->string('role', 200);
+            $table->string('mavaitro')->unique();
             $table->timestamps();
         });
     }

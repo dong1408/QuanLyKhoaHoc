@@ -1,54 +1,54 @@
-<div class="tw-space-y-[0.8rem]">
-    <p><strong class="tw-mr-[0.5rem]">Mã Số: </strong> {{detai.maso}}</p>
+<nz-descriptions [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }" nzBordered nzLayout="horizontal" class="tw-mt-[1rem]">
+    <nz-descriptions-item nzTitle="Mã Số">{{detai.maso}}</nz-descriptions-item>
 
-    <p><strong class="tw-mr-[0.5rem]">Trạng Thái: </strong>
+    <nz-descriptions-item nzTitle="Trạng Thái">
         <span class="primary">{{detai.trangthai}}</span>
-    </p>
-    <p><strong class="tw-mr-[0.5rem]">Đề Tài Ngoài Trường ?: </strong> {{detai.ngoaitruong ===
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Đề Tài Ngoài Trường?">{{detai.ngoaitruong ===
     true
-        ? 'Có' : 'Không'}}</p>
+        ? 'Có' : 'Không'}}</nz-descriptions-item>
     <ng-container *ngIf="detai.ngoaitruong === true">
-        <p><strong class="tw-mr-[0.5rem]">Đề Tài Ngoài Trường Do Trường Chủ Trì ?: </strong> {{detai.truongchutri ===
+        <nz-descriptions-item nzTitle="Đề Tài Ngoài Trường Do Trường Chủ Trì ?">{{detai.truongchutri ===
         true
-            ? 'Có' : 'Không'}}</p>
-        <p><strong class="tw-mr-[0.5rem]">Tổ Chức Chủ Quản:</strong> <br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+            ? 'Có' : 'Không'}}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Tổ Chức Chủ Quản">
+            <strong> + Mã:
             </strong>{{detai.tochucchuquan?.matochuc ?? 'Không Có'}} <br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+            <strong> + Tên:
             </strong>{{detai.tochucchuquan?.tentochuc ?? 'Không Có'}} <br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Điện Thoại:
+            <strong> + Điện Thoại:
             </strong>{{detai.tochucchuquan?.dienthoai ?? 'Không Có'}}<br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Website:
+            <strong> + Website:
             </strong>{{detai.tochucchuquan?.website ?? 'Không Có'}}
-        </p>
+        </nz-descriptions-item>
     </ng-container>
     <ng-container *ngIf="detai.ngoaitruong === false">
-        <p><strong class="tw-mr-[0.5rem]">Loại Đề Tài:</strong> <br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+        <nz-descriptions-item nzTitle="Loại Đề Tài">
+            <strong > + Mã:
             </strong>{{detai.loaidetai?.maloai ?? 'Không Có'}} <br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+            <strong > + Tên:
             </strong>{{detai.loaidetai?.tenloai ?? 'Không Có'}} <br>
-        </p>
+        </nz-descriptions-item>
     </ng-container>
-    <p><strong class="tw-mr-[0.5rem]">Đề Tài Hợp Tác ?: </strong> {{detai.detaihoptac ===
+    <nz-descriptions-item nzTitle="Đề Tài Hợp Tác ?">{{detai.detaihoptac ===
     true
-        ? 'Có' : 'Không'}}</p>
+        ? 'Có' : 'Không'}}</nz-descriptions-item>
     <ng-container *ngIf="detai.detaihoptac === true">
-        <p><strong class="tw-mr-[0.5rem]">Tổ Chức Hợp Tác:</strong> <br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Mã:
+        <nz-descriptions-item nzTitle="Tổ Chức Hợp Tác">
+            <strong > + Mã:
             </strong>{{detai.tochuchoptac?.matochuc ?? 'Không Có'}} <br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Tên:
+            <strong > + Tên:
             </strong>{{detai.tochuchoptac?.tentochuc ?? 'Không Có'}} <br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Điện Thoại:
+            <strong > + Điện Thoại:
             </strong>{{detai.tochuchoptac?.dienthoai ?? 'Không Có'}}<br>
-            <strong class="tw-mr-[0.5rem]" class="tw-ml-[30px]"> + Website:
+            <strong > + Website:
             </strong>{{detai.tochuchoptac?.website ?? 'Không Có'}}
-        </p>
-        <p><strong class="tw-mr-[0.5rem]">Tỷ Lệ Kinh Phí Hợp Tác: </strong>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Tỷ Lệ Kinh Phí Hợp Tác">
             {{detai.tylekinhphidonvihoptac}}
-        </p>
-        <p><strong class="tw-mr-[0.5rem]">Cấp Đề Tài: </strong>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Cấp Đề Tài">
             {{detai.capdetai}}
-        </p>
+        </nz-descriptions-item>
     </ng-container>
-</div>
+</nz-descriptions>

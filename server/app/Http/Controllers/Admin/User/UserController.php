@@ -45,6 +45,13 @@ class UserController extends Controller
     }
 
 
+    public function getUserInfo(): response
+    {
+        $result = $this->userService->getUserInfo();
+        return response()->json($result, 200);
+    }
+
+
     public function getRoleOfUser(int $id): response
     {
         $result = $this->userService->getRoleOfUser($id);
@@ -98,5 +105,26 @@ class UserController extends Controller
     {
         $result = $this->userService->changePassword($request);
         return response()->json($result, 200);
+    }
+
+
+
+    public function import(Request $request)
+    {
+        $result = $this->userService->import($request);
+        return $result;
+    }
+
+
+    public function exportFileResult(Request $request)
+    {
+        $result = $this->userService->exportFileResult($request);
+        return $result;
+    }
+
+
+    public function export()
+    {
+        return $this->userService->export();
     }
 }

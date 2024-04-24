@@ -15,6 +15,7 @@ import {NzInputModule} from "ng-zorro-antd/input";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {PagingService} from "../../../core/services/paging.service";
+import {NzDividerModule} from "ng-zorro-antd/divider";
 
 @NgModule({
     declarations:[
@@ -34,7 +35,8 @@ import {PagingService} from "../../../core/services/paging.service";
         NzInputModule,
         NzSelectModule,
         NzModalModule,
-        SharedModule
+        SharedModule,
+        NzDividerModule
     ],
     exports:[
 

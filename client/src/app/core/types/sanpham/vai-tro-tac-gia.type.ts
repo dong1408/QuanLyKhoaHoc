@@ -1,4 +1,6 @@
 import {User} from "../user/user.type";
+import {KeKhaiToChuc, ToChuc} from "../user-info/to-chuc.type";
+import {HocHamHocVi} from "../user-info/hoc-ham-hoc-vi.type";
 
 export interface VaiTroTacGia{
     id:number,
@@ -14,8 +16,28 @@ export interface SanPhamTacGia{
     id:number,
     tacgia:User,
     vaitrotacgia:VaiTroTacGia,
-    thutu?:string,
-    tyledonggop?:string,
+    thutu?:number,
+    tyledonggop?:number,
+    tochuc?:ToChuc,
+    hochamhocvi?:HocHamHocVi,
+    email:string,
+    dienthoai?:string,
+    ngaysinh?:string,
+    created_at:string,
+    updated_at:string
+}
+
+export interface SanPhamTacGiaMerged{
+    id:number,
+    tacgia:User,
+    vaitrotacgia:VaiTroTacGia[],
+    thutu?:number,
+    tyledonggop?:number,
+    tochuc?:ToChuc,
+    hochamhocvi?:HocHamHocVi,
+    email:string,
+    dienthoai?:string,
+    ngaysinh?:string,
     created_at:string,
     updated_at:string
 }
@@ -25,7 +47,8 @@ export interface TaoVaiTroTacGia{
     id_vaitro:number,
     thutu:string | null,
     tyledonggop:string | null,
-    tentacgia:string
+    tentacgia:string,
+    tochuc:KeKhaiToChuc
 }
 
 export interface CapNhatVaiTroTacGia{

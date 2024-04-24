@@ -16,10 +16,10 @@ class BaiBaoKhoaHocVm
     public ?string $received;
     public ?string $accepted;
     public ?string $published;
-    public ?string $keywords;
+
     //public ?TapChiVm $tapchi; // $id_tapchi
     public ?string $trangthairasoat;
-    public ?string $tentapchi;
+    public string $tentapchi;
     public ?string $volume;
     public ?string $issue;
     public ?string $number;

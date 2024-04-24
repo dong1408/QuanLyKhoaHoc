@@ -16,7 +16,7 @@ class BaiBaoCanNotUpdateException extends Exception
                 400,
                 "Bài báo đang trong trạng thái xóa mềm nên không thể chỉnh sửa thông tin"
             ),
-            404
+            400
         );
     }
 }

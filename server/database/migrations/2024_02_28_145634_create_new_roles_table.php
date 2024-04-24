@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 200);
             $table->string('description', 1000);
-
+            $table->string('mavaitro', 255);
 
             $table->softDeletes();
             $table->timestamps();

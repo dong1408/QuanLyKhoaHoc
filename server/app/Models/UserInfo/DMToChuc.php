@@ -12,6 +12,19 @@ class DMToChuc extends Model
 
     protected $table = 'd_m_to_chucs';
 
+    protected $fillable = [
+        'id',   
+        'matochuc',
+        'tentochuc',
+        'tentochuc_en',
+        'website',
+        'dienthoai',
+        'address',
+        'id_address_city',
+        'id_address_country',
+        'id_phanloaitochuc'
+    ];
+
     // relation 1-n to user
     public function usersByToChuc()
     {

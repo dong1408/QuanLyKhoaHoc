@@ -50,7 +50,7 @@ export class RecognizeComponent implements OnInit,OnDestroy{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/tap-chi"])
+                this.router.navigate(["/admin/tap-chi"])
                 return;
             }
         })
@@ -84,6 +84,14 @@ export class RecognizeComponent implements OnInit,OnDestroy{
                 'Lỗi',
                 'Vui lòng nhập đầy đủ dữ liệu'
             )
+
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
+
             return
         }
         this.isUpdateLoading = true
@@ -98,6 +106,8 @@ export class RecognizeComponent implements OnInit,OnDestroy{
                     'Thành công',
                     response.message
                 )
+                this.formRecognize.reset()
+                this.isOpenRecognizeForm = false
                 this.isUpdateLoading = false
             },
             error:(error) => {
@@ -139,7 +149,7 @@ export class RecognizeComponent implements OnInit,OnDestroy{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(["/tap-chi"])
+                this.router.navigate(["/admin/tap-chi"])
                 return
             }
         })

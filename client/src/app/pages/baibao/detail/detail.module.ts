@@ -2,7 +2,7 @@ import {NgModule} from "@angular/core";
 import {ChiTietBaiBaoComponent} from "./detail.component";
 import {CommonModule} from "@angular/common";
 import {ReactiveFormsModule} from "@angular/forms";
-import {ChiTietBaiBaoRoutingModule} from "./detai-routing.module";
+import {ChiTietBaiBaoRoutingModule} from "./detail-routing.module";
 import {NzButtonModule} from "ng-zorro-antd/button";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzIconModule} from "ng-zorro-antd/icon";
@@ -16,6 +16,9 @@ import {NzInputModule} from "ng-zorro-antd/input";
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {PagingService} from "../../../core/services/paging.service";
+import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {NzListModule} from "ng-zorro-antd/list";
+import {NzUploadModule} from "ng-zorro-antd/upload";
 
 @NgModule({
     declarations:[
@@ -36,7 +39,10 @@ import {PagingService} from "../../../core/services/paging.service";
         NzGridModule,
         NzInputModule,
         NzModalModule,
-        NzSelectModule
+        NzSelectModule,
+        NzDatePickerModule,
+        NzListModule,
+        NzUploadModule
     ],
     exports:[
 

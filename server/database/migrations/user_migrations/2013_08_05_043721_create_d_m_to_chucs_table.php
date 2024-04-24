@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('d_m_to_chucs', function (Blueprint $table) {
             $table->id();
-            $table->string('matochuc')->unique();
-            $table->string('tentochuc')->nullable();
+            $table->string('matochuc')->nullable()->unique();
+            $table->string('tentochuc')->unique();
             $table->string('tentochuc_en')->nullable();
             $table->string('website')->nullable();
             $table->string('dienthoai')->nullable();

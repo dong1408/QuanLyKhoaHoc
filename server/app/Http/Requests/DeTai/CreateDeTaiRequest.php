@@ -1,9 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Detai;
+namespace App\Http\Requests\DeTai;
 
+use App\Rules\EmailUniqueIfIdTacgiaNull;
+use App\Rules\MatochucUniqueIfIdDonviNull;
+use App\Rules\MatochucUniqueIfIdTochucchuquanNull;
+use App\Rules\MatochucUniqueIfIdTochuchoptacNull;
+use App\Rules\MatochucUniqueIfIdTochucNull;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class CreateDeTaiRequest extends FormRequest
 {
@@ -26,69 +32,129 @@ class CreateDeTaiRequest extends FormRequest
     {
         return [
             // ======================== san pham ====================== //
-            "sanpham.tensanpham" => "bail|required|unique:san_phams,tensanpham",            
+
+            "sanpham.tensanpham" => "bail|required|string|unique:san_phams,tensanpham",
             "sanpham.tongsotacgia" => "bail|required|integer",
-            "sanpham.solandaquydoi" => "bail|required|integer",
-            "sanpham.cosudungemailtruong" => "bail|nullable|boolean",
-            "sanpham.cosudungemaildonvikhac" => "bail|nullable|boolean",
-            "sanpham.cothongtintruong" => "bail|nullable|boolean",
-            "sanpham.cothongtindonvikhac" => "bail|nullable|boolean",
-            "sanpham.id_thongtinnoikhac" => [
-                "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
-            ],
             "sanpham.conhantaitro" => "bail|nullable|boolean",
-            "sanpham.id_donvitaitro" => [
+
+            "sanpham.donvi" => "bail|nullable",
+            "sanpham.donvi.id_donvi" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
+                Rule::exists("d_m_to_chucs", "id")
             ],
+            "sanpham.donvi.tentochuc" => [
+                "bail", "required_with:sanpham.donvi", "string",
+                new MatochucUniqueIfIdDonviNull // với những tạp chí được kê khai thì cần phải check trường matochuc unique
+            ],
+            // "sanpham.donvi.tentochuc" => [
+            //     "bail", "required_with:sanpham.donvi", "string"
+            // ],
             "sanpham.chitietdonvitaitro" => "bail|nullable|string",
-            "sanpham.diemquydoi" => "bail|required|string",
-            "sanpham.gioquydoi" => "bail|required|string",
-            "sanpham.thongtinchitiet" => "bail|required|string",
-            "sanpham.capsanpham" => "bail|required|string",
-            "sanpham.thoidiemcongbohoanthanh" => "bail|required|string",
+
 
             // =========== Thong tin chi tiet de tai ================ //            
             "maso" => "bail|required|string|unique:de_tais,maso",
-            // "ngaydangky" => "bail|nullable|string",
             "ngoaitruong" => "bail|nullable|boolean",
             "truongchutri" => "bail|nullable|boolean",
-            "id_tochucchuquan" => [
+
+
+            "tochucchuquan" => "bail|nullable",
+            "tochucchuquan.id_tochucchuquan" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
+                Rule::exists("d_m_to_chucs", "id")
             ],
+            "tochucchuquan.tentochuc" => [
+                "bail", "required_with:tochucchuquan", "string",
+                new MatochucUniqueIfIdTochucchuquanNull
+            ],
+            // "tochucchuquan.tentochuc" => [
+            //     "bail", "required_with:tochucchuquan", "string"
+            // ],
+
+
             "id_loaidetai" => [
                 "bail", "nullable", "integer",
                 Rule::exists('phan_loai_de_tais', 'id')
             ],
+
+
             "detaihoptac" => "bail|nullable|boolean",
-            "id_tochuchoptac" => [
+            "tochuchoptac.id_tochuchoptac" => [
                 "bail", "nullable", "integer",
-                Rule::exists('d_m_to_chucs', 'id')
+                Rule::exists("d_m_to_chucs", "id")
             ],
+            "tochuchoptac.tentochuc" => [
+                "bail", "required_with:tochuchoptac", "string",
+                new MatochucUniqueIfIdTochuchoptacNull
+            ],
+            // "tochuchoptac.tentochuc" => [
+            //     "bail", "required_with:tochuchoptac", "string"
+            // ],
             "tylekinhphidonvihoptac" => "bail|nullable|string",
             "capdetai" => "bail|nullable|string",
 
 
 
-            // ================= san pham _ tac gia ================ //            
-            "sanpham_tacgia" => "bail|array",
+            // ================= san pham _ tac gia ================ //                
+            "sanpham_tacgia" => "bail|required|array",
             "sanpham_tacgia.*.id_tacgia" => [
-                "bail", "nullable", "int",
+                "bail", "nullable", "integer",
                 Rule::exists("users", "id")
             ],
             "sanpham_tacgia.*.tentacgia" => "bail|required|string",
-            "sanpham_tacgia.*.id_vaitro" => [
-                "bail", "required", "int",
+            "sanpham_tacgia.*.list_id_vaitro" => "bail|array",
+            "sanpham_tacgia.*.list_id_vaitro.*" => [
+                "bail", "required", "integer",
                 Rule::exists("d_m_vai_tro_tac_gias", "id")
             ],
             "sanpham_tacgia.*.thutu" => "bail|nullable|integer",
             "sanpham_tacgia.*.tyledonggop" => "bail|nullable|integer",
+            "sanpham_tacgia.*.ngaysinh" => "bail|nullable|string",
+            "sanpham_tacgia.*.dienthoai" => "bail|nullable|string",
+            "sanpham_tacgia.*.email" => [
+                "bail", "required", "string",
+                new EmailUniqueIfIdTacgiaNull
+            ],
+            "sanpham_tacgia.*.id_hochamhocvi" => [
+                "bail", "nullable", "integer",
+                Rule::exists('d_m_hoc_ham_hoc_vis', 'id')
+            ],
+
+            "sanpham_tacgia.*.tochuc" => [
+                'required_if:sanpham_tacgia.*.id_tacgia,null', 'bail', 'nullable'
+            ],
+            "sanpham_tacgia.*.tochuc.id_tochuc" => [
+                "bail", "nullable", "integer",
+                Rule::exists("d_m_to_chucs", "id")
+            ],          
+
+            "sanpham_tacgia.*.tochuc.tentochuc" => [
+                'required_if:sanpham_tacgia.*.id_tacgia,null',
+                "bail", "nullable", "string",
+                function ($attribute, $value, $fail) {
+                    foreach ($this->input('sanpham_tacgia') as $index => $sanphamTacGia) {
+                        $idTacGia = $sanphamTacGia['id_tacgia'];
+                        $idToChuc = null;
+                        if ($sanphamTacGia['tochuc']) {
+                            $idToChuc = $sanphamTacGia['tochuc']['id_tochuc'];
+                        }
+
+                        if (is_null($idTacGia) && is_null($idToChuc)) {
+                            $exists = DB::table('d_m_to_chucs')
+                                ->where('tentochuc', $sanphamTacGia['tochuc']['tentochuc'])
+                                ->exists();
+
+                            if ($exists) {
+                                $fail("Tổ chức với tên là '{$sanphamTacGia['tochuc']['tentochuc']}' đã tồn tại trong hệ thống.");
+                            }
+                        }
+                    }
+                }
+            ],
 
             // file minh chung san pham
-            "fileminhchungsanpham.loaiminhchung" => "bail|nullable|string",
-            "fileminhchungsanpham.url" => "bail|required|string"
+            "fileminhchungsanpham.file" => "bail|required|string",
+            "fileminhchungsanpham.id_file" => "bail|required|string",
         ];
     }
 
@@ -100,15 +166,22 @@ class CreateDeTaiRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-            'sanpham.id_thongtinnoikhac.exists' => 'Thông tin nơi khác không tồn tại trên hệ thống',
-            'sanpham.id_donvitaitro.exists' => 'Thông tin đơn vị tài trợ không tồn tại trên hệ thống',
-            'sanpham.id_nguoikekhai.exists' => 'Thông tin người kê khai không tồn tại trên hệ thống',
-            'id_tochucchuquan.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
-            'id_loaidetai.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
-            'id_tochuchoptac.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
+            //
             'sanpham.tensanpham.unique' => 'Tên sản phẩm đã tồn tại trên hệ thống',
+            "sanpham.donvi.id_donvi.exists" => "Đơn vị tài trợ không tồn tại trên hệ thống",
+            "sanpham.donvi.matochuc.required_with" => "Yêu cầu nhập mã đơn vị",
+            "sanpham.donvi.tentochuc.required_with" => "Yêu cầu nhập tên đơn vị",
+
+            'tochucchuquan.id_tochuchuquan.exists' => 'Thông tin tổ chức chủ quản không tồn tại trên hệ thống',
+            'tochuchoptac.id_tochuchoptac.exists' => 'Thông tin tổ chức hợp tác không tồn tại trên hệ thống',
+            'id_loaidetai.exists' => 'Thông tin tạp chí không tồn tại trên hệ thống',
+
             "sanpham_tacgia.*.id_tacgia.exists" => "Tác giả không tồn tại trên hệ thống",
-            "sanpham_tacgia.*.id_vaitro.exists" => "Vai trò tác giả không tồn tại trên hệ thống"
+            "sanpham_tacgia.*.list_id_vaitro.*.exists" => "Vai trò tác giả không tồn tại trên hệ thống",
+            'sanpham_tacgia.*.email.unique' => 'Email đã tồn tại trên hệ thống',
+            'sanpham_tacgia.*.tochuc.id_tochuc.exists' => "Tổ chức không tồn tại trên hệ thống",
+            // 'sanpham_tacgia.*.tochuc.matochuc.unique' => "Tổ chức đã tồn tại trên hệ thống",
+            "sanpham_tacgia.*.id_hochamhocvi.exists" => "Học hàm học vị không tồn tại trên hệ thống"
         ];
     }
 }

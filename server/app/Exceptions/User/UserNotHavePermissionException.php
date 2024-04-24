@@ -20,7 +20,7 @@ class UserNotHavePermissionException extends Exception
             new ResponseError(
                 "FORBIDEN",
                 403,
-                "Người dùng không có quyền truy cập"
+                "Bạn không có quyền thực hiện thao tác này"
             ),
             403
         );

@@ -16,7 +16,7 @@ class DeTaiCanNotUpdateException extends Exception
                 400,
                 "Đề tài đang trong trạng thái xóa mềm nên không thể chỉnh sửa thông tin"
             ),
-            404
+            400
         );
     }
 }

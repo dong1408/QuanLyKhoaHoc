@@ -1,13 +1,19 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiResponse, PagingResponse} from "../../types/api-response.type";
-import {BaiBao, CapNhatBaiBao, ChiTietBaiBao, TaoBaiTao} from "../../types/baibao/bai-bao.type";
+import {
+    BaiBao,
+    CapNhatBaiBao,
+    CapNhatBaiBaoUser,
+    ChiTietBaiBao,
+    TaoBaiTao
+} from "../../types/baibao/bai-bao.type";
 import {environment} from "../../../../environments/environment";
 import {catchError} from "rxjs";
 import {handleError} from "../../../shared/commons/handler-error-http";
 import {CapNhatSanPham, CapNhatTrangThaiSanPham} from "../../types/sanpham/san-pham.type";
 import {CapNhatVaiTroTacGia, SanPhamTacGia} from "../../types/sanpham/vai-tro-tac-gia.type";
-import {CapNhatFileMinhChung} from "../../types/sanpham/file-minh-chung.type";
+import {CapNhatFileMinhChung, FileVm} from "../../types/sanpham/file-minh-chung.type";
 
 @Injectable({
     providedIn:"root"
@@ -29,6 +35,22 @@ export class BaiBaoService{
     getBaiBaoChoDuyet(page:number,keyword:string,sortby:string){
         return this.http.get<ApiResponse<PagingResponse<BaiBao[]>>>(
             `${environment.apiUrl}/baibao/choduyet?page=${page}&search=${keyword}&sortby=${sortby}`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    getBaiBaoKeKhai(page:number,keyword:string,sortby:string){
+        return this.http.get<ApiResponse<PagingResponse<BaiBao[]>>>(
+            `${environment.apiUrl}/baibao/kekhai?page=${page}&search=${keyword}&sortby=${sortby}`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    getBaiBaoThamGia(page:number,keyword:string,sortby:string){
+        return this.http.get<ApiResponse<PagingResponse<BaiBao[]>>>(
+            `${environment.apiUrl}/baibao/thamgia?page=${page}&search=${keyword}&sortby=${sortby}`
         ).pipe(
             catchError(handleError)
         )
@@ -94,9 +116,18 @@ export class BaiBaoService{
         )
     }
 
-    capNhatFileMinhChung(id:number,data:CapNhatFileMinhChung){
-        return this.http.patch<ApiResponse<boolean>>(
+    capNhatFileMinhChung(id:number,data:FormData){
+        return this.http.post<ApiResponse<string>>(
             `${environment.apiUrl}/baibao/${id}/fileminhchung`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    uploadFileMinhChung(data:FormData){
+        return this.http.post<ApiResponse<FileVm>>(
+            `${environment.apiUrl}/baibao/fileminhchung`,
             data
         ).pipe(
             catchError(handleError)
@@ -106,6 +137,16 @@ export class BaiBaoService{
     capNhatTrangThaiSanPham(id:number,data:CapNhatTrangThaiSanPham){
         return this.http.patch<ApiResponse<boolean>>(
             `${environment.apiUrl}/baibao/${id}/trangthairasoat`,
+            data
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+
+    capNhatBaiBaoChoNguoiDung(id:number,data:CapNhatBaiBaoUser){
+        return this.http.patch<ApiResponse<boolean>>(
+            `${environment.apiUrl}/baibao/public/${id}`,
             data
         ).pipe(
             catchError(handleError)

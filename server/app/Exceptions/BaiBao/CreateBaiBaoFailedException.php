@@ -16,7 +16,7 @@ class CreateBaiBaoFailedException extends Exception
                 400,
                 "Không tìm thấy danh mục sản phẩm của bài báo"
             ),
-            404
+            400
         );
     }
 }

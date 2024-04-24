@@ -3,6 +3,7 @@
 namespace App\ViewModel\SanPham;
 
 use App\Models\SanPham\SanPham;
+use App\ViewModel\User\UserSimpleVm;
 use App\ViewModel\User\UserVm;
 use App\ViewModel\UserInfo\ToChucVm;
 use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
@@ -12,9 +13,9 @@ class SanPhamDetailVm
 {
     public int $id;
     public string $tensanpham;
-    public ?DMSanPhamVm $loaisanpham; // $id_loaisanpham -- DMSanPhamVm
+    public DMSanPhamVm $loaisanpham; // $id_loaisanpham -- DMSanPhamVm
     public int $tongsotacgia;
-    public int $solandaquydoi;
+    public ?int $solandaquydoi;
     public ?bool $cosudungemailtruong;
     public ?bool $cosudungemaildonvikhac;
     public ?bool $cothongtintruong;
@@ -24,15 +25,15 @@ class SanPhamDetailVm
     public ?ToChucVm $donvitaitro; // $id_donvitaitro -- ToChucVm
     public ?string $chitietdonvitaitro;
     public string $ngaykekhai;
-    public ?UserVm $nguoikekhai; // $id_nguoikekhai -- UserVm
-    public ?string $trangthairasoat;
+    public UserSimpleVm $nguoikekhai; // $id_nguoikekhai -- UserVm
+    public string $trangthairasoat;
     public ?string $ngayrasoat;
-    public ?UserVm $nguoirasoat; // $id_nguoirasoat -- UserVm
-    public string $diemquydoi;
-    public string $gioquydoi;
-    public string $thongtinchitiet;
-    public string $capsanpham;
-    public string $thoidiemcongbohoanthanh;
+    public ?UserSimpleVm $nguoirasoat; // $id_nguoirasoat -- UserVm
+    public ?string $diemquydoi;
+    public ?string $gioquydoi;
+    public ?string $thongtinchitiet;
+    public ?string $capsanpham;
+    public ?string $thoidiemcongbohoanthanh;
     public ?FileMinhChungSanPhamVm $minhchung;
     public string $created_at;
     public string $updated_at;

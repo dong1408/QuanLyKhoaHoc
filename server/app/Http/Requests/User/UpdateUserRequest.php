@@ -48,10 +48,6 @@ class UpdateUserRequest extends FormRequest
                 "bail", "nullable", "integer",
                 Rule::exists('d_m_to_chucs', 'id')
             ],
-            "id_donvi" => [
-                "bail", "nullable", "integer",
-                Rule::exists('d_m_don_vis', 'id')
-            ],
             "cohuu" => "bail|nullable|boolean",
             "keodai" => "bail|nullable|boolean",
             "dinhmucnghiavunckh" => "bail|nullable|string",
@@ -99,8 +95,7 @@ class UpdateUserRequest extends FormRequest
             'array' => 'Trường :attribute phải là một mảng',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
             'boolean' => 'Trường :attribute phải là true/false',
-            'id_tochuc.exists' => 'Tổ chức không tồn tại trên hệ thống',
-            'id_donvi.exists' => 'Đơn vị không tồn tại trên hệ thống',
+            'id_tochuc.exists' => 'Tổ chức không tồn tại trên hệ thống',           
             'id_tochuc.exists' => 'Tổ chúc không tồn tại trên hệ thống',
             'id_noihoc.exists' => 'Nơi học không tồn tại trên hệ thống',
             'id_ngachvienchuc.exists' => 'Ngạch viên chức không tồn tại trên hệ thống',

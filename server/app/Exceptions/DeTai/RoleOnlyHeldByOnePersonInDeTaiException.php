@@ -16,7 +16,7 @@ class RoleOnlyHeldByOnePersonInDeTaiException extends Exception
                 400,
                 "Vai trò chủ nhiệm đề tài chỉ một người được đảm nhiệm"
             ),
-            404
+            400
         );
     }
 }

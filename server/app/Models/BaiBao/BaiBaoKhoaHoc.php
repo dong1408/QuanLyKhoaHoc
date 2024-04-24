@@ -43,4 +43,8 @@ class BaiBaoKhoaHoc extends Model
     {
         return $this->belongsTo('App\Models\TapChi\TapChi', 'id_tapchi');
     }
+
+    public function keyWords(){
+        return $this->belongsToMany('App\Models\BaiBao\Keyword','baibao_keyword', 'baibao_id', 'keyword_id');
+    }
 }

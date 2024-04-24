@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoadingService} from "../../../core/services/loading.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {forkJoin, Subject, takeUntil} from "rxjs";
+import {BehaviorSubject, debounceTime, forkJoin, Observable, Subject, switchMap, takeUntil} from "rxjs";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
 import {HoiDongGiaoSu} from "../../../core/types/tapchi/hoi-dong-giao-su.type";
 import {TinhThanh} from "../../../core/types/user-info/tinh-thanh.type";
@@ -16,6 +16,7 @@ import {NhaXuatBan} from "../../../core/types/nhaxuatban/nha-xuat-ban.type";
 import {NhaXuatBanService} from "../../../core/services/nhaxuatban/nha-xuat-ban.service";
 import {CreateTapChi} from "../../../core/types/tapchi/tap-chi.type";
 import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
+import {ApiResponse} from "../../../core/types/api-response.type";
 
 @Component({
     selector:"app-magazine-create",
@@ -27,6 +28,7 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
 
     iscreateLoading:boolean = false
     isTinhThanhLoading:boolean = false
+    isGetToChuc:boolean = false
 
     createForm:FormGroup
 
@@ -35,8 +37,11 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
     hoiDongGiaoSus:HoiDongGiaoSu[] = []
     tinhThanhs:TinhThanh[] = []
     quocGias:QuocGia[] = []
-    toChucs:ToChuc[] = []
     nhaXuatBans:NhaXuatBan[] = []
+    tochucs:ToChuc[] = []
+
+    searchToChuc$ = new BehaviorSubject('');
+
 
     constructor(
         private fb:FormBuilder,
@@ -86,10 +91,7 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
                 ])
             ],
             quocte:[
-                null,
-                Validators.compose([
-                    noWhiteSpaceValidator()
-                ])
+                null
             ],
             id_nhaxuatban:[
                 null,
@@ -109,20 +111,24 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
             id_address_country:[
                 null,
             ],
+            dmnganhtheohdgs:[
+                null
+            ]
         })
+
+        this.onGetSearchToChuc()
+
         this.loadingService.startLoading()
         forkJoin([
             this.hoiDongGiaoSuService.getAllHDGS(),
             this.tinhThanhService.getAllTinhThanh(),
             this.quocGiaService.getAllQuocGia(),
-            this.toChucService.getAllToChuc(),
             this.nhaXuatBanService.getAllNhaXuatBan()
-        ],(gsResponse,ttResponse,qgResponse,tcResponse,nxbResponse) => {
+        ],(gsResponse,ttResponse,qgResponse,nxbResponse) => {
             return {
                 listGS: gsResponse.data,
                 listTT: ttResponse.data,
                 listQG: qgResponse.data,
-                listTC: tcResponse.data,
                 listNXB: nxbResponse.data
             }
         }).pipe(
@@ -132,7 +138,6 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
                 this.hoiDongGiaoSus = response.listGS
                 this.quocGias = response.listQG
                 this.tinhThanhs = response.listTT
-                this.toChucs = response.listTC
                 this.nhaXuatBans = response.listNXB
                 this.loadingService.stopLoading()
             },
@@ -142,21 +147,59 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
         })
     }
 
+    onGetSearchToChuc(){
+        const listToChuc = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchToChuc$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listToChuc))
+
+        optionList$.subscribe(data => {
+            this.tochucs = data.data
+            this.isGetToChuc = false
+        })
+    }
+
+    onSearchToChuc(event:any){
+        if(event && event !== ""){
+            this.isGetToChuc = true
+            this.searchToChuc$.next(event)
+        }
+    }
+
     onCreateTapChi(){
-        if(this.createForm.invalid){
+        const form = this.createForm
+        if(form.invalid){
             this.notificationService.create(
                 'error',
                 'Lỗi',
                 'Vui lòng điền đúng yêu cầu của form'
             )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
+
             return;
         }
 
         const data:CreateTapChi = {
-            ...this.createForm.value,
-            id_address_city: this.createForm.controls['id_address_country'].value ?? null,
-            trangthai:false
+            name: form.get("name")?.value,
+            issn: form.get("issn")?.value ?? null,
+            eissn: form.get("eissn")?.value ?? null,
+            pissn: form.get("pissn")?.value ?? null,
+            website: form.get("website")?.value ?? null,
+            quocte: form.get("quocte")?.value ?? null,
+            id_nhaxuatban: form.get("id_nhaxuatban")?.value ?? null,
+            id_donvichuquan : form.get("id_donvichuquan")?.value ?? null,
+            address: form.get("address")?.value ?? null,
+            id_address_city: form.get("id_address_city")?.value ?? null,
+            id_address_country: form.get("id_address_country")?.value ?? null,
+            dmnganhtheohdgs: form.get("dmnganhtheohdgs")?.value ?? null
         }
+
         this.iscreateLoading = true
         this.tapChiService.createTapChi(data).pipe(
             takeUntil(this.destroy$)
@@ -184,10 +227,11 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
 
 
     onSelectChange(event:any){
+        this.tinhThanhs = []
+        this.createForm.get("id_address_city")?.reset()
         if(typeof(event) !== "number"){
             return;
         }
-        this.tinhThanhs = []
         this.isTinhThanhLoading = true
         this.tinhThanhService.getAllTinhThanhByQuocGia(event).pipe(
             takeUntil(this.destroy$)

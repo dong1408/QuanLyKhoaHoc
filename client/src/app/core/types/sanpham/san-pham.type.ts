@@ -1,5 +1,5 @@
 import {DMSanPham} from "./dm-san-pham.type";
-import {ToChuc} from "../user-info/to-chuc.type";
+import {KeKhaiDonVi, ToChuc} from "../user-info/to-chuc.type";
 import {User} from "../user/user.type";
 import {FileMinhChung} from "./file-minh-chung.type";
 
@@ -8,7 +8,7 @@ export interface SanPham{
     tensanpham:string,
     loaisanpham:DMSanPham,
     tongsotacgia:number,
-    solandaquydoi:number,
+    solandaquydoi?:number,
     cosudungemailtruong?:boolean,
     cosudungemaildonvikhac?:boolean,
     cothongtintruong?:boolean,
@@ -18,18 +18,19 @@ export interface SanPham{
     donvitaitro?:ToChuc,
     chitietdonvitaitro?:string,
     ngaykekhai:string,
-    nguoikekhai?:User,
+    nguoikekhai:User,
     trangthairasoat:string,
     ngayrasoat?:string,
     nguoirasoat?:User,
-    diemquydoi:string,
-    gioquydoi:string,
-    thongtinchitiet:string,
-    capsanpham:string,
-    thoidiemcongbohoanthanh:string,
+    diemquydoi?:string,
+    gioquydoi?:string,
+    thongtinchitiet?:string,
+    capsanpham?:string,
+    thoidiemcongbohoanthanh?:string,
     minhchung?:FileMinhChung
     created_at:string,
-    updated_at:string
+    updated_at:string,
+    deleted_at?:string
 }
 
 
@@ -62,23 +63,21 @@ export interface CapNhatTrangThaiSanPham{
 export interface TaoSanPham{
     tensanpham:string,
     tongsotacgia:number,
-    solandaquydoi:number,
-    cosudungemailtruong:boolean | null,
-    cosudungemaildonvikhac:boolean | null,
-    cothongtintruong:boolean | null,
-    cothongtindonvikhac:boolean | null,
-    id_thongtinnoikhac:number  | null,
     conhantaitro:boolean | null,
-    id_donvitaitro:number | null,
+    donvi:KeKhaiDonVi | null,
     chitietdonvitaitro:string | null,
-    diemquydoi:string,
-    gioquydoi:string,
-    thongtinchitiet:string,
-    capsanpham:string,
-    thoidiemcongbohoanthanh:string
+    thoidiemcongbohoanthanh?:string | null
+}
+
+export interface CapNhatSanPhamUser{
+    tensanpham:string,
+    conhantaitro:boolean | null,
+    donvi:KeKhaiDonVi | null,
+    chitietdonvitaitro:string | null,
+    thoidiemcongbohoanthanh?:string | null
 }
 
 export interface TaoFileMinhChung{
-    loaiminhchung:string | null,
-    url:string
+    id_file:string,
+    file:string
 }

@@ -47,10 +47,6 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        // $this->renderable(function (UserNotFound $e, Request $request) {
-        //     return response()->json(new ResponseError("NOT_FOUND","404",$e->getMessage()),404);
-        // });
-        //test coi 
         $this->reportable(function (Throwable $e) {
             //
         });
@@ -58,6 +54,14 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
+
+        if ($exception instanceof \Google_Exception) { //Có lỗi xảy ra trong quá trình tải file, vui lòng thử lại sau
+            return response()->json(new ResponseError("BAD REQUEST", 400,$exception->getMessage() ),400);
+        }
+
+        if ($exception instanceof \Google_Service_Exception) {
+            return response()->json(new ResponseError("BAD REQUEST", 400, $exception->getMessage() ),400);
+        }
 
         // User khong co quyen truy cap
         if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
@@ -91,16 +95,12 @@ class Handler extends ExceptionHandler
 
         // Could not decode token: Error while decoding from JSON
         if ($exception instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-            return response()->json(new ResponseError("BAD REQUEST", 401, "Phiên đăng nhập hết hạn"), 401);
+            return response()->json(new ResponseError("UNAUTHORIZED", 401, "Phiên đăng nhập hết hạn"), 401);
         }
 
         if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
             return response()->json(new ResponseError("BAD REQUEST", 400, $exception->getMessage()), 400);
         }
-
-        // if ($exception instanceof ValidationException) {
-        //     return response()->json(new ResponseError("BAD_REQUEST", 400, $exception->getMessage()));
-        // }
 
 
         return parent::render($request, $exception);

@@ -1,6 +1,48 @@
-<div class="header">
+<div class="header tw-flex tw-items-center tw-justify-between">
     <div class="header-inner flex-center">
         <img src="./assets/images/blob.jpg" alt="Logo" class="logo">
         <h2>Quản lý khoa học</h2>
     </div>
+    <ng-container *ngIf="userInfo !== null">
+        <div class="tw-p-[1rem]">
+            <button nz-button nzType="primary" (click)="onMenu()" >
+                <span nz-icon nzType="menu" nzTheme="outline"></span>
+            </button>
+            <nz-drawer
+                    [nzClosable]="false"
+                    [nzVisible]="visibleMenu"
+                    nzPlacement="left"
+                    nzTitle="Thông Tin"
+                    (nzOnClose)="onMenu()"
+            >
+                <ng-container *nzDrawerContent>
+                    <div class="tw-w-full tw-space-y-[0.5rem]">
+                        <div class="tw-flex tw-flex-col tw-space-y-[1rem] tw-text-center">
+                            <h4 class="username">{{userInfo.username}}</h4>
+                            <h5 class="name">{{userInfo.name}}</h5>
+                            <div>
+                                <button nz-button nzSize="default" (click)="logout()" [nzLoading]="logoutLoading"  nzType="primary">Đăng Xuất</button>
+                            </div>
+                        </div>
+                        <div class="tw-my-[1rem]">
+                            <nz-divider></nz-divider>
+                        </div>
+                        <div>
+                            <ul class="tw-font-semibold tw-list-none tw-space-y-[0.6rem]">
+                                <li routerLink="/home">
+                                    Trang Chủ
+                                </li>
+                                <li routerLink="/home/tai-khoan/thong-tin">
+                                    Thông Tin Tài Khoản
+                                </li>
+                                <li >
+                                    Sản Phẩm
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </ng-container>
+            </nz-drawer>
+        </div>
+    </ng-container>
 </div>

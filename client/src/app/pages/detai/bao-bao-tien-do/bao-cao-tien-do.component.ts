@@ -1,16 +1,11 @@
 import {Component} from "@angular/core";
-import {UpdateXepHang, XepHangTapChi} from "../../../core/types/tapchi/tap-chi.type";
-import {PhanLoaiTapChi} from "../../../core/types/tapchi/phan-loai-tap-chi.type";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {combineLatest, debounceTime, distinctUntilChanged, Observable, Subject, switchMap, takeUntil, tap} from "rxjs";
-import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {LoadingService} from "../../../core/services/loading.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {PagingService} from "../../../core/services/paging.service";
-import {PhanLoaiTapChiService} from "../../../core/services/tapchi/phan-loai-tap-chi.service";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
-import {validValuesValidator} from "../../../shared/validators/valid-value.validator";
 import {DeTaiService} from "../../../core/services/detai/de-tai.service";
 import {BaoCaoTienDo, BaoCaoTienDoDeTai} from "../../../core/types/detai/de-tai.type";
 import {dateConvert} from "../../../shared/commons/utilities";
@@ -29,7 +24,6 @@ export class BaoCaoTienDoComponent{
 
     isOpenForm:boolean = false
     isUpdateLoading:boolean = false
-    isPhanLoaiTapChiLoading:boolean = false
 
     formBaoCao: FormGroup
 
@@ -54,12 +48,19 @@ export class BaoCaoTienDoComponent{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/de-tai"])
+                this.router.navigate(["/admin/de-tai"])
                 return;
             }
         })
 
         this.formBaoCao = this.fb.group({
+            tenbaocao:[
+                null,
+                Validators.compose([
+                    noWhiteSpaceValidator(),
+                    Validators.required
+                ])
+            ],
             ngaynopbaocao:[
                 null,
                 Validators.compose([
@@ -69,7 +70,7 @@ export class BaoCaoTienDoComponent{
             ketquaxet:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator()
+                    Validators.required
                 ])
             ],
             thoigiangiahan:[
@@ -114,7 +115,7 @@ export class BaoCaoTienDoComponent{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(["/de-tai"])
+                this.router.navigate(["/admin/de-tai"])
                 return
             }
         })
@@ -134,6 +135,12 @@ export class BaoCaoTienDoComponent{
                 'Lỗi',
                 'Vui lòng nhập đầy đủ dữ liệu'
             )
+            Object.values(form.controls).forEach(control =>{
+                if(control.invalid){
+                    control.markAsDirty()
+                    control.updateValueAndValidity({ onlySelf: true });
+                }
+            })
             return
         }
 

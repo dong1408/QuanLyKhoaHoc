@@ -48,6 +48,14 @@ export class UserService{
         )
     }
 
+    getUserInfo(){
+        return this.http.get<ApiResponse<UserDetail>>(
+            `${environment.apiUrl}/users/info`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
     // getUserPermission(){
     //     return this.http.get<ApiResponse<Permission[]>>(
     //         `${environment.apiUrl}/users/permission`
@@ -121,6 +129,16 @@ export class UserService{
     getUserDetail(id:number){
         return this.http.get<ApiResponse<UserDetail>>(
             `${environment.apiUrl}/users/${id}`
+        ).pipe(
+            catchError(handleError)
+        )
+    }
+
+    importUsers(data:FormData){
+        return this.http.post<any>(
+            `${environment.apiUrl}/users/import`,
+            data,
+            { responseType: 'blob' as 'json' }
         ).pipe(
             catchError(handleError)
         )

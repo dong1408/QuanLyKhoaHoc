@@ -8,6 +8,7 @@ import {AuthService} from "../../core/services/user/auth.service";
 import {LocalStorageService} from "../../core/services/local-storage.service";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "../../shared/commons/constants";
 import {Router} from "@angular/router";
+import {ConstantsService} from "../../core/services/constants.service";
 
 @Component({
     selector:'app-login',
@@ -24,12 +25,12 @@ export class LoginComponent implements OnInit,OnDestroy{
     loginLoading:boolean = false
 
     constructor(
-        private http:HttpClient,
         private fb:FormBuilder,
         private notificationService:NzNotificationService,
         private authService:AuthService,
         private localStorageService:LocalStorageService,
-        private router:Router
+        private router:Router,
+        public AppConstant:ConstantsService
     ) {
 
     }
@@ -73,7 +74,11 @@ export class LoginComponent implements OnInit,OnDestroy{
                 this.authService.userState$.next(response.data)
                 this.authService.setCurrentUser(response.data)
                 this.loginLoading = false
-                this.router.navigate(["/"])
+                if(response.data.changed){
+                    this.router.navigate(["/home/tai-khoan/thong-tin"])
+                }else {
+                    this.router.navigate(["/doi-mat-khau"])
+                }
             },
             error:(response) => {
                 this.notificationService.create(

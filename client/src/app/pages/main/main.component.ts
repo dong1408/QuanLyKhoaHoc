@@ -31,7 +31,6 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.authService.userState$.pipe(takeUntil(this.destroy$)).subscribe(response => {
-      console.log(response)
       this.userInfo = response
     })
   }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Detai;
+namespace App\Http\Requests\DeTai;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -36,7 +36,7 @@ class XetDuyetDeTaiRequest extends FormRequest
             ],
             "sohopdong" => "bail|nullable|string",
             "ngaykyhopdong" => "bail|nullable|string",
-            "thoihanhopdong" => "bail|nullable|string",
+            "thoihanhopdong" => "bail|nullable|integer",
             "kinhphi" => "bail|nullable|string",
         ];
     }

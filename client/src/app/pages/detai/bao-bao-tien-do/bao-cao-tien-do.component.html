@@ -10,6 +10,16 @@
         <ng-container *nzModalContent>
             <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formBaoCao">
                 <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> Tên Báo Cáo</h3>
+                    <nz-form-control [nzErrorTip]="tenbaocao" nzHasFeedback>
+                        <input nz-input placeholder="Kết Quả Xét"   type="text" formControlName="tenbaocao"/>
+                        <ng-template #tenbaocao let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Ngày Nộp Báo Cáo</h3>
                     <nz-form-control [nzErrorTip]="ngaynopbaocao" nzHasFeedback>
                         <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Nộp Báo Cáo" formControlName="ngaynopbaocao"></nz-date-picker>
@@ -19,18 +29,22 @@
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item class="tw-w-full">
-                    <h3 class="">Kết Quả Xét</h3>
+                    <h3 class=""><span class="error">*</span> Kết Quả Xét</h3>
                     <nz-form-control [nzErrorTip]="ketquaxet" nzHasFeedback>
-                        <input nz-input placeholder="Kết Quả Xét"  type="text" formControlName="ketquaxet"/>
+                        <nz-select nzPlaceHolder="Kết Quả Xét" formControlName="ketquaxet">
+                            <nz-option nzValue="Đồng ý" nzLabel="Đồng ý"></nz-option>
+                            <nz-option nzValue="Không đồng ý" nzLabel="Không đồng ý"></nz-option>
+
+                        </nz-select>
                         <ng-template #ketquaxet let-control>
-                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
                         </ng-template>
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item class="tw-w-full">
                     <h3 class="">Thời Gian Gia Hạn</h3>
                     <nz-form-control [nzErrorTip]="thoigiangiahan" nzHasFeedback>
-                        <input nz-input placeholder="Thời Gian Gia Hạn"  type="text" formControlName="thoigiangiahan"/>
+                        <input nz-input placeholder="Thời Gian Gia Hạn"  type="number" formControlName="thoigiangiahan"/>
                         <ng-template #thoigiangiahan let-control>
                             <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
                         </ng-template>
@@ -44,7 +58,7 @@
 
 
 <div class="tw-space-y-[16px]">
-    <button nz-button nzType="primary" [routerLink]="['/de-tai',this.id]">
+    <button nz-button nzType="primary" [routerLink]="['/admin/de-tai',this.id]">
         <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
     </button>
     <h1 class="text-primary tw-text-5xl">LỊCH SỬ NỘP BÁO CÁO CỦA ĐỀ TÀI</h1>

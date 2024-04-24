@@ -75,4 +75,27 @@ export class ConstantsService{
             value:"nghiem_thu"
         }
     ]
+
+    readonly HUONG_DAN_DANG_NHAP = [
+        "Đây là hướng dẫn 1",
+        "Đây là hướng dẫn 2",
+        "Đây là hướng dẫn 3",
+        "Đây là hướng dẫn 4",
+        "Đây là hướng dẫn 5",
+    ]
+
+    readonly NAVIGATE = [
+        {
+            title:"Trang Chủ",
+            value:"/home"
+        },
+        {
+            title:"Thông Tin Tài Khoản",
+            value:"/home/tai-khoan/thong-tin"
+        },
+        {
+            title:"Sản Phẩm Của Tôi",
+            value:"/home/tai-khoan/san-pham"
+        }
+    ]
 }

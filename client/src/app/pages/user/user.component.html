@@ -33,13 +33,49 @@
     </nz-modal>
 </div>
 
+<div>
+    <nz-modal
+            [nzVisible]="isOpenFormImport"
+            nzTitle="Import Người Dùng"
+            nzOkText="Import"
+            (nzOnOk)="onImport()"
+            (nzOnCancel)="onOpenFormImport()"
+            [nzOkLoading]="isImport"
+    >
+        <ng-container *nzModalContent>
+            <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formImport">
+                <nz-form-item class="tw-w-full">
+                    <h3 class=""><span class="error">*</span> File Import (Excel)</h3>
+                    <nz-form-control [nzErrorTip]="file" nzHasFeedback>
+                        <nz-upload [nzBeforeUpload]="beforeUpload" [(nzFileList)]="fileList" [nzLimit]="1">
+                            <button nz-button>
+                                <span nz-icon nzType="upload"></span>
+                                Chọn File
+                            </button>
+                        </nz-upload>
+
+                        <ng-template #file let-control>
+                            <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
+
 <div class="tw-space-y-[16px]">
     <h1 class="text-primary tw-text-5xl">NGƯỜI DÙNG</h1>
     <div class="tw-mt-[15] tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
         <div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-[6px]">
-            <button nz-button nzType="primary" routerLink="/nguoi-dung/tao-moi">
+            <button nz-button nzType="primary" routerLink="tao-moi">
                 <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
                 Tạo Mới
+            </button>
+
+            <button nz-button nzType="default" (click)="onOpenFormImport()">
+                <span nz-icon nzType="import" nzTheme="outline"></span>
+                Import
             </button>
         </div>
     </div>
@@ -51,6 +87,7 @@
         <button nz-button [nzType]="currentButton$.value === 2 ? 'primary' : 'default'" nzDanger (click)="setCurrentButton(2)">
             Đã Xóa
         </button>
+
     </div>
 
     <div class="tw-flex tw-flex-col tw-gap-[6px] tw-w-[300px]">
@@ -104,7 +141,7 @@
                 </ng-container>
                 <ng-container *ngIf="data.deleted_at === null">
                     <td  class="tw-flex tw-items-center tw-space-x-[4px]">
-                        <button nz-button nzType="primary" [routerLink]="['/nguoi-dung',data.id,'cap-nhat-nguoi-dung']">
+                        <button nz-button nzType="primary" [routerLink]="['/admin/nguoi-dung',data.id,'cap-nhat-nguoi-dung']">
                             <span nz-icon nzType="edit" nzTheme="outline"></span>
                             Cập Nhật
                         </button>
@@ -129,14 +166,14 @@
                 </ng-container>
                 <ng-container *ngIf="data.deleted_at !== null">
                     <td nzEllipsis class="tw-flex tw-items-center tw-space-x-[4px]">
-                        <button
-                                nz-button
-                                nzType="primary"
-                                [routerLink]="['/bai-bao',data.id]"
-                        >
-                            <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
-                            Chi Tiết
-                        </button>
+<!--                        <button-->
+<!--                                nz-button-->
+<!--                                nzType="primary"-->
+<!--                                [routerLink]="['/admin/nguoi-dung',data.id]"-->
+<!--                        >-->
+<!--                            <span nz-icon nzType="arrow-right" nzTheme="outline"></span>-->
+<!--                            Chi Tiết-->
+<!--                        </button>-->
                         <button
                                 [nzLoading]="data.isRestore"
                                 nz-popconfirm

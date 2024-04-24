@@ -1,26 +1,26 @@
 <app-header></app-header>
-<div class="login-wrapper">
-    <div class="tw-flex sm:tw-flex-col lg:tw-flex-row tw-gap-[12px]">
-        <div class="border-primary tw-p-[12px] tw-w-[400px]">
-                <form nz-form class="tw-space-y-[16px]" [formGroup]="formLogin">
-                    <div>
+<div class="login-wrapper tw-mx-auto tw-w-[90%]">
+    <div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-[12px]">
+        <div class="border-primary tw-p-[12px] tw-w-full lg:tw-w-[400px]">
+                <form nzLayout="vertical" nz-form class="tw-space-y-[16px]" [formGroup]="formLogin">
+                    <nz-form-item>
                         <h3 class="tw-text-center">Mã cán bộ</h3>
-                        <nz-form-control>
+                        <nz-form-control [nzErrorTip]="username" nzHasFeedback>
                             <input nz-input placeholder="Mã cán bộ" type="text" formControlName="username"/>
-                            <ng-container *ngIf="formLogin.controls?.['username']?.touched && formLogin.controls?.['username']?.dirty">
-                                <small *ngIf="formLogin.controls?.['username']?.errors?.['required']" class="tw-ml-2 error">Mã cán bộ không được để trống</small>
-                            </ng-container>
+                            <ng-template #username let-control>
+                                <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Mã cán bộ không được để trống</small>
+                            </ng-template>
                         </nz-form-control>
-                    </div>
-                    <div>
+                    </nz-form-item>
+                    <nz-form-item>
                         <h3 class="tw-text-center">Mật khẩu</h3>
-                        <nz-form-control>
+                        <nz-form-control [nzErrorTip]="password" nzHasFeedback>
                             <input nz-input placeholder="Mật khẩu" type="password" formControlName="password"/>
-                            <ng-container *ngIf="formLogin.controls?.['password']?.touched && formLogin.controls?.['password']?.dirty">
-                                <small *ngIf="formLogin.controls?.['password']?.errors?.['required']" class="tw-ml-2 error">Mật khẩu không được để trống</small>
-                            </ng-container>
+                            <ng-template #password let-control>
+                                <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Mật khẩu không được để trống</small>
+                            </ng-template>
                         </nz-form-control>
-                    </div>
+                    </nz-form-item>
                     <div class="tw-text-center">
                         <button nz-button nzSize="default" (click)="onLogin()" [nzLoading]="loginLoading" [disabled]="!formLogin.valid" nzType="primary">Đăng Nhập</button>
                     </div>
@@ -32,15 +32,7 @@
 
         </div>
         <div class="tw-flex-1">
-            <div class="border-primary tw-w-full tw-p-[12px] tw-space-y-[16px]">
-                <h2 class="tw-text-2xl tw-text-red-700">HƯỚNG DẪN</h2>
-                <div class="tw-space-y-[8px]">
-                    <p>[1] Đây là hướng dẫn số 1</p>
-                    <p>[2] Đây là hướng dẫn số 2</p>
-                    <p>[3] Đây là hướng dẫn số 3</p>
-                    <p>[4] Đây là hướng dẫn số 4</p>
-                </div>
-            </div>
+            <app-huong-dan-component [huongdan]="AppConstant.HUONG_DAN_DANG_NHAP"></app-huong-dan-component>
         </div>
     </div>
 </div>

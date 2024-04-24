@@ -16,7 +16,7 @@ class DeTaiCanNotTuyenChonException extends Exception
                 400,
                 "Đề tài đã được tuyển chọn hoặc xét duyệt hoặc nghiệm thu trước đó"
             ),
-            404
+            400
         );
     }
 }

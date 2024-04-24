@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -15,6 +15,7 @@ import {AuthInterceptor} from "./core/interceptors/auth.interceptor";
 import {NzModalService} from "ng-zorro-antd/modal";
 
 registerLocaleData(vi);
+
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ registerLocaleData(vi);
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
   ],
   bootstrap: [AppComponent]
 })

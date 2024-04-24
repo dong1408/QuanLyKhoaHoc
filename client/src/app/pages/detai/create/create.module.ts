@@ -15,6 +15,9 @@ import {NzSelectModule} from "ng-zorro-antd/select";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {SharedModule} from "../../../shared/components/shared.module";
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import {NzModalModule} from "ng-zorro-antd/modal";
+import {NzListModule} from "ng-zorro-antd/list";
+import {NzUploadModule} from "ng-zorro-antd/upload";
 
 @NgModule({
     declarations:[
@@ -34,7 +37,10 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
         NzSelectModule,
         NzWaveModule,
         SharedModule,
-        NzCheckboxModule
+        NzCheckboxModule,
+        NzModalModule,
+        NzListModule,
+        NzUploadModule
     ],
     exports:[
 

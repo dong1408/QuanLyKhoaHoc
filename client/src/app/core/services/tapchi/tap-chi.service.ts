@@ -27,7 +27,7 @@ export class TapChiService{
 
     getChiTietTapChi(id:number){
         return this.http.get<ApiResponse<ChiTietTapChi>>(
-            `${environment.apiUrl}/tapchi/${id}/detail`
+            `${environment.apiUrl}/tapchi/${id}`
         ).pipe(
             catchError(handleError)
         )
@@ -152,9 +152,9 @@ export class TapChiService{
         )
     }
 
-    getAllTapChi(){
+    getAllTapChi(keyword:string){
         return this.http.get<ApiResponse<Magazine[]>>(
-            `${environment.apiUrl}/tapchi`
+            `${environment.apiUrl}/tapchi?search=${keyword}`
         ).pipe(
             catchError(handleError)
         )

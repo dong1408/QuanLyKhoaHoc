@@ -4,6 +4,10 @@ import {ChuyenNganhTinhDiem} from "../quydoi/chuyen-nganh-tinh-diem.type";
 import {ToChuc} from "../user-info/to-chuc.type";
 import {Validators} from "@angular/forms";
 import {noWhiteSpaceValidator} from "../../../shared/validators/no-white-space.validator";
+import {NhaXuatBan} from "../nhaxuatban/nha-xuat-ban.type";
+import {TinhThanh} from "../user-info/tinh-thanh.type";
+import {QuocGia} from "../user-info/quoc-gia.type";
+import {HoiDongGiaoSu} from "./hoi-dong-giao-su.type";
 
 export interface Magazine{
     id:number,
@@ -26,6 +30,15 @@ export interface Magazine{
     isChangeStatus:boolean,
 }
 
+export interface KeKhaiTapChi{
+    name:string,
+    id_tapchi:number,
+    issn:string | null,
+    pissn:string | null,
+    eissn: string | null,
+    website:string | null
+}
+
 export interface ChiTietTapChi{
     id:number,
     name?:string,
@@ -33,6 +46,9 @@ export interface ChiTietTapChi{
     website?:string,
     address?:string,
     trangthai:boolean,
+    nhaxuatban?:NhaXuatBan,
+    addresscity?:TinhThanh,
+    addresscountry?:QuocGia,
     created_at:string,
     updated_at:string,
     deleted_at?:string,
@@ -40,6 +56,7 @@ export interface ChiTietTapChi{
     pissn?:string,
     eissn?:string,
     nguoithem?:User,
+    hoidonggiaosus?:HoiDongGiaoSu[],
     khongduoccongnhan?:MagazineRecognize,
     xephangtapchi?:XepHangTapChi,
     tinhdiemtapchi?:TinhDiemTapChi,
@@ -48,17 +65,17 @@ export interface ChiTietTapChi{
 
 export interface CreateTapChi{
     name:string,
-    issn?:string,
-    pissn?:string,
-    eissn?:string,
-    website?:string,
-    quocte?:boolean,
-    id_nhaxuatban?:number,
-    id_donvichuquan:number,
-    address?:string,
-    id_address_city?:number,
-    id_address_country?:number,
-    trangthai:boolean
+    issn:string | null,
+    pissn:string | null,
+    eissn:string | null,
+    website:string | null,
+    quocte:boolean | null,
+    id_nhaxuatban:number | null,
+    id_donvichuquan:number | null,
+    address:string | null,
+    id_address_city:number | null,
+    id_address_country:number | null,
+    dmnganhtheohdgs: Array<number> | null
 }
 
 export interface MagazineRecognize{
@@ -111,8 +128,7 @@ export interface UpdateTapChi{
     id_donvichuquan?:number,
     address?:string,
     id_address_city?:number,
-    id_adress_country?:number,
-    dmphanloaitapchi?:Array<number>,
+    id_address_country?:number,
     dmnganhtheohdgs?:Array<number>
 }
 

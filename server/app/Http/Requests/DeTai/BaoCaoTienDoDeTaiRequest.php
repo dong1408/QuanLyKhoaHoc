@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Detai;
+namespace App\Http\Requests\DeTai;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -30,9 +30,13 @@ class BaoCaoTienDoDeTaiRequest extends FormRequest
                 "bail", "required", "integer",
                 Rule::exists('san_phams', 'id')
             ],
+            "tenbaocao" => "bail|required|string",
             "ngaynopbaocao" => "bail|required|string",
-            "ketquaxet" => "bail|nullable|string",
-            "thoigiangiahan" => "bail|nullable|string",
+            "ketquaxet" => [
+                "bail", "required", "string",
+                Rule::in(["Đồng ý", "Không đồng ý"])
+            ],
+            "thoigiangiahan" => "bail|nullable|integer",
         ];
     }
 
@@ -42,7 +46,8 @@ class BaoCaoTienDoDeTaiRequest extends FormRequest
             'required' => 'Trường :attribute là bắt buộc',
             'integer' => 'Trường :attribute phải là một số',
             'string' => 'Trường :attribute phải là một chuỗi chữ',
-            'id.exists' => 'Sản phẩm không tồn tại trên hệ thống'
+            'id.exists' => 'Sản phẩm không tồn tại trên hệ thống',
+            'in' => 'Trường :attribute phải là một trong các giá trị :values',
         ];
     }
 

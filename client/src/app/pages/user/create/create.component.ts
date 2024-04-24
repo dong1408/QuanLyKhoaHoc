@@ -1,12 +1,9 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {forkJoin, Subject, take, takeUntil} from "rxjs";
-import {PagingService} from "../../../core/services/paging.service";
+import {BehaviorSubject, debounceTime, forkJoin, Observable, Subject, switchMap, take, takeUntil} from "rxjs"
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {UserService} from "../../../core/services/user/user.service";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
 import {HocHamHocViService} from "../../../core/services/user-info/hoc-ham-hoc-vi.service";
-import {DonVi} from "../../../core/types/user-info/don-vi.type";
-import {DonViService} from "../../../core/services/user-info/don-vi.service";
 import {NganhTinhDiemService} from "../../../core/services/quydoi/nganh-tinh-diem.service";
 import {ChuyenNganhTinhDiemService} from "../../../core/services/quydoi/chuyen-nganh-tinh-diem.service";
 import {ChuyenMonService} from "../../../core/services/user-info/chuyen-mon.service";
@@ -28,6 +25,7 @@ import {Role} from "../../../core/types/roles/role.type";
 import {RegisterUser} from "../../../core/types/user/user.type";
 import {dateConvert} from "../../../shared/commons/utilities";
 import {Router} from "@angular/router";
+import {ApiResponse} from "../../../core/types/api-response.type";
 
 @Component({
     selector:'app-user-create',
@@ -38,14 +36,18 @@ import {Router} from "@angular/router";
 export class UserCreateComponent implements OnInit,OnDestroy{
     destroy$ = new Subject<void>()
 
-    isGetDonViLoading:boolean = false
     isGetChuyenNganhTinhDiemLoading:boolean = false
     isCreate:boolean = false
 
     createForm:FormGroup
 
-    toChucs:ToChuc[] = []
-    donVis:DonVi[] = []
+    isGetToChuc: boolean = false
+    isGetNoiHoc: boolean = false
+
+    searchToChuc$ = new BehaviorSubject('');
+    searchNoiHoc$ = new BehaviorSubject('');
+
+    tochucs:ToChuc[] = []
     noiHocs:ToChuc[] = []
     ngachVienChucs:NgachVienChuc[] = []
     quocTichs:QuocGia[] = []
@@ -61,7 +63,6 @@ export class UserCreateComponent implements OnInit,OnDestroy{
         private userService:UserService,
         private toChucService:ToChucService,
         private hocHamHocViService:HocHamHocViService,
-        private donViService:DonViService,
         private nganhTinhDiemService:NganhTinhDiemService,
         private chuyenNganhTinhDiemService:ChuyenNganhTinhDiemService,
         private chuyenMonService:ChuyenMonService,
@@ -69,7 +70,6 @@ export class UserCreateComponent implements OnInit,OnDestroy{
         private ngachVienChucService:NgachVienChucService,
         public loadingService:LoadingService,
         private roleService:RoleService,
-        private router:Router
     ) {
     }
 
@@ -123,9 +123,6 @@ export class UserCreateComponent implements OnInit,OnDestroy{
             id_tochuc:[
                 null,
             ],
-            id_donvi:[
-                null
-            ],
             cohuu:[
                 null,
             ],
@@ -146,7 +143,13 @@ export class UserCreateComponent implements OnInit,OnDestroy{
                 ])
             ],
             id_noihoc:[
-                null
+                {
+                    value:null,
+                    disabled:true
+                },
+                Validators.compose([
+                    Validators.required
+                ])
             ],
             id_ngachvienchuc:[
                 null
@@ -174,36 +177,57 @@ export class UserCreateComponent implements OnInit,OnDestroy{
             ]
         })
 
+        this.createForm.get("dangdihoc")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select !== null){
+                this.createForm.get("id_noihoc")?.enable()
+            }else{
+                this.createForm.get("id_noihoc")?.disable()
+                this.createForm.get("id_noihoc")?.reset()
+            }
+        })
+
+        this.createForm.get("id_nganhtinhdiem")?.valueChanges.pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(select => {
+            if(select !== null){
+                this.createForm.get("id_chuyennganhtinhdiem")?.reset()
+                this.getChuyenNganhTinhDiem(select)
+                this.createForm.get("id_chuyennganhtinhdiem")?.enable()
+            }else{
+                this.createForm.get("id_chuyennganhtinhdiem")?.disable()
+                this.createForm.get("id_chuyennganhtinhdiem")?.reset()
+            }
+        })
+
+        this.onGetSearchNoiHoc()
+        this.onGetSearchToChuc()
+
         this.loadingService.startLoading()
         forkJoin([
-            this.toChucService.getAllToChuc(),
             this.hocHamHocViService.getAllHocHamHocVi(),
             this.ngachVienChucService.getAllNgachVienChuc(),
             this.chuyenMonService.getAllChuyeMon(),
             this.quocGiaService.getAllQuocGia(),
             this.nganhTinhDiemService.getNganhTinhDiem(),
-            this.donViService.getAllDonVi(),
             this.roleService.getAllRoles()
-        ],(tcResponse,hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,dvResponse,rResponse) => {
+        ],(hhResponse,nvcResponse,cmResponse,qgResponse,ntdResponse,rResponse) => {
             return {
-                listTC: tcResponse.data,
                 listHH: hhResponse.data,
                 listNVC: nvcResponse.data,
                 listCM: cmResponse.data,
                 listQG:qgResponse.data,
                 listNTD:ntdResponse.data,
-                listDV:dvResponse.data,
                 listR:rResponse.data
             }
         }).subscribe({
             next:(response) =>{
-                this.toChucs = response.listTC
                 this.hocHams = response.listHH
                 this.ngachVienChucs = response.listNVC
                 this.chuyenMons = response.listCM
                 this.quocTichs = response.listQG
                 this.nganhTinhDiem = response.listNTD
-                this.noiHocs = response.listTC
                 this.roles = response.listR
 
                 this.loadingService.stopLoading()
@@ -218,28 +242,6 @@ export class UserCreateComponent implements OnInit,OnDestroy{
             }
         })
     }
-
-    getDonViByToChucId(id:number){
-        this.isGetDonViLoading = true
-        this.donViService.getAllByToChucId(id)
-            .pipe(
-                takeUntil(this.destroy$)
-            ).subscribe({
-            next:(response) => {
-                this.donVis = response.data
-                this.isGetDonViLoading = false
-            },
-            error:(error) => {
-                this.notificationService.create(
-                    'error',
-                    "Lỗi",
-                    error
-                )
-                this.isGetDonViLoading = false
-            }
-        })
-    }
-
     getChuyenNganhTinhDiem(id:number){
         this.isGetChuyenNganhTinhDiemLoading = true
         this.chuyenNganhTinhDiemService.getChuyenNganhTinhDiemByIdNganhTinhDiem(id)
@@ -261,39 +263,45 @@ export class UserCreateComponent implements OnInit,OnDestroy{
         })
     }
 
-    onSelectNganhTinhDiem(event:any){
-        if(typeof(event) === 'number'){
-            this.createForm.controls?.['id_chuyennganhtinhdiem'].setValue(null)
-            this.getChuyenNganhTinhDiem(event)
-        }else{
-            this.chuyenNganhTinhDiem = []
-        }
-        if(!this.createForm.controls?.['id_nganhtinhdiem'].value){
-            this.chuyenNganhTinhDiem = []
+    onGetSearchToChuc(){
+        const listToChuc = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchToChuc$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listToChuc))
+
+        optionList$.subscribe(data => {
+            this.tochucs = data.data
+
+            this.isGetToChuc = false
+        })
+    }
+
+    onSearchToChuc(event:any){
+        if(event && event !== ""){
+            this.isGetToChuc = true
+            this.searchToChuc$.next(event)
         }
     }
 
-    onSelectToChuc(event:any){
-        if(typeof(event) === 'number'){
-            this.createForm.controls?.['id_donvi'].setValue(null)
-            this.getDonViByToChucId(event)
-        }else{
-            this.donVis = []
-        }
-        if(!this.createForm.controls?.['id_donvi'].value){
-            this.donVis = []
-        }
+    onGetSearchNoiHoc(){
+        const listNoiHoc = (keyword:string):Observable<ApiResponse<ToChuc[]>> =>  this.toChucService.getAllToChuc(keyword)
+        const optionList$:Observable<ApiResponse<ToChuc[]>> = this.searchNoiHoc$
+            .asObservable()
+            .pipe(debounceTime(700))
+            .pipe(switchMap(listNoiHoc))
+
+        optionList$.subscribe(data => {
+            this.noiHocs = data.data
+
+            this.isGetNoiHoc = false
+        })
     }
 
-    onSelectNoHoc(event:any){
-        if(typeof(event) !== null || typeof(event) !== undefined){
-            this.createForm.controls?.['id_noihoc'].enable()
-        }else{
-            this.createForm.controls?.['id_noihoc'].disable()
-        }
-
-        if(!this.createForm.controls?.['dangdihoc'].value){
-            this.createForm.controls?.['id_noihoc'].disable()
+    onSearchNoiHoc(event:any){
+        if(event && event !== ""){
+            this.isGetNoiHoc = true
+            this.searchNoiHoc$.next(event)
         }
     }
 
@@ -326,7 +334,6 @@ export class UserCreateComponent implements OnInit,OnDestroy{
             orchid: form.get("orchid")?.value ?? null,
             email2: form.get("email2")?.value ?? null,
             id_tochuc: form.get("id_tochuc")?.value ?? null,
-            id_donvi:form.get("id_tochuc")?.value ?? null,
             cohuu: form.get("cohuu")?.value ?? false,
             keodai: form.get("keodai")?.value ?? false,
             dinhmucnghiavunckh: form.get("dinhmucnghiavunckh")?.value ?? null,

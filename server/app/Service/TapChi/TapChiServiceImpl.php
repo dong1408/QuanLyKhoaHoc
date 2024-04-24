@@ -4,6 +4,7 @@ namespace App\Service\TapChi;
 
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\InvalidValueException;
+use App\Exceptions\TapChi\TapChiCanNotUpdateException;
 use App\Exceptions\TapChi\TapChiNotFoundException;
 use App\Exceptions\TapChi\TinhDiemTapChiException;
 use App\Exceptions\TapChi\UpdateKhongCongNhanException;
@@ -26,12 +27,15 @@ use Illuminate\Support\Facades\DB;
 
 class TapChiServiceImpl implements TapChiService
 {
-    public function getAllTapChi(): ResponseSuccess
+    public function getAllTapChi(Request $request): ResponseSuccess
     {
+        $keysearch = $request->query('search', "");
         $result = [];
-        $tapChis = TapChi::where('trangthai', true)->get();
-        foreach ($tapChis as $tapChi) {
-            $result[] = Convert::getTapChiVm($tapChi);
+        if (!empty($keysearch)) {
+            $tapChis = TapChi::where('name', 'LIKE', '%' . $keysearch . '%')->where('trangthai', true)->take(10)->get();
+            foreach ($tapChis as $tapChi) {
+                $result[] = Convert::getTapChiVm($tapChi);
+            }
         }
         return new ResponseSuccess("Thành công", $result);
     }
@@ -82,7 +86,7 @@ class TapChiServiceImpl implements TapChiService
                     ->orWhere('pissn', 'LIKE', '%' . $keysearch . '%')
                     ->orWhere('eissn', 'LIKE', '%' . $keysearch . '%');
             })->where(function ($query) {
-                $query->where('trangthai', true)->orWhere('trangthai',null);
+                $query->where('trangthai', true)->orWhere('trangthai', null);
             })->orderBy($sortby, 'desc')->paginate(env('PAGE_SIZE'), ['*'], 'page', $page);
         }
         $result = [];
@@ -221,12 +225,12 @@ class TapChiServiceImpl implements TapChiService
                 'address' => $validated['address'],
                 'id_address_city' => $validated['id_address_city'],
                 'id_address_country' => $validated['id_address_country'],
-                'trangthai' => $validated['trangthai'],
+                'trangthai' => false,
                 'id_nguoithem' => auth('api')->user()->id,
             ]);
-//            if($validated['dmnganhtheohdgs'] != null){
-//                $tapChi->dmNganhTheoHDGS()->attach($validated['dmnganhtheohdgs']);
-//            }
+            if ($validated['dmnganhtheohdgs'] != null) {
+                $tapChi->dmNganhTheoHDGS()->attach($validated['dmnganhtheohdgs']);
+            }
         });
         $result = Convert::getTapChiVm($tapChi);
         return new ResponseSuccess("Thành công", $result);
@@ -268,6 +272,11 @@ class TapChiServiceImpl implements TapChiService
             throw new TapChiNotFoundException();
         }
 
+        // kiem tra tap chi trong trang thai soft delete thi khong cho chinh sua
+        if ($tapChi->trashed()) {
+            throw new TapChiCanNotUpdateException();
+        }
+
         $validated = $request->validated();
 
         DB::transaction(function () use ($validated, &$tapChi) {
@@ -283,7 +292,7 @@ class TapChiServiceImpl implements TapChiService
             $tapChi->id_address_city = $validated['id_address_city'];
             $tapChi->id_address_country = $validated['id_address_country'];
             $tapChi->save();
-            $tapChi->dmPhanLoaiTapChis()->sync($validated['dmphanloaitapchi']);
+            // $tapChi->dmPhanLoaiTapChis()->sync($validated['dmphanloaitapchi']);
             $tapChi->dmNganhTheoHDGS()->sync($validated['dmnganhtheohdgs']);
         });
         $result = Convert::getTapChiVm($tapChi);
@@ -294,9 +303,14 @@ class TapChiServiceImpl implements TapChiService
     public function updateKhongCongNhanTapChi(UpdateTapChiKhongCongNhanRequest $request, int $id): ResponseSuccess
     {
 
-        $tapChi = TapChi::find($id);
+        $tapChi = TapChi::withTrashed()->find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
+        }
+
+        // kiem tra tap chi trong trang thai soft delete thi khong cho chinh sua
+        if ($tapChi->trashed()) {
+            throw new TapChiCanNotUpdateException();
         }
 
         $validated = $request->validated();
@@ -319,15 +333,20 @@ class TapChiServiceImpl implements TapChiService
 
     public function updateXepHangTapChi(UpdateXepHangTapChiRequest $request, int $id): ResponseSuccess
     {
-        $tapChi = TapChi::find($id);
+        $tapChi = TapChi::withTrashed()->find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
 
+        // kiem tra tap chi trong trang thai soft delete thi khong cho chinh sua
+        if ($tapChi->trashed()) {
+            throw new TapChiCanNotUpdateException();
+        }
+
         $validated = $request->validated();
 
-        $xepHangTapChi = null;
-        DB::transaction(function () use ($validated, &$xepHangTapChi,$tapChi) {
+        $xepHangTapChi = new XepHangTapChi();
+        DB::transaction(function () use ($validated, &$xepHangTapChi, $tapChi) {
             $xepHangTapChi = XepHangTapChi::create([
                 'id_tapchi' => $tapChi->id,
                 'wos' => $validated['wos'],
@@ -339,7 +358,7 @@ class TapChiServiceImpl implements TapChiService
                 'ghichu' => $validated['ghichu'],
                 'id_user' => auth('api')->user()->id,
             ]);
-            if($validated['dmphanloaitapchi'] != null){
+            if ($validated['dmphanloaitapchi'] != null) {
                 $tapChi->dmPhanLoaiTapChis()->sync($validated['dmphanloaitapchi']);
             }
         });
@@ -351,9 +370,14 @@ class TapChiServiceImpl implements TapChiService
 
     public function updateTinhDiemTapChi(UpdateTinhDiemTapChiRequest $request, int $id): ResponseSuccess
     {
-        $tapChi = TapChi::find($id);
+        $tapChi = TapChi::withTrashed()->find($id);
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
+        }
+
+        // kiem tra tap chi trong trang thai soft delete thi khong cho chinh sua
+        if ($tapChi->trashed()) {
+            throw new TapChiCanNotUpdateException();
         }
 
         $validated = $request->validated();
@@ -412,5 +436,20 @@ class TapChiServiceImpl implements TapChiService
         }
         TapChi::onlyTrashed()->where('id', $id)->forceDelete();
         return new ResponseSuccess("Thành công", true);
+    }
+
+
+    public function themTapChiNgoai($array): TapChi
+    {
+        $tapChi = TapChi::create([
+            'name' => $array['name'],
+            'issn' => $array['issn'],
+            'eissn' => $array['eissn'],
+            'pissn' => $array['pissn'],
+            'website' => $array['website'],
+            'trangthai' => $array['trangthai'],
+            'id_nguoithem' => $array['id_nguoithem']
+        ]);
+        return $tapChi;
     }
 }

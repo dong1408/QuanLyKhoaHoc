@@ -9,7 +9,7 @@ class ToChucDetailVm
 {
     public int $id;
     public ?string $matochuc;
-    public ?string $tentochuc;
+    public string $tentochuc;
     public ?string $tentochuc_en;
     public ?string $website;
     public ?string $dienthoai;

@@ -37,7 +37,7 @@ class UpdateTapChiRequest extends FormRequest
             "issn" => "bail|nullable|string",
             "eissn" => "bail|nullable|string",
             "pissn" => "bail|nullable|string",
-            "website" => "bail|nullable|url",
+            "website" => "bail|nullable|string",
             "quocte" => "bail|nullable|boolean",
             "id_nhaxuatban" => [
                 "bail", "nullable", "integer",
@@ -57,12 +57,8 @@ class UpdateTapChiRequest extends FormRequest
                 Rule::exists('d_m_quoc_gias', 'id')
             ],
 
-            "dmphanloaitapchi" => "bail|nullable|array",
+
             "dmnganhtheohdgs" => "bail|nullable|array",
-            "dmphanloaitapchi.*" => [
-                "int",
-                Rule::exists('d_m_phan_loai_tap_chi', 'id')
-            ],
             "dmnganhtheohdgs.*" => [
                 "int",
                 Rule::exists('d_m_nganh_theo_hdgs', 'id')

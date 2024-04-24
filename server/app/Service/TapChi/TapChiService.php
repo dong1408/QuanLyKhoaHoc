@@ -8,12 +8,13 @@ use App\Http\Requests\TapChi\UpdateTapChiRequest;
 use App\Http\Requests\TapChi\UpdateTinhDiemTapChiRequest;
 use App\Http\Requests\TapChi\UpdateTrangThaiTapChiRequest;
 use App\Http\Requests\TapChi\UpdateXepHangTapChiRequest;
+use App\Models\TapChi\TapChi;
 use App\Utilities\ResponseSuccess;
 use Illuminate\Http\Request;
 
 interface TapChiService
 {
-    public function getAllTapChi(): ResponseSuccess;
+    public function getAllTapChi(Request $request): ResponseSuccess;
     public function getTapChiPaging(Request $request): ResponseSuccess;
     public function getAllTapChiChoDuyet(Request $request): ResponseSuccess;
     public function getTapChiById(int $id): ResponseSuccess;
@@ -33,4 +34,6 @@ interface TapChiService
     public function deleteTapChi(int $id): ResponseSuccess;
     public function restoreTapChi(int $id): ResponseSuccess;
     public function forceDeleteTapChi(int $id): ResponseSuccess;
+
+    public function themTapChiNgoai($array): TapChi;
 }

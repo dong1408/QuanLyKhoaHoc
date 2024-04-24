@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin\BaiBao;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BaiBao\CreateBaiBaoRequest;
+use App\Http\Requests\BaiBao\UpdateBaiBaoForUserRequest;
 use App\Http\Requests\BaiBao\UpdateBaiBaoRequest;
 use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;
 use App\Http\Requests\SanPham\UpdateTrangThaiRaSoatRequest;
+use App\Http\Requests\SanPham\UploadFileMinhChungRequest;
 use App\Service\BaiBao\BaiBaoService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -119,6 +121,18 @@ class BaiBaoKhoaHocController extends Controller
     public function getBaiBaoThamGia(Request $request): Response
     {
         $result = $this->baiBaoService->getBaiBaoThamGia($request);
+        return response()->json($result, 200);
+    }
+
+    public function updateBaiBaoForUser(UpdateBaiBaoForUserRequest $request, int $id): Response
+    {
+        $result = $this->baiBaoService->updateBaiBaoForUser($request, $id);
+        return response()->json($result, 200);
+    }
+
+    public function uploadFileMinhChung(UploadFileMinhChungRequest $request): Response
+    {
+        $result = $this->baiBaoService->UploadFileMinhChung($request);
         return response()->json($result, 200);
     }
 }

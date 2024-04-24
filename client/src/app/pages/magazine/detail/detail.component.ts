@@ -43,7 +43,7 @@ export class MagazineDetailComponent implements OnInit,OnDestroy{
             if(parseInt(params.get("id") as string)){
                 this.id = parseInt(params.get("id") as string)
             }else{
-                this.router.navigate(["/tap-chi"])
+                this.router.navigate(["/admin/tap-chi"])
                 return;
             }
         })
@@ -69,7 +69,7 @@ export class MagazineDetailComponent implements OnInit,OnDestroy{
                     error
                 )
                 this.loadingService.stopLoading()
-                this.router.navigate(['/tap-chi'])
+                this.router.navigate(['/admin/admin/tap-chi'])
                 return;
             }
         })
@@ -142,7 +142,6 @@ export class MagazineDetailComponent implements OnInit,OnDestroy{
                     'Thành Công',
                     response.message
                 )
-                this.router.navigate(['/tap-chi'])
                 this.isForceDelete = false
             },
             error:(error) => {
