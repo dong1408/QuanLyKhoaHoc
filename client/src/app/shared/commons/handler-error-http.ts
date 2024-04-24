@@ -6,12 +6,12 @@ export function handleError(error: any){
     }
 
     return throwError(() => {
-        if(error?.error?.message){
+        if(error?.error?.message && error?.error?.httpStatusCode){
             return error.error.message
         }
-        if(error?.message){
-            return error.message
-        }
+        // if(error?.message){
+        //     return error.message
+        // }
         return "Có lỗi xảy ra, vui lòng thử lại sau"
     })
 }
