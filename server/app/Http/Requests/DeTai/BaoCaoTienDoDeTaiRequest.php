@@ -34,7 +34,7 @@ class BaoCaoTienDoDeTaiRequest extends FormRequest
             "ngaynopbaocao" => "bail|required|string",
             "ketquaxet" => [
                 "bail", "required", "string",
-                Rule::in(["Đống ý", "Không đồng ý"])
+                Rule::in(["Đồng ý", "Không đồng ý"])
             ],
             "thoigiangiahan" => "bail|nullable|integer",
         ];

@@ -31,9 +31,12 @@
                 <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Kết Quả Xét</h3>
                     <nz-form-control [nzErrorTip]="ketquaxet" nzHasFeedback>
-                        <input nz-input placeholder="Kết Quả Xét"  type="text" formControlName="ketquaxet"/>
+                        <nz-select nzPlaceHolder="Kết Quả Xét" formControlName="ketquaxet">
+                            <nz-option nzValue="Đồng ý" nzLabel="Đồng ý"></nz-option>
+                            <nz-option nzValue="Không đồng ý" nzLabel="Không đồng ý"></nz-option>
+
+                        </nz-select>
                         <ng-template #ketquaxet let-control>
-                            <small *ngIf="control?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
                             <small *ngIf="control?.errors?.['required']" class="tw-ml-2 error">Không được để trống</small>
                         </ng-template>
                     </nz-form-control>

@@ -70,7 +70,6 @@ export class BaoCaoTienDoComponent{
             ketquaxet:[
                 null,
                 Validators.compose([
-                    noWhiteSpaceValidator(),
                     Validators.required
                 ])
             ],
