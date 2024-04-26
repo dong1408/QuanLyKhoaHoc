@@ -163,15 +163,15 @@ Route::group([
     Route::get('tapchi/{id}/khongcongnhan', [TapChiController::class, 'getLichSuTapChiKhongCongNhan']);
     Route::get('tapchi/{id}/xephang', [TapChiController::class, 'getLichSuXepHangTapChi']);
     Route::get('tapchi/{id}/tinhdiem', [TapChiController::class, 'getLichSuTinhDiemTapChi']);
-    Route::post('tapchi', [TapChiController::class, 'createTapChi']);
-    Route::patch('tapchi/{id}/trangthai', [TapChiController::class, 'updateTrangThaiTapChi']);
-    Route::patch('tapchi/{id}', [TapChiController::class, 'updateTapChi']);
-    Route::post('tapchi/{id}/khongcongnhan', [TapChiController::class, 'updateKhongCongNhanTapChi']);
-    Route::post('tapchi/{id}/xephang', [TapChiController::class, 'updateXepHangTapChi']);
-    Route::post('tapchi/{id}/tinhdiem', [TapChiController::class, 'updateTinhDiemTapChi']);
-    Route::patch('tapchi/{id}/delete', [TapChiController::class, 'deleteTapChi']);
-    Route::patch('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi']);
-    Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi']);
+    Route::post('tapchi', [TapChiController::class, 'createTapChi'])->can('tapchi.add');
+    Route::patch('tapchi/{id}/trangthai', [TapChiController::class, 'updateTrangThaiTapChi'])->can('tapchi.update');
+    Route::patch('tapchi/{id}', [TapChiController::class, 'updateTapChi'])->can('tapchi.update');
+    Route::post('tapchi/{id}/khongcongnhan', [TapChiController::class, 'updateKhongCongNhanTapChi'])->can('tapchi.update');
+    Route::post('tapchi/{id}/xephang', [TapChiController::class, 'updateXepHangTapChi'])->can('tapchi.update');
+    Route::post('tapchi/{id}/tinhdiem', [TapChiController::class, 'updateTinhDiemTapChi'])->can('tapchi.update');
+    Route::patch('tapchi/{id}/delete', [TapChiController::class, 'deleteTapChi'])->can('tapchi.delete');
+    Route::patch('tapchi/{id}/restore', [TapChiController::class, 'restoreTapChi'])->can('tapchi.delete');
+    Route::delete('tapchi/{id}/force', [TapChiController::class, 'forceDeleteTapChi'])->can('tapchi.delete');
     Route::get('tapchi/{id}', [TapChiController::class, 'getDetailTapChi']);
 
 
@@ -190,9 +190,9 @@ Route::group([
     // To Chuc
     Route::get('tochuc', [ToChucController::class, 'getAllToChuc']);
     Route::get('tochuc/paging', [ToChucController::class, 'getToChucPaging']);
-    Route::post('tochuc', [ToChucController::class, 'createToChuc']);
-    Route::patch('tochuc/{id}', [ToChucController::class, 'updateToChuc']);
-    Route::delete('tochuc/{id}', [ToChucController::class, 'deleteToChuc']);
+    Route::post('tochuc', [ToChucController::class, 'createToChuc'])->can('tochuc.add');
+    Route::patch('tochuc/{id}', [ToChucController::class, 'updateToChuc'])->can('tochuc.update');
+    Route::delete('tochuc/{id}', [ToChucController::class, 'deleteToChuc'])->can('tochuc.delete');
     Route::get('tochuc/{id}', [ToChucController::class, 'getDetailToChuc']);
 
 
