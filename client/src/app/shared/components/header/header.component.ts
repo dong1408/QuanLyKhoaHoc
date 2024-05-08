@@ -6,6 +6,7 @@ import {LocalStorageService} from "../../../core/services/local-storage.service"
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {Router} from "@angular/router";
 import {ConstantsService} from "../../../core/services/constants.service";
+import {Role} from "../../../core/types/roles/role.type";
 
 @Component({
     selector:"app-header",
@@ -22,6 +23,8 @@ export class HeaderComponent{
 
     logoutLoading:boolean = false
 
+    isAdmin: boolean = false
+
     constructor(
         private authService:AuthService,
         private localStorageService:LocalStorageService,
@@ -35,6 +38,9 @@ export class HeaderComponent{
     ngOnInit() {
         this.authService.userState$.pipe(takeUntil(this.destroy$)).subscribe(response => {
             this.userInfo = response
+            if(this.userInfo !== null){
+                this.isAdmin = this.userInfo.roles.some((item:Role) => item.mavaitro === 'super_admin' || item.mavaitro === 'admin')
+            }
         })
     }
 
