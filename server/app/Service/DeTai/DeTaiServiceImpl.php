@@ -1288,14 +1288,16 @@ class DeTaiServiceImpl implements DeTaiService
         $idUserCurent = auth('api')->user()->id;
         $userCurrent = User::find($idUserCurent);
         $flag = false;
+        $deTaiNghiemThu = false;
         if (!empty(NghiemThu::where('id_sanpham', $id_sanpham)->first())) {
+            $deTaiNghiemThu = true;
             foreach ($userCurrent->roles as $role) {
                 if ($role->mavaitro == 'super_admin') {
                     $flag = true;
                 }
             }
         }
-        if (!$flag) {
+        if ($deTaiNghiemThu && !$flag) {
             throw new UserNotHavePermissionException();
         }
 
@@ -1321,14 +1323,16 @@ class DeTaiServiceImpl implements DeTaiService
         $idUserCurent = auth('api')->user()->id;
         $userCurrent = User::find($idUserCurent);
         $flag = false;
+        $deTaiNghiemThu = false;
         if (!empty(NghiemThu::where('id_sanpham', $id_sanpham)->first())) {
+            $deTaiNghiemThu = true;
             foreach ($userCurrent->roles as $role) {
                 if ($role->mavaitro == 'super_admin') {
                     $flag = true;
                 }
             }
         }
-        if (!$flag) {
+        if ($deTaiNghiemThu && !$flag) {
             throw new UserNotHavePermissionException();
         }
 
@@ -1351,14 +1355,16 @@ class DeTaiServiceImpl implements DeTaiService
         $idUserCurent = auth('api')->user()->id;
         $userCurrent = User::find($idUserCurent);
         $flag = false;
+        $deTaiNghiemThu = false;
         if (!empty(NghiemThu::where('id_sanpham', $id_sanpham)->first())) {
+            $deTaiNghiemThu = true;
             foreach ($userCurrent->roles as $role) {
                 if ($role->mavaitro == 'super_admin') {
                     $flag = true;
                 }
             }
         }
-        if (!$flag) {
+        if ($deTaiNghiemThu && !$flag) {
             throw new UserNotHavePermissionException();
         }
 
