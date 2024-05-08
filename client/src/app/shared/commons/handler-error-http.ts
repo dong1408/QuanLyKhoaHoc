@@ -9,9 +9,9 @@ export function handleError(error: any){
         if(error?.error?.message && error?.error?.httpStatusCode){
             return error.error.message
         }
-        // if(error?.message){
-        //     return error.message
-        // }
+        if(error?.message){
+            return error.message
+        }
         return "Có lỗi xảy ra, vui lòng thử lại sau"
     })
 }

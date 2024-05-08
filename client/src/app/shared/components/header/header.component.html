@@ -35,8 +35,8 @@
                                 <li routerLink="/home/tai-khoan/thong-tin">
                                     Thông Tin Tài Khoản
                                 </li>
-                                <li >
-                                    Sản Phẩm
+                                <li *ngIf="isAdmin" routerLink="/admin">
+                                    Quản Trị
                                 </li>
                             </ul>
                         </div>

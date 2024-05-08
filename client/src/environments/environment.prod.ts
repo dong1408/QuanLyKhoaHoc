@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: "https://hotrotinhoc.com.vn/api"
+    apiUrl: "http://18.136.7.151/api"
 }
