@@ -252,7 +252,8 @@ export class UserComponent implements OnInit,OnDestroy{
                     if(item.id === this.currentUserId){
                         return {
                             ...item,
-                            roles: response.data
+                            roles: response.data,
+                            roleString: response.data?.map(i => i.name).join(", ")
                         }
                     }
                     return item

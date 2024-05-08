@@ -17,8 +17,8 @@ export interface ToChuc{
 }
 
 export interface TaoToChuc{
-    matochuc:string,
-    tentochuc:string | null,
+    matochuc:string | null,
+    tentochuc:string,
     tentochuc_en:string | null,
     website: string | null,
     dienthoai: string | null,
@@ -29,8 +29,8 @@ export interface TaoToChuc{
 }
 
 export interface CapNhatToChuc{
-    matochuc:string,
-    tentochuc:string | null,
+    matochuc:string | null,
+    tentochuc:string,
     tentochuc_en:string | null,
     website: string | null,
     dienthoai: string | null,
@@ -42,7 +42,7 @@ export interface CapNhatToChuc{
 
 export interface ChiTietToChuc{
     id:number,
-    matochuc:string,
+    matochuc?:string,
     tentochuc?:string,
     tentochuc_en?:string,
     website?:string,

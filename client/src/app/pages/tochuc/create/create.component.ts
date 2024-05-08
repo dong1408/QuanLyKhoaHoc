@@ -50,7 +50,6 @@ export class TaoToChucComponent implements OnInit,OnDestroy{
             matochuc:[
                 null,
                 Validators.compose([
-                    Validators.required,
                     noWhiteSpaceValidator()
                 ])
             ],
@@ -171,7 +170,7 @@ export class TaoToChucComponent implements OnInit,OnDestroy{
             tentochuc: form.get("tentochuc")?.value,
             dienthoai: form.get("dienthoai")?.value ?? null,
             website: form.get("website")?.value ?? null,
-            matochuc: form.get("matochuc")?.value,
+            matochuc: form.get("matochuc")?.value ?? null,
             tentochuc_en: form.get("tentochuc_en")?.value ?? null,
             address: form.get("address")?.value ?? null,
             id_phanloaitochuc: form.get("id_phanloaitochuc")?.value ?? null,

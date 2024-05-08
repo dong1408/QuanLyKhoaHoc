@@ -65,7 +65,6 @@ export class CapNhatToChucComponent implements OnInit,OnDestroy{
             matochuc:[
                 null,
                 Validators.compose([
-                    Validators.required,
                     noWhiteSpaceValidator()
                 ])
             ],
@@ -135,7 +134,7 @@ export class CapNhatToChucComponent implements OnInit,OnDestroy{
                 }
 
                 this.createForm.patchValue({
-                    matochuc: this.tochuc.matochuc,
+                    matochuc: this.tochuc.matochuc ?? null,
                     tentochuc:this.tochuc.tentochuc,
                     tentochuc_en:this.tochuc.tentochuc_en ?? null,
                     website: this.tochuc.website ?? null,
@@ -206,7 +205,7 @@ export class CapNhatToChucComponent implements OnInit,OnDestroy{
             tentochuc: form.get("tentochuc")?.value,
             dienthoai: form.get("dienthoai")?.value ?? null,
             website: form.get("website")?.value ?? null,
-            matochuc: form.get("matochuc")?.value,
+            matochuc: form.get("matochuc")?.value ?? null,
             tentochuc_en: form.get("tentochuc_en")?.value ?? null,
             address: form.get("address")?.value ?? null,
             id_phanloaitochuc: form.get("id_phanloaitochuc")?.value ?? null,

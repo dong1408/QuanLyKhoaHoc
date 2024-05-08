@@ -35,7 +35,7 @@ class ImportUser implements ToModel, WithHeadingRow, SkipsOnError
             'name' => 'bail|required|string',
             'username' => 'bail|required|unique:users,username',
             'email' => 'bail|required|email|unique:users,email',
-            'ngaysinh' => 'bail|nullable|date_format:d-m-Y',
+            'ngaysinh' => 'bail|nullable|date_format:Y-m-d',
         ], [
             'name.required' => 'không được bỏ trống trường name',
             'username.required' => 'không được bỏ trống trường username',
@@ -43,7 +43,7 @@ class ImportUser implements ToModel, WithHeadingRow, SkipsOnError
             'email.required' => 'trường email là bắt buộc',
             'email.email' => 'email không đúng định dạng',
             'email.unique' => 'email đã tồn tại trên hệ thống',
-            'ngaysinh.date_format' => 'Ngày sinh phải theo định dạng dd-MM-yy'
+            'ngaysinh.date_format' => 'Ngày sinh phải theo định dạng YYYY-MM-DD'
         ]);
 
         if ($validator->fails()) {
