@@ -254,7 +254,8 @@ class UserServiceImpl implements UserService
 
         $result = [];
 
-        foreach ($user->roles as $role) {
+        $roles = $user->roles()->get();
+        foreach ($roles as $role) {
             $result[] = Convert::getRoleVm($role);
         }
 
