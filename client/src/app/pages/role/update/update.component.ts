@@ -214,6 +214,8 @@ export class UpdateRoleComponent implements OnInit,OnDestroy{
             ...form.get("nguoidung_id")?.value,
             ...form.get("baibao_id")?.value,
             ...form.get("role_id")?.value,
+            ...form.get("tochuc_id")?.value,
+            ...form.get("tapchi_id")?.value
         ]
 
         if(permission_id.length <= 0){
