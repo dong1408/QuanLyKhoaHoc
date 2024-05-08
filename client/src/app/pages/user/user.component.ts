@@ -248,6 +248,15 @@ export class UserComponent implements OnInit,OnDestroy{
                     "Thành Công",
                     response.message
                 )
+                this.users = this.users.map((item) => {
+                    if(item.id === this.currentUserId){
+                        return {
+                            ...item,
+                            roles: response.data
+                        }
+                    }
+                    return item
+                })
 
                 this.onCloseFormUpdateRole()
                 this.isUpdateRole = false
