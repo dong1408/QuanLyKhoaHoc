@@ -12,7 +12,7 @@ import {adminGuards} from "./core/guards/admin.guards";
 const routes: Routes = [
     {
         path: "",
-        redirectTo: "/home",
+        redirectTo: "/home/tai-khoan/thong-tin",
         pathMatch: "full"
     },
   {
@@ -34,6 +34,10 @@ const routes: Routes = [
         path: 'doi-mat-khau',
         canActivate:[notChangedGuards],
         loadChildren: () => import('./pages/change-password/change-password.module').then(m => m.ChangePasswordModule)
+    },
+    {
+        path:"**",
+        redirectTo: "/home/tai-khoan/thong-tin"
     }
 ];
 
