@@ -137,7 +137,7 @@ Route::group([
     Route::get('detai/{id}/lichsubaocao', [DeTaiController::class, 'getLichSuBaoCao'])->can('detai.view');
     Route::patch('detai/{id}/delete', [DeTaiController::class, 'deleteDeTai'])->can('detai.delete');
     Route::patch('detai/{id}/restore', [DeTaiController::class, 'restoreDeTai'])->can('detai.delete');
-    Route::delete('detai/{id}/forceDelete', [DeTaiController::class, 'forceDeleteDeTai'])->can('detai.delete');
+    Route::delete('detai/{id}/force', [DeTaiController::class, 'forceDeleteDeTai'])->can('detai.delete');
     Route::get('detai/kekhai', [DeTaiController::class, 'getDeTaiKeKhai']);
     Route::get('detai/thamgia', [DeTaiController::class, 'getDeTaiThamGia']);
     Route::get('detai/{id}', [DeTaiController::class, 'getDetailDeTai'])->can('detai.view'); // cho admin + owner
