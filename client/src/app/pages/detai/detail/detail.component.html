@@ -127,7 +127,7 @@
                                 <nz-form-item>
                                     <h4 class=""><span class="error">*</span> Điện Thoại</h4>
                                     <nz-form-control [nzErrorTip]="dienthoai" nzHasFeedback>
-                                        <input nz-input placeholder="Email"  type="text" formControlName="dienthoai"/>
+                                        <input nz-input placeholder="Điện Thoại"  type="text" formControlName="dienthoai"/>
                                     </nz-form-control>
                                     <ng-template #dienthoai>
                                         <small *ngIf="control.get('dienthoai')?.errors?.['whitespace']" class="tw-ml-2 error">Không được sử dụng dấu khoảng trắng</small>
@@ -397,7 +397,7 @@
                 <nz-form-item class="tw-w-full">
                     <h3 class=""><span class="error">*</span> Ngày Nghiệm Thu</h3>
                     <nz-form-control [nzErrorTip]="ngaynghiemthu" nzHasFeedback>
-                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Xét Duyệt" formControlName="ngaynghiemthu"></nz-date-picker>
+                        <nz-date-picker nzFormat="yyyy/MM/dd" class="tw-w-full" nzPlaceHolder="Ngày Nghiệm Thu" formControlName="ngaynghiemthu"></nz-date-picker>
                         <ng-template #ngaynghiemthu let-control>
                         </ng-template>
                     </nz-form-control>
