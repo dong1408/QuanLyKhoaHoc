@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin\DeTai;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Detai\BaoCaoTienDoDeTaiRequest;
-use App\Http\Requests\Detai\CreateDeTaiRequest;
-use App\Http\Requests\Detai\NghiemThuDeTaiRequest;
-use App\Http\Requests\Detai\TuyenChonDeTaiRequest;
-use App\Http\Requests\Detai\UpdateDeTaiForUserRequest;
-use App\Http\Requests\Detai\UpdateDeTaiRequest;
-use App\Http\Requests\Detai\XetDuyetDeTaiRequest;
+use App\Http\Requests\DeTai\BaoCaoTienDoDeTaiRequest;
+use App\Http\Requests\DeTai\CreateDeTaiRequest;
+use App\Http\Requests\DeTai\NghiemThuDeTaiRequest;
+use App\Http\Requests\DeTai\TuyenChonDeTaiRequest;
+use App\Http\Requests\DeTai\UpdateDeTaiForUserRequest;
+use App\Http\Requests\DeTai\UpdateDeTaiRequest;
+use App\Http\Requests\DeTai\XetDuyetDeTaiRequest;
 use App\Http\Requests\SanPham\UpdateFileMinhChungSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamRequest;
 use App\Http\Requests\SanPham\UpdateSanPhamTacGiaRequest;

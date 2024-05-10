@@ -686,10 +686,10 @@ class DeTaiServiceImpl implements DeTaiService
 
     private function keKhaiDonVi($donVi)
     {
-        $donViFind = DMToChuc::where('matochuc', $donVi['matochuc'])->get()->first();
+        $donViFind = DMToChuc::where('tentochuc', $donVi['tentochuc'])->get()->first();
         if ($donViFind == null) {
             $array = [
-                'matochuc' => $donVi['matochuc'],
+//                'matochuc' => $donVi['matochuc'],
                 'tentochuc' => $donVi['tentochuc'],
             ];
             $donViTaiTro = $this->toChucService->themToChucNgoai($array);

@@ -198,5 +198,44 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermission('role.update');
         });
 
+
+        // ====================================================================== //
+        // ==========================    TapChi Permission    ===================== //
+        // ====================================================================== //
+
+        // 1. adđ tap chi
+        Gate::define('tapchi.add', function (User $user) {
+            return $user->hasPermission('tapchi.add');
+        });
+
+        // 2. update tap chi
+        Gate::define('tapchi.update', function (User $user) {
+            return $user->hasPermission('tapchi.update');
+        });
+
+        // 3, update role
+        Gate::define('tapchi.delete', function (User $user) {
+            return $user->hasPermission('tapchi.delete');
+        });
+
+
+        // ====================================================================== //
+        // ==========================    ToChuc Permission    ===================== //
+        // ====================================================================== //
+
+        // 1. adđ tap chi
+        Gate::define('tochuc.add', function (User $user) {
+            return $user->hasPermission('tochuc.add');
+        });
+
+        // 2. update tap chi
+        Gate::define('tochuc.update', function (User $user) {
+            return $user->hasPermission('tochuc.update');
+        });
+
+        // 3, update role
+        Gate::define('tochuc.delete', function (User $user) {
+            return $user->hasPermission('tochuc.delete');
+        });
     }
 }
