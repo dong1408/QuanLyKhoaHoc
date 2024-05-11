@@ -116,6 +116,8 @@ export class ChiTietDeTaiComponent{
             ]
         })
 
+        this.onGetSearchUser()
+        this.onGetSearchToChuc()
 
         this.getChiTietDeTai()
     }

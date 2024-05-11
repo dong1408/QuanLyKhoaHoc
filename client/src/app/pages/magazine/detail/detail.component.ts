@@ -60,7 +60,6 @@ export class MagazineDetailComponent implements OnInit,OnDestroy{
             next:(response) => {
                 this.magazine = response.data
                 this.loadingService.stopLoading()
-                console.log(response.data)
             },
             error:(error) => {
                 this.notificationService.create(

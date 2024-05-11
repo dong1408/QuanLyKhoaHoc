@@ -282,7 +282,6 @@ export class CapNhatBaiBaoComponent implements OnInit,OnDestroy{
                     "Lỗi",
                     "Cập nhật thất bại, vui lòng thử lại sau"
                 )
-                console.log(error)
                 this.isCapNhatLoading = false
                 return;
             }

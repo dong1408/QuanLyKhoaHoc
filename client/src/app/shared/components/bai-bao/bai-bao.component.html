@@ -28,19 +28,19 @@
     <nz-descriptions-item nzTitle="Pages">{{baibao.pages  ?? 'Không Có'}}
     </nz-descriptions-item>
     <nz-descriptions-item nzTitle="Tạp Chí">
-        <strong > + Mã: </strong>{{baibao.tapchi.id}}
+        + Mã: <span class="tw-font-semibold">{{baibao.tapchi.id}}</span>
         <br>
-        <strong > + Tên: </strong>{{baibao.tapchi.name ??
-        'Không Có'}} <br>
-        <strong> + Trạng Thái: </strong>
-        <span *ngIf="baibao.tapchi.trangthai" class="success">Đã Phê Duyệt</span>
-        <span *ngIf="!baibao.tapchi.trangthai" class="error">Chưa Phê Duyệt</span> <br>
-        <strong> + Được Công Nhận ?: </strong>
-        <span *ngIf="baibao.tapchi.khongduoccongnhan === true" class="error">Không Được Công
+        + Tên: <span class="tw-font-semibold">{{baibao.tapchi.name ??
+    'Không Có'}}</span> <br>
+        + Trạng Thái:
+        <span *ngIf="baibao.tapchi.trangthai" class="success tw-font-semibold">Đã Phê Duyệt</span>
+        <span *ngIf="!baibao.tapchi.trangthai" class="error tw-font-semibold">Chưa Phê Duyệt</span> <br>
+        + Được Công Nhận ?:
+        <span *ngIf="baibao.tapchi.khongduoccongnhan === true" class="error tw-font-semibold">Không Được Công
                                 Nhận</span>
-        <span *ngIf="baibao.tapchi.khongduoccongnhan === false" class="success">Được Công
+        <span *ngIf="baibao.tapchi.khongduoccongnhan === false" class="success tw-font-semibold">Được Công
                                 Nhận</span>
-        <span *ngIf="baibao.tapchi.khongduoccongnhan === null" class="primary">Không Được Đánh
+        <span *ngIf="baibao.tapchi.khongduoccongnhan === null" class="primary tw-font-semibold">Không Được Đánh
                                 Giá</span>
     </nz-descriptions-item>
     <nz-descriptions-item nzTitle="Abstract">{{baibao.abstract ?? 'Không Có'}}</nz-descriptions-item>

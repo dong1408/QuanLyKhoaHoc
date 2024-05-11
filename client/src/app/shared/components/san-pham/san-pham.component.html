@@ -12,12 +12,12 @@
     </nz-descriptions-item>
     <ng-container *ngIf="sanpham.trangthairasoat === AppConstant.TT_DA_XAC_NHAN">
         <nz-descriptions-item nzTitle="Người Rà Soát ">
-            <strong > + Mã:
-            </strong>{{sanpham.nguoirasoat?.username ?? 'Không Có'}} <br>
-            <strong> + Tên:
-            </strong>{{sanpham.nguoirasoat?.name ?? 'Không Có'}} <br>
-            <strong > + Email:
-            </strong>{{sanpham.nguoirasoat?.email ?? 'Không Có'}}
+            + Mã:
+            <span class="tw-font-semibold">{{sanpham.nguoirasoat?.username ?? 'Không Có'}}</span> <br>
+            + Tên:
+            <span class="tw-font-semibold">{{sanpham.nguoirasoat?.name ?? 'Không Có'}}</span> <br>
+            + Email:
+            <span class="tw-font-semibold">{{sanpham.nguoirasoat?.email ?? 'Không Có'}}</span>
         </nz-descriptions-item>
     </ng-container>
     <nz-descriptions-item nzTitle="Tổng Số Tác Giả">{{sanpham.tongsotacgia}}</nz-descriptions-item>
@@ -37,14 +37,14 @@
         {{sanpham.cothongtindonvikhac === true ? 'Có' : 'Không'}}</nz-descriptions-item>
     <ng-container *ngIf="sanpham.cothongtindonvikhac === true">
         <nz-descriptions-item nzTitle="Thông Tin Đơn Vị Khác">
-            <strong > + Mã:
-            </strong>{{sanpham.thongtinnoikhac?.matochuc ?? 'Không Có'}} <br>
-            <strong > + Tên:
-            </strong>{{sanpham.thongtinnoikhac?.tentochuc ?? 'Không Có'}} <br>
-            <strong > + Điện Thoại:
-            </strong>{{sanpham.thongtinnoikhac?.dienthoai ?? 'Không Có'}}<br>
-            <strong > + Website:
-            </strong>{{sanpham.thongtinnoikhac?.website ?? 'Không Có'}}
+            + Mã:
+            <span class="tw-font-semibold">{{sanpham.thongtinnoikhac?.matochuc ?? 'Không Có'}}</span> <br>
+            + Tên:
+            <span class="tw-font-semibold">{{sanpham.thongtinnoikhac?.tentochuc ?? 'Không Có'}}</span> <br>
+            + Điện Thoại:
+            <span class="tw-font-semibold">{{sanpham.thongtinnoikhac?.dienthoai ?? 'Không Có'}}</span><br>
+            + Website:
+            <span class="tw-font-semibold">{{sanpham.thongtinnoikhac?.website ?? 'Không Có'}}</span>
         </nz-descriptions-item>
     </ng-container>
     <nz-descriptions-item nzTitle="Có Nhận Tài Trợ ?">
@@ -53,26 +53,26 @@
         ? 'Có' : 'Không'}}</nz-descriptions-item>
     <ng-container *ngIf="sanpham.conhantaitro === true">
         <nz-descriptions-item nzTitle="Đơn Vị Tài Trợ">
-            <strong > + Mã:
-            </strong>{{sanpham.thongtinnoikhac?.matochuc ?? 'Không Có'}} <br>
-            <strong > + Tên:
-            </strong>{{sanpham.thongtinnoikhac?.tentochuc ?? 'Không Có'}} <br>
-            <strong > + Điện Thoại:
-            </strong>{{sanpham.thongtinnoikhac?.dienthoai ?? 'Không Có'}}<br>
-            <strong > + Website:
-            </strong>{{sanpham.thongtinnoikhac?.website ?? 'Không Có'}}
+            + Mã:
+            <span class="tw-font-semibold">{{sanpham.donvitaitro?.matochuc ?? 'Không Có'}}</span> <br>
+            + Tên:
+            <span class="tw-font-semibold">{{sanpham.donvitaitro?.tentochuc ?? 'Không Có'}}</span> <br>
+            + Điện Thoại:
+            <span class="tw-font-semibold">{{sanpham.donvitaitro?.dienthoai ?? 'Không Có'}}</span><br>
+            + Website:
+            <span class="tw-font-semibold">{{sanpham.donvitaitro?.website ?? 'Không Có'}}</span>
         </nz-descriptions-item>
         <nz-descriptions-item nzTitle="Chi Tiết Đơn Vị Tài Trợ">
             {{sanpham.chitietdonvitaitro ?? 'Không Có'}}</nz-descriptions-item>
     </ng-container>
     <nz-descriptions-item nzTitle="Ngày Kê Khai">{{sanpham.ngaykekhai}}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Người Kê Khai">
-        <strong  > + Mã:
-        </strong>{{sanpham.nguoikekhai.username}} <br>
-        <strong  > + Tên:
-        </strong>{{sanpham.nguoikekhai.name}} <br>
-        <strong > + Email:
-        </strong>{{sanpham.nguoikekhai.email}}
+        + Mã:
+        <span class="tw-font-semibold">{{sanpham.nguoikekhai.username}}</span> <br>
+        + Tên:
+        <span class="tw-font-semibold">{{sanpham.nguoikekhai.name}}</span> <br>
+        + Email:
+        <span class="tw-font-semibold">{{sanpham.nguoikekhai.email}}</span>
     </nz-descriptions-item>
     <nz-descriptions-item nzTitle="File Minh Chứng">
         <ng-container *ngIf="sanpham.minhchung?.url"><nz-tag [nzColor]="'#76c5f0'"><a target="_blank"
@@ -82,20 +82,19 @@
     <nz-descriptions-item nzTitle="Danh Sách Tác Giả">
     <div *ngFor="let item of this.tacGiaMerged; let i = index" class="tw-mb-[1rem]">
         <h3>Tác Giả {{i + 1}}</h3>
-        <strong > + Tên Tác Giả:
-            </strong>{{item.tacgia.name}} <br>
-        <strong > + Vai Trò:
-        </strong>
+        + Tên Tác Giả:
+        <span class="tw-font-semibold">{{item.tacgia.name}}</span> <br>
+        + Vai Trò:
         <ng-container *ngIf="item.vaitrotacgia && item.vaitrotacgia.length > 0">
-    <span *ngFor="let i of item.vaitrotacgia; let last = last">
+    <span class="tw-font-semibold" *ngFor="let i of item.vaitrotacgia; let last = last">
         {{ i.tenvaitro }}
         <ng-container *ngIf="!last">, </ng-container>
             </span>
         </ng-container><br>
-        <strong > + Tỷ Lệ Đóng Góp:
-            </strong>{{item.tyledonggop ?? 'Không Có'}}<br>
-        <strong > + Thứ Tự: </strong>{{item.thutu ??
-            'Không Có'}}
+        + Tỷ Lệ Đóng Góp:
+        <span class="tw-font-semibold">{{item.tyledonggop ?? 'Không Có'}}</span><br>
+        + Thứ Tự: <span class="tw-font-semibold">{{item.thutu ??
+    'Không Có'}}</span>
         <br>
     </div>
     </nz-descriptions-item>

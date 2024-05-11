@@ -147,7 +147,6 @@ export class UserComponent implements OnInit,OnDestroy{
 
             },
             error:(error) =>{
-                console.log(error)
                 this.notificationService.create(
                     'error',
                     'Lỗi',

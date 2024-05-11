@@ -140,7 +140,6 @@ export class ScoreComponent implements OnInit,OnDestroy{
             ).subscribe({
             next:(response) => {
                 this.nganhTinhDiems = response.data
-                console.log(response.data,"nganh")
                 this.isNganhTinhDiemLoading = false
             },
             error:(error) => {
@@ -162,7 +161,6 @@ export class ScoreComponent implements OnInit,OnDestroy{
             ).subscribe({
             next:(response) => {
                 this.chuyenNganhTinhDiems = response.data
-                console.log(response.data,"chuiyen gnah")
                 this.isChuyenNganhTinhDiemLoading = false
             },
             error:(error) => {
@@ -232,7 +230,6 @@ export class ScoreComponent implements OnInit,OnDestroy{
 
     onSelectChange(event:any){
         if(typeof(event) === 'number'){
-            console.log(event)
             this.formTinhDiem.controls?.['id_chuyennganhtinhdiem'].setValue(null)
             this.getChuyenNganhTinhDiem(event)
         }else{

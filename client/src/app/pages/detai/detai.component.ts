@@ -90,7 +90,6 @@ export class DeTaiComponent{
                         isChangeStatus:false
                     }
                 })
-                console.log(response.data.data)
                 this.isTableLoading = false
             },
             error: (error) => {

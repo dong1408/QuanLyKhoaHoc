@@ -12,22 +12,22 @@
         true
             ? 'Có' : 'Không'}}</nz-descriptions-item>
         <nz-descriptions-item nzTitle="Tổ Chức Chủ Quản">
-            <strong> + Mã:
-            </strong>{{detai.tochucchuquan?.matochuc ?? 'Không Có'}} <br>
-            <strong> + Tên:
-            </strong>{{detai.tochucchuquan?.tentochuc ?? 'Không Có'}} <br>
-            <strong> + Điện Thoại:
-            </strong>{{detai.tochucchuquan?.dienthoai ?? 'Không Có'}}<br>
-            <strong> + Website:
-            </strong>{{detai.tochucchuquan?.website ?? 'Không Có'}}
+            + Mã:
+            <span class="tw-font-semibold">{{detai.tochucchuquan?.matochuc ?? 'Không Có'}}</span> <br>
+            + Tên:
+            <span class="tw-font-semibold">{{detai.tochucchuquan?.tentochuc ?? 'Không Có'}}</span> <br>
+            + Điện Thoại:
+            <span class="tw-font-semibold">{{detai.tochucchuquan?.dienthoai ?? 'Không Có'}}</span><br>
+            + Website:
+            <span class="tw-font-semibold">{{detai.tochucchuquan?.website ?? 'Không Có'}}</span>
         </nz-descriptions-item>
     </ng-container>
     <ng-container *ngIf="detai.ngoaitruong === false">
         <nz-descriptions-item nzTitle="Loại Đề Tài">
-            <strong > + Mã:
-            </strong>{{detai.loaidetai?.maloai ?? 'Không Có'}} <br>
-            <strong > + Tên:
-            </strong>{{detai.loaidetai?.tenloai ?? 'Không Có'}} <br>
+            + Mã:
+            <span class="tw-font-semibold">{{detai.loaidetai?.maloai ?? 'Không Có'}}</span> <br>
+            + Tên:
+            <span class="tw-font-semibold">{{detai.loaidetai?.tenloai ?? 'Không Có'}}</span> <br>
         </nz-descriptions-item>
     </ng-container>
     <nz-descriptions-item nzTitle="Đề Tài Hợp Tác ?">{{detai.detaihoptac ===
@@ -35,14 +35,14 @@
         ? 'Có' : 'Không'}}</nz-descriptions-item>
     <ng-container *ngIf="detai.detaihoptac === true">
         <nz-descriptions-item nzTitle="Tổ Chức Hợp Tác">
-            <strong > + Mã:
-            </strong>{{detai.tochuchoptac?.matochuc ?? 'Không Có'}} <br>
-            <strong > + Tên:
-            </strong>{{detai.tochuchoptac?.tentochuc ?? 'Không Có'}} <br>
-            <strong > + Điện Thoại:
-            </strong>{{detai.tochuchoptac?.dienthoai ?? 'Không Có'}}<br>
-            <strong > + Website:
-            </strong>{{detai.tochuchoptac?.website ?? 'Không Có'}}
+            + Mã:
+            <span class="tw-font-semibold">{{detai.tochuchoptac?.matochuc ?? 'Không Có'}}</span> <br>
+            + Tên:
+            <span class="tw-font-semibold">{{detai.tochuchoptac?.tentochuc ?? 'Không Có'}}</span> <br>
+            + Điện Thoại:
+            <span class="tw-font-semibold">{{detai.tochuchoptac?.dienthoai ?? 'Không Có'}}</span><br>
+            + Website:
+            <span class="tw-font-semibold">{{detai.tochuchoptac?.website ?? 'Không Có'}}</span>
         </nz-descriptions-item>
         <nz-descriptions-item nzTitle="Tỷ Lệ Kinh Phí Hợp Tác">
             {{detai.tylekinhphidonvihoptac}}
