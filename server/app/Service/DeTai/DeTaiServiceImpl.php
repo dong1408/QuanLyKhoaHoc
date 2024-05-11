@@ -16,6 +16,7 @@ use App\Exceptions\DeTai\DeTaiNotHaveChuNhiemException;
 use App\Exceptions\DeTai\DeTaiNotXacNhanException;
 use App\Exceptions\DeTai\KetQuaTuyenChonDeTaiException;
 use App\Exceptions\DeTai\KetQuaXetDuyetDeTaiException;
+use App\Exceptions\DeTai\PermissionUpdateTacGiaDeTaiException;
 use App\Exceptions\DeTai\RoleOnlyHeldByOnePersonInDeTaiException;
 use App\Exceptions\DeTai\TwoRoleSimilarForOnePersonInDeTaiException;
 use App\Exceptions\DeTai\VaiTroOfDeTaiException;
@@ -852,6 +853,15 @@ class DeTaiServiceImpl implements DeTaiService
         if ($sanPham->dmSanPham->masanpham != 'detai') {
             throw new LoaiSanPhamWrongException("Sản phẩm không phải đề tài");
         }
+
+        // check đề tài đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('detai.status')) {
+                throw new PermissionUpdateTacGiaDeTaiException();
+            }
+        }        
 
         $validated = $request->validated();
         $result = [];
