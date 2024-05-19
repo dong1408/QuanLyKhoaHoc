@@ -815,9 +815,9 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 this.isCreate = false
                 const formArray = this.createForm.get('sanpham_tacgia') as FormArray
                 formArray.clear()
-                this.keKhaiTapChi.clear()
-                this.keKhaiKeyword.clear()
-                this.keKhaiToChuc.clear()
+                this.keKhaiTapChi = []
+                this.keKhaiKeyword = []
+                this.keKhaiToChuc = []
                 this.fileList = []
                 this.createForm.reset()
             },
