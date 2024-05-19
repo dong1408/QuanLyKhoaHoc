@@ -607,6 +607,7 @@ export class ChiTietBaiBaoComponent{
                 if (this.baibao && this.baibao.sanpham_tacgias) {
                     this.baibao.sanpham_tacgias = response.data
                 }
+                this.keKhaiToChuc = []
                 this.isOpenFormTacGia = false
                 this.isCapNhatTacGia = false
             },

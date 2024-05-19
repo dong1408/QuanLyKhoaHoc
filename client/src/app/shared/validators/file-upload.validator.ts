@@ -21,7 +21,7 @@ export const fileUploadValidator = (file:File):{success:boolean,message:string} 
 }
 
 export const validateFileUpload = (file:NzUploadFile,fileList:NzUploadFile[]):string | null => {
-    file.status = "uploading";
+    // file.status = "uploading";
     const extension = file.name.split('.').pop()?.toLowerCase();
 
     const isTypeSuccess = extension === 'docx' || extension === 'pdf' || extension === 'xlsx' || extension === 'xls';

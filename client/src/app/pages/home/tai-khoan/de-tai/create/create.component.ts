@@ -673,7 +673,8 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 this.isCreate = false
                 const formArray = this.createForm.get('sanpham_tacgia') as FormArray
                 formArray.clear()
-                this.keKhaiToChuc.clear()
+                this.tochucForm.reset()
+                this.keKhaiToChuc = []
                 this.createForm.reset()
             },
             error:(error) =>{
