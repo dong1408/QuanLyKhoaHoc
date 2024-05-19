@@ -3,9 +3,13 @@
 namespace App\Service\UserInfo;
 
 use App\Exceptions\InvalidValueException;
+use App\Exceptions\ToChuc\DeleteToChucException;
 use App\Exceptions\UserInfo\ToChucNotFoundException;
 use App\Http\Requests\UserInfo\ToChuc\CreateToChucRequest;
 use App\Http\Requests\UserInfo\ToChuc\UpdateToChucRequest;
+use App\Models\DeTai\DeTai;
+use App\Models\SanPham\SanPham;
+use App\Models\User;
 use App\Models\UserInfo\DMQuocGia;
 use App\Models\UserInfo\DMToChuc;
 use App\Utilities\Convert;
@@ -134,6 +138,18 @@ class ToChucServiceImpl implements ToChucService
         if (!is_int($toChucId)) {
             throw new InvalidValueException();
         }
+
+        $dependentInSanPham_thongTinNoiKhac = SanPham::where('id_thongtinnoikhac', $toChucId)->exists();
+        $dependentInSanPham_donViTaiTro = SanPham::where('id_donvitaitro', $toChucId)->exists();
+        $dependentInDeTai_toChucChuQuan = DeTai::where('id_tochucchuquan', $toChucId)->exists();
+        $dependentInDeTai_toChucHopTac = DeTai::where('id_tochuchoptac', $toChucId)->exists();
+        $dependentInUser_noiHoc = User::where('id_noihoc', $toChucId)->exists();
+        $dependentInUser_toChuc = User::where('id_tochuc', $toChucId)->exists();
+
+        if($dependentInSanPham_donViTaiTro || $dependentInSanPham_thongTinNoiKhac || $dependentInDeTai_toChucChuQuan || $dependentInDeTai_toChucHopTac || $dependentInUser_toChuc || $dependentInUser_noiHoc){
+            throw new DeleteToChucException();
+        }
+
 
         $toChuc = DMToChuc::where('id', $toChucId)->first();
         if ($toChuc == null) {

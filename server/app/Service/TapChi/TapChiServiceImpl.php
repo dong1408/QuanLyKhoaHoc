@@ -4,6 +4,7 @@ namespace App\Service\TapChi;
 
 use App\Exceptions\Delete\DeleteFailException;
 use App\Exceptions\InvalidValueException;
+use App\Exceptions\TapChi\DeleteTapChiException;
 use App\Exceptions\TapChi\TapChiCanNotUpdateException;
 use App\Exceptions\TapChi\TapChiNotFoundException;
 use App\Exceptions\TapChi\TinhDiemTapChiException;
@@ -14,11 +15,15 @@ use App\Http\Requests\TapChi\UpdateTapChiRequest;
 use App\Http\Requests\TapChi\UpdateTinhDiemTapChiRequest;
 use App\Http\Requests\TapChi\UpdateTrangThaiTapChiRequest;
 use App\Http\Requests\TapChi\UpdateXepHangTapChiRequest;
+use App\Models\BaiBao\BaiBaoKhoaHoc;
+use App\Models\DeTai\DeTai;
 use App\Models\TapChi\TapChi;
 use App\Models\TapChi\TapChiKhongCongNhan;
 use App\Models\TapChi\TinhDiemTapChi;
 use App\Models\TapChi\XepHangTapChi;
 use App\Models\QuyDoi\DMChuyenNganhTinhDiem;
+use App\Models\SanPham\SanPham;
+use App\Models\User;
 use App\Utilities\Convert;
 use App\Utilities\PagingResponse;
 use App\Utilities\ResponseSuccess;
@@ -434,6 +439,13 @@ class TapChiServiceImpl implements TapChiService
         if ($tapChi == null) {
             throw new TapChiNotFoundException();
         }
+
+        $dependentInTapChi = BaiBaoKhoaHoc::where('id_tapchi', $id)->exists();
+
+        if($dependentInTapChi){
+            throw new DeleteTapChiException();
+        }
+
         TapChi::onlyTrashed()->where('id', $id)->forceDelete();
         return new ResponseSuccess("Thành công", true);
     }
