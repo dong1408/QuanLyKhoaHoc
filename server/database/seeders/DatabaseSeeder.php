@@ -30,5 +30,9 @@ class DatabaseSeeder extends Seeder
         $this->call(DanhMucToChuc::class);
         $this->call(DanhMucDonVi::class);
         $this->call(UserSeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(PermissionSeeder::class);
+        $this->call(UserRoleSeeder::class);
+        $this->call(RolePermissionSeeder::class);   
     }
 }

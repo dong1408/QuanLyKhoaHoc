@@ -15,7 +15,7 @@ class DanhMucHocHamHocViSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('d_m_hoc_ham_hoc_vis')->insert(
+        $dmHocHamHocVis = [
             [
                 'mahochamhocvi' => 'GS.TS',
                 'tenhochamhocvi' => 'Giáo sư - Tiến sĩ'
@@ -33,13 +33,17 @@ class DanhMucHocHamHocViSeeder extends Seeder
                 'tenhochamhocvi' => 'Thạc sĩ'
             ],
             [
-                'name' => 'CN',
+                'mahochamhocvi' => 'CN',
                 'tenhochamhocvi' => 'Cử nhân'
             ],
             [
                 'mahochamhocvi' => 'KS',
                 'tenhochamhocvi' => 'Kỹ sư'
-            ],
-        );
+            ]
+        ];
+
+        foreach($dmHocHamHocVis as $item){
+            DB::table('d_m_hoc_ham_hoc_vis')->insert($item);
+        }    
     }
 }
