@@ -15,11 +15,23 @@ class DanhMucQuocGia extends Seeder
      */
     public function run()
     {
-        DB::table('d_m_quoc_gias')->insert(
+        $quocGias = [
             [
                 'maquocgia' => 'VN',
                 'tenquocgia' => 'Việt Nam'
             ],
-        );
+            [
+                'maquocgia' => 'US',
+                'tenquocgia' => 'Hoa Kỳ'
+            ],
+            [
+                'maquocgia' => 'GB',
+                'tenquocgia' => 'Vương Quốc Anh'
+            ]
+        ];
+
+        foreach($quocGias as $item){
+            DB::table('d_m_quoc_gias')->insert($item);
+        }
     }
 }

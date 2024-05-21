@@ -38,5 +38,6 @@ class DatabaseSeeder extends Seeder
         $this->call(VaiTroTacGia::class);   
         // $this->call(NhaXuatBan::class);   
         // $this->call(TapChi::class);   
+        // $this->call(DanhMucPhanLoaiTapChi::class);
     }
 }
