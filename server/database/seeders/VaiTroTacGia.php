@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,49 +22,63 @@ class VaiTroTacGia extends Seeder
                 'mota' => 'Vai trò tác giả đầu tiên',
                 'tenvaitro_en' => 'First Author',
                 'role' => 'baibao',
-                'mavaitro' => 'tacgiadautien'
+                'mavaitro' => 'tacgiadautien',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'tenvaitro' => 'Tác Giả Liên Hệ',
                 'mota' => 'Vai trò tác giả liên hệ',
                 'tenvaitro_en' => 'Corresponding Author',
                 'role' => 'baibao',
-                'mavaitro' => 'tacgialienhe'
+                'mavaitro' => 'tacgialienhe',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'tenvaitro' => 'Tác Giả',
                 'mota' => 'Vai trò tác giả cộng tác',
                 'tenvaitro_en' => 'CO-Author',
                 'role' => 'baibao',
-                'mavaitro' => 'tacgia'
+                'mavaitro' => 'tacgia',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'tenvaitro' => 'Chủ Nhiệm',
                 'mota' => 'Giữ vai trò là chủ nhiệm chính của đề tài',
                 'tenvaitro_en' => 'Principal Investigator',
                 'role' => 'detai',
-                'mavaitro' => 'chunhiem'
+                'mavaitro' => 'chunhiem',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'tenvaitro' => 'Thành viên chính',
                 'mota' => 'Thành viên chính thực hiện đề tài',
                 'tenvaitro_en' => 'CO-Investigator',
                 'role' => 'detai',
-                'mavaitro' => 'thanhvienchinh'
+                'mavaitro' => 'thanhvienchinh',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'tenvaitro' => 'Thư Ký Khoa Học',
                 'mota' => 'Thư ký đề tài',
                 'tenvaitro_en' => 'Research Secretary',
                 'role' => 'detai',
-                'mavaitro' => 'thukykhoahoc'
+                'mavaitro' => 'thukykhoahoc',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'tenvaitro' => 'Thành viên',
                 'mota' => 'Thành viên của đề tài',
                 'tenvaitro_en' => 'Research Member',
                 'role' => 'detai',
-                'mavaitro' => 'thanhvien'
+                'mavaitro' => 'thanhvien',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
         ];
 

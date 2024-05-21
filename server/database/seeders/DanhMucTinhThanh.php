@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -19,17 +20,23 @@ class DanhMucTinhThanh extends Seeder
             [
                 'id_quocgia' => 1,
                 'matinhthanh' => 'HCM',
-                'tentinhthanh' => 'Thành phố Hồ Chí Minh'
+                'tentinhthanh' => 'Thành phố Hồ Chí Minh',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'id_quocgia' => 1,
                 'matinhthanh' => 'HN',
-                'tentinhthanh' => 'Hà Nội'
+                'tentinhthanh' => 'Hà Nội',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
                 'id_quocgia' => 1,
                 'matinhthanh' => 'ND',
-                'tentinhthanh' => 'Nam Định'
+                'tentinhthanh' => 'Nam Định',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ]
         ];
 
