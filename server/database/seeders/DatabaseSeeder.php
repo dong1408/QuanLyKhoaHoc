@@ -34,5 +34,10 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(UserRoleSeeder::class);
         $this->call(RolePermissionSeeder::class);   
+        $this->call(DanhMucSanPham::class);   
+        $this->call(VaiTroTacGia::class);   
+        // $this->call(NhaXuatBan::class);   
+        // $this->call(TapChi::class);   
+        // $this->call(DanhMucPhanLoaiTapChi::class);
     }
 }
