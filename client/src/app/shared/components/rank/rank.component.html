@@ -1,21 +1,21 @@
 <div class="tw-space-y-[6px]">
     <h4>Ngày Cập Nhật : {{rank.created_at}}</h4>
-    <p><strong>Mã:</strong> {{rank.id}}</p>
+    <p>Mã: <span class="tw-font-semibold">{{rank.id}}</span></p>
     <p><strong>Xếp Hạng:</strong> <br>
-        <strong class="tw-ml-[30px]"> + Chỉ Số IF: </strong> <strong class="primary">{{rank.if ? rank.if : 'Không có'}}</strong> <br>
-        <strong class="tw-ml-[30px]"> + WoS: </strong> <strong class="primary">{{rank.wos ? rank.wos : 'Không có'}}</strong> <br>
-        <strong class="tw-ml-[30px]"> + Scopus: </strong> <strong class="primary">{{rank.quartile ? rank.quartile : 'Không có'}}</strong> <br>
-        <strong class="tw-ml-[30px]"> + ABS: </strong> <strong class="primary">{{rank.abs ? rank.abs : 'Không có'}}</strong><br>
-        <strong class="tw-ml-[30px]"> + ABCD: </strong> <strong class="primary">{{rank.abcd ? rank.abcd : 'Không có'}}</strong><br>
-        <strong class="tw-ml-[30px]"> + ACI: </strong> <strong class="primary">{{rank.aci ? rank.aci : 'Không có'}}</strong>
+        <span class="tw-ml-[30px]"> + Chỉ Số IF: </span> <strong class="primary">{{rank.if ? rank.if : 'Không có'}}</strong> <br>
+        <span class="tw-ml-[30px]"> + WoS: </span> <strong class="primary">{{rank.wos ? rank.wos : 'Không có'}}</strong> <br>
+        <span class="tw-ml-[30px]"> + Scopus: </span> <strong class="primary">{{rank.quartile ? rank.quartile : 'Không có'}}</strong> <br>
+        <span class="tw-ml-[30px]"> + ABS: </span> <strong class="primary">{{rank.abs ? rank.abs : 'Không có'}}</strong><br>
+        <span class="tw-ml-[30px]"> + ABCD: </span> <strong class="primary">{{rank.abcd ? rank.abcd : 'Không có'}}</strong><br>
+        <span class="tw-ml-[30px]"> + ACI: </span> <strong class="primary">{{rank.aci ? rank.aci : 'Không có'}}</strong>
 
     </p>
     <p><strong>Người cập nhật:</strong> <br>
-        <strong class="tw-ml-[30px]"> + Mã: </strong>{{rank.nguoicapnhat.username}} <br>
-        <strong class="tw-ml-[30px]"> + Tên: </strong>{{rank.nguoicapnhat.name}} <br>
-        <strong class="tw-ml-[30px]"> + Email: </strong>{{rank.nguoicapnhat.email}}
+        <span class="tw-ml-[30px]"> + Mã: </span> <span class="tw-font-semibold">{{rank.nguoicapnhat.username}}</span> <br>
+        <span class="tw-ml-[30px]"> + Tên: </span> <span class="tw-font-semibold">{{rank.nguoicapnhat.name}}</span> <br>
+        <span class="tw-ml-[30px]"> + Email: </span> <span class="tw-font-semibold">{{rank.nguoicapnhat.email}}</span>
     </p>
 
-    <p><strong>Ghi chú:</strong> {{rank.ghichu ? rank.ghichu : 'Không có ghi chú nào'}}</p>
+    <p>Ghi chú: <span class="tw-font-semibold">{{rank.ghichu ? rank.ghichu : 'Không có ghi chú nào'}}</span></p>
 
 </div>

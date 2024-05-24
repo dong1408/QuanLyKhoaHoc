@@ -37,3 +37,11 @@ html{
 .success{
     color:var(--success)
 }
+
+.ant-descriptions-item-label {
+    width: 300px;
+}
+
+.cm-table-wrapper{
+    overflow-x: auto;
+}

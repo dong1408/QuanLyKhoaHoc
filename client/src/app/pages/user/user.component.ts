@@ -119,9 +119,6 @@ export class UserComponent implements OnInit,OnDestroy{
         this.isImport = true;
         this.userService.importUsers(formData).pipe(
             takeUntil(this.destroy$),
-            // mergeMap(response => {
-            //     return this.userService.getFileResult(response)
-            // })
         ).subscribe({
             next:(response) =>{
 
@@ -144,13 +141,12 @@ export class UserComponent implements OnInit,OnDestroy{
                     'Thành Công',
                     'Import thành công'
                 )
-
+                this.pagingService.updatePageIndex(0    )
                 this.isImport = false
 
 
             },
             error:(error) =>{
-                console.log(error)
                 this.notificationService.create(
                     'error',
                     'Lỗi',
@@ -252,7 +248,8 @@ export class UserComponent implements OnInit,OnDestroy{
                     if(item.id === this.currentUserId){
                         return {
                             ...item,
-                            roles: response.data
+                            roles: response.data,
+                            roleString: response.data?.map(i => i.name).join(", ")
                         }
                     }
                     return item

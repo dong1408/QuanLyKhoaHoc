@@ -87,7 +87,6 @@ export class MagazineComponent implements OnInit,OnDestroy{
                         isChangeStatus:false
                     }
                 })
-                console.log(response.data.data)
                 this.isTableLoading = false
             },
             error: (error) => {
@@ -238,7 +237,6 @@ export class MagazineComponent implements OnInit,OnDestroy{
      }
 
     ngOnDestroy() {
-        console.log("magaazine run")
         this.destroy$.next();
         this.destroy$.complete();
         this.pagingService.resetValues()

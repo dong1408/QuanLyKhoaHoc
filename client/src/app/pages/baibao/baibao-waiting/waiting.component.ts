@@ -75,7 +75,6 @@ export class BaiBaoWaitingComponent implements OnInit,OnDestroy{
         ).subscribe({
             next: (response) => {
                 this.totalPage = response.data.totalPage
-                console.log(response.data)
                 this.baiBaos = response.data.data.map((item) => {
                     return {
                         ...item,

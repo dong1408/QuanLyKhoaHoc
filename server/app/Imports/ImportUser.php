@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Exceptions\Excel\FormatFileException;
 use App\Exports\DataExport;
 use App\Models\User;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -43,7 +44,7 @@ class ImportUser implements ToModel, WithHeadingRow, SkipsOnError
             'email.required' => 'trường email là bắt buộc',
             'email.email' => 'email không đúng định dạng',
             'email.unique' => 'email đã tồn tại trên hệ thống',
-            'ngaysinh.date_format' => 'Ngày sinh phải theo định dạng dd-MM-yy'
+            'ngaysinh.date_format' => 'Ngày sinh phải theo định dạng DD-MM-YYYY'
         ]);
 
         if ($validator->fails()) {
@@ -53,12 +54,15 @@ class ImportUser implements ToModel, WithHeadingRow, SkipsOnError
 
         $this->successRecords[] = array_merge($row, ['kết quả' => 'Thành công']);
 
+        $ngaysinh = Carbon::createFromFormat('d-m-Y', (string) $row['ngaysinh'])
+            ->format('Y-m-d');
+
         return new User([
             'name' => (string) $row['name'],
             'username' => (string) $row['username'],
             'email' => (string) $row['email'],
-            'ngaysinh' => (string) $row['ngaysinh'],
-            'password' => Hash::make((string) str_replace('-', '', $row['ngaysinh']))
+            'ngaysinh' => $ngaysinh,
+            'password' => Hash::make((string) str_replace('-', '', $ngaysinh))
         ]);
     }
 

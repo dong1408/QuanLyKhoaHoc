@@ -62,9 +62,11 @@
         <ng-template #loaded>
             <ng-container *ngIf="recognizes.length > 0">
                 <div>
-                    <app-recognize-card *ngFor="let card of recognizes" [recognize]="card"></app-recognize-card>
-                    <div class="tw-my-[14px]">
-                        <nz-divider ></nz-divider>
+                    <div *ngFor="let card of recognizes">
+                        <app-recognize-card [recognize]="card"></app-recognize-card>
+                        <div class="tw-my-[14px]">
+                            <nz-divider ></nz-divider>
+                        </div>
                     </div>
                 </div>
             </ng-container>

@@ -15,6 +15,7 @@ import {NzTableModule} from "ng-zorro-antd/table";
 import {NzWaveModule} from "ng-zorro-antd/core/wave";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {NzDescriptionsModule} from "ng-zorro-antd/descriptions";
+import {NzTagModule} from "ng-zorro-antd/tag";
 
 @NgModule({
     declarations:[
@@ -36,6 +37,7 @@ import {NzDescriptionsModule} from "ng-zorro-antd/descriptions";
         NzWaveModule,
         NzDividerModule,
         NzDescriptionsModule,
+        NzTagModule,
     ],
     exports:[
 

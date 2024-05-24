@@ -7,6 +7,7 @@ use App\Exceptions\BaiBao\BaiBaoKhoaHocNotFoundException;
 use App\Exceptions\BaiBao\BaiBaoNotHaveFirstAuthor;
 use App\Exceptions\BaiBao\ChuBaiBaoException;
 use App\Exceptions\BaiBao\CreateBaiBaoFailedException;
+use App\Exceptions\BaiBao\PermissionUpdateTacGiaException;
 use App\Exceptions\BaiBao\RoleOnlyHeldByOnePersonException;
 use App\Exceptions\BaiBao\TrungKeywordException;
 use App\Exceptions\BaiBao\TwoRoleSimilarForOnePersonException;
@@ -773,6 +774,15 @@ class BaiBaoServiceImpl implements BaiBaoService
         if ($sanPham == null) {
             throw new BaiBaoKhoaHocNotFoundException();
         }
+
+        // check bài báo đã được xác nhận thì chỉ có admin có quyền mới được chỉnh sửa
+        $idUserCurent = auth('api')->user()->id;
+        $userCurrent = User::find($idUserCurent);
+        if ($sanPham->trangthairasoat == "Đã xác nhận") {
+            if (!$userCurrent->hasPermission('baibao.status')) {
+                throw new PermissionUpdateTacGiaException();
+            }
+        }        
 
         // Check san pham trong trang thai softDelete thi khong cho chinh sua
         if ($sanPham->trashed()) {

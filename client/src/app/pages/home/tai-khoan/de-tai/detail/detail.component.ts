@@ -116,6 +116,8 @@ export class ChiTietDeTaiComponent{
             ]
         })
 
+        this.onGetSearchUser()
+        this.onGetSearchToChuc()
 
         this.getChiTietDeTai()
     }
@@ -544,6 +546,7 @@ export class ChiTietDeTaiComponent{
                 if (this.detai && this.detai.sanpham_tacgias) {
                     this.detai.sanpham_tacgias = response.data
                 }
+                this.keKhaiToChuc = []
                 this.isOpenFormTacGia = false
                 this.isCapNhatTacGia = false
             },

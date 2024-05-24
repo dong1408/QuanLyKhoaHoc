@@ -102,9 +102,11 @@
         <ng-template #loaded>
             <ng-container *ngIf="tinhDiemTapChis.length > 0">
                 <div>
-                    <app-score-card *ngFor="let card of tinhDiemTapChis" [score]="card"></app-score-card>
-                    <div class="tw-my-[14px]">
-                        <nz-divider ></nz-divider>
+                    <div *ngFor="let card of tinhDiemTapChis">
+                        <app-score-card [score]="card"></app-score-card>
+                        <div class="tw-my-[14px]">
+                            <nz-divider ></nz-divider>
+                        </div>
                     </div>
                 </div>
             </ng-container>

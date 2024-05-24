@@ -1,25 +1,25 @@
 <div class="tw-space-y-[6px]">
     <h4>Ngày Cập Nhật : {{score.created_at}}</h4>
-    <p><strong>Mã:</strong> {{score.id}}</p>
+    <p>Mã: <span class="tw-font-semibold">{{score.id}}</span></p>
 <!--    <p><strong>Trạng thái: </strong>-->
 <!--        <span *ngIf="score?.khongduoccongnhan === true" class="success">Được Công Nhận</span>-->
 <!--        <span *ngIf="score?.khongduoccongnhan === false" class="success">Không Được Công Nhận</span>-->
 <!--        <span *ngIf="!score.khongduoccongnhan" class="primary">Không Được Đánh Giá</span>-->
 <!--    </p>-->
     <p><strong>Người cập nhật:</strong> <br>
-        <strong class="tw-ml-[30px]"> + Mã: </strong>{{score.nguoicapnhat?.username}} <br>
-        <strong class="tw-ml-[30px]"> + Tên: </strong>{{score.nguoicapnhat?.name}} <br>
-        <strong class="tw-ml-[30px]"> + Email: </strong>{{score.nguoicapnhat?.email}}</p>
+        <span class="tw-ml-[30px]"> + Mã: </span> <span class="tw-font-semibold">{{score.nguoicapnhat?.username}}</span> <br>
+        <span class="tw-ml-[30px]"> + Tên:</span> <span class="tw-font-semibold">{{score.nguoicapnhat?.name}}</span> <br>
+        <span class="tw-ml-[30px]"> + Email: </span> <span class="tw-font-semibold">{{score.nguoicapnhat?.email}}</span></p>
     <p><strong>Ngành Tính Điểm:</strong> <br>
-        <strong class="tw-ml-[30px]"> + Mã Ngành: </strong>{{score.nganhtinhdiem.manganhtinhdiem}} <br>
-        <strong class="tw-ml-[30px]"> + Tên Ngành Tính Điểm: </strong>{{score.nganhtinhdiem.tennganhtinhdiem}} <br>
-        <strong class="tw-ml-[30px]"> + Tên Ngành Tính Điểm [EN]: </strong>{{score.nganhtinhdiem.tennganh_en}}</p>
+        <span class="tw-ml-[30px]"> + Mã Ngành: </span> <span class="tw-font-semibold">{{score.nganhtinhdiem.manganhtinhdiem}}</span> <br>
+        <span class="tw-ml-[30px]"> + Tên Ngành Tính Điểm: </span> <span class="tw-font-semibold">{{score.nganhtinhdiem.tennganhtinhdiem}}</span> <br>
+        <span class="tw-ml-[30px]"> + Tên Ngành Tính Điểm [EN]: </span> <span class="tw-font-semibold">{{score.nganhtinhdiem.tennganh_en}} </span></p>
     <p><strong>Chuyên Ngành Tính Điểm:</strong> <br>
-        <strong class="tw-ml-[30px]"> + Mã: </strong>{{score.chuyennganhtinhdiem.machuyennganh}} <br>
-        <strong class="tw-ml-[30px]"> + Tên Chuyên Ngành Tính Điểm: </strong>{{score.chuyennganhtinhdiem.tenchuyennganh}} <br>
-        <strong class="tw-ml-[30px]"> + Tên Chuyên Ngành Tính Điểm [EN]: </strong>{{score.chuyennganhtinhdiem.tenchuyennganh_en}}</p>
-    <p><strong>Điểm:</strong> <strong class="primary"> {{score.diem}}</strong></p>
-    <p><strong>Năm Tính Điểm:</strong> <strong class="primary"> {{score.namtinhdiem}}</strong></p>
-    <p><strong>Ghi chú:</strong> {{score.ghichu ? score.ghichu : 'Không có ghi chú nào'}}</p>
+        <span class="tw-ml-[30px]"> + Mã: </span> <span class="tw-font-semibold">{{score.chuyennganhtinhdiem.machuyennganh}}</span> <br>
+        <span class="tw-ml-[30px]"> + Tên Chuyên Ngành Tính Điểm: </span> <span class="tw-font-semibold">{{score.chuyennganhtinhdiem.tenchuyennganh}}</span> <br>
+        <span class="tw-ml-[30px]"> + Tên Chuyên Ngành Tính Điểm [EN]: </span> <span class="tw-font-semibold">{{score.chuyennganhtinhdiem.tenchuyennganh_en}}</span></p>
+    <p>Điểm: <span class="tw-font-semibold">{{score.diem}}</span></p>
+    <p>Năm Tính Điểm: <span class="tw-font-semibold">{{score.namtinhdiem}}</span></p>
+    <p>Ghi chú: <span class="tw-font-semibold">{{score.ghichu ? score.ghichu : 'Không có ghi chú nào'}}</span></p>
 
 </div>

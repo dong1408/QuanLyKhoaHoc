@@ -157,7 +157,6 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
         this.capNhatForm.get("conhantaitro")?.valueChanges.pipe(
             takeUntil(this.destroy$)
         ).subscribe(select => {
-            console.log("conhantaitro")
             if(select === true){
                 this.capNhatForm.get("id_donvitaitro")?.enable()
                 this.capNhatForm.get("chitietdonvitaitro")?.enable()
@@ -172,7 +171,6 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
         this.capNhatForm.get("cothongtindonvikhac")?.valueChanges.pipe(
             takeUntil(this.destroy$)
         ).subscribe(select => {
-            console.log("cothongtindonvikhac")
             if(select === true){
                 this.capNhatForm.get("id_thongtinnoikhac")?.enable()
             }else{
@@ -322,7 +320,6 @@ export class CapNhatSanPhamBaiBaoComponent implements OnInit,OnDestroy{
                     "Lỗi",
                     "Cập nhật thất bại, vui lòng thử lại sau"
                 )
-                console.log(error)
                 this.isCapNhatLoading = false
                 return;
             }

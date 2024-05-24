@@ -110,9 +110,9 @@
                     <nz-descriptions-item nzTitle="Địa Chỉ">{{magazine.address ?? 'Không Có'}}</nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Người Thêm">
                         <ng-container *ngIf="magazine.nguoithem">
-                            <strong> + Mã: </strong>{{magazine.nguoithem.username}} <br>
-                            <strong> + Tên: </strong>{{magazine.nguoithem.name}} <br>
-                            <strong> + Email: </strong>{{magazine.nguoithem.email}}
+                            + Mã: <span class="tw-font-semibold">{{magazine.nguoithem.username}}</span> <br>
+                            + Tên: <span class="tw-font-semibold">{{magazine.nguoithem.name}}</span> <br>
+                            + Email: <span class="tw-font-semibold">{{magazine.nguoithem.email}}</span>
                         </ng-container>
                         <ng-container *ngIf="magazine.nguoithem === null">
                             Không Có
@@ -120,10 +120,12 @@
                     </nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Đơn Vị Chủ Quản">
                         <ng-container *ngIf="magazine.donvichuquan">
-                            <p><strong>Mã Tổ Chức:</strong> {{magazine.donvichuquan.matochuc}}</p>
-                            <p><strong>Tên Tổ Chức:</strong> {{magazine.donvichuquan.tentochuc}}</p>
-                            <p><strong>Website:</strong> <a href="{{magazine.donvichuquan.website  ?? '#'}}">Tại Đây</a></p>
-                            <p><strong>Số Điện Thoại:</strong> {{magazine.donvichuquan.dienthoai  ?? 'Không Có'}}</p>
+                            + Mã Tổ Chức: <span class="tw-font-semibold">{{magazine.donvichuquan.matochuc}}</span> <br>
+                            + Tên Tổ Chức: <span class="tw-font-semibold">{{magazine.donvichuquan.tentochuc}}</span> <br>
+                            + Website: <ng-container *ngIf="magazine.donvichuquan.website"><nz-tag [nzColor]="'#76c5f0'"><a target="_blank"
+                                                                                                                     href="{{magazine.donvichuquan.website}}">Tại Đây</a></nz-tag></ng-container>
+                            <ng-container *ngIf="!magazine.donvichuquan?.website"><span class="tw-font-semibold">Không Có</span></ng-container> <br>
+                            + Số Điện Thoại: <span class="tw-font-semibold">{{magazine.donvichuquan.dienthoai  ?? 'Không Có'}}</span>
                         </ng-container>
                         <ng-container *ngIf="magazine.donvichuquan === null">
                             Không Có

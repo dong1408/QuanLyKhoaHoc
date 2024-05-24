@@ -74,7 +74,6 @@ export class DeTaiWaitingComponent implements OnInit,OnDestroy{
         ).subscribe({
             next: (response) => {
                 this.totalPage = response.data.totalPage
-                console.log(response.data)
                 this.deTais = response.data.data.map((item) => {
                     return {
                         ...item,

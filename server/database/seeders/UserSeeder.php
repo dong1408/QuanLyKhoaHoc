@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             'username' => '11074',
             'name' => 'Nguyễn Đăng Thuấn',
             'email' => 'thuannguyen@sgu.edu.vn',
-            'role' => '9',
+            'role' => '0',
             'password' => Hash::make('Sgu@admin_2020'),
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -33,7 +33,6 @@ class UserSeeder extends Seeder
             'orchid' => null,
             //Thuộc tổ chức, đơn vị nào
             'id_tochuc' => 1,
-            'id_donvi' => 1,
             'id_ngachvienchuc' => 1,
             //Quốc tịch gì
             'id_quoctich' => 1,
