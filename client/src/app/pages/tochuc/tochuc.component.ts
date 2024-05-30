@@ -17,6 +17,7 @@ import {ToChucService} from "../../core/services/user-info/to-chuc.service";
 
 export class ToChucComponent implements OnInit,OnDestroy{
     totalPage: number
+    totalRecord: number
     isTableLoading:boolean = false
     toChucs:ToChuc[] = []
 
@@ -65,6 +66,7 @@ export class ToChucComponent implements OnInit,OnDestroy{
         ).subscribe({
             next: (response) => {
                 this.totalPage = response.data.totalPage
+                this.totalRecord = response.data.totalRecord
                 this.toChucs = response.data.data.map((item) => {
                     return {
                         ...item,

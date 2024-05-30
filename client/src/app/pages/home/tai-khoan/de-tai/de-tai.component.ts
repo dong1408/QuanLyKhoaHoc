@@ -24,7 +24,9 @@ export class DeTaiComponent implements OnInit,OnDestroy{
     deTaiThamGia:DeTai[] = []
 
     totalPageKeKhai: number
+    totalRecordKeKhai: number
     totalPageThamGia: number
+    totalRecordThamGia:number
 
     isTableKeKhaiLoading:boolean = false
     isTableThamGiaLoading:boolean = false
@@ -84,6 +86,7 @@ export class DeTaiComponent implements OnInit,OnDestroy{
         ).subscribe({
             next: (response) => {
                 this.totalPageKeKhai = response.data.totalPage
+                this.totalRecordKeKhai = response.data.totalRecord
                 this.deTaiKeKhai = response.data.data
                 this.isTableKeKhaiLoading = false
             },
@@ -118,6 +121,7 @@ export class DeTaiComponent implements OnInit,OnDestroy{
         ).subscribe({
             next: (response) => {
                 this.totalPageThamGia = response.data.totalPage
+                this.totalRecordThamGia = response.data.totalRecord
                 this.deTaiThamGia = response.data.data
                 this.isTableThamGiaLoading = false
             },
