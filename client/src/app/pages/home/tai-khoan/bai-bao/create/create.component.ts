@@ -34,6 +34,7 @@ import {KeywordService} from "../../../../../core/services/baibao/keyword.servic
 import {HocHamHocViService} from "../../../../../core/services/user-info/hoc-ham-hoc-vi.service";
 import {NzUploadFile} from "ng-zorro-antd/upload";
 import {validateFileUpload} from "../../../../../shared/validators/file-upload.validator";
+import {Router} from "@angular/router";
 
 @Component({
     selector:"app-taikhoan-baibao-create",
@@ -99,7 +100,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         private vaiTroService:VaiTroService,
         private baiBaoService:BaiBaoService,
         private keywordService:KeywordService,
-        private hhhvService:HocHamHocViService
+        private hhhvService:HocHamHocViService,
+        private router:Router
     ) {
     }
 
@@ -820,6 +822,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                 this.keKhaiToChuc = []
                 this.fileList = []
                 this.createForm.reset()
+                this.router.navigate(["/home/tai-khoan/san-pham/bai-bao"])
             },
             error:(error) => {
                 this.notificationService.create(

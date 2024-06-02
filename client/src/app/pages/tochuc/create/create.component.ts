@@ -11,6 +11,7 @@ import {PhanLoaiToChuc, TaoToChuc} from "../../../core/types/user-info/to-chuc.t
 import {TinhThanhService} from "../../../core/services/user-info/tinh-thanh.service";
 import {ToChucService} from "../../../core/services/user-info/to-chuc.service";
 import {PhanLoaiToChucService} from "../../../core/services/user-info/phan-loai-to-chuc.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector:'app-tochuc-create',
@@ -40,7 +41,8 @@ export class TaoToChucComponent implements OnInit,OnDestroy{
         private notificationService:NzNotificationService,
         private tinhThanhService:TinhThanhService,
         private toChucService:ToChucService,
-        private phanLoaiToChucService:PhanLoaiToChucService
+        private phanLoaiToChucService:PhanLoaiToChucService,
+        private router:Router
     ) {
 
     }
@@ -193,6 +195,7 @@ export class TaoToChucComponent implements OnInit,OnDestroy{
 
                 this.createForm.reset()
                 this.isCreate = false
+                this.router.navigate(["/admin/to-chuc"])
             },
             error:(error) =>{
                 this.notificationService.create(

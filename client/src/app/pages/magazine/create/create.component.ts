@@ -17,6 +17,7 @@ import {NhaXuatBanService} from "../../../core/services/nhaxuatban/nha-xuat-ban.
 import {CreateTapChi} from "../../../core/types/tapchi/tap-chi.type";
 import {TapChiService} from "../../../core/services/tapchi/tap-chi.service";
 import {ApiResponse} from "../../../core/types/api-response.type";
+import {Router} from "@angular/router";
 
 @Component({
     selector:"app-magazine-create",
@@ -52,7 +53,8 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
         private tinhThanhService:TinhThanhService,
         private quocGiaService:QuocGiaService,
         private nhaXuatBanService:NhaXuatBanService,
-        private tapChiService:TapChiService
+        private tapChiService:TapChiService,
+        private router:Router
     ) {
     }
 
@@ -212,6 +214,7 @@ export class MagazineCreateComponent implements OnInit,OnDestroy{
                 )
                 this.iscreateLoading = false
                 this.createForm.reset()
+                this.router.navigate(["/admin/tap-chi"])
             },
             error:(error) =>{
                 this.notificationService.create(

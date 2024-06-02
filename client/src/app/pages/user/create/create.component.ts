@@ -70,6 +70,7 @@ export class UserCreateComponent implements OnInit,OnDestroy{
         private ngachVienChucService:NgachVienChucService,
         public loadingService:LoadingService,
         private roleService:RoleService,
+        private router:Router
     ) {
     }
 
@@ -363,6 +364,7 @@ export class UserCreateComponent implements OnInit,OnDestroy{
 
                 this.createForm.reset()
                 this.isCreate = false
+                this.router.navigate(["/admin/nguoi-dung"])
             },
             error:(error) =>{
                 this.notificationService.create(

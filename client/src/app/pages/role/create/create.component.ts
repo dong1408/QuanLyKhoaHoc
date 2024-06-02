@@ -194,6 +194,7 @@ export class CreateRoleComponent implements OnInit,OnDestroy{
 
                 this.createForm.reset()
                 this.isCreate = false
+                this.router.navigate(["/admin/vai-tro"])
             },
             error:(error) =>{
                 this.notificationService.create(
