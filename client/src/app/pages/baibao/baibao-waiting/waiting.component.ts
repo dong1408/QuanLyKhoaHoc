@@ -28,6 +28,7 @@ import {ConstantsService} from "../../../core/services/constants.service";
 export class BaiBaoWaitingComponent implements OnInit,OnDestroy{
     baiBaos:BaiBao[] = []
     totalPage: number
+    totalRecord: number
     isTableLoading:boolean = false
     columnDelete:boolean = false
 
@@ -75,6 +76,7 @@ export class BaiBaoWaitingComponent implements OnInit,OnDestroy{
         ).subscribe({
             next: (response) => {
                 this.totalPage = response.data.totalPage
+                this.totalRecord = response.data.totalRecord
                 this.baiBaos = response.data.data.map((item) => {
                     return {
                         ...item,

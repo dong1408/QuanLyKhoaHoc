@@ -33,6 +33,7 @@ import {ApiResponse} from "../../../../../core/types/api-response.type";
 import {dateConvert} from "../../../../../shared/commons/utilities";
 import {NzUploadFile} from "ng-zorro-antd/upload";
 import {validateFileUpload} from "../../../../../shared/validators/file-upload.validator";
+import {Router} from "@angular/router";
 
 @Component({
     selector:'app-taikhoan-detai-create',
@@ -91,7 +92,8 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
         private vaiTroService:VaiTroService,
         private deTaiService:DeTaiService,
         private phanLoaiDeTaiService:PhanLoaiDeTaiService,
-        private hhhvService:HocHamHocViService
+        private hhhvService:HocHamHocViService,
+        private router:Router
     ) {
     }
 
@@ -676,6 +678,7 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 this.tochucForm.reset()
                 this.keKhaiToChuc = []
                 this.createForm.reset()
+                this.router.navigate(["/home/tai-khoan/san-pham/de-tai"])
             },
             error:(error) =>{
                 this.notificationService.create(

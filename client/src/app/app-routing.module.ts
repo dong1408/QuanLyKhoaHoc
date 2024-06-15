@@ -1,12 +1,8 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
-import {Routes, RouterModule, PreloadAllModules, Router} from '@angular/router';
+import {NgModule} from '@angular/core';
+import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
 import {authGuards} from "./core/guards/auth.guards";
 import {notAuthGuard} from "./core/guards/not-auth.guards";
 import {notChangedGuards} from "./core/guards/not-changed.guards";
-import {AuthService} from "./core/services/user/auth.service";
-import {LocalStorageService} from "./core/services/local-storage.service";
-import {ACCESS_TOKEN, REFRESH_TOKEN} from "./shared/commons/constants";
-import {NzNotificationService} from "ng-zorro-antd/notification";
 import {adminGuards} from "./core/guards/admin.guards";
 
 const routes: Routes = [

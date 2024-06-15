@@ -33,6 +33,7 @@ import {HocHamHocViService} from "../../../core/services/user-info/hoc-ham-hoc-v
 import {HocHamHocVi} from "../../../core/types/user-info/hoc-ham-hoc-vi.type";
 import {NzUploadFile} from "ng-zorro-antd/upload";
 import {validateFileUpload} from "../../../shared/validators/file-upload.validator";
+import {Router} from "@angular/router";
 
 @Component({
     selector:'app-detai-create',
@@ -92,7 +93,8 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
         private vaiTroService:VaiTroService,
         private deTaiService:DeTaiService,
         private phanLoaiDeTaiService:PhanLoaiDeTaiService,
-        private hhhvService:HocHamHocViService
+        private hhhvService:HocHamHocViService,
+        private router:Router
     ) {
     }
 
@@ -695,6 +697,7 @@ export class TaoDeTaiComponent implements OnInit,OnDestroy{
                 formArray.clear()
                 this.keKhaiToChuc = []
                 this.createForm.reset()
+                this.router.navigate(["/admin/de-tai"])
             },
             error:(error) =>{
                 this.notificationService.create(

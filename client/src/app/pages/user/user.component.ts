@@ -52,6 +52,7 @@ export class UserComponent implements OnInit,OnDestroy{
     formImport:FormGroup
 
     totalPage:number
+    totalRecord:number
 
     searchIsLock$: Observable<[number, string, string,number]>
 
@@ -291,6 +292,7 @@ export class UserComponent implements OnInit,OnDestroy{
         ).subscribe({
             next:(response) => {
                 this.totalPage = response.data.totalPage
+                this.totalRecord =response.data.totalRecord
                 this.users = response.data.data.map(item => {
                     return {
                         ...item,

@@ -31,6 +31,7 @@ import {HocHamHocViService} from "../../../core/services/user-info/hoc-ham-hoc-v
 import {HocHamHocVi} from "../../../core/types/user-info/hoc-ham-hoc-vi.type";
 import {NzUploadFile} from "ng-zorro-antd/upload";
 import {validateFileUpload} from "../../../shared/validators/file-upload.validator";
+import {Router} from "@angular/router";
 
 @Component({
     selector:"app-baibao-create",
@@ -96,7 +97,8 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
         private vaiTroService:VaiTroService,
         private baiBaoService:BaiBaoService,
         private keywordService:KeywordService,
-        private hhhvService:HocHamHocViService
+        private hhhvService:HocHamHocViService,
+        private router:Router
     ) {
     }
 
@@ -825,6 +827,7 @@ export class BaiBaoCreateComponent implements OnInit,OnDestroy{
                     this.keKhaiToChuc = []
                     this.fileList = []
                     this.createForm.reset()
+                    this.router.navigate(["/admin/bai-bao"])
                 },
                 error:(error) => {
                     this.notificationService.create(

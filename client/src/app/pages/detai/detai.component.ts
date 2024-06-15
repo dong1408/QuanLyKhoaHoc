@@ -29,6 +29,7 @@ export class DeTaiComponent{
     deTais:DeTai[] = []
     currentButton$ = new BehaviorSubject<number>(1)
     totalPage: number
+    totalRecord: number
     isTableLoading:boolean = false
     columnDelete:boolean = false
 
@@ -81,6 +82,7 @@ export class DeTaiComponent{
         ).subscribe({
             next: (response) => {
                 this.totalPage = response.data.totalPage
+                this.totalRecord = response.data.totalRecord
                 this.deTais = response.data.data.map((item) => {
                     return {
                         ...item,

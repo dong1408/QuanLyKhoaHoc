@@ -27,6 +27,7 @@ import {DeTaiService} from "../../../core/services/detai/de-tai.service";
 export class DeTaiWaitingComponent implements OnInit,OnDestroy{
     deTais:DeTai[] = []
     totalPage: number
+    totalRecord: number
     isTableLoading:boolean = false
     columnDelete:boolean = false
 
@@ -74,6 +75,7 @@ export class DeTaiWaitingComponent implements OnInit,OnDestroy{
         ).subscribe({
             next: (response) => {
                 this.totalPage = response.data.totalPage
+                this.totalRecord = response.data.totalRecord
                 this.deTais = response.data.data.map((item) => {
                     return {
                         ...item,

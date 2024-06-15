@@ -28,6 +28,7 @@ export class MagazineComponent implements OnInit,OnDestroy{
     magazines:Magazine[] = []
     currentButton$ = new BehaviorSubject<number>(1)
     totalPage: number
+    totalRecord: number
     isTableLoading:boolean = false
     columnDelete:boolean = false
 
@@ -78,6 +79,7 @@ export class MagazineComponent implements OnInit,OnDestroy{
         ).subscribe({
             next: (response) => {
                 this.totalPage = response.data.totalPage
+                this.totalRecord = response.data.totalRecord
                 this.magazines = response.data.data.map((item) => {
                     return {
                         ...item,

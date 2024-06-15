@@ -25,6 +25,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 export class MagazineWaitingComponent implements OnInit,OnDestroy{
     magazines:Magazine[] = []
     totalPage: number
+    totalRecord: number
     isTableLoading:boolean = false
     columnDelete:boolean = false
 
@@ -71,6 +72,7 @@ export class MagazineWaitingComponent implements OnInit,OnDestroy{
         ).subscribe({
             next: (response) => {
                 this.totalPage = response.data.totalPage
+                this.totalRecord = response.data.totalRecord
                 this.magazines = response.data.data.map((item) => {
                     return {
                         ...item,
